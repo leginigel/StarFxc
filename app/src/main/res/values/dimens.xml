@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Title -->
+    <dimen name="title_h">25dp</dimen>
+    <dimen name="title_w">60dp</dimen>
+    <dimen name="title_line_w">15dp</dimen>
+    <dimen name="title_line_h">1dp</dimen>
+
+
+</resources>

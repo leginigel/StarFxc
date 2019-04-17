@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/main_bg"
+    tools:context=".activity.MainActivity">
+
+    <RelativeLayout
+        android:orientation="vertical"
+        android:clipToPadding="false"
+        android:clipChildren="false"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!-- 搜索-->
+        <Button
+            android:id="@+id/search_btn"
+            android:layout_width="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="5dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginBottom="5dp"
+            android:layout_height="18dp"
+            android:minWidth="40dp"
+            android:background="@drawable/ic_search_btn_normal"
+            android:textColor="@color/color_all_white"
+            android:gravity="center"
+            android:text="@string/str_search"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:textSize="8sp"
+            tools:ignore="SmallSp" />
+
+        <!-- 标题栏 -->
+        <android.support.v17.leanback.widget.HorizontalGridView
+            android:id="@+id/hg_title"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/search_btn"
+            android:layout_width="match_parent"
+            android:clipToPadding="false"
+            android:clipChildren="false"
+            android:layout_height="@dimen/title_h" />
+
+        <!-- 内容 -->
+        <com.stars.tv.view.TvViewPager
+            android:id="@+id/page_vp"
+            android:layout_below="@+id/hg_title"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </RelativeLayout>
+</FrameLayout>
