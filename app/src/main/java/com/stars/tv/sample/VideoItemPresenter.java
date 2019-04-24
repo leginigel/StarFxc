@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.stars.tv.R;
-import com.stars.tv.bean.VideoBean;
+import com.stars.tv.bean.IQiYiMovieBean;
 
 import java.util.Objects;
 
@@ -32,13 +32,13 @@ public class VideoItemPresenter extends Presenter {
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, Object item) {
-        VideoBean videoBean = (VideoBean)item;
+        IQiYiMovieBean videoBean = (IQiYiMovieBean)item;
         bgIv = viewHolder.view.findViewById(R.id.bg_iv);
         nameTv = viewHolder.view.findViewById(R.id.name_tv);
         boardView = viewHolder.view.findViewById(R.id.board_view);
         nameTv.setText(videoBean.getName());
         Glide.with(Objects.requireNonNull(viewHolder.view.getContext()))
-                .load(videoBean.getCover_url()).into(bgIv);
+                .load(videoBean.getPosterUrl()).into(bgIv);
     }
 
     @Override
