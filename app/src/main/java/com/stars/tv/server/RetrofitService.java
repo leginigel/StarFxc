@@ -3,7 +3,7 @@ package com.stars.tv.server;
 import io.reactivex.Observable;
 import okhttp3.ResponseBody;
 import retrofit2.http.GET;
-import retrofit2.http.Path;
+import retrofit2.http.Url;
 
 /**
  * 网络请求API
@@ -12,7 +12,7 @@ import retrofit2.http.Path;
  */
 public interface  RetrofitService {
 
-    @GET("{url}")
-    Observable<ResponseBody> getIQiYiMovieList(@Path("url") String url);
+    @GET
+    Observable<ResponseBody> getIQiYiMovieList(@Url String url);
 
 }

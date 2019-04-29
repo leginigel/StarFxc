@@ -1,51 +1,37 @@
 package com.stars.tv.bean;
 
-
 import java.io.Serializable;
 import java.util.List;
 
 
 public class IQiYiMovieBean implements Serializable {
 
-    private String qPuId;
     private String name;
-    private String url;
+    private String playUrl;
     private String score;
-    private String time;
-    private String posterUrl;
-    private String posterLdUrl;
-    private List<Role> roles;
-    /**
-     * 显示VIP或者用券的URL，为空时不显示
-     */
-    private String ltUrl;
-    /**
-     * 是否显示独播
-     */
-    private boolean isDJ;
+    private String duration;
+    private String description;
+    private String imageUrl;
+    private Cast cast;
+    private List<Category> categories;
+    private String payMarkUrl;
+    private String secondInfo;
+
 
     @Override
     public String toString() {
         return "Movie{" +
-                "qPuId='" + qPuId + '\'' +
-                ", name='" + name + '\'' +
-                ", url='" + url + '\'' +
+                "name='" + name + '\'' +
+                ", playUrl='" + playUrl + '\'' +
                 ", score='" + score + '\'' +
-                ", time='" + time + '\'' +
-                ", posterUrl='" + posterUrl + '\'' +
-                ", posterLdUrl='" + posterLdUrl + '\'' +
-                ", ltUrl='" + ltUrl + '\'' +
-                ", isDJ='" + isDJ + '\'' +
-                ", roles=" + roles.toString() +
+                ", duration='" + duration + '\'' +
+                ", description='" + description + '\'' +
+                ", imageUrl='" + imageUrl + '\'' +
+                ", cast="+ cast.toString() + '\'' +
+                ", categories="+ categories.toString() + '\'' +
+                ", payMarkUrl='" + payMarkUrl + '\'' +
+                ", secondInfo="+ secondInfo +
                 '}';
-    }
-
-    public String getqPuId() {
-        return qPuId;
-    }
-
-    public void setqPuId(String qPuId) {
-        this.qPuId = qPuId;
     }
 
     public String getName() {
@@ -56,42 +42,27 @@ public class IQiYiMovieBean implements Serializable {
         this.name = name;
     }
 
-    public String getPosterLdUrl() {
-        return posterLdUrl;
+    public String getPlayUrl() {
+        return playUrl;
     }
 
-    public void setPosterLdUrl(String posterLdUrl) {
-        this.posterLdUrl = posterLdUrl;
+    public void setPlayUrl(String playUrl) {
+        this.playUrl = playUrl;
     }
 
-    public String getUrl() {
-        return url;
+    public void setPayMarkUrl(String payMarkUrl) {
+        this.payMarkUrl = payMarkUrl;
+    }
+    public String getPayMarkUrl() {
+        return payMarkUrl;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public String getDuration() {
+        return duration;
     }
 
-    public void setLtUrl(String ltUrl) {
-        this.ltUrl = ltUrl;
-    }
-    public String getLtUrl() {
-        return ltUrl;
-    }
-
-    public void setDJ(boolean isDJ) {
-        this.isDJ = isDJ;
-    }
-    public boolean isDJ() {
-        return isDJ;
-    }
-
-    public String getTime() {
-        return time;
-    }
-
-    public void setTime(String time) {
-        this.time = time;
+    public void setDuration(String duration) {
+        this.duration = duration;
     }
 
     public String getScore() {
@@ -102,41 +73,67 @@ public class IQiYiMovieBean implements Serializable {
         this.score = score;
     }
 
-    public String getPosterUrl() {
-        return posterUrl;
+    public String getImageUrl() {
+        return imageUrl;
     }
 
-    public void setPosterUrl(String posterUrl) {
-        this.posterUrl = posterUrl;
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
-    public List<Role> getRoles() {
-        return roles;
+    public Cast getCast() {
+        return cast;
     }
 
-    public void setRoles(List<Role> roles) {
-        this.roles = roles;
+    public void setCast(Cast cast) {
+        this.cast = cast;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setCategories(List<Category> categories) {
+        this.categories = categories;
+    }
+
+    public List<Category> getCategories() {
+        return categories;
+    }
+
+    public String getSecondInfo() {
+        return secondInfo;
+    }
+
+    public void setSecondInfo(String secondInfo) {
+        this.secondInfo = secondInfo;
     }
 
 
     public class Role{
 
-        public Role() {}
-
+        private String image_url;
         private String name;
-        private String url;
+        private long id;
+
 
         @Override
         public String toString() {
-            return "Role{" +
-                    "name='" + name + '\'' +
-                    ", url='" + url + '\'' +
+            return "{" +
+                    "image_url='" + image_url + '\'' +
+                    "，name='" + name + '\'' +
+                    ", id='" + id + '\'' +
                     '}';
         }
 
-        public Role(String name, String url) {
+        public Role(String imageUrl, String name, long id) {
+            this.image_url = imageUrl;
             this.name = name;
-            this.url = url;
+            this.id = id;
         }
 
         public String getName() {
@@ -147,12 +144,53 @@ public class IQiYiMovieBean implements Serializable {
             this.name = name;
         }
 
-        public String getUrl() {
-            return url;
+        public String getImage_url() {
+            return image_url;
         }
 
-        public void setUrl(String url) {
-            this.url = url;
+        public void setImage_url(String image_url) {
+            this.image_url = image_url;
+        }
+
+        public long getId() {
+            return id;
+        }
+
+        public void setId(long id) {
+            this.id = id;
+    }
+}
+
+    public class Category {
+
+        private String name;
+        public void setName(String name) {
+            this.name = name;
+        }
+        public String getName() {
+            return name;
+        }
+
+        @Override
+        public String toString() {
+            return "{ name='" + name + "'}";
+        }
+
+    }
+
+    public class Cast {
+
+        private List<Role> main_charactor;
+        public void setMain_charactor(List<Role> main_charactor) {
+            this.main_charactor = main_charactor;
+        }
+        public List<Role> getMain_charactor() {
+            return main_charactor;
+        }
+        @Override
+        public String toString() {
+            return "{ main_charactor='" + main_charactor + '}';
         }
     }
+
 }

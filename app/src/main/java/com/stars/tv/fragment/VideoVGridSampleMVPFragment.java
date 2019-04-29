@@ -102,7 +102,7 @@ public class VideoVGridSampleMVPFragment
 
         IQiYiListBean listBean = new IQiYiListBean("1", "", "","",
                 "", "","","","", "",  "",
-                "24",String.valueOf(mPageNum), "","iqiyi","","");
+                "24",String.valueOf(mPageNum), "1","iqiyi","","");
         mPresenter.requestIQiYiMovie(getIQiYiListUrl(listBean));
     }
 
@@ -187,7 +187,7 @@ public class VideoVGridSampleMVPFragment
             if (null != mVideoList) {
                 final IQiYiMovieBean videoBean = mVideoList.get(position);
                 Glide.with(Objects.requireNonNull(getActivity()))
-                        .load((position/ITEM_NUM_ROW)%2==0 ? videoBean.getPosterLdUrl() : videoBean.getPosterUrl()).into(holder.bgIv);
+                        .load(videoBean.getImageUrl()).into(holder.bgIv);
                 holder.nameTv.setText(videoBean.getName());
                 holder.itemView.setOnFocusChangeListener((view, hasFocus) -> {
                         holder.boardView.setVisibility(hasFocus ? View.VISIBLE : View.INVISIBLE);

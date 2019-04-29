@@ -1,15 +1,19 @@
 package com.stars.tv.presenter;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.stars.tv.bean.IQiYiMovieBean;
 import com.stars.tv.bean.contract.IQiYiMovieContract;
 import com.stars.tv.server.RxManager;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,47 +26,20 @@ public class IQiYiMoviePresenter extends IQiYiMovieContract.IQiYiMoviePresenter 
                 ArrayList<IQiYiMovieBean> simpleList = new ArrayList<>();
                 Document doc = Jsoup.parse(responseBody.string());
                 if (null!=doc){
-                    Elements lis = doc.select("div.wrapper-piclist").select("li");
-                    if(lis.size()!=0)
-                    {
-                        for (Element element : lis) {
-                            IQiYiMovieBean movie = new IQiYiMovieBean();
-                            String qPuId = element.select("a.site-piclist_pic_link").attr("data-qipuid");
-                            String link = element.select("a.site-piclist_pic_link").attr("href");
-                            String name = element.select("a.site-piclist_pic_link").attr("title");
-                            String time = element.select("span.icon-vInfo").text().trim();
-                            String posterUrl = "http:"+element.select("img").attr("src").replace("180_236","260_360");
-                            String posterLdUrl = posterUrl.replace("260_360","480_270");
-                            String score= element.select("span.score").text();
-
-                            String ltUrl = element.select("span.icon-member-box").select("img").attr("src");
-                            boolean isDj = !element.select("p.video_dj").isEmpty();
-                            movie.setScore(score);
-                            movie.setqPuId(qPuId);
-                            movie.setName(name);
-                            movie.setUrl(link);
-                            movie.setTime(time);
-                            movie.setPosterLdUrl(posterLdUrl);
-                            movie.setPosterUrl(posterUrl);
-                            movie.setLtUrl(ltUrl.isEmpty()?"":"http:"+ltUrl);
-                            movie.setDJ(isDj);
-
-                            Elements rolesEm = element.select("div.role_info").select("a");
-                            List<IQiYiMovieBean.Role> roles = new ArrayList<>();
-                            for (Element em : rolesEm) {
-                                IQiYiMovieBean.Role role = movie.new Role();
-                                String roleHref = em.attr("href").trim();
-                                String roleName = em.text().trim();
-                                role.setName(roleName);
-                                role.setUrl(roleHref);
-                                roles.add(role);
+                    Elements block = doc.select("div[id=block-D]");
+                    String result = block.attr(":first-search-list");
+                    try {
+                        JSONObject root = new JSONObject(result);
+                        String movieList = root.getString("list");
+                        Type listType = new TypeToken<List<IQiYiMovieBean>>() {
+                        }.getType();
+                        simpleList = new Gson().fromJson(movieList, listType);
+                        mView.returnIQiYiMovieList(simpleList);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                             }
-                            movie.setRoles(roles);
-                            simpleList.add(movie);
                         }
-                    }
-                }
-                mView.returnIQiYiMovieList(simpleList);
+
             } catch (IOException | StringIndexOutOfBoundsException e) {
                 e.printStackTrace();
             }

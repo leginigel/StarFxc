@@ -43,6 +43,8 @@ public class RetrofitFactory {
         Response response = chain.proceed(request);
         if (NetUtil.isConnected()) {
             return response.newBuilder()
+                    .removeHeader("User-Agent")
+                    .addHeader("User-Agent","Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:54.0) Gecko/20100101 Firefox/54.0")
                     .removeHeader("Pragma")
                     .header("Cache-Control", "public ,max-age=" + CACHE_STALE_SEC)
                     .build();

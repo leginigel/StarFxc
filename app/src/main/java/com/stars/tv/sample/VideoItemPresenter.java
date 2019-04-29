@@ -38,7 +38,7 @@ public class VideoItemPresenter extends Presenter {
         boardView = viewHolder.view.findViewById(R.id.board_view);
         nameTv.setText(videoBean.getName());
         Glide.with(Objects.requireNonNull(viewHolder.view.getContext()))
-                .load(videoBean.getPosterUrl()).into(bgIv);
+                .load(videoBean.getImageUrl()).into(bgIv);
     }
 
     @Override
