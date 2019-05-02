@@ -3,9 +3,9 @@ package com.stars.tv.activity;
 import com.stars.tv.R;
 import com.stars.tv.bean.TvTitle;
 import com.stars.tv.fragment.VideoRowSampleFragment;
-import com.stars.tv.fragment.VideoVGridSampleFragment;
 import com.stars.tv.model.TvTitleModel;
 import com.stars.tv.presenter.TvTitlePresenter;
+import com.stars.tv.fragment.VideoVGridSampleMVPFragment;
 import com.stars.tv.utils.ViewUtils;
 import com.stars.tv.view.SpaceItemDecoration;
 
@@ -55,7 +55,7 @@ public class MainActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ButterKnife.bind(this);
+        unbinder = ButterKnife.bind(this);
         initTitle();
         initContentViews();
         refreshRequest();
@@ -89,18 +89,15 @@ public class MainActivity extends BaseActivity {
             public void onChildViewHolderSelected(RecyclerView parent, RecyclerView.ViewHolder child, int position, int subposition) {
                 super.onChildViewHolderSelected(parent, child, position, subposition);
                 child.itemView.setTag(position);
-                child.itemView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                    @Override
-                    public void onFocusChange(View view, boolean hasFocus) {
-                        ViewUtils.scaleAnimator(view, hasFocus,1.2f,150);
-                        TextView tv = view.findViewById(R.id.tv_title);
-                        View lineView = view.findViewById(R.id.title_under_line);
-                        lineView.setBackgroundColor(getResources().getColor(hasFocus ? R.color.color_focus : R.color.color_transparent));
-                        tv.setTextColor(getResources().getColor(hasFocus ? R.color.color_focus : R.color.color_all_white));
-                        if ((int) view.getTag() == pageVp.getCurrentItem())
-                        {
-                            ViewUtils.scaleAnimator(view, true,1.2f,150);
-                        }
+                child.itemView.setOnFocusChangeListener((view, hasFocus) -> {
+                    ViewUtils.scaleAnimator(view, hasFocus,1.2f,150);
+                    TextView tv = view.findViewById(R.id.tv_title);
+                    View lineView = view.findViewById(R.id.title_under_line);
+                    lineView.setBackgroundColor(getResources().getColor(hasFocus ? R.color.color_focus : R.color.color_transparent));
+                    tv.setTextColor(getResources().getColor(hasFocus ? R.color.color_focus : R.color.color_all_white));
+                    if ((int) view.getTag() == pageVp.getCurrentItem())
+                    {
+                        ViewUtils.scaleAnimator(view, true,1.2f,150);
                     }
                 });
                 pageVp.setCurrentItem(position);
@@ -140,7 +137,7 @@ public class MainActivity extends BaseActivity {
                 //TODO
             }
         });
-        pageVp.setOffscreenPageLimit(2); // 缓存2个页面
+        pageVp.setOffscreenPageLimit(1); // 缓存2个页面
         pageVp.setAdapter(mFragAdapter);
     }
 
@@ -153,7 +150,8 @@ public class MainActivity extends BaseActivity {
                     mFragmentList.add(VideoRowSampleFragment.getInstance(titleMode.getName()));
                 }else
                 {
-                    mFragmentList.add(VideoVGridSampleFragment.getInstance(titleMode.getName()));
+//                    mFragmentList.add(VideoVGridSampleFragment.getInstance(titleMode.getName()));
+                    mFragmentList.add(VideoVGridSampleMVPFragment.getInstance(titleMode.getName()));
                 }
                 i.getAndIncrement();
             }

@@ -2,8 +2,6 @@ package com.stars.tv.activity;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.util.AttributeSet;
 import android.view.View;
@@ -11,8 +9,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-
-import com.stars.tv.R;
 
 /**
  * Base Activity
@@ -46,12 +42,6 @@ public class BaseActivity extends FragmentActivity {
         if (view != null) return view;
 
         return super.onCreateView(name, context, attrs);
-    }
-
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        getWindow().getDecorView().setBackgroundResource(R.drawable.main_bg);
     }
 
     public void hideKeyboard(View v) {
