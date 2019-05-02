@@ -9,6 +9,7 @@ import com.stars.tv.presenter.TvTitlePresenter;
 import com.stars.tv.utils.ViewUtils;
 import com.stars.tv.view.SpaceItemDecoration;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v17.leanback.widget.ArrayObjectAdapter;
 import android.support.v17.leanback.widget.BaseGridView;
@@ -118,10 +119,17 @@ public class MainActivity extends BaseActivity {
         searchBtn.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View view, int i, KeyEvent keyEvent) {
-                if (keyEvent.getAction() == KeyEvent.ACTION_DOWN && keyEvent.getKeyCode() == KeyEvent.KEYCODE_DPAD_DOWN) {
-                    searchBtn.setFocusable(false);
-                    hgTitle.requestFocusFromTouch();
-                    return true;
+                if (keyEvent.getAction() == KeyEvent.ACTION_DOWN ) {
+                    if ( keyEvent.getKeyCode() == KeyEvent.KEYCODE_DPAD_DOWN) {
+                        searchBtn.setFocusable(false);
+                        hgTitle.requestFocusFromTouch();
+                        return true;
+                    }
+                    else if ( keyEvent.getKeyCode() == KeyEvent.KEYCODE_DPAD_UP ){
+                      Intent intent = new Intent(MainActivity.this, DragMainActivity.class);
+                      startActivity(intent);
+                      return true;
+                    }
                 }
                 return false;
             }
