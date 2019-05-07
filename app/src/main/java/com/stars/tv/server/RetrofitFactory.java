@@ -44,7 +44,7 @@ public class RetrofitFactory {
         if (NetUtil.isConnected()) {
             return response.newBuilder()
                     .removeHeader("User-Agent")
-                    .addHeader("User-Agent","Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:54.0) Gecko/20100101 Firefox/54.0")
+                    .addHeader("User-Agent","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.140 Safari/537.36 Edge/18.17763")
                     .removeHeader("Pragma")
                     .header("Cache-Control", "public ,max-age=" + CACHE_STALE_SEC)
                     .build();
@@ -56,12 +56,12 @@ public class RetrofitFactory {
             //SSL证书
             .hostnameVerifier(org.apache.http.conn.ssl.SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER)
             .addInterceptor(interceptor) //日志拦截器
-            .connectTimeout(5, TimeUnit.SECONDS) //连接超时
+            .connectTimeout(15, TimeUnit.SECONDS) //连接超时
             .readTimeout(20, TimeUnit.SECONDS)  //读取超时
             .writeTimeout(20, TimeUnit.SECONDS) //写入超时
             .addNetworkInterceptor(cacheInterceptor)//添加缓存拦截器
             .cache(cache)//把缓存添加进来
-//            .retryOnConnectionFailure(true) //失败重连
+            .retryOnConnectionFailure(true) //失败重连
             .build();
 
     public static <T> T createApi(Class<T> clazz, String url) {
