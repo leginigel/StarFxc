@@ -33,6 +33,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+      <activity
+        android:name=".activity.DragMainActivity"
+        android:parentActivityName=".activity.MainActivity">
+      </activity>
 
         <!-- AutoSize 基准分辨率初始化 -->
         <meta-data
