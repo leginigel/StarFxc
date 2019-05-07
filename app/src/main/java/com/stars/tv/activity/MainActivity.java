@@ -67,7 +67,6 @@ public class MainActivity extends BaseActivity {
     @BindView(R.id.search_btn) Button searchBtn;
 
     FragAdapter mFragAdapter;
-//    List<VideoVGridSampleFragment> mFragmentList = new ArrayList<>();
 //    List<VideoRowSampleFragment> mFragmentList = new ArrayList<>();
     List<Fragment> mFragmentList = new ArrayList<>();
 
@@ -438,7 +437,6 @@ public class MainActivity extends BaseActivity {
                     mFragmentList.add(VideoRowSampleFragment.getInstance(titleMode.getName()));
                 }else
                 {
-//                    mFragmentList.add(VideoVGridSampleFragment.getInstance(titleMode.getName()));
                     mFragmentList.add(VideoVGridSampleMVPFragment.getInstance(titleMode.getName()));
                 }
                 i.getAndIncrement();
