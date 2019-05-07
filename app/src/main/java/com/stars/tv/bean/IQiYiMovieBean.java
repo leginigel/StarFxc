@@ -7,30 +7,43 @@ import java.util.List;
 public class IQiYiMovieBean implements Serializable {
 
     private String name;
+    private String docId;
+    private String albumId;
+    private String tvId;
+    private String focus;
     private String playUrl;
     private String score;
     private String duration;
     private String description;
     private String imageUrl;
-    private Cast cast;
-    private List<Category> categories;
+    private String latestOrder;
+    private String videoCount;
+    private String videoInfoType;
     private String payMarkUrl;
     private String secondInfo;
-
+    private Cast cast;
+    private List<Category> categories;
 
     @Override
     public String toString() {
-        return "Movie{" +
+        return "IQiYiMovieBean{" +
                 "name='" + name + '\'' +
+                ", docId='" + docId + '\'' +
+                ", albumId='" + albumId + '\'' +
+                ", tvId='" + tvId + '\'' +
+                ", focus='" + focus + '\'' +
                 ", playUrl='" + playUrl + '\'' +
                 ", score='" + score + '\'' +
                 ", duration='" + duration + '\'' +
                 ", description='" + description + '\'' +
                 ", imageUrl='" + imageUrl + '\'' +
-                ", cast="+ cast.toString() + '\'' +
-                ", categories="+ categories.toString() + '\'' +
+                ", latestOrder='" + latestOrder + '\'' +
+                ", videoCount='" + videoCount + '\'' +
+                ", videoInfoType='" + videoInfoType + '\'' +
                 ", payMarkUrl='" + payMarkUrl + '\'' +
-                ", secondInfo="+ secondInfo +
+                ", secondInfo='" + secondInfo + '\'' +
+                ", cast=" + cast +
+                ", categories=" + categories +
                 '}';
     }
 
@@ -113,6 +126,62 @@ public class IQiYiMovieBean implements Serializable {
         this.secondInfo = secondInfo;
     }
 
+    public void setLatestOrder(String latestOrder) {
+        this.latestOrder = latestOrder;
+    }
+
+    public String getLatestOrder() {
+        return latestOrder;
+    }
+
+    public void setVideoCount(String videoCount) {
+        this.videoCount = videoCount;
+    }
+
+    public String getVideoCount() {
+        return videoCount;
+    }
+
+    public void setVideoInfoType(String videoInfoType) {
+        this.videoInfoType = videoInfoType;
+    }
+
+    public String getVideoInfoType() {
+        return videoInfoType;
+    }
+
+    public String getAlbumId() {
+        return albumId;
+    }
+
+    public void setAlbumId(String albumId) {
+        this.albumId = albumId;
+    }
+
+    public String getTvId() {
+        return tvId;
+    }
+
+    public void setTvId(String tvId) {
+        this.tvId = tvId;
+    }
+
+    public String getFocus() {
+        return focus;
+    }
+
+    public void setFocus(String focus) {
+        this.focus = focus;
+    }
+
+    public String getDocId() {
+        return docId;
+    }
+
+    public void setDocId(String docId) {
+        this.docId = docId;
+    }
+
 
     public class Role{
 
@@ -158,8 +227,8 @@ public class IQiYiMovieBean implements Serializable {
 
         public void setId(long id) {
             this.id = id;
+        }
     }
-}
 
     public class Category {
 
@@ -181,6 +250,7 @@ public class IQiYiMovieBean implements Serializable {
     public class Cast {
 
         private List<Role> main_charactor;
+        private List<Role> host;
         public void setMain_charactor(List<Role> main_charactor) {
             this.main_charactor = main_charactor;
         }
@@ -189,7 +259,19 @@ public class IQiYiMovieBean implements Serializable {
         }
         @Override
         public String toString() {
+            if(main_charactor==null)
+            {
+                return "{ host='" + host + '}';
+            }
             return "{ main_charactor='" + main_charactor + '}';
+        }
+
+        public void setHost(List<Role> host) {
+            this.host = host;
+        }
+
+        public List<Role> getHost() {
+            return host;
         }
     }
 

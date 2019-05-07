@@ -77,3 +77,4 @@ lint/tmp/
 .DS_Store
 captures/
 
+.idea

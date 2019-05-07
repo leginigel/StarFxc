@@ -23,7 +23,7 @@ public class IQiYiMoviePresenter extends IQiYiMovieContract.IQiYiMoviePresenter 
     public void requestIQiYiMovie(String url) {
         RxManager.add(mModel.getIQiYiMovie(url).subscribe(responseBody -> {
             try {
-                ArrayList<IQiYiMovieBean> simpleList = new ArrayList<>();
+                ArrayList<IQiYiMovieBean> simpleList;
                 Document doc = Jsoup.parse(responseBody.string());
                 if (null!=doc){
                     Elements block = doc.select("div[id=block-D]");
@@ -31,8 +31,7 @@ public class IQiYiMoviePresenter extends IQiYiMovieContract.IQiYiMoviePresenter 
                     try {
                         JSONObject root = new JSONObject(result);
                         String movieList = root.getString("list");
-                        Type listType = new TypeToken<List<IQiYiMovieBean>>() {
-                        }.getType();
+                        Type listType = new TypeToken<List<IQiYiMovieBean>>() {}.getType();
                         simpleList = new Gson().fromJson(movieList, listType);
                         mView.returnIQiYiMovieList(simpleList);
                     } catch (JSONException e) {
