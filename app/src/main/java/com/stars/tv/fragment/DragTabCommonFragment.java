@@ -1,31 +1,22 @@
 package com.stars.tv.fragment;
 
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
-import android.support.v17.leanback.widget.ImageCardView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.stars.tv.R;
-import com.stars.tv.bean.VideoBean;
+import com.stars.tv.bean.IQiYiMovieBean;
 import com.stars.tv.sample.DragFavoriteSampleDataList;
 import com.stars.tv.sample.DragHistorySampleDataList;
 import com.stars.tv.utils.ViewUtils;
-
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,7 +33,7 @@ public class DragTabCommonFragment extends DragBaseFragment{
   private String mFragID;
   Unbinder unbinder;
   @BindView(R.id.drag_frame_recycler)  RecyclerView mDragContentsRecycler;
-  List<VideoBean> mVideoList = new ArrayList<>();
+  List<IQiYiMovieBean> mVideoList = new ArrayList<>();
 
   public DragTabCommonFragment(){
   }
@@ -102,7 +93,7 @@ public class DragTabCommonFragment extends DragBaseFragment{
 
     @Override
     public void onBindViewHolder(@NonNull DragContentAdapter.ViewHolder vh, int i) {
-      VideoBean vb = mVideoList.get(i);
+      IQiYiMovieBean vb = mVideoList.get(i);
       vh.bindViewHolder(vb);
     }
 
@@ -151,7 +142,7 @@ public class DragTabCommonFragment extends DragBaseFragment{
         });
       }
 
-      private void bindViewHolder (VideoBean vb){
+      private void bindViewHolder (IQiYiMovieBean vb){
         mVideoImage.setImageResource(R.drawable.temp_tv_icon);
         mVideoText.setText(vb.getName());
       }

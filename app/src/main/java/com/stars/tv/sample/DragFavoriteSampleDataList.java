@@ -1,14 +1,14 @@
 package com.stars.tv.sample;
 
-import com.stars.tv.bean.VideoBean;
+import com.stars.tv.bean.IQiYiMovieBean;
 import com.stars.tv.fragment.DragTabCommonFragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class DragFavoriteSampleDataList {
-  public static List<VideoBean> setupMovies() {
-    List<VideoBean> list = new ArrayList<>();
+  public static List<IQiYiMovieBean> setupMovies() {
+    List<IQiYiMovieBean> list = new ArrayList<>();
     String title[] = {
       "Phone", "Tablet", "NoteBook", "Server", "Apple",
       "Glasses", "Tablet", "NoteBook", "Server", "Apple",
@@ -24,13 +24,13 @@ public class DragFavoriteSampleDataList {
     return list;
   }
 
-  private static VideoBean buildMovieInfo(String title, String description,
+  private static IQiYiMovieBean buildMovieInfo(String title, String description,
                                           String videoUrl, String bgImageUrl) {
-    VideoBean videoBean = new VideoBean();
+    IQiYiMovieBean videoBean = new IQiYiMovieBean();
     videoBean.setName(title);
-    videoBean.setIntroduction(description);
-    videoBean.setCover_url(bgImageUrl);
-    videoBean.setPoster_url(videoUrl);
+    videoBean.setDescription(description);
+    videoBean.setImageUrl(bgImageUrl);
+    videoBean.setPlayUrl(videoUrl);
     return videoBean;
   }
 }
