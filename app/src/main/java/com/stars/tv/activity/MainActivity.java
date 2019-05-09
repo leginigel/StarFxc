@@ -1,6 +1,7 @@
 package com.stars.tv.activity;
 
 import com.stars.tv.R;
+import com.stars.tv.bean.IQiYiBannerInfoBean;
 import com.stars.tv.bean.IQiYiBasicStarInfoBean;
 import com.stars.tv.bean.IQiYiEpisodeBean;
 import com.stars.tv.bean.IQiYiHotSearchItemBean;
@@ -13,6 +14,7 @@ import com.stars.tv.bean.IQiYiVideoBaseInfoBean;
 import com.stars.tv.bean.TvTitle;
 import com.stars.tv.fragment.VideoRowSampleFragment;
 import com.stars.tv.model.TvTitleModel;
+import com.stars.tv.presenter.IQiYiParseBannerInfoPresenter;
 import com.stars.tv.presenter.IQiYiParseBasicStarInfoPresenter;
 import com.stars.tv.presenter.IQiYiParseHotSearchListPresenter;
 import com.stars.tv.presenter.IQiYiParseStarRecommendPresenter;
@@ -89,6 +91,7 @@ public class MainActivity extends BaseActivity {
 //        parseIQiYiVideoBaseInfo("1745487500");
 //        parseIQiYiTopList("1","realTime",50,1);
 //        parseIQiYiBasicStarInfo("213640105","1,2,6",3);
+//        parseIQiYiBasicStarInfo("dianying");
         initTitle();
         initContentViews();
         refreshRequest();
@@ -419,6 +422,28 @@ public class MainActivity extends BaseActivity {
             @Override
             public void success(IQiYiBasicStarInfoBean bean) {
                     Log.v(TAG, bean.toString());
+            }
+
+            @Override
+            public void error(String msg) {
+                //TODO 获取失败
+            }
+        });
+    }
+
+    /**
+     * 获取推荐栏位基本信息
+     * @param channel  电视剧：dianshiju    电影：dianying  综艺：zongyi   动漫：dongman
+     */
+
+    private void parseIQiYiBasicStarInfo(String channel){
+        IQiYiParseBannerInfoPresenter ps = new IQiYiParseBannerInfoPresenter();
+        ps.requestIQiYiBannerInfo( channel, new CallBack<List<IQiYiBannerInfoBean>>() {
+            @Override
+            public void success(List<IQiYiBannerInfoBean> list) {
+                for(IQiYiBannerInfoBean bean:list) {
+                    Log.v(TAG, bean.toString());
+                }
             }
 
             @Override

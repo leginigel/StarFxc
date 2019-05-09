@@ -50,4 +50,6 @@ public interface  RetrofitService {
     @GET("star/star/basicstarinfo")
     Observable<ResponseBody> getIQiYiBasicStarsInfo(@Query("starId")String starId, @Query(value="channleIds",encoded = true) String channleIds, @Query("limit")int size);
 
+    @GET("{channel}")
+    Observable<ResponseBody> getIQiYiBannerInfo(@Path("channel") String channel);
 }
