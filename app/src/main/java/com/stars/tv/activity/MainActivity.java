@@ -116,9 +116,14 @@ public class MainActivity extends BaseActivity {
                     searchBtn.setFocusable(true);
                     searchBtn.requestFocusFromTouch();
                 }
+                if (event.getAction() == KeyEvent.ACTION_DOWN && event.getKeyCode() == KeyEvent.KEYCODE_DPAD_DOWN) {
+                    // hide search button
+                    searchBtn.setVisibility(View.GONE);
+                }
                 return false;
             }
         });
+
 
         hgTitle.setOnChildViewHolderSelectedListener(new OnChildViewHolderSelectedListener() {
             @Override
@@ -126,6 +131,10 @@ public class MainActivity extends BaseActivity {
                 super.onChildViewHolderSelected(parent, child, position, subposition);
                 child.itemView.setTag(position);
                 child.itemView.setOnFocusChangeListener((view, hasFocus) -> {
+                    // show search button
+                    if(hasFocus) {
+                        searchBtn.setVisibility(View.VISIBLE);
+                    }
                     ViewUtils.scaleAnimator(view, hasFocus,1.2f,150);
                     TextView tv = view.findViewById(R.id.tv_title);
                     View lineView = view.findViewById(R.id.title_under_line);
