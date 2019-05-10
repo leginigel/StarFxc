@@ -76,7 +76,9 @@ public class IQiYiParseBannerInfoPresenter {
                                     bean.setName(name);
                                     bean.setPlayUrl(playUrl);
                                     bean.setDescription(description);
-                                    infoList.add(bean);
+                                    if(playUrl.contains("v_19")) {
+                                        infoList.add(bean);
+                                    }
                                 }
                             }
                             break;
@@ -141,6 +143,40 @@ public class IQiYiParseBannerInfoPresenter {
                                 }
                             }
                             break;
+                        default:
+                        {
+                            Elements defaultList = doc.select("ul.focus-index-list").select("li");
+                            for (int i = 0; i < defaultList.size(); i++) {
+                                IQiYiBannerInfoBean bean = new IQiYiBannerInfoBean();
+                                String img = defaultList.get(i).attr("data-jpg-img");
+                                String imageUrl;
+                                if (img.equals("")) {
+                                    String style = defaultList.get(i).attr(":style");
+                                    imageUrl = "http://" + style.substring(style.indexOf("pic"), style.indexOf("jpg") + 3);
+                                } else {
+                                    imageUrl = "http:" + img;
+                                }
+                                String playUrl;
+                                String url = defaultList.get(i).select("a").attr("href");
+                                if(url.startsWith("http"))
+                                {
+                                    playUrl=url;
+                                }else{
+                                    playUrl = "http:"+url;
+                                }
+                                String name = defaultList.get(i).select("a").attr("alt");
+                                String description = defaultList.get(i).select("a").attr("alt");
+
+                                bean.setImageUrl(imageUrl);
+                                bean.setName(name);
+                                bean.setPlayUrl(playUrl);
+                                bean.setDescription(description);
+                                if(playUrl.contains("v_19")) {
+                                    infoList.add(bean);
+                                }
+                            }
+                        }
+                        break;
                     }
                 }
                 if (listener != null) {

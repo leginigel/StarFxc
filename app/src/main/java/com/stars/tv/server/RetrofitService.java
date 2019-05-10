@@ -21,7 +21,7 @@ public interface  RetrofitService {
     Observable<ResponseBody> getIQiYiRealPlayUrl(@Url  String url);
 
     @GET
-    Observable<ResponseBody> getIQiYiPlayPageInfo(@Url  String url);
+    Observable<ResponseBody> getIQiYiVideoBaseInfoWithUrl(@Url  String url);
 
     @GET("albums/album/avlistinfo")
     Observable<ResponseBody> getIQiYiEpisodeList(@Query("aid") String albumId, @Query("size")int size, @Query("page")int pageNum);

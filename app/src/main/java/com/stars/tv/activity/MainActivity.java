@@ -442,7 +442,7 @@ public class MainActivity extends BaseActivity {
 
     /**
      * 获取推荐栏位基本信息
-     * @param channel  电视剧：dianshiju    电影：dianying  综艺：zongyi   动漫：dongman
+     * @param channel  电视剧：dianshiju    电影：dianying  综艺：zongyi   动漫：dongman     微电影：weidianying     推荐：""
      */
 
     private void parseIQiYiBasicStarInfo(String channel){

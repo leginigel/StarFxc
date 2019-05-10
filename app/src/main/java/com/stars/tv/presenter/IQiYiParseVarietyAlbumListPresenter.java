@@ -57,6 +57,10 @@ public class IQiYiParseVarietyAlbumListPresenter {
                 .getIQiYiHotPlayTimes(tvId).compose(RxUtils.rxSchedulerHelper());
     }
 
+    /**
+     * 获取video播放热度
+     * @param tvId video tvid
+     */
     public void requestIQiYiHotPlayTimes(String tvId, CallBack<String> listener) {
 
         RxManager.add(getIQiYiHotPlayTimesPage(tvId).subscribe(responseBody -> {
