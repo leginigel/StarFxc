@@ -1,6 +1,8 @@
 package com.stars.tv.utils;
 
+import android.content.Context;
 import android.graphics.PorterDuff;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.widget.ImageView;
@@ -66,4 +68,8 @@ public class ViewUtils {
         view.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
     }
 
+    public static int getPixelFromDp(Context context, int dp) {
+      float density = context.getResources().getDisplayMetrics().density;
+      return ((int)(4 * density));
+    }
 }

@@ -2,7 +2,7 @@
     <string name="app_name">StarsTV</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="str_search">搜索</string>
-
+    <string name="empty_description">Empty</string>
     <string name="entertainment">Entertainment</string>
     <string name="gaming">Gaming</string>
     <string name="music">Music</string>

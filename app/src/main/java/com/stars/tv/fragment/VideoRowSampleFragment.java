@@ -18,7 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.stars.tv.R;
-import com.stars.tv.bean.VideoBean;
+import com.stars.tv.bean.IQiYiMovieBean;
 import com.stars.tv.sample.ButtonListRow;
 import com.stars.tv.sample.ButtonItemPresenter;
 import com.stars.tv.sample.VideoItemPresenter;
@@ -94,7 +94,7 @@ public class VideoRowSampleFragment extends Fragment {
         // 设置缓存.
         videoGrid.getRecycledViewPool().setMaxRecycledViews(0, 100);
 
-        List<VideoBean> list = VideoSampleDataList.setupMovies();
+        List<IQiYiMovieBean> list = VideoSampleDataList.setupMovies();
         final MyPresenterSelector myPresenterSelector = new MyPresenterSelector();
         mRowsAdapter = new ArrayObjectAdapter(myPresenterSelector);
 
