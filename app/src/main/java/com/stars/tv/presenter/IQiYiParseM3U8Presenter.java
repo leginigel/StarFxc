@@ -34,7 +34,7 @@ public class IQiYiParseM3U8Presenter {
 
     private Observable<ResponseBody> getIQiYiBaseUrl(String url) {
         return RetrofitFactory.createApi(RetrofitService.class, Constants.BASE_IQIYI_URL)
-                .getIQiYiPlayPageInfo(url).compose(RxUtils.rxSchedulerHelper());
+                .getIQiYiVideoBaseInfoWithUrl(url).compose(RxUtils.rxSchedulerHelper());
     }
 
     private Observable<ResponseBody> getIQiYiPostConsumerUrl(String tvId) {
