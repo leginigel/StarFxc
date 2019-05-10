@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragment_youtube"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/top_nav"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="45dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/container"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <Button
+            android:id="@+id/recommend_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_text_bg"
+            android:nextFocusLeft="@id/home_btn"
+            android:text="@string/recommended"
+            android:textColor="@color/btn_text"/>
+
+        <Button
+            android:id="@+id/latest_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_text_bg"
+            android:layout_marginStart="10dp"
+            android:text="@string/latest"
+            android:textColor="@color/btn_text" />
+
+        <Button
+            android:id="@+id/music_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_text_bg"
+            android:layout_marginStart="10dp"
+            android:text="@string/music"
+            android:textColor="@color/btn_text" />
+
+        <Button
+            android:id="@+id/entertainment_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_text_bg"
+            android:layout_marginStart="10dp"
+            android:text="@string/entertainment"
+            android:textColor="@color/btn_text" />
+
+        <Button
+            android:id="@+id/gaming_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_text_bg"
+            android:layout_marginStart="10dp"
+            android:text="@string/gaming"
+            android:textColor="@color/btn_text" />
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/top_nav"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:context=".YoutubeActivity" />
+
+</android.support.constraint.ConstraintLayout>

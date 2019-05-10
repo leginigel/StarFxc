@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/left_up_nav"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@color/left_nav"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <ImageView
+            android:id="@+id/youtube_icon"
+            android:layout_width="108dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:background="@color/left_nav"
+            android:padding="10dp"
+            android:src="@drawable/ic_youtube_color_icon"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/search_btn"
+            android:layout_width="108dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/btn_bg"
+            android:clickable="true"
+            android:focusable="true"
+            android:nextFocusDown="@+id/home_btn"
+            android:padding="10dp"
+            android:src="@drawable/ic_search_24dp"
+            app:layout_constraintStart_toStartOf="@+id/youtube_icon"
+            app:layout_constraintTop_toBottomOf="@+id/youtube_icon" />
+
+        <ImageView
+            android:id="@+id/home_btn"
+            android:layout_width="108dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/btn_bg"
+            android:clickable="true"
+            android:focusable="true"
+            android:focusedByDefault="true"
+            android:nextFocusUp="@+id/search_btn"
+            android:nextFocusDown="@+id/subscribe_btn"
+            android:padding="10dp"
+            android:src="@drawable/ic_home_24dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/search_btn"
+            tools:targetApi="o" />
+
+        <ImageView
+            android:id="@+id/subscribe_btn"
+            android:layout_width="108dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/btn_bg"
+            android:clickable="true"
+            android:focusable="true"
+            android:nextFocusUp="@+id/home_btn"
+            android:nextFocusDown="@+id/folder_btn"
+            android:padding="10dp"
+            android:src="@drawable/ic_subscriptions_24dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/home_btn" />
+
+        <ImageView
+            android:id="@+id/folder_btn"
+            android:layout_width="108dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/btn_bg"
+            android:clickable="true"
+            android:focusable="true"
+            android:nextFocusUp="@+id/subscribe_btn"
+            android:nextFocusDown="@+id/setting_btn"
+            android:padding="10dp"
+            android:src="@drawable/ic_folder_24dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/subscribe_btn" />
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/setting_btn"
+        android:layout_width="108dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="30dp"
+        android:background="@drawable/btn_bg"
+        android:clickable="true"
+        android:focusable="true"
+        android:nextFocusUp="@+id/folder_btn"
+        android:padding="10dp"
+        android:src="@drawable/ic_settings_24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <FrameLayout
+        android:id="@+id/container_home"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/left_up_nav"
+        app:layout_constraintTop_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:context=".YoutubeActivity" />
+
+</android.support.constraint.ConstraintLayout>
+
+
+
