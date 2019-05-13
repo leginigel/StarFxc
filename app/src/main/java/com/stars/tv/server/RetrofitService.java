@@ -52,4 +52,10 @@ public interface  RetrofitService {
 
     @GET("{channel}")
     Observable<ResponseBody> getIQiYiBannerInfo(@Path("channel") String channel);
+
+    @GET("m")
+    Observable<ResponseBody> getIQiYiSearchHotQueryWord(@Query("if")String quercyType);
+
+    @GET("/")
+    Observable<ResponseBody> getIQiYiSearchSuggestWord(@Query("key")String keyWord,@Query("rltnum")int resultNum);
 }
