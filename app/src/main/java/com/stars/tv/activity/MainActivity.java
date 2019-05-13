@@ -4,9 +4,11 @@ import com.stars.tv.R;
 import com.stars.tv.bean.IQiYiBannerInfoBean;
 import com.stars.tv.bean.IQiYiBasicStarInfoBean;
 import com.stars.tv.bean.IQiYiEpisodeBean;
+import com.stars.tv.bean.IQiYiHotQueryBean;
 import com.stars.tv.bean.IQiYiHotSearchItemBean;
 import com.stars.tv.bean.IQiYiM3U8Bean;
 import com.stars.tv.bean.IQiYiRecommendVideoBean;
+import com.stars.tv.bean.IQiYiSearchSuggestBean;
 import com.stars.tv.bean.IQiYiStarInfoBean;
 import com.stars.tv.bean.IQiYiTopListBean;
 import com.stars.tv.bean.IQiYiVarietyBean;
@@ -17,6 +19,7 @@ import com.stars.tv.model.TvTitleModel;
 import com.stars.tv.presenter.IQiYiParseBannerInfoPresenter;
 import com.stars.tv.presenter.IQiYiParseBasicStarInfoPresenter;
 import com.stars.tv.presenter.IQiYiParseHotSearchListPresenter;
+import com.stars.tv.presenter.IQiYiParseSearchPresenter;
 import com.stars.tv.presenter.IQiYiParseStarRecommendPresenter;
 import com.stars.tv.presenter.IQiYiParseStarInfoPresenter;
 import com.stars.tv.presenter.IQiYiParseEpisodeListPresenter;
@@ -92,6 +95,8 @@ public class MainActivity extends BaseActivity {
 //        parseIQiYiTopList("1","realTime",50,1);
 //        parseIQiYiBasicStarInfo("213640105","1,2,6",3);
 //        parseIQiYiBasicStarInfo("dianying");
+//        parseIQiYiSearchHotQueryWord();
+        parseIQiYiSearchSuggestWord("封神",10);
         initTitle();
         initContentViews();
         refreshRequest();
@@ -451,6 +456,48 @@ public class MainActivity extends BaseActivity {
             @Override
             public void success(List<IQiYiBannerInfoBean> list) {
                 for(IQiYiBannerInfoBean bean:list) {
+                    Log.v(TAG, bean.toString());
+                }
+            }
+
+            @Override
+            public void error(String msg) {
+                //TODO 获取失败
+            }
+        });
+    }
+
+    /**
+     * 获取爱奇艺搜索热词
+     */
+    private void parseIQiYiSearchHotQueryWord(){
+        IQiYiParseSearchPresenter ps = new IQiYiParseSearchPresenter();
+        ps.requestIQiYiSearchHotQueryWord( new CallBack<List<IQiYiHotQueryBean>>() {
+            @Override
+            public void success(List<IQiYiHotQueryBean> list) {
+                for(IQiYiHotQueryBean bean:list) {
+                    Log.v(TAG, bean.toString());
+                }
+            }
+
+            @Override
+            public void error(String msg) {
+                //TODO 获取失败
+            }
+        });
+    }
+
+    /**
+     * 获取爱奇艺搜索关键字提示
+     * @param keyWord  搜索keyword
+     * @param resultNum 返回结果数量
+     */
+    private void parseIQiYiSearchSuggestWord(String keyWord,int resultNum){
+        IQiYiParseSearchPresenter ps = new IQiYiParseSearchPresenter();
+        ps.requestIQiYiSearchSuggestWord(keyWord,resultNum, new CallBack<List<IQiYiSearchSuggestBean>>() {
+            @Override
+            public void success(List<IQiYiSearchSuggestBean> list) {
+                for(IQiYiSearchSuggestBean bean:list) {
                     Log.v(TAG, bean.toString());
                 }
             }
