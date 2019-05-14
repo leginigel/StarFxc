@@ -58,4 +58,8 @@ public interface  RetrofitService {
 
     @GET("/")
     Observable<ResponseBody> getIQiYiSearchSuggestWord(@Query("key")String keyWord,@Query("rltnum")int resultNum);
+
+    @GET("so/q_{keyWord}_ctg_{channel}_t_{duration}_page_{pageNum}_p_1_qc_0_rd_{publishTime}_site_iqiyi_m_{sort}_bitrate_{pictureQuality}")
+    Observable<ResponseBody> getIQiYiSearchResult(@Path("keyWord") String keyWord,@Path("channel") String channel,@Path("duration") int duration,
+                                                  @Path("pageNum") int pageNum,@Path("publishTime") String publishTime,@Path("sort") int sort,@Path("pictureQuality") String pictureQuality);
 }

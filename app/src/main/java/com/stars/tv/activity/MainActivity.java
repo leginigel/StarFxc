@@ -8,6 +8,7 @@ import com.stars.tv.bean.IQiYiHotQueryBean;
 import com.stars.tv.bean.IQiYiHotSearchItemBean;
 import com.stars.tv.bean.IQiYiM3U8Bean;
 import com.stars.tv.bean.IQiYiRecommendVideoBean;
+import com.stars.tv.bean.IQiYiSearchResultBean;
 import com.stars.tv.bean.IQiYiSearchSuggestBean;
 import com.stars.tv.bean.IQiYiStarInfoBean;
 import com.stars.tv.bean.IQiYiTopListBean;
@@ -97,6 +98,7 @@ public class MainActivity extends BaseActivity {
 //        parseIQiYiBasicStarInfo("dianying");
 //        parseIQiYiSearchHotQueryWord();
 //        parseIQiYiSearchSuggestWord("封神",10);
+//        parseIQiYiSearchResult("封神","",0,2,"",1,"");
         initTitle();
         initContentViews();
         refreshRequest();
@@ -500,6 +502,35 @@ public class MainActivity extends BaseActivity {
                 for(IQiYiSearchSuggestBean bean:list) {
                     Log.v(TAG, bean.toString());
                 }
+            }
+
+            @Override
+            public void error(String msg) {
+                //TODO 获取失败
+            }
+        });
+    }
+
+    /**
+     * 获取爱奇艺搜索结果
+     * @param keyWord 搜索词
+     * @param channel 电影 电视剧 动漫 音乐 综艺等
+     * @param duration 时长 全部:0  0-10分钟:2  10-30分钟:3  30-60分钟:4  60分钟以上:5
+     * @param pageNum   页码 便于翻页
+     * @param publishTime 发布时间 全部:""  一天:1    一周:2    一月:3
+     * @param sort  筛选条件    相关:1     最新:4     最热:11
+     * @param pictureQuality  画质    全部:""  高清:"3"  超清:"6"  720:"4"    1080P:"7"
+     */
+    private void parseIQiYiSearchResult(String keyWord, String channel,int duration, int pageNum, String publishTime, int sort, String pictureQuality){
+        IQiYiParseSearchPresenter ps = new IQiYiParseSearchPresenter();
+        ps.requestIQiYiSearchResult(keyWord, channel, duration, pageNum, publishTime, sort, pictureQuality, new CallBack<IQiYiSearchResultBean>() {
+            @Override
+            public void success(IQiYiSearchResultBean bean) {
+                    Log.v(TAG, bean.getResultNum());
+                    for(IQiYiSearchResultBean.ResultItem item:bean.getItemList())
+                    {
+                        Log.v(TAG, item.toString());
+                    }
             }
 
             @Override
