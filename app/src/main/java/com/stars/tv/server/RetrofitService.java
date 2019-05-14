@@ -21,7 +21,7 @@ public interface  RetrofitService {
     Observable<ResponseBody> getIQiYiRealPlayUrl(@Url  String url);
 
     @GET
-    Observable<ResponseBody> getIQiYiPlayPageInfo(@Url  String url);
+    Observable<ResponseBody> getIQiYiVideoBaseInfoWithUrl(@Url  String url);
 
     @GET("albums/album/avlistinfo")
     Observable<ResponseBody> getIQiYiEpisodeList(@Query("aid") String albumId, @Query("size")int size, @Query("page")int pageNum);
@@ -50,4 +50,12 @@ public interface  RetrofitService {
     @GET("star/star/basicstarinfo")
     Observable<ResponseBody> getIQiYiBasicStarsInfo(@Query("starId")String starId, @Query(value="channleIds",encoded = true) String channleIds, @Query("limit")int size);
 
+    @GET("{channel}")
+    Observable<ResponseBody> getIQiYiBannerInfo(@Path("channel") String channel);
+
+    @GET("m")
+    Observable<ResponseBody> getIQiYiSearchHotQueryWord(@Query("if")String quercyType);
+
+    @GET("/")
+    Observable<ResponseBody> getIQiYiSearchSuggestWord(@Query("key")String keyWord,@Query("rltnum")int resultNum);
 }

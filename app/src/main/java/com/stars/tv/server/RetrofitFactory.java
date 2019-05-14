@@ -32,7 +32,7 @@ public class RetrofitFactory {
     //缓存路径
     private static File cacheFile = new File(MyApplication.getContext().getCacheDir(), "HttpCache");
 
-    private static Cache cache = new Cache(cacheFile, 1024 * 1024 * 10); // 指定缓存大小10Mb
+    private static Cache cache = new Cache(cacheFile, 1024 * 1024 * 100); // 指定缓存大小100Mb
 
     //日志拦截器
     private static final HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BASIC);
