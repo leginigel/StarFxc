@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.stars.tv.R;
+import com.stars.tv.bean.DragTitleBean;
 import com.stars.tv.bean.IQiYiMovieBean;
 import com.stars.tv.sample.DragFavoriteSampleDataList;
 import com.stars.tv.sample.DragHistorySampleDataList;
@@ -39,14 +40,14 @@ public class DragTabCommonFragment extends DragBaseFragment{
   }
 
   public static DragTabCommonFragment newInstance(
-    String title, int resid, int indicatorColor, int dividerColor){
+    DragTitleBean tab, int indicatorColor, int dividerColor){
     DragTabCommonFragment f = new DragTabCommonFragment();
-    f.setTitle(title);
-    f.setIconRes(resid);
+    f.setTitle(tab.getDragName());
+    f.setIconRes(tab.getDragResIcon());
     f.setIndicatorColor(indicatorColor);
     f.setDividerColor(dividerColor);
     Bundle bundle = new Bundle();
-    bundle.putString(DRAG_TITLE_ID, title);
+    bundle.putString(DRAG_TITLE_ID, tab.getDragName());
     f.setArguments(bundle);
     return f;
   }

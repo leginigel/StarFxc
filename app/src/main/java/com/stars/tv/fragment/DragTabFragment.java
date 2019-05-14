@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 
 import com.stars.tv.R;
 import com.stars.tv.adapter.DragTabFragmentPagerAdapter;
+import com.stars.tv.bean.DragTitleBean;
 import com.stars.tv.view.SlidingTabLayout;
 
 import java.util.ArrayList;
@@ -65,11 +66,13 @@ public class DragTabFragment extends Fragment {
     int dividerColor = Color.TRANSPARENT;
 
     List<DragBaseFragment> fgs = new ArrayList<>();
-    fgs.add(DragTabCommonFragment.newInstance("History", R.drawable.history_40x32,
-      indicatorColor, dividerColor));
-    fgs.add(DragTabCommonFragment.newInstance("Favorite", R.drawable.star_40x32,
-      indicatorColor, dividerColor));
+    List<DragTitleBean> title = new ArrayList<>();
+    title.add(new DragTitleBean("History", R.drawable.history_40x32));
+    title.add(new DragTitleBean("Favorite", R.drawable.star_40x32));
 
+    for ( int i = 0 ; i < title.size() ; i++ ){
+      fgs.add(DragTabCommonFragment.newInstance(title.get(i), indicatorColor, dividerColor));
+    }
     return fgs;
  }
 
