@@ -2,7 +2,7 @@ package com.stars.tv.presenter;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.stars.tv.bean.IQiYiEpisodeBean;
+import com.stars.tv.bean.IQiYiMovieBean;
 import com.stars.tv.server.RetrofitFactory;
 import com.stars.tv.server.RetrofitService;
 import com.stars.tv.server.RxManager;
@@ -27,10 +27,10 @@ public class IQiYiParseEpisodeListPresenter {
                 .getIQiYiEpisodeList(albumId,size,pageNum).compose(RxUtils.rxSchedulerHelper());
     }
 
-    public void requestIQiYiEpisodeList(String albumId, int size, int pageNum, CallBack<List<IQiYiEpisodeBean>> listener) {
+    public void requestIQiYiEpisodeList(String albumId, int size, int pageNum, CallBack<List<IQiYiMovieBean>> listener) {
 
         RxManager.add(getIQiYiPostConsumerUrl(albumId,size,pageNum).subscribe(responseBody -> {
-            List<IQiYiEpisodeBean> albumList = new ArrayList<>();
+            List<IQiYiMovieBean> albumList = new ArrayList<>();
             try {
                 JSONObject root = new JSONObject(responseBody.string());
                 String code = root.getString("code");
@@ -40,7 +40,7 @@ public class IQiYiParseEpisodeListPresenter {
                 }
                 JSONObject data = root.getJSONObject("data");
                 String epsodelist = data.getString("epsodelist");
-                Type listType = new TypeToken<List<IQiYiEpisodeBean>>() {}.getType();
+                Type listType = new TypeToken<List<IQiYiMovieBean>>() {}.getType();
                 albumList = new Gson().fromJson(epsodelist,  listType);
 
             } catch (JSONException e) {

@@ -3,16 +3,14 @@ package com.stars.tv.activity;
 import com.stars.tv.R;
 import com.stars.tv.bean.IQiYiBannerInfoBean;
 import com.stars.tv.bean.IQiYiBasicStarInfoBean;
-import com.stars.tv.bean.IQiYiEpisodeBean;
 import com.stars.tv.bean.IQiYiHotQueryBean;
 import com.stars.tv.bean.IQiYiHotSearchItemBean;
 import com.stars.tv.bean.IQiYiM3U8Bean;
-import com.stars.tv.bean.IQiYiRecommendVideoBean;
+import com.stars.tv.bean.IQiYiMovieBean;
 import com.stars.tv.bean.IQiYiSearchResultBean;
 import com.stars.tv.bean.IQiYiSearchSuggestBean;
 import com.stars.tv.bean.IQiYiStarInfoBean;
 import com.stars.tv.bean.IQiYiTopListBean;
-import com.stars.tv.bean.IQiYiVarietyBean;
 import com.stars.tv.bean.IQiYiVideoBaseInfoBean;
 import com.stars.tv.bean.TvTitle;
 import com.stars.tv.fragment.VideoRowSampleFragment;
@@ -272,11 +270,11 @@ public class MainActivity extends BaseActivity {
      */
     private void parseIQiYiEpisodeList(String albumId, int size, int pageNum){
         IQiYiParseEpisodeListPresenter ps = new IQiYiParseEpisodeListPresenter();
-        ps.requestIQiYiEpisodeList(albumId,size,pageNum, new CallBack<List<IQiYiEpisodeBean>>() {
+        ps.requestIQiYiEpisodeList(albumId,size,pageNum, new CallBack<List<IQiYiMovieBean>>() {
             @Override
-            public void success(List<IQiYiEpisodeBean> list) {
+            public void success(List<IQiYiMovieBean> list) {
                 //TODO 获取电视剧剧集列表
-                for(IQiYiEpisodeBean bean:list)
+                for(IQiYiMovieBean bean:list)
                 {
                     Log.v(TAG,bean.toString());
                 }
@@ -296,11 +294,11 @@ public class MainActivity extends BaseActivity {
      */
     private void parseIQiYiVarietyAlbumList(String albumId, String timeList){
         IQiYiParseVarietyAlbumListPresenter ps = new IQiYiParseVarietyAlbumListPresenter();
-        ps.requestIQiYiVarietyAlbumList(albumId,timeList, new CallBack<List<IQiYiVarietyBean>>() {
+        ps.requestIQiYiVarietyAlbumList(albumId,timeList, new CallBack<List<IQiYiMovieBean>>() {
             @Override
-            public void success(List<IQiYiVarietyBean> list) {
+            public void success(List<IQiYiMovieBean> list) {
                 //TODO 获取综艺剧集列表
-                for(IQiYiVarietyBean bean:list)
+                for(IQiYiMovieBean bean:list)
                 {
                     Log.v(TAG,bean.toString());
                 }
@@ -365,10 +363,10 @@ public class MainActivity extends BaseActivity {
      */
     private void parseIQiYiStarRecommendList(String starId, String size,String tvId, boolean withCookie){
         IQiYiParseStarRecommendPresenter ps = new IQiYiParseStarRecommendPresenter();
-        ps.requestIQiYiStarRecommendList(starId, size, tvId, withCookie, new CallBack<List<IQiYiRecommendVideoBean>>() {
+        ps.requestIQiYiStarRecommendList(starId, size, tvId, withCookie, new CallBack<List<IQiYiMovieBean>>() {
             @Override
-            public void success(List<IQiYiRecommendVideoBean> list) {
-                for(IQiYiRecommendVideoBean bean:list) {
+            public void success(List<IQiYiMovieBean> list) {
+                for(IQiYiMovieBean bean:list) {
                     Log.v(TAG, bean.toString());
                 }
             }
