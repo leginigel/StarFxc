@@ -7,6 +7,7 @@ import com.stars.tv.bean.IQiYiHotQueryBean;
 import com.stars.tv.bean.IQiYiHotSearchItemBean;
 import com.stars.tv.bean.IQiYiM3U8Bean;
 import com.stars.tv.bean.IQiYiMovieBean;
+import com.stars.tv.bean.IQiYiMovieSimplifiedBean;
 import com.stars.tv.bean.IQiYiSearchResultBean;
 import com.stars.tv.bean.IQiYiSearchSuggestBean;
 import com.stars.tv.bean.IQiYiStarInfoBean;
@@ -15,6 +16,7 @@ import com.stars.tv.bean.IQiYiVideoBaseInfoBean;
 import com.stars.tv.bean.TvTitle;
 import com.stars.tv.fragment.VideoRowSampleFragment;
 import com.stars.tv.model.TvTitleModel;
+import com.stars.tv.presenter.IQiYiMovieSimplifiedListPresenter;
 import com.stars.tv.presenter.IQiYiParseBannerInfoPresenter;
 import com.stars.tv.presenter.IQiYiParseBasicStarInfoPresenter;
 import com.stars.tv.presenter.IQiYiParseHotSearchListPresenter;
@@ -97,6 +99,7 @@ public class MainActivity extends BaseActivity {
 //        parseIQiYiSearchHotQueryWord();
 //        parseIQiYiSearchSuggestWord("封神",10);
 //        parseIQiYiSearchResult("封神","",0,2,"",1,"");
+//        parseIQiYiMovieSimplifiedList(2, "15,24", "","", 24, 1,1,"iqiyi",1, "",48);
         initTitle();
         initContentViews();
         refreshRequest();
@@ -529,6 +532,36 @@ public class MainActivity extends BaseActivity {
                     {
                         Log.v(TAG, item.toString());
                     }
+            }
+
+            @Override
+            public void error(String msg) {
+                //TODO 获取失败
+            }
+        });
+    }
+
+
+    /**
+     * 获取爱奇艺片库筛选结果List
+     * 参数请参看iqiyidata.json
+     * @param orderList 筛选组合，请参看iqiyidata.json中order-list部分,  "15,24"; 为内地，古装筛选组合
+     * @param pageSize 每页个数
+     */
+    private void parseIQiYiMovieSimplifiedList(int channel, String orderList, String payStatus, String myYear,
+                                            int sortType, int pageNum, int dataType, String siteType,
+                                            int sourceType, String comicsStatus, int pageSize){
+        IQiYiMovieSimplifiedListPresenter ps = new IQiYiMovieSimplifiedListPresenter();
+        ps.requestIQiYiMovieSimplifiedList(channel,orderList,payStatus,myYear,sortType,pageNum,
+                dataType,siteType,sourceType,comicsStatus,pageSize, new CallBack<IQiYiMovieSimplifiedBean>() {
+            @Override
+            public void success(IQiYiMovieSimplifiedBean bean) {
+                Log.v(TAG, "result_num =："+ bean.getResult_num());
+                List<IQiYiMovieBean> list = bean.getList();
+                for(int i=0;i<list.size();i++)
+                {
+                    Log.v(TAG, list.get(i).toString());
+                }
             }
 
             @Override

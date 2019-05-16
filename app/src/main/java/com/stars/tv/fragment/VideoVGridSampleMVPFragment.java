@@ -100,10 +100,9 @@ public class VideoVGridSampleMVPFragment
 
     private void refreshRequest() {
         //TODO,获取资源是请根据iqiyidata.json中order-list的name添加id到orderList
-        // orderList长度必须为8，否则会出错
-        String[] orderList = {"","","","","","","",""};
+        // orderList必须用逗号分隔id，否则会出错
 
-        IQiYiListBean listBean = new IQiYiListBean(2, orderList, "","",
+        IQiYiListBean listBean = new IQiYiListBean(2, "15,24", "","",
                 24, mPageNum,1,"iqiyi",1, "");
         mPresenter.requestIQiYiMovie(getIQiYiListUrl(listBean));
     }

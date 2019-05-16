@@ -17,6 +17,19 @@ public interface  RetrofitService {
     @GET
     Observable<ResponseBody> getIQiYiMovieList(@Url String url);
 
+    @GET("search/video/videolists")
+    Observable<ResponseBody> getIQiYiMovieSimplifiedList(@Query("channel_id") int channel,
+                                                         @Query(value="three_category_id",encoded = true) String orderList,
+                                                         @Query("is_purchase") String payStatus,
+                                                         @Query("market_release_date_level") String myYear,
+                                                         @Query("mode") int sortType,
+                                                         @Query("pageNum") int pageNum,
+                                                         @Query("data_type") int dataType,
+                                                         @Query("site") String siteType,
+                                                         @Query("source_type") int sourceType,
+                                                         @Query("is_album_finished") String comicsStatus,
+                                                         @Query("pageSize") int pageSize);
+
     @GET
     Observable<ResponseBody> getIQiYiRealPlayUrl(@Url  String url);
 
