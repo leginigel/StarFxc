@@ -2,20 +2,17 @@ package com.stars.tv.presenter;
 
 import com.stars.tv.server.RxManager;
 
-public abstract class IQiYiBasePresenter<M, T> {
-    public M mModel;
+public abstract class IQiYiBasePresenter<T> {
     public T mView;
     public RxManager mRxManager = new RxManager();
 
-    public void attachVM(T v, M m) {
+    public void attachVM(T v) {
         this.mView = v;
-        this.mModel = m;
     }
 
     public void detachVM() {
         mRxManager.clear();
         mView = null;
-        mModel = null;
     }
 
 }

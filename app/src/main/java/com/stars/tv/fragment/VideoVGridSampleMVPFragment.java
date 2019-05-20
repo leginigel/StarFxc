@@ -21,7 +21,6 @@ import com.stars.tv.R;
 import com.stars.tv.bean.IQiYiListBean;
 import com.stars.tv.bean.IQiYiMovieBean;
 import com.stars.tv.bean.contract.IQiYiMovieContract;
-import com.stars.tv.model.IQiYiMovieModel;
 import com.stars.tv.presenter.IQiYiMoviePresenter;
 import com.stars.tv.utils.ViewUtils;
 import com.stars.tv.view.MyVerticalGridView;
@@ -38,7 +37,7 @@ import me.jessyan.autosize.utils.AutoSizeUtils;
 import static com.stars.tv.utils.Utils.getIQiYiListUrl;
 
 public class VideoVGridSampleMVPFragment
-        extends IQiYiBaseFragment<IQiYiMovieContract.IQiYiMoviePresenter, IQiYiMovieContract.IQiYiMovieModel>
+        extends IQiYiBaseFragment<IQiYiMovieContract.IQiYiMoviePresenter>
         implements IQiYiMovieContract.IQiYiMovieView {
 
     final int REFRESH_MOVIE_CONTENT = 0;
@@ -152,11 +151,6 @@ public class VideoVGridSampleMVPFragment
     @Override
     protected IQiYiMovieContract.IQiYiMoviePresenter bindPresenter() {
         return new IQiYiMoviePresenter();
-    }
-
-    @Override
-    protected IQiYiMovieContract.IQiYiMovieModel bindModel() {
-        return new IQiYiMovieModel();
     }
 
     @Override
