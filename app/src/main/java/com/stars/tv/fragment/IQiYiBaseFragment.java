@@ -8,24 +8,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.stars.tv.model.IQiYiBaseModel;
 import com.stars.tv.model.IQiYiBaseView;
 import com.stars.tv.presenter.IQiYiBasePresenter;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public abstract class IQiYiBaseFragment<T extends IQiYiBasePresenter, E extends IQiYiBaseModel>
+public abstract class IQiYiBaseFragment<T extends IQiYiBasePresenter>
         extends Fragment implements IQiYiBaseView {
 
     public T mPresenter;
-    public E mModel;
 
     Unbinder unbinder;
 
     protected abstract T bindPresenter();
-
-    protected abstract E bindModel();
 
     protected void initData(){
     }
@@ -38,9 +34,8 @@ public abstract class IQiYiBaseFragment<T extends IQiYiBasePresenter, E extends 
     protected abstract int getContentId();
 
     protected void processLogic(){
-        mModel = bindModel();
         mPresenter = bindPresenter();
-        mPresenter.attachVM(this,mModel);
+        mPresenter.attachVM(this);
     }
 
     @Override

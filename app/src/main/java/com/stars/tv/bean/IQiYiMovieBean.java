@@ -1,15 +1,16 @@
 package com.stars.tv.bean;
 
-import java.io.Serializable;
 import java.util.List;
 
 
-public class IQiYiMovieBean implements Serializable {
+public class IQiYiMovieBean {
 
     private String name;
     private String docId;
     private String albumId;
+    private String sourceId;
     private String tvId;
+    private String vid;
     private String focus;
     private String playUrl;
     private String score;
@@ -23,14 +24,25 @@ public class IQiYiMovieBean implements Serializable {
     private String secondInfo;
     private Cast cast;
     private List<Category> categories;
+    private String albumImageUrl;
+    private String period;
+    private String shortTitle;
+    private String subtitle;
+    private List<VideoFocuse> videoFocuses;
+    private String latestVideoUrl;
+    private String firstVideoUrl;
+    private String latestTvId;
+    private String formatPeriod;
 
     @Override
     public String toString() {
-        return "IQiYiMovieBean{" +
+        return "IQiYiMovie{" +
                 "name='" + name + '\'' +
                 ", docId='" + docId + '\'' +
                 ", albumId='" + albumId + '\'' +
+                ", sourceId='" + sourceId + '\'' +
                 ", tvId='" + tvId + '\'' +
+                ", vid='" + vid + '\'' +
                 ", focus='" + focus + '\'' +
                 ", playUrl='" + playUrl + '\'' +
                 ", score='" + score + '\'' +
@@ -44,6 +56,15 @@ public class IQiYiMovieBean implements Serializable {
                 ", secondInfo='" + secondInfo + '\'' +
                 ", cast=" + cast +
                 ", categories=" + categories +
+                ", albumImageUrl='" + albumImageUrl + '\'' +
+                ", period='" + period + '\'' +
+                ", shortTitle='" + shortTitle + '\'' +
+                ", subtitle='" + subtitle + '\'' +
+                ", videoFocuses=" + videoFocuses +
+                ", latestVideoUrl='" + latestVideoUrl + '\'' +
+                ", firstVideoUrl='" + firstVideoUrl + '\'' +
+                ", latestTvId='" + latestTvId + '\'' +
+                ", formatPeriod='" + formatPeriod + '\'' +
                 '}';
     }
 
@@ -182,6 +203,94 @@ public class IQiYiMovieBean implements Serializable {
         this.docId = docId;
     }
 
+    public String getVid() {
+        return vid;
+    }
+
+    public void setVid(String vid) {
+        this.vid = vid;
+    }
+
+    public String getAlbumImageUrl() {
+        return albumImageUrl;
+    }
+
+    public void setAlbumImageUrl(String albumImageUrl) {
+        this.albumImageUrl = albumImageUrl;
+    }
+
+    public String getPeriod() {
+        return period;
+    }
+
+    public void setPeriod(String period) {
+        this.period = period;
+    }
+
+    public String getShortTitle() {
+        return shortTitle;
+    }
+
+    public void setShortTitle(String shortTitle) {
+        this.shortTitle = shortTitle;
+    }
+
+    public String getSubtitle() {
+        return subtitle;
+    }
+
+    public void setSubtitle(String subtitle) {
+        this.subtitle = subtitle;
+    }
+
+    public List<VideoFocuse> getVideoFocuses() {
+        return videoFocuses;
+    }
+
+    public void setVideoFocuses(List<VideoFocuse> videoFocuses) {
+        this.videoFocuses = videoFocuses;
+    }
+
+    public String getLatestVideoUrl() {
+        return latestVideoUrl;
+    }
+
+    public void setLatestVideoUrl(String latestVideoUrl) {
+        this.latestVideoUrl = latestVideoUrl;
+    }
+
+    public String getSourceId() {
+        return sourceId;
+    }
+
+    public void setSourceId(String sourceId) {
+        this.sourceId = sourceId;
+    }
+
+    public String getFirstVideoUrl() {
+        return firstVideoUrl;
+    }
+
+    public void setFirstVideoUrl(String firstVideoUrl) {
+        this.firstVideoUrl = firstVideoUrl;
+    }
+
+    public String getLatestTvId() {
+        return latestTvId;
+    }
+
+    public void setLatestTvId(String latestTvId) {
+        this.latestTvId = latestTvId;
+    }
+
+    public String getFormatPeriod() {
+        return formatPeriod;
+    }
+
+    public void setFormatPeriod(String formatPeriod) {
+        this.formatPeriod = formatPeriod;
+    }
+
 
     public class Role{
 
@@ -248,22 +357,24 @@ public class IQiYiMovieBean implements Serializable {
     }
 
     public class Cast {
-
+        private List<Role> director;
         private List<Role> main_charactor;
         private List<Role> host;
+
+        @Override
+        public String toString() {
+            return "{" +
+                    "director=" + director +
+                    ", main_charactor=" + main_charactor +
+                    ", host=" + host +
+                    '}';
+        }
+
         public void setMain_charactor(List<Role> main_charactor) {
             this.main_charactor = main_charactor;
         }
         public List<Role> getMain_charactor() {
             return main_charactor;
-        }
-        @Override
-        public String toString() {
-            if(main_charactor==null)
-            {
-                return "{ host='" + host + '}';
-            }
-            return "{ main_charactor='" + main_charactor + '}';
         }
 
         public void setHost(List<Role> host) {
@@ -272,6 +383,65 @@ public class IQiYiMovieBean implements Serializable {
 
         public List<Role> getHost() {
             return host;
+        }
+
+        public List<Role> getDirector() {
+            return director;
+        }
+
+        public void setDirector(List<Role> director) {
+            this.director = director;
+        }
+    }
+
+    public class VideoFocuse{
+
+        private String id;
+        private String description;
+        private String image_url;
+        private String start_time_seconds;
+
+
+        @Override
+        public String toString() {
+            return "{" +
+                    "id='" + id + '\'' +
+                    "，description='" + description + '\'' +
+                    "，image_url='" + image_url + '\'' +
+                    ", start_time_seconds='" + start_time_seconds + '\'' +
+                    '}';
+        }
+
+        public String getImage_url() {
+            return image_url;
+        }
+
+        public void setImage_url(String image_url) {
+            this.image_url = image_url;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
+        public void setDescription(String description) {
+            this.description = description;
+        }
+
+        public String getStart_time_seconds() {
+            return start_time_seconds;
+        }
+
+        public void setStart_time_seconds(String start_time_seconds) {
+            this.start_time_seconds = start_time_seconds;
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
         }
     }
 

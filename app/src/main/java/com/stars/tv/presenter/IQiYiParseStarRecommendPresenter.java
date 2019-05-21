@@ -1,11 +1,8 @@
 package com.stars.tv.presenter;
 
-import android.util.Log;
-
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.stars.tv.bean.IQiYiMovieBean;
-import com.stars.tv.bean.IQiYiRecommendVideoBean;
 import com.stars.tv.server.RetrofitFactory;
 import com.stars.tv.server.RetrofitService;
 import com.stars.tv.server.RxManager;
@@ -32,9 +29,9 @@ public class IQiYiParseStarRecommendPresenter {
 
 
 
-    public void requestIQiYiStarRecommendList(String starId, String size,String tvId, boolean withCookie, CallBack<List<IQiYiRecommendVideoBean>> listener) {
+    public void requestIQiYiStarRecommendList(String starId, String size,String tvId, boolean withCookie, CallBack<List<IQiYiMovieBean>> listener) {
         RxManager.add(getIQiYiPostConsumerUrl(starId, size, tvId, withCookie).subscribe(responseBody -> {
-            ArrayList<IQiYiRecommendVideoBean> list;
+            ArrayList<IQiYiMovieBean> list;
             try {
                 JSONObject root = new JSONObject(responseBody.string());
                 String code = root.getString("code");
@@ -44,7 +41,7 @@ public class IQiYiParseStarRecommendPresenter {
                 }
 
                 String dataList = root.getJSONObject("data").getString("list");
-                Type listType = new TypeToken<List<IQiYiRecommendVideoBean>>() {}.getType();
+                Type listType = new TypeToken<List<IQiYiMovieBean>>() {}.getType();
 
                 list = new Gson().fromJson(dataList, listType);
                 if (listener != null) {

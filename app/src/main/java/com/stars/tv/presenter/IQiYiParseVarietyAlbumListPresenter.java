@@ -2,7 +2,7 @@ package com.stars.tv.presenter;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.stars.tv.bean.IQiYiVarietyBean;
+import com.stars.tv.bean.IQiYiMovieBean;
 import com.stars.tv.server.RetrofitFactory;
 import com.stars.tv.server.RetrofitService;
 import com.stars.tv.server.RxManager;
@@ -27,10 +27,10 @@ public class IQiYiParseVarietyAlbumListPresenter {
                 .getIQiYiVarietyAlbumList(albumId,6,timeList).compose(RxUtils.rxSchedulerHelper());
     }
 
-    public void requestIQiYiVarietyAlbumList(String albumId,String timeList, CallBack<List<IQiYiVarietyBean>> listener) {
+    public void requestIQiYiVarietyAlbumList(String albumId,String timeList, CallBack<List<IQiYiMovieBean>> listener) {
 
         RxManager.add(getIQiYiPostConsumerUrl(albumId,timeList).subscribe(responseBody -> {
-            List<IQiYiVarietyBean> albumList = new ArrayList<>();
+            List<IQiYiMovieBean> albumList = new ArrayList<>();
             try {
                 JSONObject root = new JSONObject(responseBody.string());
                 String code = root.getString("code");
@@ -40,7 +40,7 @@ public class IQiYiParseVarietyAlbumListPresenter {
                 }
                 JSONObject data = root.getJSONObject("data");
                 String listData = data.getString(timeList);
-                Type listType = new TypeToken<List<IQiYiVarietyBean>>() {}.getType();
+                Type listType = new TypeToken<List<IQiYiMovieBean>>() {}.getType();
                 albumList = new Gson().fromJson(listData,  listType);
 
             } catch (JSONException e) {
@@ -57,6 +57,10 @@ public class IQiYiParseVarietyAlbumListPresenter {
                 .getIQiYiHotPlayTimes(tvId).compose(RxUtils.rxSchedulerHelper());
     }
 
+    /**
+     * 获取video播放热度
+     * @param tvId video tvid
+     */
     public void requestIQiYiHotPlayTimes(String tvId, CallBack<String> listener) {
 
         RxManager.add(getIQiYiHotPlayTimesPage(tvId).subscribe(responseBody -> {

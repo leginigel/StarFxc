@@ -14,7 +14,10 @@ public class Utils {
     public static String getIQiYiListUrl(IQiYiListBean listBean){
 
         int channel = listBean.getPageNum() == 0 ? 1 : listBean.getChannel();
-        String[] order = listBean.getOrderList();
+        String orderList = listBean.getOrderList();
+        String[] order = {"","","","","","","",""};
+        String[] orderTemp = orderList.split(",");
+        System.arraycopy(orderTemp, 0, order, 0, orderTemp.length);
         String payStatus = listBean.getPayStatus();
         String myYear = listBean.getMyYear();
         int sortType = listBean.getSortType() == 0 ? 24 :listBean.getSortType();
