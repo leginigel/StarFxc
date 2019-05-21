@@ -24,8 +24,11 @@ import com.stars.tv.R;
 import com.stars.tv.youtube.ui.search.SearchFragment;
 import com.stars.tv.youtube.ui.youtube.YoutubeFragment;
 
+import me.jessyan.autosize.internal.CustomAdapt;
+
 @RequiresApi(api = Build.VERSION_CODES.N)
-public class YoutubeActivity extends FragmentActivity implements YouTubePlayer.OnInitializedListener{
+public class YoutubeActivity extends FragmentActivity implements CustomAdapt,
+        YouTubePlayer.OnInitializedListener{
 
     private static final int RECOVERY_DIALOG_REQUEST = 1;
     private static String TAG = YoutubeActivity.class.getSimpleName();
@@ -38,6 +41,16 @@ public class YoutubeActivity extends FragmentActivity implements YouTubePlayer.O
 
     private ImageView searchIcon, homeIcon, subIcon, folderIcon, settingIcon;
     private View playerBox, playerControls;
+
+    @Override
+    public boolean isBaseOnWidth() {
+        return true;
+    }
+
+    @Override
+    public float getSizeInDp() {
+        return 960;
+    }
 
     public enum PageCategory {
         Search, Home, Subscription, Library, Account, Setting
