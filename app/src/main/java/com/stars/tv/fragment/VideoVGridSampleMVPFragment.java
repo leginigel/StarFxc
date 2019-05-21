@@ -21,9 +21,7 @@ import com.stars.tv.R;
 import com.stars.tv.bean.IQiYiListBean;
 import com.stars.tv.bean.IQiYiMovieBean;
 import com.stars.tv.bean.contract.IQiYiMovieContract;
-import com.stars.tv.model.IQiYiMovieModel;
 import com.stars.tv.presenter.IQiYiMoviePresenter;
-import com.stars.tv.sample.DragSampleCloud;
 import com.stars.tv.utils.ViewUtils;
 import com.stars.tv.view.MyVerticalGridView;
 import com.stars.tv.view.SpaceItemDecoration;
@@ -39,7 +37,7 @@ import me.jessyan.autosize.utils.AutoSizeUtils;
 import static com.stars.tv.utils.Utils.getIQiYiListUrl;
 
 public class VideoVGridSampleMVPFragment
-  extends IQiYiBaseFragment<IQiYiMovieContract.IQiYiMoviePresenter, IQiYiMovieContract.IQiYiMovieModel>
+        extends IQiYiBaseFragment<IQiYiMovieContract.IQiYiMoviePresenter>
   implements IQiYiMovieContract.IQiYiMovieView {
 
   final int REFRESH_MOVIE_CONTENT = 0;
@@ -78,8 +76,6 @@ public class VideoVGridSampleMVPFragment
     return myFragment;
   }
 
-
-
   @SuppressLint("HandlerLeak")
   private Handler mHandler = new Handler(){
     @Override
@@ -101,10 +97,9 @@ public class VideoVGridSampleMVPFragment
 
   private void refreshRequest() {
     //TODO,获取资源是请根据iqiyidata.json中order-list的name添加id到orderList
-    // orderList长度必须为8，否则会出错
-    String[] orderList = {"","","","","","","",""};
+        // orderList必须用逗号分隔id，否则会出错
 
-    IQiYiListBean listBean = new IQiYiListBean(2, orderList, "","",
+        IQiYiListBean listBean = new IQiYiListBean(2, "15,24", "","",
       24, mPageNum,1,"iqiyi",1, "");
     mPresenter.requestIQiYiMovie(getIQiYiListUrl(listBean));
   }
@@ -151,18 +146,11 @@ public class VideoVGridSampleMVPFragment
     //DragSampleCloud.addIQIYSampleList(beans);
   }
 
-
   @Override
   protected IQiYiMovieContract.IQiYiMoviePresenter bindPresenter() {
     return new IQiYiMoviePresenter();
   }
 
-  @Override
-  protected IQiYiMovieContract.IQiYiMovieModel bindModel() {
-    return new IQiYiMovieModel();
-  }
-
-  @Override
   public void showError(String msg) {
 
   }
@@ -228,7 +216,5 @@ public class VideoVGridSampleMVPFragment
   public void onAttach(Context context) {
     super.onAttach(context);
   }
-
-
 }
 

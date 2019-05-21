@@ -4,19 +4,21 @@ import com.avos.avoscloud.AVOSCloud;
 import com.stars.tv.R;
 import com.stars.tv.bean.IQiYiBannerInfoBean;
 import com.stars.tv.bean.IQiYiBasicStarInfoBean;
-import com.stars.tv.bean.IQiYiEpisodeBean;
 import com.stars.tv.bean.IQiYiHotQueryBean;
 import com.stars.tv.bean.IQiYiHotSearchItemBean;
 import com.stars.tv.bean.IQiYiM3U8Bean;
-import com.stars.tv.bean.IQiYiRecommendVideoBean;
+import com.stars.tv.bean.IQiYiMovieBean;
+import com.stars.tv.bean.IQiYiMovieSimplifiedBean;
+import com.stars.tv.bean.IQiYiSearchSimplifyDataBean;
+import com.stars.tv.bean.IQiYiSearchResultBean;
 import com.stars.tv.bean.IQiYiSearchSuggestBean;
 import com.stars.tv.bean.IQiYiStarInfoBean;
 import com.stars.tv.bean.IQiYiTopListBean;
-import com.stars.tv.bean.IQiYiVarietyBean;
 import com.stars.tv.bean.IQiYiVideoBaseInfoBean;
 import com.stars.tv.bean.TvTitle;
 import com.stars.tv.fragment.VideoRowSampleFragment;
 import com.stars.tv.model.TvTitleModel;
+import com.stars.tv.presenter.IQiYiMovieSimplifiedListPresenter;
 import com.stars.tv.presenter.IQiYiParseBannerInfoPresenter;
 import com.stars.tv.presenter.IQiYiParseBasicStarInfoPresenter;
 import com.stars.tv.presenter.IQiYiParseHotSearchListPresenter;
@@ -101,6 +103,9 @@ public class MainActivity extends BaseActivity {
 //        parseIQiYiBasicStarInfo("dianying");
 //        parseIQiYiSearchHotQueryWord();
 //        parseIQiYiSearchSuggestWord("封神",10);
+//        parseIQiYiSearchResult("封神","",0,2,"",1,"");
+//        parseIQiYiMovieSimplifiedList(2, "15,24", "","", 24, 1,1,"iqiyi",1, "",48);
+//        parseIQiYiSearchSimplified("封神",1,10);
         initTitle();
         initContentViews();
         refreshRequest();
@@ -281,11 +286,11 @@ public class MainActivity extends BaseActivity {
      */
     private void parseIQiYiEpisodeList(String albumId, int size, int pageNum){
         IQiYiParseEpisodeListPresenter ps = new IQiYiParseEpisodeListPresenter();
-        ps.requestIQiYiEpisodeList(albumId,size,pageNum, new CallBack<List<IQiYiEpisodeBean>>() {
+        ps.requestIQiYiEpisodeList(albumId,size,pageNum, new CallBack<List<IQiYiMovieBean>>() {
             @Override
-            public void success(List<IQiYiEpisodeBean> list) {
+            public void success(List<IQiYiMovieBean> list) {
                 //TODO 获取电视剧剧集列表
-                for(IQiYiEpisodeBean bean:list)
+                for(IQiYiMovieBean bean:list)
                 {
                     Log.v(TAG,bean.toString());
                 }
@@ -305,11 +310,11 @@ public class MainActivity extends BaseActivity {
      */
     private void parseIQiYiVarietyAlbumList(String albumId, String timeList){
         IQiYiParseVarietyAlbumListPresenter ps = new IQiYiParseVarietyAlbumListPresenter();
-        ps.requestIQiYiVarietyAlbumList(albumId,timeList, new CallBack<List<IQiYiVarietyBean>>() {
+        ps.requestIQiYiVarietyAlbumList(albumId,timeList, new CallBack<List<IQiYiMovieBean>>() {
             @Override
-            public void success(List<IQiYiVarietyBean> list) {
+            public void success(List<IQiYiMovieBean> list) {
                 //TODO 获取综艺剧集列表
-                for(IQiYiVarietyBean bean:list)
+                for(IQiYiMovieBean bean:list)
                 {
                     Log.v(TAG,bean.toString());
                 }
@@ -374,10 +379,10 @@ public class MainActivity extends BaseActivity {
      */
     private void parseIQiYiStarRecommendList(String starId, String size,String tvId, boolean withCookie){
         IQiYiParseStarRecommendPresenter ps = new IQiYiParseStarRecommendPresenter();
-        ps.requestIQiYiStarRecommendList(starId, size, tvId, withCookie, new CallBack<List<IQiYiRecommendVideoBean>>() {
+        ps.requestIQiYiStarRecommendList(starId, size, tvId, withCookie, new CallBack<List<IQiYiMovieBean>>() {
             @Override
-            public void success(List<IQiYiRecommendVideoBean> list) {
-                for(IQiYiRecommendVideoBean bean:list) {
+            public void success(List<IQiYiMovieBean> list) {
+                for(IQiYiMovieBean bean:list) {
                     Log.v(TAG, bean.toString());
                 }
             }
@@ -510,6 +515,91 @@ public class MainActivity extends BaseActivity {
             public void success(List<IQiYiSearchSuggestBean> list) {
                 for(IQiYiSearchSuggestBean bean:list) {
                     Log.v(TAG, bean.toString());
+                }
+            }
+
+            @Override
+            public void error(String msg) {
+                //TODO 获取失败
+            }
+        });
+    }
+
+    /**
+     * 获取爱奇艺搜索结果
+     * @param keyWord 搜索词
+     * @param channel 电影 电视剧 动漫 音乐 综艺等
+     * @param duration 时长 全部:0  0-10分钟:2  10-30分钟:3  30-60分钟:4  60分钟以上:5
+     * @param pageNum   页码 便于翻页
+     * @param publishTime 发布时间 全部:""  一天:1    一周:2    一月:3
+     * @param sort  筛选条件    相关:1     最新:4     最热:11
+     * @param pictureQuality  画质    全部:""  高清:"3"  超清:"6"  720:"4"    1080P:"7"
+     */
+    private void parseIQiYiSearchResult(String keyWord, String channel,int duration, int pageNum, String publishTime, int sort, String pictureQuality){
+        IQiYiParseSearchPresenter ps = new IQiYiParseSearchPresenter();
+        ps.requestIQiYiSearchResult(keyWord, channel, duration, pageNum, publishTime, sort, pictureQuality, new CallBack<IQiYiSearchResultBean>() {
+            @Override
+            public void success(IQiYiSearchResultBean bean) {
+                    Log.v(TAG, bean.getResultNum());
+                    for(IQiYiSearchResultBean.ResultItem item:bean.getItemList())
+                    {
+                        Log.v(TAG, item.toString());
+                    }
+            }
+
+            @Override
+            public void error(String msg) {
+                //TODO 获取失败
+            }
+        });
+    }
+
+    /**
+     * 获取爱奇艺搜索结果
+     * @param keyWord 搜索词
+     * @param pageNum   页码 便于翻页
+     * @param pageSize 每页个数
+     */
+    private void parseIQiYiSearchSimplified(String keyWord,  int pageNum, int pageSize){
+        IQiYiParseSearchPresenter ps = new IQiYiParseSearchPresenter();
+        ps.requestIQiYiSearchSimplified(keyWord, pageNum, pageSize, new CallBack<IQiYiSearchSimplifyDataBean>() {
+            @Override
+            public void success(IQiYiSearchSimplifyDataBean bean) {
+                Log.v(TAG, "result_num =："+ bean.getResult_num());
+                Log.v(TAG, "real_query = ："+ bean.getReal_query());
+                List<IQiYiSearchSimplifyDataBean.DocinfosBean> list = bean.getDocinfos();
+                for(int i=0;i<list.size();i++)
+                {
+                    Log.v(TAG, list.get(i).toString());
+                }
+            }
+
+            @Override
+            public void error(String msg) {
+                //TODO 获取失败
+            }
+        });
+    }
+
+    /**
+     * 获取爱奇艺片库筛选结果List
+     * 参数请参看iqiyidata.json
+     * @param orderList 筛选组合，请参看iqiyidata.json中order-list部分,  "15,24"; 为内地，古装筛选组合
+     * @param pageSize 每页个数
+     */
+    private void parseIQiYiMovieSimplifiedList(int channel, String orderList, String payStatus, String myYear,
+                                            int sortType, int pageNum, int dataType, String siteType,
+                                            int sourceType, String comicsStatus, int pageSize){
+        IQiYiMovieSimplifiedListPresenter ps = new IQiYiMovieSimplifiedListPresenter();
+        ps.requestIQiYiMovieSimplifiedList(channel,orderList,payStatus,myYear,sortType,pageNum,
+                dataType,siteType,sourceType,comicsStatus,pageSize, new CallBack<IQiYiMovieSimplifiedBean>() {
+            @Override
+            public void success(IQiYiMovieSimplifiedBean bean) {
+                Log.v(TAG, "result_num =："+ bean.getResult_num());
+                List<IQiYiMovieBean> list = bean.getList();
+                for(int i=0;i<list.size();i++)
+                {
+                    Log.v(TAG, list.get(i).toString());
                 }
             }
 

@@ -13,7 +13,7 @@ public class IQiYiListBean {
      */
 
     private int channel;             //频道
-    private String[] orderList;     //地区,类型,版本,新类型,风格,规格等
+    private String orderList;     //地区,类型,版本,新类型,风格,规格等
     private String payStatus;           //资费
     private String myYear;              //年代
     private int sortType;            //排序
@@ -24,7 +24,7 @@ public class IQiYiListBean {
     private String comicsStatus;        //连载状态 动漫使用
 
 
-    public IQiYiListBean(int channel, String[] orderList, String payStatus, String myYear, int sortType,
+    public IQiYiListBean(int channel, String orderList, String payStatus, String myYear, int sortType,
                          int pageNum, int dataType, String siteType, int sourceType, String comicsStatus) {
         this.channel =channel;
         this.orderList =orderList;
@@ -42,7 +42,7 @@ public class IQiYiListBean {
         return channel;
     }
 
-    public String[] getOrderList() {
+    public String getOrderList() {
         return orderList;
     }
 

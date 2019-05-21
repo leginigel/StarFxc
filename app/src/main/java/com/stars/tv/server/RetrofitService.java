@@ -17,6 +17,19 @@ public interface  RetrofitService {
     @GET
     Observable<ResponseBody> getIQiYiMovieList(@Url String url);
 
+    @GET("search/video/videolists")
+    Observable<ResponseBody> getIQiYiMovieSimplifiedList(@Query("channel_id") int channel,
+                                                         @Query(value="three_category_id",encoded = true) String orderList,
+                                                         @Query("is_purchase") String payStatus,
+                                                         @Query("market_release_date_level") String myYear,
+                                                         @Query("mode") int sortType,
+                                                         @Query("pageNum") int pageNum,
+                                                         @Query("data_type") int dataType,
+                                                         @Query("site") String siteType,
+                                                         @Query("source_type") int sourceType,
+                                                         @Query("is_album_finished") String comicsStatus,
+                                                         @Query("pageSize") int pageSize);
+
     @GET
     Observable<ResponseBody> getIQiYiRealPlayUrl(@Url  String url);
 
@@ -58,4 +71,12 @@ public interface  RetrofitService {
 
     @GET("/")
     Observable<ResponseBody> getIQiYiSearchSuggestWord(@Query("key")String keyWord,@Query("rltnum")int resultNum);
+
+    @GET("so/q_{keyWord}_ctg_{channel}_t_{duration}_page_{pageNum}_p_1_qc_0_rd_{publishTime}_site_iqiyi_m_{sort}_bitrate_{pictureQuality}")
+    Observable<ResponseBody> getIQiYiSearchResult(@Path("keyWord") String keyWord,@Path("channel") String channel,@Path("duration") int duration,
+                                                  @Path("pageNum") int pageNum,@Path("publishTime") String publishTime,@Path("sort") int sort,@Path("pictureQuality") String pictureQuality);
+
+    @GET("o")
+    Observable<ResponseBody> getIQiYiSearchSimplified(@Query("key")String keyWord,@Query("if")String ifWord,@Query("pageNum")int pageNum,
+                                                @Query("pageSize")int pageSize);
 }
