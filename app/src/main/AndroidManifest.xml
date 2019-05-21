@@ -36,7 +36,7 @@
         </activity>
 
         <activity
-            android:theme="@style/Theme.Leanback"
+            android:theme="@style/YouTubeTheme"
             android:name=".youtube.YoutubeActivity"
             android:label="YouTube"
             android:screenOrientation="landscape">

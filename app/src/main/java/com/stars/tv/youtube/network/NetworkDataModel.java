@@ -5,7 +5,7 @@ import android.util.Log;
 import java.util.List;
 
 import io.reactivex.Observable;
-import com.stars.tv.youtube.api.PlaylistItems;
+import com.stars.tv.youtube.api.PlaylistItemsResponse;
 import com.stars.tv.youtube.api.SearchResponse;
 import com.stars.tv.youtube.api.VideoResponse;
 import com.stars.tv.youtube.api.YoutubeService;
@@ -45,11 +45,19 @@ public class NetworkDataModel {
         return youtubeService.videoDetail(id);
     }
 
-    public Observable<Response<PlaylistItems>> playlistItems(String playlistId){
+    public Observable<Response<PlaylistItemsResponse>> playlistItems(String playlistId){
         return youtubeService.playlistItems(playlistId);
     }
 
     public Observable<Response<SearchResponse>> searchChannelPlaylist(String channelId){
         return youtubeService.searchChannelPlaylist(channelId);
+    }
+
+    public Observable<Response<VideoResponse>> videoPopular(){
+        return youtubeService.videoPopular();
+    }
+
+    public Observable<Response<SearchResponse>> searchLatestWeek(String publishAfter, String publishBefore){
+        return youtubeService.searchLatestWeek(publishAfter, publishBefore);
     }
 }

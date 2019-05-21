@@ -7,10 +7,11 @@
     android:layout_height="match_parent">
 
     <LinearLayout
-        android:id="@+id/left_up_nav"
+        android:id="@+id/left_nav"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:orientation="vertical"
+        android:focusable="true"
         android:background="@color/left_nav"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent">
@@ -49,9 +50,8 @@
             android:background="@drawable/btn_bg"
             android:clickable="true"
             android:focusable="true"
-            android:focusedByDefault="true"
-            android:nextFocusUp="@+id/search_btn"
-            android:nextFocusDown="@+id/subscribe_btn"
+            android:nextFocusUp="@id/search_btn"
+            android:nextFocusDown="@id/subscribe_btn"
             android:padding="10dp"
             android:src="@drawable/ic_home_24dp"
             app:layout_constraintStart_toStartOf="parent"
@@ -66,8 +66,8 @@
             android:background="@drawable/btn_bg"
             android:clickable="true"
             android:focusable="true"
-            android:nextFocusUp="@+id/home_btn"
-            android:nextFocusDown="@+id/folder_btn"
+            android:nextFocusUp="@id/home_btn"
+            android:nextFocusDown="@id/folder_btn"
             android:padding="10dp"
             android:src="@drawable/ic_subscriptions_24dp"
             app:layout_constraintStart_toStartOf="parent"
@@ -81,38 +81,56 @@
             android:background="@drawable/btn_bg"
             android:clickable="true"
             android:focusable="true"
-            android:nextFocusUp="@+id/subscribe_btn"
-            android:nextFocusDown="@+id/setting_btn"
+            android:nextFocusUp="@id/subscribe_btn"
+            android:nextFocusDown="@id/setting_btn"
             android:padding="10dp"
             android:src="@drawable/ic_folder_24dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/subscribe_btn" />
 
-    </LinearLayout>
+        <ImageView
+            android:id="@+id/setting_btn"
+            android:layout_width="108dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="150dp"
+            android:background="@drawable/btn_bg"
+            android:clickable="true"
+            android:focusable="true"
+            android:nextFocusUp="@id/folder_btn"
+            android:padding="10dp"
+            android:src="@drawable/ic_settings_24dp" />
 
-    <ImageView
-        android:id="@+id/setting_btn"
-        android:layout_width="108dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="30dp"
-        android:background="@drawable/btn_bg"
-        android:clickable="true"
-        android:focusable="true"
-        android:nextFocusUp="@+id/folder_btn"
-        android:padding="10dp"
-        android:src="@drawable/ic_settings_24dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+    </LinearLayout>
 
     <FrameLayout
         android:id="@+id/container_home"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/left_up_nav"
+        app:layout_constraintStart_toEndOf="@+id/left_nav"
         app:layout_constraintTop_toBottomOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         tools:context=".YoutubeActivity" />
+
+    <FrameLayout
+        android:name="com.google.android.youtube.player.YouTubePlayerFragment"
+        android:id="@+id/fragment_youtube_player"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:context=".YoutubeActivity" />
+    
+    <FrameLayout
+        android:id="@+id/fragment_player_controls"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        
+    </FrameLayout>
 
 </android.support.constraint.ConstraintLayout>
 

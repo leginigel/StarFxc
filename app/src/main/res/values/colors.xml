@@ -15,8 +15,10 @@
     <color name="background">#ff2f2f2f</color>
     <color name="left_nav2">#ff121212</color>
     <color name="left_nav">#ff282828</color>
+    <color name="text_white">#ffebebeb</color>
 
     <color name="button_focused">#ffffffff</color>
+    <color name="button_selecting">#ffebebeb</color>
     <color name="button_default">#ff282828</color>
     <color name="button">#ff6a6a6a</color>
 

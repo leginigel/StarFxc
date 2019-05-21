@@ -13,6 +13,7 @@ import android.support.v17.leanback.widget.HeaderItem;
 import android.support.v17.leanback.widget.ImageCardView;
 import android.support.v17.leanback.widget.ListRow;
 import android.support.v17.leanback.widget.ListRowPresenter;
+import android.support.v17.leanback.widget.OnItemViewClickedListener;
 import android.support.v17.leanback.widget.OnItemViewSelectedListener;
 import android.support.v17.leanback.widget.Presenter;
 import android.support.v17.leanback.widget.Row;
@@ -23,12 +24,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.android.youtube.player.YouTubePlayer;
+import com.google.android.youtube.player.YouTubePlayerSupportFragment;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import com.stars.tv.R;
+import com.stars.tv.youtube.YoutubeActivity;
 import com.stars.tv.youtube.data.YouTubeVideo;
+import com.stars.tv.youtube.ui.PlayerControlsFragment;
 import com.stars.tv.youtube.ui.YouTubeCardPresenter;
 import com.stars.tv.youtube.viewmodel.YoutubeViewModel;
 
@@ -46,10 +52,15 @@ public class YoutubeRowFragment extends RowsSupportFragment {
     private Map<String, List<YouTubeVideo>> mLatestChannel;
     private Map<String, List<YouTubeVideo>> mMusicChannel;
 
+    private ViewGroup mContainer;
     private ArrayObjectAdapter mCardsAdapter;
     private ArrayObjectAdapter mRowsAdapter;
     private ListRowPresenter mListRowPresenter;
     private YouTubeCardPresenter mYouTubeCardPresenter;
+    private View mVideoBox;
+    private YouTubePlayer mPlayer;
+    private YouTubePlayerSupportFragment youTubePlayerFragment;
+    private PlayerControlsFragment playerControlsFragment;
 
     public static YoutubeRowFragment newInstance() {
         return new YoutubeRowFragment();
@@ -67,17 +78,24 @@ public class YoutubeRowFragment extends RowsSupportFragment {
 
         setRows(null);
 
+        youTubePlayerFragment = (YouTubePlayerSupportFragment) getActivity()
+                        .getSupportFragmentManager().findFragmentById(R.id.fragment_youtube_player);
+        playerControlsFragment = (PlayerControlsFragment) getActivity()
+                .getSupportFragmentManager().findFragmentById(R.id.fragment_player_controls);
+        mVideoBox = ((YoutubeActivity) getActivity()).getPlayerBox();
+        mPlayer = ((YoutubeActivity) getActivity()).getYouTubePlayer();
+
         setOnItemViewSelectedListener(new YouTubeCardSelectedListener());
+        setOnItemViewClickedListener(new YouTubeCardClickedListener());
 
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
-//    @Override
-//    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-//        super.onActivityCreated(savedInstanceState);
-//        Log.i(TAG, "onActivityCreated");
-//        mViewModel = ViewModelProviders.of(getActivity()).get(YoutubeViewModel.class);
-//    }
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        Log.i(TAG, "onActivityCreated");
+    }
 
     public void setRows(Map<String, List<YouTubeVideo>> channelList){
 
@@ -113,6 +131,8 @@ public class YoutubeRowFragment extends RowsSupportFragment {
         }
     }
 
+
+
     private final class YouTubeCardSelectedListener implements OnItemViewSelectedListener{
 
         private ImageCardView imgCard = null;
@@ -123,23 +143,47 @@ public class YoutubeRowFragment extends RowsSupportFragment {
                                    RowPresenter.ViewHolder viewHolder1, Row row) {
             YouTubeCardPresenter.CardViewHolder cardViewHolder = (YouTubeCardPresenter.CardViewHolder) viewHolder;
             if(o instanceof YouTubeVideo) {
-
+                // Reset the ImageCardView Info Color
                 if(imgCard != null){
                     imgCard.setInfoAreaBackgroundColor(getResources().getColor(R.color.background));
                     ((TextView) imgCard.findViewById(R.id.title_text))
                             .setTextColor(Color.WHITE);
                 }
-//                Log.d(TAG, "Selected");
-//                imgCard = (ImageCardView) viewHolder.view;
-//                ImageView mainImage = cardViewHolder.view.findViewById(R.id.main_image);
-//                mainImage.animate().scaleX(1.2f).scaleY(1.2f);
-                imgCard = (ImageCardView) cardViewHolder.getImageCardView();
 
+                // Set the Selected Color
+                imgCard = cardViewHolder.getImageCardView();
                 imgCard.setInfoAreaBackgroundColor(Color.WHITE);
                 ((TextView) imgCard.findViewById(R.id.title_text))
                         .setTextColor(getResources().getColor(R.color.background));
             }
         }
 
+    }
+
+    private final class YouTubeCardClickedListener implements OnItemViewClickedListener {
+
+        // TODO: 2019/5/21 The Video Player Should Change
+        private YouTubeVideo video = null;
+
+        @Override
+        public void onItemClicked(Presenter.ViewHolder viewHolder, Object o,
+                                  RowPresenter.ViewHolder viewHolder1, Row row) {
+            if(o instanceof YouTubeVideo) {
+                if(((YouTubeVideo) o).getId() != null){
+                    video = (YouTubeVideo) o;
+                    if (mVideoBox.getVisibility() != View.VISIBLE) {
+                        playerControlsFragment.setVideo(video);
+                        mVideoBox.setVisibility(View.VISIBLE);
+                        mVideoBox.requestFocus();
+                        mPlayer.loadVideo(video.getId());
+                    }
+                }
+            }
+        }
+    }
+
+    // All Needs to Override this Method
+    public YoutubeFragment.TabCategory getTabCategory() {
+        return null;
     }
 }

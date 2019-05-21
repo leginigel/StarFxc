@@ -45,7 +45,7 @@
 
     </item>
 
-    <item android:state_pressed="true">
+    <item android:state_selected="true">
         <layer-list>
             <!--SHADOW-->
             <item android:left="0dp" android:bottom="8dp" android:right="0dp" android:top="0dp">

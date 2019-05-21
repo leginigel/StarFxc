@@ -9,6 +9,22 @@
         <item name="android:windowContentOverlay">@android:color/transparent</item>
     </style>
 
+    <style name="YouTubeTheme" parent="@style/Theme.Leanback" >
+        <item name="rowHorizontalGridStyle">@style/CustomHorizontalGridView</item>
+        <item name="rowHeaderStyle">@style/CustomHeader</item>
+        <item name="rowHeaderDockStyle">@style/CustomHeaderDock</item>
+    </style>
+    <style name="CustomHorizontalGridView" parent="Widget.Leanback.Row.HorizontalGridView">
+        <item name="android:paddingStart">28dp</item>
+        <item name="android:horizontalSpacing">12dp</item>
+    </style>
+    <style name="CustomHeader" parent="Widget.Leanback.Row.Header">
+        <item name="android:textColor">@color/button_selecting</item>
+    </style>
+    <style name="CustomHeaderDock" parent="Widget.Leanback.Row.HeaderDock">
+        <item name="android:paddingStart">28dp</item>
+    </style>
+
     <style name="LauncherColor" parent="Theme.AppCompat.Light.DarkActionBar">
 
         <item name="colorPrimary">@color/primary</item>

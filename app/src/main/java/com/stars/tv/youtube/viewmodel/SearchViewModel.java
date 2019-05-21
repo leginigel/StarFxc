@@ -116,6 +116,6 @@ public class SearchViewModel extends ViewModel {
     @Override
     protected void onCleared() {
         super.onCleared();
-        disposable.clear();
+//        disposable.clear();
     }
 }
