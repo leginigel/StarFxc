@@ -5,10 +5,12 @@ import com.avos.avoscloud.AVFile;
 import java.io.Serializable;
 
 public class DragVideoBean implements Serializable {
+  private String mCloudId;
   private String mVideoId;
   private String mVideoName;
   private String mVideoPlayUrl;
-  private String mVideoScore;
+  private String mVideoCurrentViewOrder;
+  private String mVideoLatestOrder;
   private String mVideoDescription;
   private AVFile mVideoImageFile;
 
@@ -16,14 +18,24 @@ public class DragVideoBean implements Serializable {
   @Override
   public String toString() {
     return this.getClass().getName() + "{" +
-      "Id=" + mVideoId +
+      "CloudId=" + mCloudId +
+      ", VideoId=" + mVideoId +
       ", Name=" + mVideoName +
       ", PlayUrl=" + mVideoPlayUrl +
-      ", Score=" + mVideoScore +
+      ", CurrentViewOrder=" + mVideoCurrentViewOrder +
+      ", LatestOrder=" + mVideoLatestOrder +
       ", Description=" + mVideoDescription +
-      ", ImageId=" + mVideoImageFile.getName() +
+      ", ImageUrl=" + mVideoImageFile.getUrl()+
       "}";
   }
+  public String getCloudId() {
+    return mCloudId;
+  }
+
+  public void setCloudId(String cloudId) {
+    mCloudId = cloudId;
+  }
+
 
   public String getVideoId() {
     return mVideoId;
@@ -49,12 +61,20 @@ public class DragVideoBean implements Serializable {
     mVideoPlayUrl = videoPlayUrl;
   }
 
-  public String getVideoScore() {
-    return mVideoScore;
+  public String getVideoCurrentViewOrder() {
+    return mVideoCurrentViewOrder;
   }
 
-  public void setVideoScore(String videoScore) {
-    mVideoScore = videoScore;
+  public void setVideoCurrentViewOrder(String videoCurrentViewOrder) {
+    mVideoCurrentViewOrder = videoCurrentViewOrder;
+  }
+
+  public String getVideoLatestOrder() {
+    return mVideoLatestOrder;
+  }
+
+  public void setVideoLatestOrder(String videoLatestOrder) {
+    mVideoLatestOrder = videoLatestOrder;
   }
 
   public String getVideoDescription() {

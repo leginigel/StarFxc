@@ -1,5 +1,6 @@
 package com.stars.tv.activity;
 
+import com.avos.avoscloud.AVOSCloud;
 import com.stars.tv.R;
 import com.stars.tv.bean.IQiYiBannerInfoBean;
 import com.stars.tv.bean.IQiYiBasicStarInfoBean;
@@ -59,6 +60,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
+import static com.stars.tv.utils.Constants.STAR_CLOUD_ID;
+import static com.stars.tv.utils.Constants.STAR_CLOUD_KEY;
+
 public class MainActivity extends BaseActivity {
 
     private static final int TITLE_PADDING_LEFT_PX = 60;
@@ -100,6 +104,13 @@ public class MainActivity extends BaseActivity {
         initTitle();
         initContentViews();
         refreshRequest();
+        initLeanCloud();
+    }
+
+    private void initLeanCloud(){
+        AVOSCloud.initialize(this, STAR_CLOUD_ID, STAR_CLOUD_KEY);
+        AVOSCloud.useAVCloudCN();
+        AVOSCloud.setDebugLogEnabled(true);
     }
 
     private void initTitle() {

@@ -18,7 +18,8 @@ public class DragFavoriteSampleDataList {
     };
 
     for ( int i = 0 ; i < title.length ; i++ ){
-      list.add(buildMovieInfo(title[i], DragTabCommonFragment.FAVORITE_FRAGMENT_ID + i, "0", "0"));
+      list.add(buildMovieInfo(title[i], DragTabCommonFragment.FAVORITE_FRAGMENT_ID + i,
+        "0", "0"));
     }
 
     return list;

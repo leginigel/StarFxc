@@ -1,5 +1,7 @@
 package com.stars.tv.presenter;
 
+import android.util.Log;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.stars.tv.bean.IQiYiMovieBean;
@@ -36,8 +38,8 @@ public class IQiYiMoviePresenter extends IQiYiMovieContract.IQiYiMoviePresenter 
                         mView.returnIQiYiMovieList(simpleList);
                     } catch (JSONException e) {
                         e.printStackTrace();
-                            }
-                        }
+                    }
+                }
 
             } catch (IOException | StringIndexOutOfBoundsException e) {
                 e.printStackTrace();
