@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,9 +19,6 @@ import com.bumptech.glide.Glide;
 import com.stars.tv.R;
 import com.stars.tv.bean.DragTitleBean;
 import com.stars.tv.bean.DragVideoBean;
-import com.stars.tv.bean.IQiYiMovieBean;
-import com.stars.tv.sample.DragFavoriteSampleDataList;
-import com.stars.tv.sample.DragHistorySampleDataList;
 import com.stars.tv.server.LeanCloudStorage;
 import com.stars.tv.utils.ViewUtils;
 import java.util.ArrayList;
@@ -33,10 +29,11 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
+import static com.stars.tv.utils.Constants.CLOUD_FAVORITE_CLASS;
+import static com.stars.tv.utils.Constants.CLOUD_HISTORY_CLASS;
+
 public class DragTabCommonFragment extends DragBaseFragment{
   public final static String DRAG_TITLE_ID="dragTitleID";
-  public final static String HISTORY_FRAGMENT_ID="History";
-  public final static String FAVORITE_FRAGMENT_ID="Favorite";
   private int mItemPaddingPixel;
   private LeanCloudStorage mStorage;
 
@@ -65,7 +62,7 @@ public class DragTabCommonFragment extends DragBaseFragment{
   public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     mFragID = getArguments().getString(DRAG_TITLE_ID);
-    mStorage = new LeanCloudStorage();
+    mStorage = new LeanCloudStorage(mFragID);
   }
 
   @Override
@@ -85,34 +82,17 @@ public class DragTabCommonFragment extends DragBaseFragment{
       new GridLayoutManager(getContext(), 6,
         GridLayoutManager.VERTICAL, false));
 
-    if ( mFragID.compareTo(HISTORY_FRAGMENT_ID) == 0 )
-      mVideoList = mStorage.getHistoryList();
-    else
-      mVideoList = mStorage.getFavoriteList();
+    mVideoList = mStorage.getVideoList();
 
     DragContentAdapter adapter = new DragContentAdapter();
-    if ( mFragID.compareTo(HISTORY_FRAGMENT_ID) == 0 ) {
-      //mVideoList = DragHistorySampleDataList.setupMovies();
-      mStorage.storageFetchHistoryListner(new LeanCloudStorage.cloudFetchListener() {
-        @Override
-        public void done(List<AVObject> objects, AVException e) {
-          mStorage.assignToHistoryList(objects);
-          mVideoList = mStorage.getHistoryList();
-          adapter.notifyDataSetChanged();
-        }
-      });
+    mStorage.storageFetchListener(new LeanCloudStorage.cloudFetchListener() {
+      @Override
+      public void done(List<AVObject> objects, AVException e) {
+        mStorage.assignToDragVideoList(objects);
+        mVideoList = mStorage.getVideoList();
+        adapter.notifyDataSetChanged();
     }
-    else{
-      //mVideoList = DragFavoriteSampleDataList.setupMovies();
-      mStorage.storageFetchFavoriteListener(new LeanCloudStorage.cloudFetchListener() {
-        @Override
-        public void done(List<AVObject> objects, AVException e) {
-          mStorage.assignToFavoriteList(objects);
-          mVideoList = mStorage.getFavoriteList();
-          adapter.notifyDataSetChanged();
-        }
-      });
-    }
+    });
     mDragContentsRecycler.setAdapter(adapter);
     return v;
   }
@@ -178,7 +158,7 @@ public class DragTabCommonFragment extends DragBaseFragment{
 
       private void bindViewHolder (DragVideoBean vb){
         Glide.with(Objects.requireNonNull(getActivity()))
-          .load(vb.getVideoImageFile().getUrl()).into(mVideoImage);
+          .load(vb.getVideoImageFile()).into(mVideoImage);
         mVideoText.setText(vb.getVideoName());
       }
     }

@@ -19,6 +19,9 @@ import com.stars.tv.view.SlidingTabLayout;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.stars.tv.utils.Constants.CLOUD_FAVORITE_CLASS;
+import static com.stars.tv.utils.Constants.CLOUD_HISTORY_CLASS;
+
 public class DragTabFragment extends Fragment {
   private SlidingTabLayout tabs;
   private ViewPager pager;
@@ -67,8 +70,8 @@ public class DragTabFragment extends Fragment {
 
     List<DragBaseFragment> fgs = new ArrayList<>();
     List<DragTitleBean> title = new ArrayList<>();
-    title.add(new DragTitleBean("History", R.drawable.history_40x32));
-    title.add(new DragTitleBean("Favorite", R.drawable.star_40x32));
+    title.add(new DragTitleBean(CLOUD_HISTORY_CLASS, R.drawable.history_40x32));
+    title.add(new DragTitleBean(CLOUD_FAVORITE_CLASS, R.drawable.star_40x32));
 
     for ( int i = 0 ; i < title.size() ; i++ ){
       fgs.add(DragTabCommonFragment.newInstance(title.get(i), indicatorColor, dividerColor));

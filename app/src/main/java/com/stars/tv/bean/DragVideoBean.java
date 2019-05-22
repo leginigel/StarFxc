@@ -1,41 +1,30 @@
 package com.stars.tv.bean;
 
 import android.support.annotation.NonNull;
-import com.avos.avoscloud.AVFile;
 import java.io.Serializable;
 
 public class DragVideoBean implements Serializable {
-  private String mCloudId;
   private String mVideoId;
   private String mVideoName;
   private String mVideoPlayUrl;
   private String mVideoCurrentViewOrder;
   private String mVideoLatestOrder;
   private String mVideoDescription;
-  private AVFile mVideoImageFile;
+  private String mVideoImageFile;
 
   @NonNull
   @Override
   public String toString() {
     return this.getClass().getName() + "{" +
-      "CloudId=" + mCloudId +
-      ", VideoId=" + mVideoId +
+      "VideoId=" + mVideoId +
       ", Name=" + mVideoName +
       ", PlayUrl=" + mVideoPlayUrl +
       ", CurrentViewOrder=" + mVideoCurrentViewOrder +
       ", LatestOrder=" + mVideoLatestOrder +
       ", Description=" + mVideoDescription +
-      ", ImageUrl=" + mVideoImageFile.getUrl()+
+      ", ImageUrl=" + mVideoImageFile+
       "}";
   }
-  public String getCloudId() {
-    return mCloudId;
-  }
-
-  public void setCloudId(String cloudId) {
-    mCloudId = cloudId;
-  }
-
 
   public String getVideoId() {
     return mVideoId;
@@ -85,11 +74,11 @@ public class DragVideoBean implements Serializable {
     mVideoDescription = videoDescription;
   }
 
-  public AVFile getVideoImageFile() {
+  public String getVideoImageFile() {
     return mVideoImageFile;
   }
 
-  public void setVideoImageFile(AVFile videoImageFile) {
+  public void setVideoImageFile(String videoImageFile) {
     mVideoImageFile = videoImageFile;
   }
 }

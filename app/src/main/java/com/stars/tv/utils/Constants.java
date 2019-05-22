@@ -18,7 +18,7 @@ public class Constants {
 
     public static final String STAR_CLOUD_ID = "BzBYpOslngYEvh0Nz7zAUgd3-gzGzoHsz";
     public static final String STAR_CLOUD_KEY = "V2B1Wuo3YPQYDHU8iCjDQHtt";
-    public static final String CLOUD_HISTORY_CLASS = "HISTORY";
-    public static final String CLOUD_FAVORITE_CLASS = "FAVORITE";
+    public static final String CLOUD_HISTORY_CLASS = "History";
+    public static final String CLOUD_FAVORITE_CLASS = "Favorite";
 }
 

@@ -10,8 +10,7 @@ import static com.stars.tv.utils.Constants.CLOUD_HISTORY_CLASS;
 
 public class DragSampleCloud {
   public static void addIQIYSampleList(List<IQiYiMovieBean> objectes){
-    LeanCloudStorage lcs = new LeanCloudStorage();
-    lcs.createSampleListByIQIY(objectes, CLOUD_HISTORY_CLASS);
-    lcs.createSampleListByIQIY(objectes, CLOUD_FAVORITE_CLASS);
+    new LeanCloudStorage(CLOUD_HISTORY_CLASS).createSampleListByIQIY(objectes);
+    new LeanCloudStorage(CLOUD_FAVORITE_CLASS).createSampleListByIQIY(objectes);
   }
 }
