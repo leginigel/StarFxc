@@ -10,4 +10,21 @@
     <!-- focus color -->
     <color name="color_focus">#29F006</color>
 
+    <color name="primary">#f00</color>
+    <color name="background2">#ff2e2e2e</color>
+    <color name="background">#ff2f2f2f</color>
+    <color name="left_nav2">#ff121212</color>
+    <color name="left_nav">#ff282828</color>
+    <color name="text_white">#ffebebeb</color>
+
+    <color name="button_focused">#ffffffff</color>
+    <color name="button_selecting">#ffebebeb</color>
+    <color name="button_default">#ff282828</color>
+    <color name="button">#ff6a6a6a</color>
+
+    <color name="btn_text">#ff969696</color>
+    <color name="btn_text_bg">#ffebebeb</color>
+
+    <color name="card_loading">#ff333333</color>
+    <color name="card_content">#ffaaaaaa</color>
 </resources>

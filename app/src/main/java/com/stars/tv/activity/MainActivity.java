@@ -1,5 +1,6 @@
 package com.stars.tv.activity;
 
+import com.avos.avoscloud.AVOSCloud;
 import com.stars.tv.R;
 import com.stars.tv.bean.IQiYiBannerInfoBean;
 import com.stars.tv.bean.IQiYiBasicStarInfoBean;
@@ -8,6 +9,7 @@ import com.stars.tv.bean.IQiYiHotSearchItemBean;
 import com.stars.tv.bean.IQiYiM3U8Bean;
 import com.stars.tv.bean.IQiYiMovieBean;
 import com.stars.tv.bean.IQiYiMovieSimplifiedBean;
+import com.stars.tv.bean.IQiYiSearchSimplifyDataBean;
 import com.stars.tv.bean.IQiYiSearchResultBean;
 import com.stars.tv.bean.IQiYiSearchSuggestBean;
 import com.stars.tv.bean.IQiYiStarInfoBean;
@@ -60,6 +62,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
+import static com.stars.tv.utils.Constants.STAR_CLOUD_ID;
+import static com.stars.tv.utils.Constants.STAR_CLOUD_KEY;
+
 public class MainActivity extends BaseActivity {
 
     private static final int TITLE_PADDING_LEFT_PX = 60;
@@ -100,9 +105,17 @@ public class MainActivity extends BaseActivity {
 //        parseIQiYiSearchSuggestWord("封神",10);
 //        parseIQiYiSearchResult("封神","",0,2,"",1,"");
 //        parseIQiYiMovieSimplifiedList(2, "15,24", "","", 24, 1,1,"iqiyi",1, "",48);
+//        parseIQiYiSearchSimplified("封神",1,10);
         initTitle();
         initContentViews();
         refreshRequest();
+        initLeanCloud();
+    }
+
+    private void initLeanCloud(){
+        AVOSCloud.initialize(this, STAR_CLOUD_ID, STAR_CLOUD_KEY);
+        AVOSCloud.useAVCloudCN();
+        AVOSCloud.setDebugLogEnabled(true);
     }
 
     private void initTitle() {
@@ -544,6 +557,32 @@ public class MainActivity extends BaseActivity {
         });
     }
 
+    /**
+     * 获取爱奇艺搜索结果
+     * @param keyWord 搜索词
+     * @param pageNum   页码 便于翻页
+     * @param pageSize 每页个数
+     */
+    private void parseIQiYiSearchSimplified(String keyWord,  int pageNum, int pageSize){
+        IQiYiParseSearchPresenter ps = new IQiYiParseSearchPresenter();
+        ps.requestIQiYiSearchSimplified(keyWord, pageNum, pageSize, new CallBack<IQiYiSearchSimplifyDataBean>() {
+            @Override
+            public void success(IQiYiSearchSimplifyDataBean bean) {
+                Log.v(TAG, "result_num =："+ bean.getResult_num());
+                Log.v(TAG, "real_query = ："+ bean.getReal_query());
+                List<IQiYiSearchSimplifyDataBean.DocinfosBean> list = bean.getDocinfos();
+                for(int i=0;i<list.size();i++)
+                {
+                    Log.v(TAG, list.get(i).toString());
+                }
+            }
+
+            @Override
+            public void error(String msg) {
+                //TODO 获取失败
+            }
+        });
+    }
 
     /**
      * 获取爱奇艺片库筛选结果List

@@ -12,41 +12,48 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVObject;
+import com.bumptech.glide.Glide;
 import com.stars.tv.R;
-import com.stars.tv.bean.IQiYiMovieBean;
-import com.stars.tv.sample.DragFavoriteSampleDataList;
-import com.stars.tv.sample.DragHistorySampleDataList;
+import com.stars.tv.bean.DragTitleBean;
+import com.stars.tv.bean.DragVideoBean;
+import com.stars.tv.server.LeanCloudStorage;
 import com.stars.tv.utils.ViewUtils;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
+import static com.stars.tv.utils.Constants.CLOUD_FAVORITE_CLASS;
+import static com.stars.tv.utils.Constants.CLOUD_HISTORY_CLASS;
+
 public class DragTabCommonFragment extends DragBaseFragment{
   public final static String DRAG_TITLE_ID="dragTitleID";
-  public final static String HISTORY_FRAGMENT_ID="History";
-  public final static String FAVORITE_FRAGMENT_ID="Favorite";
   private int mItemPaddingPixel;
+  private LeanCloudStorage mStorage;
 
   private String mFragID;
   Unbinder unbinder;
   @BindView(R.id.drag_frame_recycler)  RecyclerView mDragContentsRecycler;
-  List<IQiYiMovieBean> mVideoList = new ArrayList<>();
+  private List<DragVideoBean> mVideoList = new ArrayList<>();
 
   public DragTabCommonFragment(){
   }
 
   public static DragTabCommonFragment newInstance(
-    String title, int resid, int indicatorColor, int dividerColor){
+    DragTitleBean tab, int indicatorColor, int dividerColor){
     DragTabCommonFragment f = new DragTabCommonFragment();
-    f.setTitle(title);
-    f.setIconRes(resid);
+    f.setTitle(tab.getDragName());
+    f.setIconRes(tab.getDragResIcon());
     f.setIndicatorColor(indicatorColor);
     f.setDividerColor(dividerColor);
     Bundle bundle = new Bundle();
-    bundle.putString(DRAG_TITLE_ID, title);
+    bundle.putString(DRAG_TITLE_ID, tab.getDragName());
     f.setArguments(bundle);
     return f;
   }
@@ -55,6 +62,7 @@ public class DragTabCommonFragment extends DragBaseFragment{
   public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     mFragID = getArguments().getString(DRAG_TITLE_ID);
+    mStorage = new LeanCloudStorage(mFragID);
   }
 
   @Override
@@ -73,16 +81,22 @@ public class DragTabCommonFragment extends DragBaseFragment{
     mDragContentsRecycler.setLayoutManager(
       new GridLayoutManager(getContext(), 6,
         GridLayoutManager.VERTICAL, false));
-    if ( mFragID.compareTo(HISTORY_FRAGMENT_ID) == 0 ) {
-      mVideoList = DragHistorySampleDataList.setupMovies();
-    }
-    else{
-      mVideoList = DragFavoriteSampleDataList.setupMovies();
-    }
+
+    mVideoList = mStorage.getVideoList();
+
     DragContentAdapter adapter = new DragContentAdapter();
+    mStorage.storageFetchListener(new LeanCloudStorage.cloudFetchListener() {
+      @Override
+      public void done(List<AVObject> objects, AVException e) {
+        mStorage.assignToDragVideoList(objects);
+        mVideoList = mStorage.getVideoList();
+        adapter.notifyDataSetChanged();
+    }
+    });
     mDragContentsRecycler.setAdapter(adapter);
     return v;
   }
+
   private class DragContentAdapter extends RecyclerView.Adapter<DragContentAdapter.ViewHolder>{
     @NonNull
     @Override
@@ -93,7 +107,7 @@ public class DragTabCommonFragment extends DragBaseFragment{
 
     @Override
     public void onBindViewHolder(@NonNull DragContentAdapter.ViewHolder vh, int i) {
-      IQiYiMovieBean vb = mVideoList.get(i);
+      DragVideoBean vb = mVideoList.get(i);
       vh.bindViewHolder(vb);
     }
 
@@ -142,9 +156,10 @@ public class DragTabCommonFragment extends DragBaseFragment{
         });
       }
 
-      private void bindViewHolder (IQiYiMovieBean vb){
-        mVideoImage.setImageResource(R.drawable.temp_tv_icon);
-        mVideoText.setText(vb.getName());
+      private void bindViewHolder (DragVideoBean vb){
+        Glide.with(Objects.requireNonNull(getActivity()))
+          .load(vb.getVideoImageFile()).into(mVideoImage);
+        mVideoText.setText(vb.getVideoName());
       }
     }
   }

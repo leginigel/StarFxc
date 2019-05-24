@@ -71,4 +71,10 @@
     <string name="VideoView_player_IjkMediaPlayer">Player: IjkMediaPlayer</string>
     <string name="VideoView_player_IjkExoMediaPlayer">Player: IjkExoMediaPlayer</string>
 
+    <string name="entertainment">Entertainment</string>
+    <string name="gaming">Gaming</string>
+    <string name="music">Music</string>
+    <string name="latest">Latest</string>
+    <string name="recommended">Recommended</string>
+
 </resources>

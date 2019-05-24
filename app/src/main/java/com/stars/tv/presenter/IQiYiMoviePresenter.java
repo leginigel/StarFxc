@@ -1,10 +1,16 @@
 package com.stars.tv.presenter;
 
+import android.util.Log;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.stars.tv.bean.IQiYiMovieBean;
 import com.stars.tv.bean.contract.IQiYiMovieContract;
+import com.stars.tv.server.RetrofitFactory;
+import com.stars.tv.server.RetrofitService;
 import com.stars.tv.server.RxManager;
+import com.stars.tv.utils.Constants;
+import com.stars.tv.utils.RxUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -17,11 +23,19 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.Observable;
+import okhttp3.ResponseBody;
+
 public class IQiYiMoviePresenter extends IQiYiMovieContract.IQiYiMoviePresenter {
+
+    public Observable<ResponseBody> getIQiYiMovie(String url) {
+        return RetrofitFactory.createApi(RetrofitService.class, Constants.BASE_IQIYI_LIST_URL)
+                .getIQiYiMovieList(url).compose(RxUtils.rxSchedulerHelper());
+    }
 
     @Override
     public void requestIQiYiMovie(String url) {
-        RxManager.add(mModel.getIQiYiMovie(url).subscribe(responseBody -> {
+        RxManager.add(getIQiYiMovie(url).subscribe(responseBody -> {
             try {
                 ArrayList<IQiYiMovieBean> simpleList;
                 Document doc = Jsoup.parse(responseBody.string());
@@ -36,8 +50,8 @@ public class IQiYiMoviePresenter extends IQiYiMovieContract.IQiYiMoviePresenter 
                         mView.returnIQiYiMovieList(simpleList);
                     } catch (JSONException e) {
                         e.printStackTrace();
-                            }
-                        }
+                    }
+                }
 
             } catch (IOException | StringIndexOutOfBoundsException e) {
                 e.printStackTrace();

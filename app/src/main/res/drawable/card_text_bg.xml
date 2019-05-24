@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:left="30dp" android:right="30dp" android:top="30dp">
+        <shape>
+            <solid android:color="@color/card_loading" />
+
+            <corners android:radius="10dp" />
+
+            <!--<padding-->
+                <!--android:left="20dp"-->
+                <!--android:right="20dp"-->
+                <!--/>-->
+        </shape>
+    </item>
+</selector>

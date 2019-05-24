@@ -3,6 +3,7 @@ package com.stars.tv.presenter;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.stars.tv.bean.IQiYiHotQueryBean;
+import com.stars.tv.bean.IQiYiSearchSimplifyDataBean;
 import com.stars.tv.bean.IQiYiSearchResultBean;
 import com.stars.tv.bean.IQiYiSearchSuggestBean;
 import com.stars.tv.server.RetrofitFactory;
@@ -43,6 +44,10 @@ public class IQiYiParseSearchPresenter {
                 .getIQiYiSearchResult(keyWord, channel, duration, pageNum, publishTime, sort, pictureQuality).compose(RxUtils.rxSchedulerHelper());
     }
 
+    private Observable<ResponseBody> getIQiYiSearchSimplified(String keyWord, int pageNum, int pageSize) {
+        return RetrofitFactory.createApi(RetrofitService.class, Constants.BASE_IQIYI_SEARCH_QUERY_URL)
+                .getIQiYiSearchSimplified(keyWord,"html5",pageNum,pageSize).compose(RxUtils.rxSchedulerHelper());
+    }
 
     public void requestIQiYiSearchHotQueryWord( CallBack<List<IQiYiHotQueryBean>> listener) {
         RxManager.add(getIQiYiSearchQueryUrl("hotQuery").subscribe(responseBody -> {
@@ -150,6 +155,28 @@ public class IQiYiParseSearchPresenter {
                 if (listener != null) {
                     listener.success(resultBean);
                 }
+            }
+        },Throwable ->listener.error(Throwable.toString())));
+    }
+
+    public void requestIQiYiSearchSimplified(String keyWord, int pageNum, int pageSize, CallBack<IQiYiSearchSimplifyDataBean> listener) {
+        RxManager.add(getIQiYiSearchSimplified(keyWord, pageNum, pageSize).subscribe(responseBody -> {
+            IQiYiSearchSimplifyDataBean searchBean;
+            try {
+                JSONObject root = new JSONObject(responseBody.string());
+                String code = root.getString("code");
+                if (!code.equals("A00000")) {
+                    //error
+                    listener.error("返回值错误");
+                }
+                String data = root.getString("data");
+                searchBean = new Gson().fromJson(data, IQiYiSearchSimplifyDataBean.class);
+
+                if (listener != null) {
+                    listener.success(searchBean);
+                }
+            }catch (JSONException e) {
+                e.printStackTrace();
             }
         },Throwable ->listener.error(Throwable.toString())));
     }
