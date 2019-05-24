@@ -20,6 +20,10 @@ android {
         targetCompatibility = '1.8'
     }
 
+    sourceSets.main {
+        jniLibs.srcDirs = ['libs']
+    }
+
     packagingOptions{
         exclude 'META-INF/LICENSE.txt'
         exclude 'META-INF/NOTICE.txt'
@@ -28,6 +32,7 @@ android {
     lintOptions {
         abortOnError false
     }
+
 }
 
 dependencies {
@@ -75,4 +80,11 @@ dependencies {
   implementation 'com.orhanobut:logger:2.1.1'
   implementation 'cn.leancloud.android:avoscloud-sdk:4.7.10'
   implementation files('libs/YouTubeAndroidPlayerApi.jar')
+
+    //ijkplayer依赖
+    implementation 'tv.danmaku.ijk.media:ijkplayer-java:0.8.8'
+    implementation 'tv.danmaku.ijk.media:ijkplayer-exo:0.8.8'
+    //Loading Cycle
+    implementation 'com.github.ybq:Android-SpinKit:1.2.0'
+
 }

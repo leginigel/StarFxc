@@ -15,7 +15,7 @@ public class HeaderPresenter extends RowHeaderPresenter {
     @Override
     public void onBindViewHolder(Presenter.ViewHolder viewHolder, Object item) {
         super.onBindViewHolder(viewHolder, item);
-        viewHolder.view.setVisibility(View.GONE);
+//        viewHolder.view.setVisibility(View.GONE);
 //        RowHeaderView headerView = (RowHeaderView) viewHolder.view;
 //        headerView.setTextSize(25);
 //        headerView.setTextColor(Color.WHITE);

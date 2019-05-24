@@ -1,9 +1,10 @@
 package com.stars.tv.bean;
 
+import java.io.Serializable;
 import java.util.List;
 
 
-public class IQiYiMovieBean {
+public class IQiYiMovieBean implements Serializable {
 
     private String name;
     private String docId;
@@ -292,19 +293,28 @@ public class IQiYiMovieBean {
     }
 
 
-    public class Role{
+    public class Role implements Serializable{
 
         private String image_url;
         private String name;
         private long id;
 
 
+//        @Override
+//        public String toString() {
+//            return "{" +
+//                    "image_url='" + image_url + '\'' +
+//                    "，name='" + name + '\'' +
+//                    ", id='" + id + '\'' +
+//                    '}';
+//        }
+
         @Override
         public String toString() {
             return "{" +
-                    "image_url='" + image_url + '\'' +
-                    "，name='" + name + '\'' +
-                    ", id='" + id + '\'' +
+                    "\"image_url\":\"" + image_url + '\"' +
+                    ",\"name\":\"" + name + '\"' +
+                    ",\"id\":\"" + id + '\"' +
                     '}';
         }
 
@@ -339,7 +349,7 @@ public class IQiYiMovieBean {
         }
     }
 
-    public class Category {
+    public class Category implements Serializable {
 
         private String name;
         public void setName(String name) {
@@ -356,7 +366,7 @@ public class IQiYiMovieBean {
 
     }
 
-    public class Cast {
+    public class Cast implements Serializable{
         private List<Role> director;
         private List<Role> main_charactor;
         private List<Role> host;
@@ -394,7 +404,7 @@ public class IQiYiMovieBean {
         }
     }
 
-    public class VideoFocuse{
+    public class VideoFocuse implements Serializable{
 
         private String id;
         private String description;

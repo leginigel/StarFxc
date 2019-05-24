@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+        <Button
+            android:id="@+id/full_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:focusable="true"
+            android:text="全屏"
+            android:textSize="14sp"
+            android:background="@drawable/prevideo_focus_selector"
+            android:textColor="@color/color_all_white"/>
+        <Button
+            android:id="@+id/fav_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/full_btn"
+            android:layout_marginStart="8dp"
+            android:layout_alignParentBottom="true"
+            android:focusable="true"
+            android:text="收藏"
+            android:textSize="14sp"
+            android:background="@drawable/prevideo_focus_selector"
+            android:textColor="@color/color_all_white"/>
+
+</RelativeLayout>

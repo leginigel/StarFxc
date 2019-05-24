@@ -2,6 +2,7 @@ package com.stars.tv.fragment;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,6 +19,8 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.stars.tv.R;
+import com.stars.tv.activity.MainActivity;
+import com.stars.tv.activity.VideoPreview;
 import com.stars.tv.bean.IQiYiListBean;
 import com.stars.tv.bean.IQiYiMovieBean;
 import com.stars.tv.bean.contract.IQiYiMovieContract;
@@ -189,6 +192,10 @@ public class VideoVGridSampleMVPFragment
         });
         holder.itemView.setOnClickListener(view -> {
           // TODO Item点击事件
+            // TODO Item点击事件
+            Intent intent = new Intent(getContext(), VideoPreview.class);
+            intent.putExtra("videoBean", videoBean);
+            startActivity(intent);
         });
       }
     }
@@ -209,6 +216,7 @@ public class VideoVGridSampleMVPFragment
         nameTv = view.findViewById(R.id.name_tv);
         boardView = view.findViewById(R.id.board_view);
       }
+
     }
 
   }
