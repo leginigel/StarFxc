@@ -188,6 +188,9 @@ public class MainActivity extends BaseActivity {
             @Override
             public void onClick(View view) {
                 //TODO
+                Intent intent = new Intent(MainActivity.this, VideoPreview.class);
+                startActivity(intent);
+
             }
         });
         pageVp.setOffscreenPageLimit(1); // 缓存2个页面
