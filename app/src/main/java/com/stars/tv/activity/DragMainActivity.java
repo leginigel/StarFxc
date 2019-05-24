@@ -11,7 +11,6 @@ import butterknife.Unbinder;
 
 public class DragMainActivity extends BaseActivity{
   DragTabFragment mMyDragTabFragment;
-  Unbinder unbinder;
 
   public DragMainActivity(){}
 
@@ -19,7 +18,6 @@ public class DragMainActivity extends BaseActivity{
   protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.drag_activity_main);
-    ButterKnife.bind(this);
     initDragFrame();
   }
 
@@ -34,7 +32,5 @@ public class DragMainActivity extends BaseActivity{
   @Override
   protected void onDestroy() {
     super.onDestroy();
-    if ( unbinder != null )
-      unbinder.unbind();
   }
 }

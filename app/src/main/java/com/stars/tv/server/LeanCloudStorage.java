@@ -84,7 +84,7 @@ public class LeanCloudStorage {
     });
   }
 
-  public int videoIsExist(DragVideoBean video){
+  public int isVideoExist(DragVideoBean video){
     int idx = 0;
     if ( mDragVideoList != null && mDragVideoList.size() > 0) {
       for ( DragVideoBean item : mDragVideoList ) {
