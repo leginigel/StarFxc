@@ -9,6 +9,7 @@
 
     <!-- focus color -->
     <color name="color_focus">#29F006</color>
+    <color name="color_white">#FFF8F8F8</color>
 
     <color name="primary">#f00</color>
     <color name="background2">#ff2e2e2e</color>
@@ -27,4 +28,12 @@
 
     <color name="card_loading">#ff333333</color>
     <color name="card_content">#ffaaaaaa</color>
+
+    <!--button color-->
+    <color name="color_blue">#4285f4</color>
+    <color name="color_yellow">#ffff44</color>
+    <color name="color_green">#29Fa66</color>
+    <color name="color_orange">#ff7633</color>
+    <color name="color_purple">#aa00ff</color>
+    <color name="color_pink">#ff08aa</color>
 </resources>

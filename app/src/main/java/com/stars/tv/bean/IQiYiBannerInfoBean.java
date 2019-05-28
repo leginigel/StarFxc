@@ -1,5 +1,7 @@
 package com.stars.tv.bean;
 
+import java.io.Serializable;
+
 public class IQiYiBannerInfoBean {
 
     private String name;
