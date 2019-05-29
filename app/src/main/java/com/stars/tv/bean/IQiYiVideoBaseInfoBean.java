@@ -645,12 +645,21 @@ public class IQiYiVideoBaseInfoBean {
     }
 
     public class Director {
+//        @Override
+//        public String toString() {
+//            return "Director{" +
+//                    "id=" + id +
+//                    ", name='" + name + '\'' +
+//                    ", image_url='" + image_url + '\'' +
+//                    '}';
+//        }
+
         @Override
         public String toString() {
-            return "Director{" +
-                    "id=" + id +
-                    ", name='" + name + '\'' +
-                    ", image_url='" + image_url + '\'' +
+            return "{" +
+                    "\"id\":\"" + id + '\"' +
+                    ",\"name\":\"" + name + '\"' +
+                    ",\"image_url\":\"" + image_url + '\"' +
                     '}';
         }
 
@@ -681,13 +690,23 @@ public class IQiYiVideoBaseInfoBean {
     }
 
     public class Main_charactor {
+//        @Override
+//        public String toString() {
+//            return "Main_charactor{" +
+//                    "id=" + id +
+//                    ", name='" + name + '\'' +
+//                    ", image_url='" + image_url + '\'' +
+//                    ", character=" + character +
+//                    '}';
+//        }
+
         @Override
         public String toString() {
-            return "Main_charactor{" +
-                    "id=" + id +
-                    ", name='" + name + '\'' +
-                    ", image_url='" + image_url + '\'' +
-                    ", character=" + character +
+            return "{" +
+                    "\"id\":\"" + id + '\"' +
+                    ",\"name\":\"" + name + '\"' +
+                    ",\"image_url\":\"" + image_url + '\"' +
+                    ",\"character\":\"" + character + '\"' +
                     '}';
         }
 
@@ -730,11 +749,32 @@ public class IQiYiVideoBaseInfoBean {
         public String toString() {
             return "People{" +
                     "director=" + director +
+                    ", host=" + host +
+                    ", guest=" + guest +
                     ", main_charactor=" + main_charactor +
                     '}';
         }
 
         private List<Director> director;
+
+        public List<Director> getHost() {
+            return host;
+        }
+
+        public void setHost(List<Director> host) {
+            this.host = host;
+        }
+
+        public List<Director> getGuest() {
+            return guest;
+        }
+
+        public void setGuest(List<Director> guest) {
+            this.guest = guest;
+        }
+
+        private List<Director> host;
+        private List<Director> guest;
         private List<Main_charactor> main_charactor;
         public void setDirector(List<Director> director) {
             this.director = director;

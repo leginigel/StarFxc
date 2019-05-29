@@ -147,13 +147,29 @@ public class MediaInfoListFragment extends Fragment {
         String videoCount=videoinfoshare.getString("videoCount","");
         minfo1Val="更新至"+latestOrder+"集/共"+videoCount+"集";
 
-        minfo2="导演：";
-        minfo2Val=videoinfoshare.getString("directorname","");
+        if(null!=(videoinfoshare.getString("directorname",""))) {
+            minfo2 = "导演：";
+            minfo2Val = videoinfoshare.getString("directorname", "");
+        }
+        else if(null!=(videoinfoshare.getString("hostname",""))){
+            minfo2 = "主持人：";
+            minfo2Val = videoinfoshare.getString("hostname", "");
+        }
 
-        minfo3="主演：";
-        minfo3Val=videoinfoshare.getString("secondInfo","");
+        if(null!=(videoinfoshare.getString("main_charactorname",""))) {
+            minfo3 = "主演：";
+            minfo3Val = videoinfoshare.getString("main_charactorname", "");
+        }
+        else if(null!=(videoinfoshare.getString("guestname",""))){
+            minfo3 = "嘉宾：";
+            minfo3Val = videoinfoshare.getString("guestname", "");
+        }
 
-        medplot=videoinfoshare.getString("description","");
+        if(null!=(videoinfoshare.getString("description",""))) {
+            medplot = videoinfoshare.getString("description", "");
+        } else {
+            medplot="无";
+        }
 
     }
 

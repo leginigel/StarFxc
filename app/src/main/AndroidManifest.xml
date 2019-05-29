@@ -52,7 +52,7 @@
         android:parentActivityName=".activity.MainActivity">
       </activity>
         <activity
-            android:name=".activity.VideoPreview">
+            android:name=".activity.VideoPreviewActivity">
         </activity>
 
         <!-- AutoSize 基准分辨率初始化 -->
