@@ -1,4 +1,4 @@
-package com.stars.tv.sample;
+package com.stars.tv.presenter;
 
 import android.content.Context;
 import android.content.Intent;
@@ -11,17 +11,23 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.stars.tv.R;
-import com.stars.tv.activity.VideoPreview;
+import com.stars.tv.activity.VideoPreviewActivity;
 import com.stars.tv.bean.IQiYiMovieBean;
-import com.stars.tv.fragment.MediaInfoListFragment;
-import com.stars.tv.fragment.PreVideoRowFragment;
 
 import java.util.Objects;
 
+import me.jessyan.autosize.AutoSizeConfig;
+import me.jessyan.autosize.utils.AutoSizeUtils;
+
 public class PreVideoItemPresenter extends Presenter {
 
-    private static final int CARD_WIDTH = 250;
-    private static final int CARD_HEIGHT = 200;
+    private static final int ITEM_NUM_ROW = 6; // 一行多少个row item.
+    private static final int GRID_VIEW_LEFT_PX = 80;
+    private static final int GRID_VIEW_RIGHT_PX = 50;
+    private static final int ITEM_RIGHT_PADDING_PX = 25;
+    int mItemWidth = 0;
+    int mItemHeight = 0;
+
     ImageView bgIv;
     TextView nameTv;
     View boardView;
@@ -31,7 +37,10 @@ public class PreVideoItemPresenter extends Presenter {
     public ViewHolder onCreateViewHolder(ViewGroup parent) {
         mcontext = parent.getContext();
         View view = View.inflate(parent.getContext(), R.layout.item_video_sample_layout, null);
-        ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(CARD_WIDTH, CARD_HEIGHT);
+        // 保持影视比例.
+        mItemWidth = (AutoSizeUtils.dp2px(mcontext, AutoSizeConfig.getInstance().getDesignWidthInDp()) - GRID_VIEW_LEFT_PX - GRID_VIEW_RIGHT_PX - (ITEM_RIGHT_PADDING_PX * ITEM_NUM_ROW)) / ITEM_NUM_ROW;
+        mItemHeight = mItemWidth / 3 * 4;
+        ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(mItemWidth, mItemHeight);
         view.setLayoutParams(lp);
         view.setFocusable(true);
         view.setFocusableInTouchMode(true);
@@ -47,17 +56,16 @@ public class PreVideoItemPresenter extends Presenter {
         nameTv.setText(videoBean.getName());
         Glide.with(Objects.requireNonNull(viewHolder.view.getContext()))
                 .load(videoBean.getImageUrl()).into(bgIv);
-
-        viewHolder.view.setOnClickListener(new View.OnClickListener() {
-//            @Override
-
-            public void onClick(View v) {
-//                Intent intent = new Intent( mcontext, VideoPreview.class);
+//
+//        viewHolder.view.setOnClickListener(new View.OnClickListener() {
+////            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent( mcontext, VideoPreviewActivity.class);
 //                intent.putExtra("videoBean", videoBean);
 //                mcontext.startActivity(intent);
-                Log.v("tttPClickvideoBean", videoBean.toString());
-            }
-        });
+//                Log.v("tttPClickvideoBean", videoBean.toString());
+//            }
+//        });
     }
 
     @Override

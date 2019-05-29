@@ -2,6 +2,7 @@
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/scrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activity.MainActivity">
@@ -67,10 +68,21 @@
         android:focusable="true"
         android:layout_gravity="center"/>
 
-    <com.stars.tv.view.TvViewPager
-        android:id="@+id/bottompage"
+    <!-- 演员列表 -->
+    <android.support.v17.leanback.widget.HorizontalGridView
+        android:id="@+id/charactor_gv"
         android:layout_width="match_parent"
-        android:layout_height="300dp"/>
+        android:clipToPadding="false"
+        android:clipChildren="false"
+        android:layout_height="150dp" />
+
+    <!-- 相关推荐 -->
+    <android.support.v17.leanback.widget.HorizontalGridView
+        android:id="@+id/recommend_gv"
+        android:layout_width="match_parent"
+        android:clipToPadding="false"
+        android:clipChildren="false"
+        android:layout_height="150dp" />
 
 </LinearLayout>
 </ScrollView>

@@ -19,14 +19,11 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.stars.tv.R;
-import com.stars.tv.activity.MainActivity;
-import com.stars.tv.activity.VideoPreview;
+import com.stars.tv.activity.VideoPreviewActivity;
 import com.stars.tv.bean.IQiYiListBean;
 import com.stars.tv.bean.IQiYiMovieBean;
 import com.stars.tv.bean.contract.IQiYiMovieContract;
 import com.stars.tv.presenter.IQiYiMoviePresenter;
-import com.stars.tv.sample.DragSampleCloud;
-import com.stars.tv.server.LeanCloudStorage;
 import com.stars.tv.utils.ViewUtils;
 import com.stars.tv.view.MyVerticalGridView;
 import com.stars.tv.view.SpaceItemDecoration;
@@ -192,8 +189,7 @@ public class VideoVGridSampleMVPFragment
         });
         holder.itemView.setOnClickListener(view -> {
           // TODO Item点击事件
-            // TODO Item点击事件
-            Intent intent = new Intent(getContext(), VideoPreview.class);
+            Intent intent = new Intent(getContext(), VideoPreviewActivity.class);
             intent.putExtra("videoBean", videoBean);
             startActivity(intent);
         });

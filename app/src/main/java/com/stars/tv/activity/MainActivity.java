@@ -202,7 +202,7 @@ public class MainActivity extends BaseActivity {
             @Override
             public void onClick(View view) {
                 //TODO
-                Intent intent = new Intent(MainActivity.this, VideoPreview.class);
+                Intent intent = new Intent(MainActivity.this, VideoPreviewActivity.class);
                 startActivity(intent);
 
             }
