@@ -12,7 +12,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.stars.tv.R;
-import com.stars.tv.activity.VideoPreview;
+import com.stars.tv.activity.VideoPreviewActivity;
 import com.stars.tv.bean.IQiYiMovieBean;
 
 import java.util.Objects;
@@ -84,7 +84,7 @@ public class SeriesVideoItemPresenter extends Presenter {
             @Override
             public void onClick(View v) {
 //                Toast.makeText(mContext,"click the" + nameTv.getText().toString(),Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(mContext, VideoPreview.class);
+                Intent intent = new Intent(mContext, VideoPreviewActivity.class);
                 intent.putExtra("videoBean", videoBean);
                 mContext.startActivity(intent);
             }

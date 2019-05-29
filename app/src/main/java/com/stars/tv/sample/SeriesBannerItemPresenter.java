@@ -11,7 +11,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.stars.tv.R;
-import com.stars.tv.activity.VideoPreview;
+import com.stars.tv.activity.VideoPreviewActivity;
 import com.stars.tv.bean.IQiYiBannerInfoBean;
 
 import java.util.Objects;
@@ -57,7 +57,7 @@ public class SeriesBannerItemPresenter extends Presenter {
             @Override
             public void onClick(View v) {
 //                Toast.makeText(mContext,"click the Video",Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(mContext, VideoPreview.class);
+                Intent intent = new Intent(mContext, VideoPreviewActivity.class);
                 intent.putExtra("videoBean", videoBean.toString());
                 mContext.startActivity(intent);
             }
