@@ -48,7 +48,7 @@ public class IQiYiMovieBean implements Serializable {
                 ", playUrl='" + playUrl + '\'' +
                 ", score='" + score + '\'' +
                 ", duration='" + duration + '\'' +
-                ", description='" + description + '\'' +
+//                ", description='" + description + '\'' +
                 ", imageUrl='" + imageUrl + '\'' +
                 ", latestOrder='" + latestOrder + '\'' +
                 ", videoCount='" + videoCount + '\'' +
