@@ -7,6 +7,7 @@ import android.support.annotation.RequiresApi;
 import android.support.v17.leanback.widget.BaseCardView;
 import android.support.v17.leanback.widget.ImageCardView;
 import android.support.v17.leanback.widget.Presenter;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.text.Html;
 import android.text.TextUtils;
@@ -27,14 +28,14 @@ import com.stars.tv.youtube.util.Utils;
 
 public class YouTubeCardPresenter extends Presenter {
     private Context mContext;
-    private YoutubeFragment mFragment;
+    private Fragment mFragment;
     private ViewGroup mLeftNav, mTopNav;
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup) {
         Log.v("YouTubeCardPresenter" , "onCreateViewHolder");
         mContext = viewGroup.getContext();
-        mFragment = (YoutubeFragment) ((FragmentActivity) mContext)
+        mFragment = ((FragmentActivity) mContext)
                 .getSupportFragmentManager().findFragmentById(R.id.container_home);
         mLeftNav = ((FragmentActivity) mContext).findViewById(R.id.left_nav);
         mTopNav = ((FragmentActivity) mContext).findViewById(R.id.top_nav);
@@ -67,8 +68,45 @@ public class YouTubeCardPresenter extends Presenter {
         CardViewHolder cardViewHolder = (CardViewHolder) viewHolder;
         YouTubeVideo youTubeVideo = (YouTubeVideo) o;
 
-        // Set RowFragment Focus Navigation
-        switch (mFragment.getTabCategory()){
+        setFocusNavigation(cardViewHolder);
+
+        // Set TimeStamp Value
+        TextView timeStamp = cardViewHolder.mTimeStamp;
+        if(youTubeVideo.getDuration() == null){
+            timeStamp.setBackgroundColor(Color.TRANSPARENT);
+        }
+        else{
+            timeStamp.setBackgroundColor(Color.parseColor("#cc121212"));
+            timeStamp.setText(Utils.DurationConverter(youTubeVideo.getDuration()));
+        }
+
+        // Load ImageCardView
+        ImageCardView imgCard = cardViewHolder.mImageCardView;
+        if(youTubeVideo.getId() != null){
+            Log.v("YouTubeCardPresenter" , "!cardViewHolder.isLoading");
+            cardViewHolder.setCardInfo();
+            imgCard.setTitleText(Html.fromHtml(youTubeVideo.getTitle()));
+            imgCard.setContentText(youTubeVideo.getChannel() + "\n"
+                    + Utils.CountConverter(youTubeVideo.getNumber_views()) +" views ‧ "
+                    + Utils.TimeConverter(youTubeVideo.getTime()) + "ago");
+        }
+        Glide.with(mContext)
+                .asBitmap()
+//                .placeholder(mContext.getResources().getDrawable(R.drawable.ic_folder_24dp))
+                .load("https://i.ytimg.com/vi/"+ youTubeVideo.getId() +"/0.jpg")
+                .into(imgCard.getMainImageView());
+    }
+
+    @Override
+    public void onUnbindViewHolder(ViewHolder viewHolder) {
+        // Nothing to unbind for TextView, but if this viewHolder had
+        // allocated bitmaps, they can be released here.
+
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public void setFocusNavigation(CardViewHolder cardViewHolder){
+        switch (((YoutubeFragment) mFragment).getTabCategory()){
             case Recommended:
                 cardViewHolder.view.setNextFocusUpId(R.id.recommend_btn);
                 break;
@@ -103,39 +141,6 @@ public class YouTubeCardPresenter extends Presenter {
             }
             return false;
         });
-
-        // Set TimeStamp Value
-        TextView timeStamp = cardViewHolder.mTimeStamp;
-        if(youTubeVideo.getDuration() == null){
-            timeStamp.setBackgroundColor(Color.TRANSPARENT);
-        }
-        else{
-            timeStamp.setBackgroundColor(Color.parseColor("#cc121212"));
-            timeStamp.setText(Utils.DurationConverter(youTubeVideo.getDuration()));
-        }
-
-        // Load ImageCardView
-        ImageCardView imgCard = cardViewHolder.mImageCardView;
-        if(youTubeVideo.getId() != null){
-            Log.v("YouTubeCardPresenter" , "!cardViewHolder.isLoading");
-            cardViewHolder.setCardInfo();
-            imgCard.setTitleText(Html.fromHtml(youTubeVideo.getTitle()));
-            imgCard.setContentText(youTubeVideo.getChannel() + "\n"
-                    + Utils.CountConverter(youTubeVideo.getNumber_views()) +" views ‧ "
-                    + Utils.TimeConverter(youTubeVideo.getTime()) + "ago");
-        }
-        Glide.with(mContext)
-                .asBitmap()
-//                .placeholder(mContext.getResources().getDrawable(R.drawable.ic_folder_24dp))
-                .load("https://i.ytimg.com/vi/"+ youTubeVideo.getId() +"/0.jpg")
-                .into(imgCard.getMainImageView());
-    }
-
-    @Override
-    public void onUnbindViewHolder(ViewHolder viewHolder) {
-        // Nothing to unbind for TextView, but if this viewHolder had
-        // allocated bitmaps, they can be released here.
-
     }
 
     public class CardViewHolder extends ViewHolder{

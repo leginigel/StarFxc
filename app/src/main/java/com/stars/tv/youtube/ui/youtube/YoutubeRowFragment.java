@@ -70,20 +70,7 @@ public class YoutubeRowFragment extends RowsSupportFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        mYouTubeCardPresenter = new YouTubeCardPresenter();
-        mListRowPresenter = new ListRowPresenter(FocusHighlight.ZOOM_FACTOR_XSMALL);
-        mListRowPresenter.setShadowEnabled(true);
-        mListRowPresenter.setSelectEffectEnabled(false);
-        mRowsAdapter = new ArrayObjectAdapter(mListRowPresenter);
-
-        setRows(null);
-
-        youTubePlayerFragment = (YouTubePlayerSupportFragment) getActivity()
-                        .getSupportFragmentManager().findFragmentById(R.id.fragment_youtube_player);
-        playerControlsFragment = (PlayerControlsFragment) getActivity()
-                .getSupportFragmentManager().findFragmentById(R.id.fragment_player_controls);
-        mVideoBox = ((YoutubeActivity) getActivity()).getPlayerBox();
-        mPlayer = ((YoutubeActivity) getActivity()).getYouTubePlayer();
+        initial();
 
         setOnItemViewSelectedListener(new YouTubeCardSelectedListener());
         setOnItemViewClickedListener(new YouTubeCardClickedListener());
@@ -131,9 +118,24 @@ public class YoutubeRowFragment extends RowsSupportFragment {
         }
     }
 
+    public void initial(){
+        mYouTubeCardPresenter = new YouTubeCardPresenter();
+        mListRowPresenter = new ListRowPresenter(FocusHighlight.ZOOM_FACTOR_XSMALL);
+        mListRowPresenter.setShadowEnabled(true);
+        mListRowPresenter.setSelectEffectEnabled(false);
+        mRowsAdapter = new ArrayObjectAdapter(mListRowPresenter);
 
+        setRows(null);
 
-    private final class YouTubeCardSelectedListener implements OnItemViewSelectedListener{
+        youTubePlayerFragment = (YouTubePlayerSupportFragment) getActivity()
+                .getSupportFragmentManager().findFragmentById(R.id.fragment_youtube_player);
+        playerControlsFragment = (PlayerControlsFragment) getActivity()
+                .getSupportFragmentManager().findFragmentById(R.id.fragment_player_controls);
+        mVideoBox = ((YoutubeActivity) getActivity()).getPlayerBox();
+        mPlayer = ((YoutubeActivity) getActivity()).getYouTubePlayer();
+    }
+
+    public final class YouTubeCardSelectedListener implements OnItemViewSelectedListener{
 
         private ImageCardView imgCard = null;
 //        private CustomCardView imgCard = null;
@@ -160,7 +162,7 @@ public class YoutubeRowFragment extends RowsSupportFragment {
 
     }
 
-    private final class YouTubeCardClickedListener implements OnItemViewClickedListener {
+    public final class YouTubeCardClickedListener implements OnItemViewClickedListener {
 
         // TODO: 2019/5/21 The Video Player Should Change
         private YouTubeVideo video = null;
