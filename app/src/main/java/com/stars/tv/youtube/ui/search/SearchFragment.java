@@ -10,6 +10,7 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,12 +38,14 @@ public class SearchFragment extends Fragment {
     private FragmentManager fm;
     private TextView searchBar;
     private CardView searchIcon, clearIcon, spaceIcon, backspaceIcon, shiftIcon;
-    private View suggest, view;
-    private FrameLayout mKeyboard, mRow;
+    private View view;
+    private FrameLayout mRow;
     private AlphabetKeyborad mAlphabet;
     private NumberKeyboard mNumber;
     private SpinnerFragment mSpinner;
     private Keyboard mType;
+
+    private boolean RightFromSpace = false;
 
     SearchRowFragment rowFragment;
 
@@ -66,9 +69,10 @@ public class SearchFragment extends Fragment {
             mType = Keyboard.Alphabet;
 
             fm.beginTransaction().replace(R.id.search_row, rowFragment).commit();
+            mRow.setVisibility(View.GONE);
         }
 
-        mSuggestListAdapter = new SuggestListAdapter();
+        mSuggestListAdapter = new SuggestListAdapter(this);
         recyclerView.setLayoutManager(
                 new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         mSuggestListAdapter.setHasStableIds(true);
@@ -84,16 +88,28 @@ public class SearchFragment extends Fragment {
         searchIcon.getChildAt(0).setOnClickListener(v -> querySearchResult(searchBar.getText().toString()));
         backspaceIcon.getChildAt(0).setOnClickListener(v -> deleteBarChar());
 
+        spaceIcon.getChildAt(0).setOnKeyListener((v, keyCode, event) ->{
+            if(event.getAction() == KeyEvent.ACTION_DOWN ) {
+                if(keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
+                    RightFromSpace = true;
+                    recyclerView.getChildAt(SuggestListAdapter.OutId).requestFocus();
+                    return true;
+                }
+                if(keyCode == KeyEvent.KEYCODE_DPAD_DOWN /*&& mRow.getVisibility() != View.GONE*/) {
+                    SuggestListAdapter.UpFromSuggestion = false;
+                }
+            }
+            return false;
+        });
+
         setOnFocusListener();
 
         return view;
     }
 
     private void findView(){
-        mKeyboard = view.findViewById(R.id.keyboard);
         mRow = view.findViewById(R.id.search_row);
         recyclerView = view.findViewById(R.id.rv_view);
-        suggest = view.findViewById(R.id.rv_view);
         searchBar = view.findViewById(R.id.search_bar);
         searchIcon = view.findViewById(R.id.cardViewSearch);
         clearIcon = view.findViewById(R.id.cardViewClear);
@@ -104,22 +120,29 @@ public class SearchFragment extends Fragment {
 
     private void setOnFocusListener(){
         ViewGroup viewGroup = (ViewGroup) view;
-        for (int i = 4;i < viewGroup.getChildCount() - 1;i++){
+        for (int i = 4;i < viewGroup.getChildCount();i++){
             CardView cardView = (CardView) viewGroup.getChildAt(i);
-            TextView textView = (TextView) cardView.getChildAt(0);
-            textView.setOnFocusChangeListener((v, hasFocus)->{
+            View childView = cardView.getChildAt(0);
+            int finalI = i;
+            childView.setOnFocusChangeListener((v, hasFocus)->{
                 if(hasFocus){
-                    cardView.setCardElevation(20);
+                    ((CardView) v.getParent()).setCardElevation(20);
+                    if(finalI < 7){
+                        if(mType == Keyboard.Alphabet)
+                            v.setNextFocusUpId(AlphabetKeyborad.OutId_Down);
+                        else if(mType == Keyboard.Number)
+                            v.setNextFocusUpId(NumberKeyboard.OutId_Down);
+                        if(mRow.getVisibility() == View.GONE) {
+                            v.setNextFocusDownId(v.getId());
+                        }
+                        else v.setNextFocusDownId(R.id.search_row);
+                    }
+                    if(finalI == 6)
+                        v.setNextFocusRightId(v.getId());
                 }
-                else cardView.setCardElevation(0);
+                else ((CardView) v.getParent()).setCardElevation(0);
             });
         }
-        backspaceIcon.getChildAt(0).setOnFocusChangeListener((v, hasFocus)->{
-            if(hasFocus){
-                ((CardView) v.getParent()).setCardElevation(20);
-            }
-            else ((CardView) v.getParent()).setCardElevation(0);
-        });
     }
 
     private void switchKeyboard(){
@@ -136,6 +159,7 @@ public class SearchFragment extends Fragment {
     private void querySearchResult(String query){
         Log.d(TAG,"querySearchResult");
         if(!query.equals("Search")) {
+            mRow.setVisibility(View.VISIBLE);
             mViewModel.searchRx(query);
             mViewModel.setIsLoading(true);
             mSuggestListAdapter.resize(5);
@@ -152,8 +176,10 @@ public class SearchFragment extends Fragment {
 
     private void clearSearchBar(){
         mViewModel.setQueryString("clear", true);
+        mSuggestListAdapter.clear();
         mSuggestListAdapter.resize(10);
         rowFragment.clear();
+        mRow.setVisibility(View.GONE);
     }
 
     @Override
@@ -178,9 +204,25 @@ public class SearchFragment extends Fragment {
             }
             else{
                 fm.beginTransaction().replace(R.id.search_row, rowFragment).commit();
+                mRow.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
                 mRow.requestFocus();
+//                rowFragment.getView().requestFocus();
             }
         });
     }
 
+    public int getRecyclerViewNextFocusRightId(){
+        if(RightFromSpace){
+            RightFromSpace = false;
+            return spaceIcon.getChildAt(0).getId();
+        }
+        else if(mType == Keyboard.Alphabet)
+            return AlphabetKeyborad.OutId_Left;
+        else /*if(mType == Keyboard.Number)*/
+            return NumberKeyboard.OutId_Left;
+    }
+
+    public FrameLayout getRow() {
+        return mRow;
+    }
 }

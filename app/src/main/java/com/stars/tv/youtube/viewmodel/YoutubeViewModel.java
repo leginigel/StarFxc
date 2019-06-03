@@ -105,7 +105,7 @@ public class YoutubeViewModel extends ViewModel {
         if(recommendedChannelList == null) {
             Log.v(TAG, "getRecommendedChannelList NULL");
             recommendedChannelList = new MutableLiveData<>();
-//            playlist(recommend_playlistId_url);
+            playlist(recommend_playlistId_url);
         }
         return recommendedChannelList;
     }

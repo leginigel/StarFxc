@@ -49,7 +49,7 @@
         android:focusedByDefault="false"
         app:cardElevation="0dp"
         app:layout_constraintStart_toEndOf="@+id/cardViewNum1"
-        app:layout_constraintTop_toTopOf="@+id/view">
+        app:layout_constraintTop_toTopOf="@+id/cardViewNum1">
 
         <TextView
             android:id="@+id/keyboard_text_2"
@@ -76,7 +76,7 @@
         android:focusedByDefault="false"
         app:cardElevation="0dp"
         app:layout_constraintStart_toEndOf="@+id/cardViewNum2"
-        app:layout_constraintTop_toTopOf="@+id/view">
+        app:layout_constraintTop_toTopOf="@+id/cardViewNum1">
 
         <TextView
             android:id="@+id/keyboard_text_3"
@@ -103,7 +103,7 @@
         android:focusedByDefault="false"
         app:cardElevation="0dp"
         app:layout_constraintStart_toEndOf="@+id/cardViewNum3"
-        app:layout_constraintTop_toTopOf="@+id/view">
+        app:layout_constraintTop_toTopOf="@+id/cardViewNum1">
 
         <TextView
             android:id="@+id/keyboard_text_4"
@@ -130,7 +130,7 @@
         android:focusedByDefault="false"
         app:cardElevation="0dp"
         app:layout_constraintStart_toEndOf="@+id/cardViewNum4"
-        app:layout_constraintTop_toTopOf="@+id/view">
+        app:layout_constraintTop_toTopOf="@+id/cardViewNum1">
 
         <TextView
             android:id="@+id/keyboard_text_5"
@@ -157,7 +157,7 @@
         android:focusedByDefault="false"
         app:cardElevation="0dp"
         app:layout_constraintStart_toEndOf="@+id/cardViewNum5"
-        app:layout_constraintTop_toTopOf="@+id/view">
+        app:layout_constraintTop_toTopOf="@+id/cardViewNum1">
 
         <TextView
             android:id="@+id/keyboard_text_6"
@@ -184,7 +184,7 @@
         android:focusedByDefault="false"
         app:cardElevation="0dp"
         app:layout_constraintStart_toEndOf="@+id/cardViewNum6"
-        app:layout_constraintTop_toTopOf="@+id/view">
+        app:layout_constraintTop_toTopOf="@+id/cardViewNum1">
 
         <TextView
             android:id="@+id/keyboard_text_7"
@@ -210,7 +210,7 @@
         android:focusableInTouchMode="true"
         android:focusedByDefault="false"
         app:cardElevation="0dp"
-        app:layout_constraintStart_toEndOf="@+id/view"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cardViewNum1">
 
         <TextView
@@ -400,7 +400,7 @@
         android:focusableInTouchMode="true"
         android:focusedByDefault="false"
         app:cardElevation="0dp"
-        app:layout_constraintStart_toEndOf="@+id/view"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cardViewNum8">
 
         <TextView

@@ -29,7 +29,7 @@ import com.stars.tv.youtube.util.Utils;
 public class YouTubeCardPresenter extends Presenter {
     private Context mContext;
     private Fragment mFragment;
-    private ViewGroup mLeftNav, mTopNav;
+    public ViewGroup mLeftNav, mTopNav;
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup) {
@@ -127,16 +127,15 @@ public class YouTubeCardPresenter extends Presenter {
                 else {
                     mLeftNav.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
                 }
-                if(keyCode == KeyEvent.KEYCODE_DPAD_LEFT)
+                if(keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
                     mTopNav.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
+                }
                 else {
                     mTopNav.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
                 }
-                if(event.getAction() == KeyEvent.ACTION_DOWN){
-                    if(keyCode == KeyEvent.KEYCODE_BACK){
-                        mTopNav.requestFocus();
-                        return true;
-                    }
+                if(keyCode == KeyEvent.KEYCODE_BACK){
+                    mTopNav.requestFocus();
+                    return true;
                 }
             }
             return false;

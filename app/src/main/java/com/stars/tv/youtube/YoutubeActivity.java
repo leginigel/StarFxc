@@ -5,8 +5,10 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
+import android.support.v17.leanback.widget.ListRow;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -19,12 +21,15 @@ import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerSupportFragment;
 
 import com.stars.tv.youtube.api.YoutubeService;
+import com.stars.tv.youtube.ui.BlankFragment;
 import com.stars.tv.youtube.ui.PlayerControlsFragment;
 import com.stars.tv.R;
 import com.stars.tv.youtube.ui.search.SearchFragment;
+import com.stars.tv.youtube.ui.search.SuggestListAdapter;
 import com.stars.tv.youtube.ui.youtube.YoutubeFragment;
-
+import com.stars.tv.youtube.ui.youtube.YoutubeRowFragment;
 import me.jessyan.autosize.internal.CustomAdapt;
+
 
 @RequiresApi(api = Build.VERSION_CODES.N)
 public class YoutubeActivity extends FragmentActivity implements CustomAdapt,
@@ -145,9 +150,9 @@ public class YoutubeActivity extends FragmentActivity implements CustomAdapt,
     private void setIconFocusListener(){
         setIconFocus(searchIcon, PageCategory.Search);
         setIconFocus(homeIcon, PageCategory.Home);
-        setIconFocus(subIcon, PageCategory.Search);
-        setIconFocus(folderIcon, PageCategory.Search);
-        setIconFocus(settingIcon, PageCategory.Search);
+        setIconFocus(subIcon, PageCategory.Subscription);
+        setIconFocus(folderIcon, PageCategory.Library);
+        setIconFocus(settingIcon, PageCategory.Setting);
     }
 
     private void setIconOnKey(ImageView image){
@@ -155,6 +160,18 @@ public class YoutubeActivity extends FragmentActivity implements CustomAdapt,
             if(event.getAction() == KeyEvent.ACTION_DOWN) {
                 if(KeyEvent.KEYCODE_DPAD_RIGHT == keyCode) {
                     view.setSelected(true);
+                    if(homeIcon.isSelected()){
+                        YoutubeRowFragment frag = (YoutubeRowFragment) youtubeFragment.getFragmentManager().findFragmentById(R.id.container_row);
+                        int check = frag.getSelectedPosition();
+                        ListRow listRow = (ListRow) frag.getAdapter().get(check);
+//                        (YoutubeVideo)View t = (View) listRow.getAdapter().get(0);
+//                        adapter.getPresenter()
+                    }
+                    if(searchIcon.isSelected()) {
+                        RecyclerView suggestions = searchFragment.getView().findViewById(R.id.rv_view);
+                        suggestions.getChildAt(SuggestListAdapter.OutId).requestFocus();
+                        return true;
+                    }
                 }
             }
             return false;
@@ -176,7 +193,7 @@ public class YoutubeActivity extends FragmentActivity implements CustomAdapt,
             case Search:
                 return searchFragment;
         }
-        return searchFragment;
+        return new BlankFragment();
     }
 
     public View getPlayerBox() {

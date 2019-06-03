@@ -21,10 +21,30 @@ import com.stars.tv.youtube.viewmodel.SearchViewModel;
 
 public class SuggestListAdapter extends RecyclerView.Adapter<SuggestListAdapter.ViewHolder> {
 
+    private String [] default_suggestion = {
+            "golden state warriors vs toronto raptors",
+            "kadenang ginto",
+            "never really over katy perry",
+            "press press cardi b",
+            "mark ronson camila cabello",
+            "avenger end game",
+            "league of legends msi",
+            "gay marriage",
+            "pbb",
+            "james arthur falling like the stars"
+    };
     private Context mContext;
     private List<String> items;
     private int size = 10;
     private ViewGroup mLeftNav;
+    private SearchFragment mSearchFragment;
+
+    public static int OutId = 0;
+    public static boolean UpFromSuggestion = true;
+
+    public SuggestListAdapter(SearchFragment searchFragment) {
+        this.mSearchFragment  =searchFragment;
+    }
 
     @NonNull
     @Override
@@ -39,11 +59,16 @@ public class SuggestListAdapter extends RecyclerView.Adapter<SuggestListAdapter.
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
 //        Log.d("onBindViewHolder", "" + i);
         SearchViewModel vm = ViewModelProviders.of((FragmentActivity) mContext).get(SearchViewModel.class);
-        if(items == null)
-            viewHolder.textView.setText("CHECK "+ i);
+        if(items == null){
+//            viewHolder.textView.setText("CHECK "+ i);
+            viewHolder.imageView.setVisibility(View.VISIBLE);
+            viewHolder.textView.setText(default_suggestion[i]);
+        }
         else{
+            viewHolder.imageView.setVisibility(View.GONE);
             viewHolder.textView.setText(items.get(i));
             viewHolder.cardView.setOnClickListener(v ->{
+                mSearchFragment.getRow().setVisibility(View.VISIBLE);
                 vm.searchRx(viewHolder.textView.getText().toString());
                 vm.setIsLoading(true);
                 resize(5);
@@ -53,10 +78,20 @@ public class SuggestListAdapter extends RecyclerView.Adapter<SuggestListAdapter.
 
         viewHolder.cardView.setOnKeyListener((v, keyCode, event) -> {
             if(event.getAction() == KeyEvent.ACTION_DOWN){
-                if(keyCode == KeyEvent.KEYCODE_DPAD_DOWN)
+                if(keyCode == KeyEvent.KEYCODE_DPAD_DOWN) {
                     mLeftNav.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
+                    viewHolder.cardView.setNextFocusDownId(R.id.search_row);
+                    UpFromSuggestion = true;
+                }
                 else {
                     mLeftNav.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
+                }
+                if(keyCode == KeyEvent.KEYCODE_DPAD_RIGHT){
+                    v.setNextFocusRightId(mSearchFragment.getRecyclerViewNextFocusRightId());
+                    OutId = i;
+                }
+                else if(keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
+                    OutId = i;
                 }
             }
             return false;
@@ -80,8 +115,9 @@ public class SuggestListAdapter extends RecyclerView.Adapter<SuggestListAdapter.
                 if(focus) cardView.setCardElevation(20);
                 else cardView.setCardElevation(0);
             });
-            imageView = itemView.findViewById(R.id.img);
-//            imageView.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_youtube_color_icon));
+            imageView = itemView.findViewById(R.id.suggest_img);
+//            imageView.setImageDrawable(null);
+            imageView.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_whatshot_24dp));
             textView = itemView.findViewById(R.id.suggest_text);
         }
     }
@@ -90,6 +126,10 @@ public class SuggestListAdapter extends RecyclerView.Adapter<SuggestListAdapter.
         this.items = new ArrayList<>();
         this.items.addAll(list);
         notifyDataSetChanged();
+    }
+
+    public void clear() {
+        this.items = null;
     }
 
     public void resize(int size){
