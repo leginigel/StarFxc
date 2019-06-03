@@ -11,7 +11,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v17.leanback.widget.ArrayObjectAdapter;
-import android.support.v17.leanback.widget.BaseGridView;
 import android.support.v17.leanback.widget.HeaderItem;
 import android.support.v17.leanback.widget.ItemBridgeAdapter;
 import android.support.v17.leanback.widget.OnChildViewHolderSelectedListener;
@@ -28,15 +27,23 @@ import com.stars.tv.R;
 import com.stars.tv.bean.IQiYiBannerInfoBean;
 import com.stars.tv.bean.IQiYiMovieBean;
 import com.stars.tv.bean.IQiYiMovieSimplifiedBean;
+import com.stars.tv.bean.IQiYiTopListBean;
 import com.stars.tv.presenter.IQiYiMovieSimplifiedListPresenter;
 import com.stars.tv.presenter.IQiYiParseBannerInfoPresenter;
+import com.stars.tv.presenter.IQiYiParseTopListPresenter;
 import com.stars.tv.sample.HotVideoListRow;
+import com.stars.tv.sample.LandscapeVideoItemPresenter;
+import com.stars.tv.sample.LandscapeVideoListRow;
 import com.stars.tv.sample.MyPresenterSelector;
-import com.stars.tv.sample.SeriesAndRecButtonItemPresenter;
-import com.stars.tv.sample.SeriesButtonListRow;
-import com.stars.tv.sample.SeriesAndRecVideoDataList;
-import com.stars.tv.sample.SeriesBannerItemPresenter;
+import com.stars.tv.sample.PortraitVideoItem1Presenter;
 import com.stars.tv.sample.PortraitVideoItemPresenter;
+import com.stars.tv.sample.PortraitVideoListRow1;
+import com.stars.tv.sample.RecBannerItem1Presenter;
+import com.stars.tv.sample.RecBannerItemPresenter;
+import com.stars.tv.sample.RecButtonListRow;
+import com.stars.tv.sample.RecTopVideoItemPresenter;
+import com.stars.tv.sample.SeriesAndRecButtonItemPresenter;
+import com.stars.tv.sample.SeriesAndRecVideoDataList;
 import com.stars.tv.sample.PortraitVideoListRow;
 import com.stars.tv.server.RxManager;
 import com.stars.tv.utils.CallBack;
@@ -45,24 +52,26 @@ import com.stars.tv.view.MyVerticalGridView;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class SeriesVideoRowFragment extends Fragment {
-    private static final String TAG = "SeriesVideoRowFragment";
+public class RecommandVideoRowFragment extends Fragment {
+    private static final String TAG = "RecommandVideoFragment";
     private static final int GRID_VIEW_LEFT_PX = 80;
     private static final int GRID_VIEW_RIGHT_PX = 50;
     private static final int GRID_VIEW_TOP_PX = 30;
     private static final int GRID_VIEW_BOTTOM_PX = 50;
     protected static Context mContext;
     List<IQiYiMovieBean> mVideoList = new ArrayList<>();
-
+    List<IQiYiTopListBean> mVideoTopList = new ArrayList<>();
+    List<List<IQiYiTopListBean>> mVideoTopListArray = new ArrayList<>(3);
     List<List<IQiYiMovieBean>> mVideoListArray = new ArrayList<>(15);
     List<IQiYiBannerInfoBean> mBannerInfoList = new ArrayList<>();
-    @BindView(R.id.video_content_v_grid) MyVerticalGridView videoGrid;
+
+    @BindView(R.id.video_content_v_grid)
+    MyVerticalGridView videoGrid;
     Unbinder unbinder;
 
     ArrayObjectAdapter mRowsAdapter;
@@ -72,45 +81,56 @@ public class SeriesVideoRowFragment extends Fragment {
     String mTvTitle;
     final int REFRESH_BANNER_CONTENT = 0;
     final int REFRESH_MOVIE_CONTENT = 1;
-    private int mPageNum = 1;
-    private int category;
+    final int REFRESH_TOP_CONTENT = 2;
+    private int mPageNum = 0;
+    private int count = 0;
     private int countRow = 0;
-    private int loadRows = 3;
-    private int totalBanner = 3;
+    private int category;
+    private int loadRows = 4;
+    private int[] toplistPos = new int[3];
+    private int[] listPos = new int[26];
+    private int[] channel = {2,1,6,4,3,8,25,7,24,16,10,5,28,12,17,15,9,13,21,26,22,27,29,30,31,32};
 
-    private int[] listPos = new  int[15];
-    private String[] orderlist = {"15", "15", "15,24", "15,1654", "15,20", "15,11992", "15,24065", "15,30,1653", "15,135", "15,139", "15,32,149", "15,148", "15,1655", "15,27", "18"};
-
-    public SeriesVideoRowFragment() {
+    public RecommandVideoRowFragment() {
     }
 
-    public static SeriesVideoRowFragment getInstance(String titleMode) {
+    public static RecommandVideoRowFragment getInstance(String titleMode) {
         return newInstance(titleMode);
     }
 
-    public static SeriesVideoRowFragment newInstance(String titleName){
-        SeriesVideoRowFragment myFragment = new SeriesVideoRowFragment();
+    public static RecommandVideoRowFragment newInstance(String titleName) {
+        RecommandVideoRowFragment myFragment = new RecommandVideoRowFragment();
         Bundle bundle = new Bundle();
-        bundle.putString("titleName",titleName);
+        bundle.putString("titleName", titleName);
         myFragment.setArguments(bundle);
         return myFragment;
     }
 
     @SuppressLint("HandlerLeak")
-    private Handler mHandler = new Handler(){
+    private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            Log.v("tttt","msg.what:"+msg.what);
-            switch (msg.what){
+            Log.v("tttt", "msg.what:" + msg.what);
+            switch (msg.what) {
                 case REFRESH_BANNER_CONTENT:
                     showBannerData();
-                    parseIQiYiMovie();
+                    parseIQiYiMovieTop();
+                    Log.v("mmm", "mVideoTopListArray"+mVideoTopList.size());
+                    break;
+                case REFRESH_TOP_CONTENT:
+                    category=msg.arg1;
+                    showVideoTopData();
+                    count = count+1;
+                    if (count == 3) {
+                        showButton();
+                        loadMoreVideo();
+                    }
                     break;
                 case REFRESH_MOVIE_CONTENT:
                     category = msg.arg1;
                     showVideoData();
                     countRow = countRow +1;
-                    if(countRow == 15){
+                    if(countRow == 26){
                         Toast.makeText(mContext,"没有更多视频加载",Toast.LENGTH_LONG).show();
                     }
                     break;
@@ -118,7 +138,7 @@ public class SeriesVideoRowFragment extends Fragment {
                     break;
             }
             mItemBridgeAdapter.notifyDataSetChanged();
-            if(category>=14){
+            if (category >= 24) {
                 videoGrid.endRefreshingWithNoMoreData();
             }
         }
@@ -129,47 +149,124 @@ public class SeriesVideoRowFragment extends Fragment {
         super.onCreate(savedInstanceState);
         mTvTitle = getArguments() != null ? getArguments().getString("titleName") : null;
     }
+    public boolean onKeyDown(int keyCode, KeyEvent event){
 
-    private void showBannerData(){
-        SeriesBannerItemPresenter seriesBannerItemPresenter = new SeriesBannerItemPresenter();
-        ArrayObjectAdapter listRowAdapter = new ArrayObjectAdapter(seriesBannerItemPresenter);
-        if(mBannerInfoList!=null) {
-            Collections.shuffle(mBannerInfoList);
-            if (mBannerInfoList.size() >= totalBanner) {
-                for (int i = 0; i < totalBanner; i++) {
-                    listRowAdapter.add(mBannerInfoList.get(i));
-                }
-            } else {
-                for (int i = 0; i < mBannerInfoList.size(); i++) {
-                    listRowAdapter.add(mBannerInfoList.get(i));
-                }
-            }
+        return false;
+    }
+
+    private void showBannerData() {
+        RecBannerItemPresenter recBannerItemPresenter = new RecBannerItemPresenter();
+        ArrayObjectAdapter listRowAdapter = new ArrayObjectAdapter(recBannerItemPresenter);
+        Collections.shuffle(mBannerInfoList);
+        for (int i = 0; i < 2; i++) {
+            listRowAdapter.add(mBannerInfoList.get(i));
         }
         HotVideoListRow listRow = new HotVideoListRow(listRowAdapter);
         mRowsAdapter.add(listRow);
 
-        SeriesAndRecButtonItemPresenter mGridPresenter = new SeriesAndRecButtonItemPresenter();
-        ArrayObjectAdapter gridRowAdapter = new ArrayObjectAdapter(mGridPresenter);
-        mRowsAdapter.add(new SeriesButtonListRow(gridRowAdapter));
+        RecBannerItem1Presenter recBannerItem1Presenter = new RecBannerItem1Presenter();
+        ArrayObjectAdapter listRowAdapter1 = new ArrayObjectAdapter(recBannerItem1Presenter);
+        if(mBannerInfoList.size()>=6) {
+            for (int i = 2; i < 6; i++) {
+                listRowAdapter1.add(mBannerInfoList.get(i));
+            }
+        }else{
+            for (int i = 2; i < mBannerInfoList.size(); i++) {
+                listRowAdapter1.add(mBannerInfoList.get(i));
+            }
+        }
+        HotVideoListRow listRow1 = new HotVideoListRow(listRowAdapter1);
+        mRowsAdapter.add(listRow1);
     }
 
-    private void showVideoData(){
-        PortraitVideoItemPresenter videoItemPresenter0 = new PortraitVideoItemPresenter();
-        ArrayObjectAdapter listRowAdapter0 = new ArrayObjectAdapter(videoItemPresenter0);
-        mVideoList.clear();
-        mVideoList = mVideoListArray.get(listPos[category]);
-        for (int k = 0; k < mVideoList.size(); k++) {
-            listRowAdapter0.add(mVideoList.get(k));
+    private void showVideoTopData() {
+        RecTopVideoItemPresenter videoItemPresenter = new RecTopVideoItemPresenter();
+        ArrayObjectAdapter listRowAdapter = new ArrayObjectAdapter(videoItemPresenter);
+        mVideoTopList.clear();
+        mVideoTopList = mVideoTopListArray.get(toplistPos[category]);
+        if(mVideoTopList.size()>=10) {
+            for (int k = 0; k < 10; k++) {
+                listRowAdapter.add(mVideoTopList.get(k));
+            }
+        }else{
+            for (int k = 0; k < mVideoTopList.size(); k++) {
+                listRowAdapter.add(mVideoTopList.get(k));
+            }
         }
-        HeaderItem header0 = new HeaderItem(category, SeriesAndRecVideoDataList.SERIES_CATEGORY[category]);
-        PortraitVideoListRow listRow0 = new PortraitVideoListRow(header0, listRowAdapter0);
-        mRowsAdapter.add(listRow0);
+        HeaderItem header = new HeaderItem(category, SeriesAndRecVideoDataList.TOP_CATEGORY[category]);
+        PortraitVideoListRow listRow = new PortraitVideoListRow(header, listRowAdapter);
+        mRowsAdapter.add(listRow);
+    }
+    private void showButton() {
+        SeriesAndRecButtonItemPresenter mGridPresenter = new SeriesAndRecButtonItemPresenter();
+        ArrayObjectAdapter gridRowAdapter = new ArrayObjectAdapter(mGridPresenter);
+        mRowsAdapter.add(new RecButtonListRow(gridRowAdapter));
+    }
+    private void showVideoData() {
+        if (category % 2 != 0) {
+            PortraitVideoItem1Presenter videoItemPresenter = new PortraitVideoItem1Presenter();
+            ArrayObjectAdapter listRowAdapter = new ArrayObjectAdapter(videoItemPresenter);
+            mVideoList.clear();
+            mVideoList = mVideoListArray.get(listPos[category]);
+            if (mVideoList.size() >= 6) {
+                for (int k = 0; k < 6; k++) {
+                    listRowAdapter.add(mVideoList.get(k));
+                }
+            } else {
+                for (int k = 0; k < mVideoList.size(); k++) {
+                    listRowAdapter.add(mVideoList.get(k));
+                }
+            }
+            HeaderItem header = new HeaderItem(category, SeriesAndRecVideoDataList.REC_CATEGORY[category]);
+            PortraitVideoListRow1 listRow = new PortraitVideoListRow1(header, listRowAdapter);
+            mRowsAdapter.add(listRow);
+        } else {
+
+            LandscapeVideoItemPresenter videoItemPresenter = new LandscapeVideoItemPresenter();
+            ArrayObjectAdapter listRowAdapter = new ArrayObjectAdapter(videoItemPresenter);
+            mVideoList.clear();
+            mVideoList = mVideoListArray.get(listPos[category]);
+            if (mVideoList.size() >= 4) {
+                for (int k = 0; k < 4; k++) {
+                    listRowAdapter.add(mVideoList.get(k));
+                }
+            } else {
+                for (int k = 0; k < mVideoList.size(); k++) {
+                    listRowAdapter.add(mVideoList.get(k));
+                }
+            }
+            HeaderItem header = new HeaderItem(category, SeriesAndRecVideoDataList.REC_CATEGORY[category]);
+            LandscapeVideoListRow listRow = new LandscapeVideoListRow(header, listRowAdapter);
+            mRowsAdapter.add(listRow);
+        }
+
+    }
+
+    private void loadMoreVideo(){
+        videoGrid.setOnLoadMoreListener(new MyVerticalGridView.OnLoadMoreListener() {
+            @Override
+            public void onLoadMore() {
+                mPageNum += 1;
+                if(mPageNum!=(channel.length/loadRows)+1) {
+                    for (int i = 0; i < loadRows; i++) {
+                        parseIQiYiMovieSimplifiedList((mPageNum - 1) * loadRows + i, channel[(mPageNum - 1) * loadRows + i], "", "", "",
+                                24, 1, 1, "iqiyi", 1, "", 6);
+                    }
+                }else{
+                    for (int i = 0; i < channel.length%loadRows; i++) {
+                        parseIQiYiMovieSimplifiedList((mPageNum - 1) * loadRows + i, channel[(mPageNum - 1) * loadRows + i], "", "", "",
+                                24, 1, 1, "iqiyi", 1, "", 6);
+                    }
+
+                }
+            }
+        });
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable final ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_series_video, container, false);
+        View view = inflater.inflate(R.layout.fragment_recommand_video, container, false);
         unbinder = ButterKnife.bind(this, view);
         // 初始化影视垂直布局.
         videoGrid.setPadding(GRID_VIEW_LEFT_PX, GRID_VIEW_TOP_PX, GRID_VIEW_RIGHT_PX, GRID_VIEW_BOTTOM_PX);
@@ -193,37 +290,27 @@ public class SeriesVideoRowFragment extends Fragment {
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
             @Override
             public void onChildViewHolderSelected(RecyclerView parent, RecyclerView.ViewHolder viewHolder, int position, int subposition) {
-                if(mSelectedViewHolder != viewHolder || mSubPosition != subposition) {
+                if (mSelectedViewHolder != viewHolder || mSubPosition != subposition) {
                     mSubPosition = subposition;
-                    if(mSelectedViewHolder != null) {
+                    if (mSelectedViewHolder != null) {
                         setRowSelected(mSelectedViewHolder, false);
                     }
-                    mSelectedViewHolder = (ItemBridgeAdapter.ViewHolder)viewHolder;
-                    if(mSelectedViewHolder != null) {
+                    mSelectedViewHolder = (ItemBridgeAdapter.ViewHolder) viewHolder;
+                    if (mSelectedViewHolder != null) {
                         setRowSelected(mSelectedViewHolder, true);
                     }
                 }
             }
         });
 
-        parseIQiYiParseBannerInfo("dianshiju");
-        videoGrid.setOnLoadMoreListener(new MyVerticalGridView.OnLoadMoreListener() {
-            @Override
-            public void onLoadMore() {
-                mPageNum += 1;
-                for(int i=0;i<loadRows; i++) {
-                parseIQiYiMovieSimplifiedList((mPageNum - 1) * 3 + i, 2, orderlist[(mPageNum - 1) * 3 + i], "", "",
-                        24, 1, 1, "iqiyi", 1, "", 12);
-                }
-            }
-        });
+        parseIQiYiParseBannerInfo("");
         return view;
     }
 
-    private void parseIQiYiMovie(){
-        parseIQiYiMovieSimplifiedList(0, 2, orderlist[0], "", "", 4, 1, 1, "iqiyi", 1, "", 12);
-        parseIQiYiMovieSimplifiedList(1, 2, orderlist[1], "", "", 11, 1, 1, "iqiyi", 1, "", 12);
-        parseIQiYiMovieSimplifiedList(2, 2, orderlist[2], "", "", 24, 1, 1, "iqiyi", 1, "", 12);
+    private void parseIQiYiMovieTop() {
+        parseIQiYiTopList(0, "1", "realTime", 50, 1);
+        parseIQiYiTopList(1, "2", "realTime", 50, 1);
+        parseIQiYiTopList(2, "4", "realTime", 50, 1);
     }
 
     /**
@@ -246,13 +333,10 @@ public class SeriesVideoRowFragment extends Fragment {
                         for(int i=0;i<list.size();i++) {
                             Log.v(TAG, list.get(i).toString());
                         }
-                        Log.v(TAG,"category"+category);
-                        Log.v("tttt", "mVideoListArray =："+ mVideoListArray.size());
+                        Log.v("aaa","category"+category+"channel"+channel);
+
                         mVideoListArray.add(list);
-                        Log.v("tttt", "mVideoListArray =："+ mVideoListArray.size());
                         listPos[category] = mVideoListArray.size()-1;
-                        Log.v("tttt", "listPos[category] =："+ listPos[category]);
-                        Log.v("tttt", "mVideoListArray =："+ mVideoListArray.size());
                         Message msg = new Message();
                         msg.arg1 = category;
                         msg.what = REFRESH_MOVIE_CONTENT;
@@ -270,25 +354,60 @@ public class SeriesVideoRowFragment extends Fragment {
                     }
                 });
     }
-
     /**
      * 获取推荐栏位基本信息
      * @param channel  电视剧：dianshiju    电影：dianying  综艺：zongyi   动漫：dongman     微电影：weidianying     推荐：""
      */
-    private void parseIQiYiParseBannerInfo(String channel){
+    private void parseIQiYiParseBannerInfo(String channel) {
         IQiYiParseBannerInfoPresenter ps = new IQiYiParseBannerInfoPresenter();
-        ps.requestIQiYiBannerInfo( channel, new CallBack<List<IQiYiBannerInfoBean>>() {
+        ps.requestIQiYiBannerInfo(channel, new CallBack<List<IQiYiBannerInfoBean>>() {
             @Override
             public void success(List<IQiYiBannerInfoBean> list) {
+                for (IQiYiBannerInfoBean bean : list) {
+                    Log.v(TAG, bean.toString());
+                }
                 mBannerInfoList.clear();
                 mBannerInfoList = list;
                 mHandler.sendEmptyMessage(REFRESH_BANNER_CONTENT);
+
             }
 
             @Override
             public void error(String msg) {
                 //TODO 获取失败
 
+            }
+        });
+    }
+
+    /**
+     * 获取Top list
+     * @param cid channel id , 热播榜为-1，其余根据list定义， 电视剧为2，电影为1
+     * @param type 播放指数榜：playindex   飙升榜：rise  热度榜：realTime
+     * @param size 获取个数
+     * @param page 获取页面page number
+     */
+    private void parseIQiYiTopList(int category, String cid, String type,int size, int page){
+        IQiYiParseTopListPresenter ps = new IQiYiParseTopListPresenter();
+        ps.requestIQiYiTopList( cid,type,size,page, new CallBack<List<IQiYiTopListBean>>() {
+            @Override
+            public void success(List<IQiYiTopListBean> list) {
+                for(IQiYiTopListBean bean:list) {
+                    Log.v(TAG, bean.toString());
+                }
+                Log.v("mmm", "mVideoTopListArray"+mVideoTopListArray.size());
+                mVideoTopListArray.add(list);
+                Log.v("mmm", "mVideoTopListArray"+mVideoTopListArray.size());
+                toplistPos[category] = mVideoTopListArray.size()-1;
+                Message msg = new Message();
+                msg.arg1 = category;
+                msg.what = REFRESH_TOP_CONTENT;
+                mHandler.sendMessage(msg);
+            }
+
+            @Override
+            public void error(String msg) {
+                //TODO 获取失败
             }
         });
     }
@@ -315,7 +434,7 @@ public class SeriesVideoRowFragment extends Fragment {
 
 
     /**
-     *  测试改变选中ROW的颜色.
+     * 测试改变选中ROW的颜色.
      */
     @TargetApi(Build.VERSION_CODES.M)
     void setRowSelected(ItemBridgeAdapter.ViewHolder vh, boolean selected) {

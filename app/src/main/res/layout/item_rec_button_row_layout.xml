@@ -8,58 +8,40 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <Button
-        android:text="全部剧集"
+        android:text="电视剧"
         android:layout_weight="1"
         android:layout_width="0dp"
-        android:layout_height="75dp"
+        android:layout_height="match_parent"
         android:textColor="#FFF8F8F8"
         android:id="@+id/button_all"
         android:background="@color/color_pink"
         android:layout_marginRight="10dp" />
 
     <Button
-        android:text="古装大剧"
+        android:text="电影"
         android:layout_weight="1"
         android:layout_width="0dp"
-        android:layout_height="75dp"
+        android:layout_height="match_parent"
         android:textColor="#FFF8F8F8"
         android:id="@+id/button_ancient"
         android:background="@color/color_blue"
         android:layout_marginRight="10dp" />
 
     <Button
-        android:text="家庭生活"
+        android:text="综艺"
         android:layout_weight="1"
         android:layout_width="0dp"
-        android:layout_height="75dp"
+        android:layout_height="match_parent"
         android:textColor="#FFF8F8F8"
         android:id="@+id/button_house"
-        android:background="@color/color_yellow"
+        android:background="@color/color_purple"
         android:layout_marginRight="10dp" />
     <Button
-        android:text="甜虐言情"
+        android:text="动漫"
         android:layout_weight="1"
         android:layout_width="0dp"
-        android:layout_height="75dp"
+        android:layout_height="match_parent"
         android:textColor="#FFF8F8F8"
         android:id="@+id/button_love"
-        android:background="@color/color_orange"
-        android:layout_marginRight="10dp" />
-    <Button
-        android:text="热血军旅"
-        android:layout_weight="1"
-        android:layout_width="0dp"
-        android:layout_height="75dp"
-        android:textColor="#FFF8F8F8"
-        android:id="@+id/button_war"
-        android:background="@color/color_green"
-        android:layout_marginRight="10dp" />
-    <Button
-        android:text="青春偶像"
-        android:layout_weight="1"
-        android:layout_width="0dp"
-        android:layout_height="75dp"
-        android:textColor="#FFF8F8F8"
-        android:id="@+id/button_time"
-        android:background="@color/color_purple" />
-    </LinearLayout>
+        android:background="@color/color_orange" />
+</LinearLayout>

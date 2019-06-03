@@ -2,7 +2,6 @@
 package com.stars.tv.sample;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.v17.leanback.widget.RowPresenter;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,16 +17,16 @@ import java.util.Objects;
 import me.jessyan.autosize.AutoSizeConfig;
 import me.jessyan.autosize.utils.AutoSizeUtils;
 
-public class SeriesButtonRowPresenter extends RowPresenter {
+public class RecButtonRowPresenter extends RowPresenter {
     protected static Context mContext;
     String TAG = "SeriesButtonRowPresenter";
     private static final int GRID_VIEW_LEFT_PX = 80;
     private static final int GRID_VIEW_RIGHT_PX = 30;
     private static final int ITEM_NUM_ROW = 1;
     int LAYOUT_WIDTH = 0;
-    int LAYOUT_HEIGHT = 300;
+    int LAYOUT_HEIGHT = 350;
 
-    public SeriesButtonRowPresenter() {
+    public RecButtonRowPresenter() {
 
         // 屏蔽HEAD.
         setHeaderPresenter(null);
@@ -36,8 +35,8 @@ public class SeriesButtonRowPresenter extends RowPresenter {
 
     @Override
     protected ViewHolder createRowViewHolder(ViewGroup parent) {
-        View root = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_series_button_row_layout, null, false);
-        root.setPadding(30,60,30,30);
+        View root = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_rec_button_row_layout, null, false);
+        root.setPadding(30,30,30,30);
         LAYOUT_WIDTH = (AutoSizeUtils.dp2px(Objects.requireNonNull(parent.getContext()), AutoSizeConfig.getInstance().getDesignWidthInDp()) - GRID_VIEW_LEFT_PX ) / ITEM_NUM_ROW;
         ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(LAYOUT_WIDTH, LAYOUT_HEIGHT);
         root.setLayoutParams(lp);
@@ -55,7 +54,7 @@ public class SeriesButtonRowPresenter extends RowPresenter {
             childView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 @Override
                 public void onFocusChange(View v, boolean hasFocus) {
-                    ViewUtils.scaleAnimator(v, hasFocus, 1.2f, 150);
+                    ViewUtils.scaleAnimator(v, hasFocus, 1.1f, 150);
                 }
             });
             childView.setOnClickListener(new View.OnClickListener() {

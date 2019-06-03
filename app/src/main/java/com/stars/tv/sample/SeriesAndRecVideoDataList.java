@@ -5,7 +5,7 @@ import com.stars.tv.bean.IQiYiMovieBean;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class SeriesVideoDataList {
+public final class SeriesAndRecVideoDataList {
 
     public static final String SERIES_CATEGORY[] = {
             "新鲜热剧",
@@ -23,6 +23,40 @@ public final class SeriesVideoDataList {
             "热血军旅",
             "年代传奇",
             "全球精选"
+    };
+    public static final String TOP_CATEGORY[] = {
+            "电影TOP10热度榜",
+            "电视剧TOP10热度榜",
+            "动漫TOP10热度榜"
+    };
+
+    public static final String REC_CATEGORY[] = {
+            "精选电视剧",
+            "电影推荐",
+            "王牌综艺",
+            "亲子动漫",
+            "纪录片",
+            "游戏",
+            "资讯",
+            "娱乐",
+            "财经",
+            "网络电影",
+            "片花",
+            "音乐",
+            "军事",
+            "教育",
+            "体育",
+            "儿童",
+            "旅游",
+            "时尚",
+            "生活",
+            "汽车",
+            "搞笑",
+            "原创",
+            "母婴",
+            "科技",
+            "脱口秀",
+            "健康"
     };
 
     public static List<IQiYiMovieBean> seriesContent() {

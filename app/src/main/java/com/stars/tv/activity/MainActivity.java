@@ -16,6 +16,7 @@ import com.stars.tv.bean.IQiYiStarInfoBean;
 import com.stars.tv.bean.IQiYiTopListBean;
 import com.stars.tv.bean.IQiYiVideoBaseInfoBean;
 import com.stars.tv.bean.TvTitle;
+import com.stars.tv.fragment.RecommandVideoRowFragment;
 import com.stars.tv.fragment.SeriesVideoRowFragment;
 import com.stars.tv.fragment.VideoRowSampleFragment;
 import com.stars.tv.model.TvTitleModel;
@@ -622,7 +623,10 @@ public class MainActivity extends BaseActivity {
                 {
                     mFragmentList.add(SeriesVideoRowFragment.getInstance(titleMode.getName()));
                 }
-                if((i.get() %2==0)&&(i.get()!=3))
+                else if(titleMode.getName().matches("精选")){
+                    mFragmentList.add(RecommandVideoRowFragment.getInstance(titleMode.getName()));
+                }
+                else if((i.get() %2==0))
                 {
                     mFragmentList.add(VideoRowSampleFragment.getInstance(titleMode.getName()));
                 }else

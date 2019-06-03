@@ -4,11 +4,11 @@ import android.support.v17.leanback.widget.HeaderItem;
 import android.support.v17.leanback.widget.ListRow;
 import android.support.v17.leanback.widget.ObjectAdapter;
 
-public class SeriesVideoListRow extends ListRow {
-    public SeriesVideoListRow(ObjectAdapter adapter) {
+public class PortraitVideoListRow extends ListRow {
+    public PortraitVideoListRow(ObjectAdapter adapter) {
         super(adapter);
     }
-    public SeriesVideoListRow(HeaderItem header, ObjectAdapter adapter) {
+    public PortraitVideoListRow(HeaderItem header, ObjectAdapter adapter) {
         super(header, adapter);
     }
 }

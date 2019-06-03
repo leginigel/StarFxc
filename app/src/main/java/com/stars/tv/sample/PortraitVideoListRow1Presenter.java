@@ -9,9 +9,9 @@ import android.support.v17.leanback.widget.RowPresenter;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
-public class HotVideoListRowPresenter extends ListRowPresenter {
+public class PortraitVideoListRow1Presenter extends ListRowPresenter {
 
-    public HotVideoListRowPresenter()
+    public PortraitVideoListRow1Presenter()
     {
         setHeaderPresenter(null);
     }
@@ -23,18 +23,20 @@ public class HotVideoListRowPresenter extends ListRowPresenter {
         setShadowEnabled(false);
         ItemBridgeAdapter itemBridgeAdapter = rowViewHolder.getBridgeAdapter();
         // 焦点事件处理.
-        FocusHighlightHelper.setupBrowseItemFocusHighlight(itemBridgeAdapter, FocusHighlight.ZOOM_FACTOR_MEDIUM,false);
+        FocusHighlightHelper.setupBrowseItemFocusHighlight(itemBridgeAdapter, FocusHighlight.ZOOM_FACTOR_LARGE,false);
 
-        // 设置ROW Padding50.
-        rowViewHolder.getGridView().setPadding(30,0,30,0);
-        // 设置横向item的间隔30.
+        // 设置ROW Padding.
+        rowViewHolder.getGridView().setPadding(30,30,30,30);
+        // 设置横向item的间隔.
         rowViewHolder.getGridView().setHorizontalSpacing(30);
-        rowViewHolder.getGridView().setBottom(10);
+        rowViewHolder.getGridView().setVerticalSpacing(30);
+       rowViewHolder.getGridView().setNumRows(1);
     }
 
     @Override
     protected RowPresenter.ViewHolder createRowViewHolder(ViewGroup parent) {
         ViewHolder holder = (ViewHolder) super.createRowViewHolder(parent);
+
         holder.getGridView().setOnChildViewHolderSelectedListener(new OnChildViewHolderSelectedListener() {
 
             @Override
@@ -45,5 +47,11 @@ public class HotVideoListRowPresenter extends ListRowPresenter {
         });
         // 在此添加Layout
         return holder;
+    }
+
+    @Override
+    protected void onBindRowViewHolder(RowPresenter.ViewHolder holder, Object item) {
+        super.onBindRowViewHolder(holder, item);
+
     }
 }

@@ -21,14 +21,16 @@
         <ImageView
             android:id="@+id/bg_iv"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:scaleType="center"/>
         <ImageView
             android:id="@+id/pay_iv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
-            android:layout_marginRight="3dp" />
+            android:layout_marginRight="3dp"
+            android:visibility="invisible"/>
 
         <TextView
             android:id="@+id/name_tv"
@@ -41,16 +43,20 @@
             android:textColor="#FFF8F8F8"
             android:textSize="10sp"
             tools:ignore="SmallSp"
-            android:background="#55000000"/>
+            android:background="#55000000"
+            android:singleLine="true"
+            android:ellipsize="marquee"
+            android:marqueeRepeatLimit="marquee_forever"/>
         <TextView
-            android:id="@+id/episode_tv"
+            android:id="@+id/info_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text=""
             android:textColor="#FFF8F8F8"
             android:textSize="8sp"
             android:layout_above="@id/name_tv"
-            android:background="#55000000"/>
+            android:background="#55000000"
+            android:visibility="invisible"/>
     </RelativeLayout>
 
     <View

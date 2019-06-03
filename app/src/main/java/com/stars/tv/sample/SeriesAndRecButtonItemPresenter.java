@@ -4,7 +4,7 @@ import android.support.v17.leanback.widget.Presenter;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-public class SeriesButtonItemPresenter extends Presenter {
+public class SeriesAndRecButtonItemPresenter extends Presenter {
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent) {

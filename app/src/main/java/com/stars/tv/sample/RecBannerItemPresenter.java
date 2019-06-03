@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.stars.tv.R;
@@ -20,40 +19,40 @@ import java.util.Objects;
 import me.jessyan.autosize.AutoSizeConfig;
 import me.jessyan.autosize.utils.AutoSizeUtils;
 
-public class SeriesBannerItemPresenter extends Presenter {
-    private static final String TAG = "BannerItemPresenter";
+public class RecBannerItemPresenter extends Presenter {
+    private static final String TAG = "RecBannerItemPresenter";
     private static final int GRID_VIEW_LEFT_PX = 80;
     private static final int GRID_VIEW_RIGHT_PX = 50;
     private static final int ITEM_RIGHT_PADDING_PX = 25;
-    private static final int ITEM_NUM_ROW = 3;
+    private static final int ITEM_NUM_ROW = 2;
     int CARD_WIDTH = 0;
     int CARD_HEIGHT =0;
     ImageView bgIv;
-    View boardView;
     TextView nameTv;
+    View boardView;
     protected static Context mContext;
 
-    private HotVideoListRowPresenter hotVideoListRowPresenter = new HotVideoListRowPresenter();
     @Override
-    public Presenter.ViewHolder onCreateViewHolder(ViewGroup parent) {
-        View view = View.inflate(parent.getContext(), R.layout.item_series_banner_layout, null);
+    public ViewHolder onCreateViewHolder(ViewGroup parent) {
+        View view = View.inflate(parent.getContext(), R.layout.item_rec_banner_layout, null);
         mContext = parent.getContext();
         CARD_WIDTH = (AutoSizeUtils.dp2px(Objects.requireNonNull(parent.getContext()),AutoSizeConfig.getInstance().getDesignWidthInDp()) - GRID_VIEW_LEFT_PX - GRID_VIEW_RIGHT_PX - (ITEM_RIGHT_PADDING_PX * ITEM_NUM_ROW)) / ITEM_NUM_ROW;
-        CARD_HEIGHT = CARD_WIDTH*3/4;
+        CARD_HEIGHT = 400;
+        Log.v(TAG,"width"+CARD_WIDTH+"height:"+CARD_HEIGHT);
         ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(CARD_WIDTH, CARD_HEIGHT);
         view.setLayoutParams(lp);
         view.setFocusable(true);
         view.setFocusableInTouchMode(true);
-        return new Presenter.ViewHolder(view);
+        return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(final Presenter.ViewHolder viewHolder, Object item) {
+    public void onBindViewHolder(final ViewHolder viewHolder, Object item) {
         IQiYiBannerInfoBean videoBean = (IQiYiBannerInfoBean)item;
         bgIv = viewHolder.view.findViewById(R.id.bg_iv);
-        boardView = viewHolder.view.findViewById(R.id.board_view);
         nameTv = viewHolder.view.findViewById(R.id.name_tv);
-        nameTv.setText(videoBean.getName()+": "+videoBean.getDescription());
+        boardView = viewHolder.view.findViewById(R.id.board_view);
+        nameTv.setText(videoBean.getName());
         Glide.with(Objects.requireNonNull(viewHolder.view.getContext()))
                 .load(videoBean.getImageUrl()).into(bgIv);
         viewHolder.view.setOnClickListener(new View.OnClickListener() {
@@ -69,7 +68,7 @@ public class SeriesBannerItemPresenter extends Presenter {
     }
 
     @Override
-    public void onUnbindViewHolder(Presenter.ViewHolder viewHolder) {
+    public void onUnbindViewHolder(ViewHolder viewHolder) {
 
     }
 

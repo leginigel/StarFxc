@@ -9,9 +9,9 @@ import android.support.v17.leanback.widget.RowPresenter;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
-public class SeriesVideoListRowPresenter extends ListRowPresenter {
+public class LandscapeVideoListRowPresenter extends ListRowPresenter {
 
-    public SeriesVideoListRowPresenter()
+    public LandscapeVideoListRowPresenter()
     {
         setHeaderPresenter(null);
     }
@@ -23,14 +23,14 @@ public class SeriesVideoListRowPresenter extends ListRowPresenter {
         setShadowEnabled(false);
         ItemBridgeAdapter itemBridgeAdapter = rowViewHolder.getBridgeAdapter();
         // 焦点事件处理.
-        FocusHighlightHelper.setupBrowseItemFocusHighlight(itemBridgeAdapter, FocusHighlight.ZOOM_FACTOR_LARGE,false);
+        FocusHighlightHelper.setupBrowseItemFocusHighlight(itemBridgeAdapter, FocusHighlight.ZOOM_FACTOR_MEDIUM,false);
 
         // 设置ROW Padding.
         rowViewHolder.getGridView().setPadding(30,30,30,30);
         // 设置横向item的间隔.
         rowViewHolder.getGridView().setHorizontalSpacing(30);
         rowViewHolder.getGridView().setVerticalSpacing(30);
-//        rowViewHolder.getGridView().setNumRows(2);
+        rowViewHolder.getGridView().setNumRows(1);
     }
 
     @Override
