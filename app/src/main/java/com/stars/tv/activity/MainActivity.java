@@ -1,5 +1,6 @@
 package com.stars.tv.activity;
 
+import com.avos.avoscloud.AVOSCloud;
 import com.stars.tv.R;
 import com.stars.tv.bean.IQiYiBannerInfoBean;
 import com.stars.tv.bean.IQiYiBasicStarInfoBean;
@@ -15,6 +16,8 @@ import com.stars.tv.bean.IQiYiStarInfoBean;
 import com.stars.tv.bean.IQiYiTopListBean;
 import com.stars.tv.bean.IQiYiVideoBaseInfoBean;
 import com.stars.tv.bean.TvTitle;
+import com.stars.tv.fragment.RecommandVideoRowFragment;
+import com.stars.tv.fragment.SeriesVideoRowFragment;
 import com.stars.tv.fragment.VideoRowSampleFragment;
 import com.stars.tv.model.TvTitleModel;
 import com.stars.tv.presenter.IQiYiMovieSimplifiedListPresenter;
@@ -61,6 +64,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
+import static com.stars.tv.utils.Constants.STAR_CLOUD_ID;
+import static com.stars.tv.utils.Constants.STAR_CLOUD_KEY;
+
 public class MainActivity extends BaseActivity {
 
     private static final int TITLE_PADDING_LEFT_PX = 60;
@@ -105,6 +111,13 @@ public class MainActivity extends BaseActivity {
         initTitle();
         initContentViews();
         refreshRequest();
+        initLeanCloud();
+    }
+
+    private void initLeanCloud(){
+        AVOSCloud.initialize(this, STAR_CLOUD_ID, STAR_CLOUD_KEY);
+        AVOSCloud.useAVCloudCN();
+        AVOSCloud.setDebugLogEnabled(true);
     }
 
     private void initTitle() {
@@ -190,6 +203,9 @@ public class MainActivity extends BaseActivity {
             @Override
             public void onClick(View view) {
                 //TODO
+                Intent intent = new Intent(MainActivity.this, VideoPreviewActivity.class);
+                startActivity(intent);
+
             }
         });
         pageVp.setOffscreenPageLimit(1); // 缓存2个页面
@@ -603,7 +619,14 @@ public class MainActivity extends BaseActivity {
             mFragmentList.clear();
             AtomicInteger i= new AtomicInteger();
             for (TvTitle titleMode : TvTitleModel.getTitleList()) {
-                if(i.get() %2==0)
+                if(titleMode.getName().matches("电视剧"))
+                {
+                    mFragmentList.add(SeriesVideoRowFragment.getInstance(titleMode.getName()));
+                }
+                else if(titleMode.getName().matches("精选")){
+                    mFragmentList.add(RecommandVideoRowFragment.getInstance(titleMode.getName()));
+                }
+                else if((i.get() %2==0))
                 {
                     mFragmentList.add(VideoRowSampleFragment.getInstance(titleMode.getName()));
                 }else

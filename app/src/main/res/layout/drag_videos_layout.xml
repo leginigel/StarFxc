@@ -20,8 +20,8 @@
   <ImageView
     android:id="@+id/drag_contents_imageview"
     android:layout_width="80dp"
-    android:layout_height="48dp"
-    android:scaleType="centerInside"
+    android:layout_height="80dp"
+    android:scaleType="fitXY"
     android:contentDescription="@string/empty_description"
     app:layout_constraintTop_toTopOf="parent"
     app:layout_constraintLeft_toLeftOf="parent"
