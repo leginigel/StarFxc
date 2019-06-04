@@ -76,6 +76,7 @@
     <string name="music">Music</string>
     <string name="latest">Latest</string>
     <string name="recommended">Recommended</string>
+    <string name="search">Search</string>
 
     <string name="str_code_error">加载失败！错误代码:( %1$s )</string>
     <string name="str_network_error">网络连接失败，请检查网络！</string>

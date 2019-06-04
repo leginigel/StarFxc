@@ -7,6 +7,7 @@ import android.support.annotation.RequiresApi;
 import android.support.v17.leanback.widget.BaseCardView;
 import android.support.v17.leanback.widget.ImageCardView;
 import android.support.v17.leanback.widget.Presenter;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.text.Html;
 import android.text.TextUtils;
@@ -27,14 +28,14 @@ import com.stars.tv.youtube.util.Utils;
 
 public class YouTubeCardPresenter extends Presenter {
     private Context mContext;
-    private YoutubeFragment mFragment;
-    private ViewGroup mLeftNav, mTopNav;
+    protected Fragment mFragment;
+    protected ViewGroup mLeftNav, mTopNav;
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup) {
         Log.v("YouTubeCardPresenter" , "onCreateViewHolder");
         mContext = viewGroup.getContext();
-        mFragment = (YoutubeFragment) ((FragmentActivity) mContext)
+        mFragment = ((FragmentActivity) mContext)
                 .getSupportFragmentManager().findFragmentById(R.id.container_home);
         mLeftNav = ((FragmentActivity) mContext).findViewById(R.id.left_nav);
         mTopNav = ((FragmentActivity) mContext).findViewById(R.id.top_nav);
@@ -67,42 +68,7 @@ public class YouTubeCardPresenter extends Presenter {
         CardViewHolder cardViewHolder = (CardViewHolder) viewHolder;
         YouTubeVideo youTubeVideo = (YouTubeVideo) o;
 
-        // Set RowFragment Focus Navigation
-        switch (mFragment.getTabCategory()){
-            case Recommended:
-                cardViewHolder.view.setNextFocusUpId(R.id.recommend_btn);
-                break;
-            case Music:
-                cardViewHolder.view.setNextFocusUpId(R.id.music_btn);
-                break;
-            case Entertainment:
-                cardViewHolder.view.setNextFocusUpId(R.id.entertainment_btn);
-                break;
-            case Gaming:
-                cardViewHolder.view.setNextFocusUpId(R.id.gaming_btn);
-                break;
-        }
-        cardViewHolder.view.setOnKeyListener((v, keyCode, event) -> {
-            if(event.getAction() == KeyEvent.ACTION_DOWN){
-                if(keyCode == KeyEvent.KEYCODE_DPAD_DOWN)
-                    mLeftNav.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
-                else {
-                    mLeftNav.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
-                }
-                if(keyCode == KeyEvent.KEYCODE_DPAD_LEFT)
-                    mTopNav.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
-                else {
-                    mTopNav.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
-                }
-                if(event.getAction() == KeyEvent.ACTION_DOWN){
-                    if(keyCode == KeyEvent.KEYCODE_BACK){
-                        mTopNav.requestFocus();
-                        return true;
-                    }
-                }
-            }
-            return false;
-        });
+        setFocusNavigation(cardViewHolder);
 
         // Set TimeStamp Value
         TextView timeStamp = cardViewHolder.mTimeStamp;
@@ -136,6 +102,55 @@ public class YouTubeCardPresenter extends Presenter {
         // Nothing to unbind for TextView, but if this viewHolder had
         // allocated bitmaps, they can be released here.
 
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    protected void setFocusNavigation(CardViewHolder cardViewHolder){
+        switch (((YoutubeFragment) mFragment).getTabCategory()){
+            case Recommended:
+                cardViewHolder.view.setNextFocusUpId(R.id.recommend_btn);
+                break;
+            case Music:
+                cardViewHolder.view.setNextFocusUpId(R.id.music_btn);
+                break;
+            case Entertainment:
+                cardViewHolder.view.setNextFocusUpId(R.id.entertainment_btn);
+                break;
+            case Gaming:
+                cardViewHolder.view.setNextFocusUpId(R.id.gaming_btn);
+                break;
+        }
+        cardViewHolder.view.setOnKeyListener((v, keyCode, event) -> {
+            if(event.getAction() == KeyEvent.ACTION_DOWN){
+                setDefaultFocus(v, keyCode);
+                if(keyCode == KeyEvent.KEYCODE_BACK){
+                    setPressBack(v);
+                    return true;
+                }
+            }
+            return false;
+        });
+    }
+
+    public void setDefaultFocus(View v, int keyCode){
+        if(keyCode == KeyEvent.KEYCODE_DPAD_DOWN)
+            mLeftNav.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
+        else {
+            mLeftNav.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
+        }
+        if(keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
+            mTopNav.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
+        }
+        else {
+            mTopNav.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
+        }
+    }
+
+    public void setPressBack(View v){
+        mTopNav.requestFocus();
+        ImageCardView imgCard = v.findViewById(R.id.img_card_view);
+        imgCard.setInfoAreaBackgroundColor(mContext.getResources().getColor(R.color.background));
+        ((TextView) imgCard.findViewById(R.id.title_text)).setTextColor(Color.WHITE);
     }
 
     public class CardViewHolder extends ViewHolder{

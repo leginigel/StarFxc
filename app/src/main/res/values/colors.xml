@@ -29,6 +29,7 @@
 
     <color name="btn_text">#ff969696</color>
     <color name="btn_text_bg">#ffebebeb</color>
+    <color name="btn_text_kb">#ff383838</color>
 
     <color name="card_loading">#ff333333</color>
     <color name="card_content">#ffaaaaaa</color>
