@@ -5,7 +5,11 @@
     <color name="colorAccent">#FF4081</color>
 
     <color name="color_transparent">#00000000</color>
+    <color name="color_sub_translucent">#80000000</color>
     <color name="color_all_white">#FFFFFF</color>
+    <color name="color_red">#FF0000</color>
+    <color name="color_black">#000000</color>
+    <color name="color_white_50a">#E1E1E1</color>
 
     <!-- focus color -->
     <color name="color_focus">#29F006</color>

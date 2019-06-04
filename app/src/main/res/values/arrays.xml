@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="channel_list">
+        <item>@string/str_live_tv_channel_list_history</item>
+        <item>@string/str_live_tv_channel_list_all</item>
+        <item>@string/str_live_tv_channel_list_cctv</item>
+        <item>@string/str_live_tv_channel_list_satellite</item>
+        <item>@string/str_live_tv_channel_list_favourite</item>
+    </string-array>
+
+</resources>

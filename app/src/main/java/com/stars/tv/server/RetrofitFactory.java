@@ -7,6 +7,7 @@ import java.io.File;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Cache;
+import okhttp3.CacheControl;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -40,16 +41,22 @@ public class RetrofitFactory {
     //缓存拦截器
     private static Interceptor cacheInterceptor = chain -> {
         Request request = chain.request();
+        if(!NetUtil.isConnected()){
+            request = request.newBuilder()
+                    .cacheControl(CacheControl.FORCE_CACHE)
+                    .build();
+        }
         Response response = chain.proceed(request);
-        if (NetUtil.isConnected()) {
+        String cacheControl = request.cacheControl().toString();
+        if(cacheControl.equals("")){
+            cacheControl = "public, only-if-cached, max-age=" + CACHE_STALE_SEC;
+        }
             return response.newBuilder()
                     .removeHeader("User-Agent")
                     .addHeader("User-Agent","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.140 Safari/537.36 Edge/18.17763")
+                .header("Cache-Control", cacheControl)
                     .removeHeader("Pragma")
-                    .header("Cache-Control", "public ,max-age=" + CACHE_STALE_SEC)
                     .build();
-        }
-        return response;
     };
 
     private static OkHttpClient okHttpClient = new OkHttpClient.Builder()

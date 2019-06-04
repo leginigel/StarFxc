@@ -645,15 +645,6 @@ public class IQiYiVideoBaseInfoBean {
     }
 
     public class Director {
-//        @Override
-//        public String toString() {
-//            return "Director{" +
-//                    "id=" + id +
-//                    ", name='" + name + '\'' +
-//                    ", image_url='" + image_url + '\'' +
-//                    '}';
-//        }
-
         @Override
         public String toString() {
             return "{" +
@@ -690,16 +681,6 @@ public class IQiYiVideoBaseInfoBean {
     }
 
     public class Main_charactor {
-//        @Override
-//        public String toString() {
-//            return "Main_charactor{" +
-//                    "id=" + id +
-//                    ", name='" + name + '\'' +
-//                    ", image_url='" + image_url + '\'' +
-//                    ", character=" + character +
-//                    '}';
-//        }
-
         @Override
         public String toString() {
             return "{" +

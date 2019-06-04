@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:focusable="true"
+    android:orientation="horizontal"
+    android:layout_marginTop="3dp"
+    android:layout_marginBottom="3dp"
+    android:padding="3dp">
+
+    <ImageView
+        android:id="@+id/item_live_tv_category_wave"
+        android:layout_width="8dp"
+        android:layout_height="8dp"
+        android:layout_gravity="center"
+        android:layout_marginEnd="3dp"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/item_live_tv_category_title_text"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:gravity="start|center"
+        android:singleLine="true"
+        android:ellipsize="marquee"
+        android:textColor="@color/color_all_white"
+        android:textSize="12sp" />
+</LinearLayout>

@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/live_tv_root_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="10dp">
+
+    <android.support.v17.leanback.widget.VerticalGridView
+        android:id="@+id/live_tv_channel_list_title"
+        android:layout_width="55dp"
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="20dp"
+        android:focusable="true"
+        app:focusOutFront="true" />
+
+    <android.support.v17.leanback.widget.VerticalGridView
+        android:id="@+id/live_tv_channel_list_content"
+        android:layout_width="115dp"
+        android:layout_height="match_parent"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="20dp"
+        android:layout_toEndOf="@+id/live_tv_channel_list_title"
+        android:focusable="true"
+        app:focusOutFront="true"/>
+
+    <FrameLayout
+        android:id="@+id/live_tv_player"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/live_tv_info_banner"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_toEndOf="@+id/live_tv_channel_list_content"
+        android:focusable="true">
+
+        <com.stars.tv.widget.media.IjkVideoView
+            android:id="@+id/live_tv_player_video_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TableLayout
+            android:id="@+id/live_tv_player_hud_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:padding="8dp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/live_tv_player_loading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:visibility="gone" />
+
+        <View
+            android:id="@+id/live_tv_player_board"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/video_sample_board_bg"
+            android:visibility="gone" />
+
+    </FrameLayout>
+
+    <RelativeLayout
+        android:id="@+id/live_tv_info_banner"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="10dp"
+        android:layout_toEndOf="@+id/live_tv_channel_list_content"
+        android:focusable="false">
+
+        <TextView
+            android:id="@+id/live_tv_info_banner_channel_num"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginStart="5dp"
+            android:gravity="center"
+            android:textColor="@color/color_all_white"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/live_tv_info_banner_channel_name"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginStart="5dp"
+            android:layout_toEndOf="@+id/live_tv_info_banner_channel_num"
+            android:gravity="center"
+            android:minWidth="70dp"
+            android:textColor="@color/color_all_white"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/live_tv_info_banner_epg_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="10dp"
+            android:layout_toEndOf="@+id/live_tv_info_banner_channel_name"
+            android:layout_alignBaseline="@+id/live_tv_info_banner_channel_name"
+            android:gravity="start"
+            android:textColor="@color/color_all_white"
+            android:textSize="12sp" />
+
+    </RelativeLayout>
+
+</RelativeLayout>
