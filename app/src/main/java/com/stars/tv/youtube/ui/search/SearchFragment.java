@@ -1,9 +1,11 @@
 package com.stars.tv.youtube.ui.search;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.CardView;
@@ -18,12 +20,14 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.stars.tv.R;
+import com.stars.tv.youtube.ui.youtube.YoutubeRowFragment;
 import com.stars.tv.youtube.viewmodel.SearchViewModel;
 
 /**
  * A simple {@link Fragment} subclass.
  * ViewModel {@link SearchViewModel}
  */
+@RequiresApi(api = Build.VERSION_CODES.N)
 public class SearchFragment extends Fragment {
 
     private static final String TAG = SearchFragment.class.getSimpleName();
@@ -40,29 +44,39 @@ public class SearchFragment extends Fragment {
     private CardView searchIcon, clearIcon, spaceIcon, backspaceIcon, shiftIcon;
     private View view;
     private FrameLayout mRow;
-    private AlphabetKeyborad mAlphabet;
+    private SearchRowFragment rowFragment;
+    private AlphabetKeyboard mAlphabet;
     private NumberKeyboard mNumber;
     private SpinnerFragment mSpinner;
     private Keyboard mType;
+    private FocusLocation mFocus;
 
     private boolean RightFromSpace = false;
 
-    SearchRowFragment rowFragment;
+    public enum FocusLocation{
+        Suggestion, Keyboard, SearchRow
+    }
 
     public enum Keyboard{
         Alphabet, Number
     }
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.search_fragment, container, false);
-        findView();
-
-        mAlphabet = AlphabetKeyborad.newInstance();
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mAlphabet = AlphabetKeyboard.newInstance();
         mNumber = NumberKeyboard.newInstance();
         mSpinner = SpinnerFragment.newInstance();
         rowFragment = SearchRowFragment.newInstance();
+    }
+
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        Log.i(TAG, "onCreateView");
+        view = inflater.inflate(R.layout.search_fragment, container, false);
+        findView();
+
         if(savedInstanceState == null) {
             fm = getFragmentManager();
             fm.beginTransaction().replace(R.id.keyboard, mAlphabet).commit();
@@ -71,6 +85,7 @@ public class SearchFragment extends Fragment {
             fm.beginTransaction().replace(R.id.search_row, rowFragment).commit();
             mRow.setVisibility(View.GONE);
         }
+        mFocus = FocusLocation.Suggestion;
 
         mSuggestListAdapter = new SuggestListAdapter(this);
         recyclerView.setLayoutManager(
@@ -95,7 +110,26 @@ public class SearchFragment extends Fragment {
                     recyclerView.getChildAt(SuggestListAdapter.OutId).requestFocus();
                     return true;
                 }
-                if(keyCode == KeyEvent.KEYCODE_DPAD_DOWN /*&& mRow.getVisibility() != View.GONE*/) {
+                if(keyCode == KeyEvent.KEYCODE_DPAD_DOWN && mRow.getVisibility() == View.VISIBLE) {
+                    YoutubeRowFragment.highlightRowFocus(getActivity(), rowFragment);
+                    SuggestListAdapter.UpFromSuggestion = false;
+                }
+            }
+            return false;
+        });
+        clearIcon.getChildAt(0).setOnKeyListener((v, keyCode, event) ->{
+            if(event.getAction() == KeyEvent.ACTION_DOWN ) {
+                if(keyCode == KeyEvent.KEYCODE_DPAD_DOWN && mRow.getVisibility() == View.VISIBLE) {
+                    YoutubeRowFragment.highlightRowFocus(getActivity(), rowFragment);
+                    SuggestListAdapter.UpFromSuggestion = false;
+                }
+            }
+            return false;
+        });
+        searchIcon.getChildAt(0).setOnKeyListener((v, keyCode, event) ->{
+            if(event.getAction() == KeyEvent.ACTION_DOWN ) {
+                if(keyCode == KeyEvent.KEYCODE_DPAD_DOWN && mRow.getVisibility() == View.VISIBLE) {
+                    YoutubeRowFragment.highlightRowFocus(getActivity(), rowFragment);
                     SuggestListAdapter.UpFromSuggestion = false;
                 }
             }
@@ -105,6 +139,43 @@ public class SearchFragment extends Fragment {
         setOnFocusListener();
 
         return view;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        mViewModel = ViewModelProviders.of(getActivity()).get(SearchViewModel.class);
+        mViewModel.getQueryString().observe(getActivity(), (query)->{
+            Log.d("getChar", query);
+            if(query.equals("")){
+                searchBar.setText("Search");
+            }
+            else
+                searchBar.setText(query);
+        });
+        mViewModel.getSuggestions().observe(getActivity(), suggestions->{
+//            Log.d("getSuggestion", suggestions.get(0));
+            mSuggestListAdapter.refresh(suggestions);
+        });
+        mViewModel.getIsLoading().observe(getActivity(), isLoading->{
+            if(isLoading){
+                fm.beginTransaction().replace(R.id.search_row, mSpinner).commit();
+            }
+            else{
+                fm.beginTransaction().replace(R.id.search_row, rowFragment).commit();
+                mRow.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
+                mRow.requestFocus();
+//                rowFragment.getView().requestFocus();
+            }
+        });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.i(TAG, "onResume");
+        SuggestListAdapter.OutId = 0;
+        clearSearchBar();
     }
 
     private void findView(){
@@ -129,7 +200,7 @@ public class SearchFragment extends Fragment {
                     ((CardView) v.getParent()).setCardElevation(20);
                     if(finalI < 7){
                         if(mType == Keyboard.Alphabet)
-                            v.setNextFocusUpId(AlphabetKeyborad.OutId_Down);
+                            v.setNextFocusUpId(AlphabetKeyboard.OutId_Down);
                         else if(mType == Keyboard.Number)
                             v.setNextFocusUpId(NumberKeyboard.OutId_Down);
                         if(mRow.getVisibility() == View.GONE) {
@@ -182,47 +253,26 @@ public class SearchFragment extends Fragment {
         mRow.setVisibility(View.GONE);
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        mViewModel = ViewModelProviders.of(getActivity()).get(SearchViewModel.class);
-        mViewModel.getQueryString().observe(getActivity(), (query)->{
-            Log.d("getChar", query);
-            if(query.equals("")){
-                searchBar.setText("Search");
-            }
-            else
-            searchBar.setText(query);
-        });
-        mViewModel.getSuggestions().observe(getActivity(), suggestions->{
-//            Log.d("getSuggestion", suggestions.get(0));
-            mSuggestListAdapter.refresh(suggestions);
-        });
-        mViewModel.getIsLoading().observe(getActivity(), isLoading->{
-            if(isLoading){
-                fm.beginTransaction().replace(R.id.search_row, mSpinner).commit();
-            }
-            else{
-                fm.beginTransaction().replace(R.id.search_row, rowFragment).commit();
-                mRow.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
-                mRow.requestFocus();
-//                rowFragment.getView().requestFocus();
-            }
-        });
-    }
-
     public int getRecyclerViewNextFocusRightId(){
         if(RightFromSpace){
             RightFromSpace = false;
             return spaceIcon.getChildAt(0).getId();
         }
         else if(mType == Keyboard.Alphabet)
-            return AlphabetKeyborad.OutId_Left;
+            return AlphabetKeyboard.OutId_Left;
         else /*if(mType == Keyboard.Number)*/
             return NumberKeyboard.OutId_Left;
     }
 
     public FrameLayout getRow() {
         return mRow;
+    }
+
+    public FocusLocation getFocus() {
+        return mFocus;
+    }
+
+    public void setFocus(FocusLocation focus) {
+        this.mFocus = focus;
     }
 }

@@ -28,8 +28,8 @@ import com.stars.tv.youtube.util.Utils;
 
 public class YouTubeCardPresenter extends Presenter {
     private Context mContext;
-    private Fragment mFragment;
-    public ViewGroup mLeftNav, mTopNav;
+    protected Fragment mFragment;
+    protected ViewGroup mLeftNav, mTopNav;
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup) {
@@ -105,7 +105,7 @@ public class YouTubeCardPresenter extends Presenter {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    public void setFocusNavigation(CardViewHolder cardViewHolder){
+    protected void setFocusNavigation(CardViewHolder cardViewHolder){
         switch (((YoutubeFragment) mFragment).getTabCategory()){
             case Recommended:
                 cardViewHolder.view.setNextFocusUpId(R.id.recommend_btn);
@@ -122,24 +122,35 @@ public class YouTubeCardPresenter extends Presenter {
         }
         cardViewHolder.view.setOnKeyListener((v, keyCode, event) -> {
             if(event.getAction() == KeyEvent.ACTION_DOWN){
-                if(keyCode == KeyEvent.KEYCODE_DPAD_DOWN)
-                    mLeftNav.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
-                else {
-                    mLeftNav.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
-                }
-                if(keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
-                    mTopNav.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
-                }
-                else {
-                    mTopNav.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
-                }
+                setDefaultFocus(v, keyCode);
                 if(keyCode == KeyEvent.KEYCODE_BACK){
-                    mTopNav.requestFocus();
+                    setPressBack(v);
                     return true;
                 }
             }
             return false;
         });
+    }
+
+    public void setDefaultFocus(View v, int keyCode){
+        if(keyCode == KeyEvent.KEYCODE_DPAD_DOWN)
+            mLeftNav.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
+        else {
+            mLeftNav.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
+        }
+        if(keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
+            mTopNav.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
+        }
+        else {
+            mTopNav.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
+        }
+    }
+
+    public void setPressBack(View v){
+        mTopNav.requestFocus();
+        ImageCardView imgCard = v.findViewById(R.id.img_card_view);
+        imgCard.setInfoAreaBackgroundColor(mContext.getResources().getColor(R.color.background));
+        ((TextView) imgCard.findViewById(R.id.title_text)).setTextColor(Color.WHITE);
     }
 
     public class CardViewHolder extends ViewHolder{

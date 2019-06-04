@@ -5,7 +5,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
-import android.support.v17.leanback.widget.ListRow;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
@@ -25,6 +24,7 @@ import com.stars.tv.youtube.ui.BlankFragment;
 import com.stars.tv.youtube.ui.PlayerControlsFragment;
 import com.stars.tv.R;
 import com.stars.tv.youtube.ui.search.SearchFragment;
+import com.stars.tv.youtube.ui.search.SearchRowFragment;
 import com.stars.tv.youtube.ui.search.SuggestListAdapter;
 import com.stars.tv.youtube.ui.youtube.YoutubeFragment;
 import com.stars.tv.youtube.ui.youtube.YoutubeRowFragment;
@@ -162,14 +162,38 @@ public class YoutubeActivity extends FragmentActivity implements CustomAdapt,
                     view.setSelected(true);
                     if(homeIcon.isSelected()){
                         YoutubeRowFragment frag = (YoutubeRowFragment) youtubeFragment.getFragmentManager().findFragmentById(R.id.container_row);
-                        int check = frag.getSelectedPosition();
-                        ListRow listRow = (ListRow) frag.getAdapter().get(check);
-//                        (YoutubeVideo)View t = (View) listRow.getAdapter().get(0);
+                        YoutubeRowFragment.highlightRowFocus(this, frag);
+//                        Log.d("check", ""+selected_row);
+//                        View e = listRowView.getGridView().getChildAt(selected_row);
+//                        i = ((ViewGroup)v.getChildAt(1)).getChildCount();
+//                        RecyclerView.ViewHolder cardViewHolder = listRowView.getGridView().getChildViewHolder(e);
+//                        listRowView.getGridView().findViewById()
+//                        int check = frag.getSelectedPosition();
+//                        ListRow listRow = (ListRow) frag.getAdapter().get(check);
+//                        ArrayObjectAdapter adapter = (ArrayObjectAdapter) listRow.getAdapter();
+//                        YouTubeVideo ytv = (YouTubeVideo) listRow.getAdapter().get(0);
+//                        YouTubeCardPresenter ycp = (YouTubeCardPresenter) adapter.getPresenter(ytv);
+
+//                        RecyclerView.ViewHolder cardViewHolder = verticalGridView.getChildViewHolder(v);
+//                        cardViewHolder.getLayoutPosition();
+//                        GridLayoutManager gridLayoutManager = (GridLayoutManager) frag.getVerticalGridView().getLayoutManager();
+//                        View v = gridLayoutManager.findViewByPosition(frag.getVerticalGridView().getSelectedPosition());
+//                        gridLayoutManager.getSelection();
 //                        adapter.getPresenter()
                     }
                     if(searchIcon.isSelected()) {
                         RecyclerView suggestions = searchFragment.getView().findViewById(R.id.rv_view);
-                        suggestions.getChildAt(SuggestListAdapter.OutId).requestFocus();
+//                        View searchRow = searchFragment.getView().findViewById(R.id.search_row);
+                        SearchRowFragment searchRow = (SearchRowFragment) searchFragment.getFragmentManager().findFragmentById(R.id.search_row);
+                        if(searchFragment.getFocus() == SearchFragment.FocusLocation.Suggestion) {
+                            suggestions.getChildAt(SuggestListAdapter.OutId).requestFocus();
+                        }
+                        else if(searchFragment.getFocus() == SearchFragment.FocusLocation.SearchRow){
+//                            searchRow.requestFocus();
+                            YoutubeRowFragment.highlightRowFocus(this, searchRow);
+                            searchIcon.setNextFocusRightId(R.id.search_row);
+                            return false;
+                        }
                         return true;
                     }
                 }

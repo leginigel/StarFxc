@@ -2,7 +2,9 @@ package com.stars.tv.youtube.ui.search;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -17,8 +19,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.stars.tv.R;
+import com.stars.tv.youtube.ui.youtube.YoutubeRowFragment;
 import com.stars.tv.youtube.viewmodel.SearchViewModel;
 
+@RequiresApi(api = Build.VERSION_CODES.N)
 public class SuggestListAdapter extends RecyclerView.Adapter<SuggestListAdapter.ViewHolder> {
 
     private String [] default_suggestion = {
@@ -26,11 +30,11 @@ public class SuggestListAdapter extends RecyclerView.Adapter<SuggestListAdapter.
             "kadenang ginto",
             "never really over katy perry",
             "press press cardi b",
-            "mark ronson camila cabello",
+            "us china trade war",
             "avenger end game",
             "league of legends msi",
             "gay marriage",
-            "pbb",
+            "ford v ferrari trailer",
             "james arthur falling like the stars"
     };
     private Context mContext;
@@ -62,6 +66,7 @@ public class SuggestListAdapter extends RecyclerView.Adapter<SuggestListAdapter.
         if(items == null){
 //            viewHolder.textView.setText("CHECK "+ i);
             viewHolder.imageView.setVisibility(View.VISIBLE);
+            viewHolder.imageView.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_whatshot_24dp));
             viewHolder.textView.setText(default_suggestion[i]);
         }
         else{
@@ -76,11 +81,21 @@ public class SuggestListAdapter extends RecyclerView.Adapter<SuggestListAdapter.
             });
         }
 
-        viewHolder.cardView.setOnKeyListener((v, keyCode, event) -> {
+        setOnKeyListener(viewHolder.cardView, i);
+    }
+
+    private void setOnKeyListener(CardView cardView, int i){
+        cardView.setOnKeyListener((v, keyCode, event) -> {
             if(event.getAction() == KeyEvent.ACTION_DOWN){
                 if(keyCode == KeyEvent.KEYCODE_DPAD_DOWN) {
                     mLeftNav.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
-                    viewHolder.cardView.setNextFocusDownId(R.id.search_row);
+                    View searchRow = mSearchFragment.getView().findViewById(R.id.search_row);
+                    if(searchRow.getVisibility() == View.VISIBLE) {
+                        SearchRowFragment frag =
+                                (SearchRowFragment) mSearchFragment.getFragmentManager().findFragmentById(R.id.search_row);
+                        YoutubeRowFragment.highlightRowFocus(mContext, frag);
+                    }
+                    v.setNextFocusDownId(R.id.search_row);
                     UpFromSuggestion = true;
                 }
                 else {
@@ -92,6 +107,7 @@ public class SuggestListAdapter extends RecyclerView.Adapter<SuggestListAdapter.
                 }
                 else if(keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
                     OutId = i;
+                    mSearchFragment.setFocus(SearchFragment.FocusLocation.Suggestion);
                 }
             }
             return false;
@@ -116,16 +132,18 @@ public class SuggestListAdapter extends RecyclerView.Adapter<SuggestListAdapter.
                 else cardView.setCardElevation(0);
             });
             imageView = itemView.findViewById(R.id.suggest_img);
-//            imageView.setImageDrawable(null);
-            imageView.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_whatshot_24dp));
             textView = itemView.findViewById(R.id.suggest_text);
         }
     }
 
     public void refresh(List<String> list){
-        this.items = new ArrayList<>();
-        this.items.addAll(list);
-        notifyDataSetChanged();
+        if(items != null)
+            this.items.clear();
+        if(list != null) {
+            this.items = new ArrayList<>();
+            this.items.addAll(list);
+            notifyDataSetChanged();
+        }
     }
 
     public void clear() {

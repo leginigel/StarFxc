@@ -1,5 +1,6 @@
 package com.stars.tv.youtube.ui.youtube;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -13,12 +14,15 @@ import android.support.v17.leanback.widget.HeaderItem;
 import android.support.v17.leanback.widget.ImageCardView;
 import android.support.v17.leanback.widget.ListRow;
 import android.support.v17.leanback.widget.ListRowPresenter;
+import android.support.v17.leanback.widget.ListRowView;
 import android.support.v17.leanback.widget.OnItemViewClickedListener;
 import android.support.v17.leanback.widget.OnItemViewSelectedListener;
 import android.support.v17.leanback.widget.Presenter;
 import android.support.v17.leanback.widget.Row;
 import android.support.v17.leanback.widget.RowPresenter;
+import android.support.v17.leanback.widget.VerticalGridView;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,7 +31,6 @@ import android.widget.TextView;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerSupportFragment;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -47,12 +50,7 @@ import com.stars.tv.youtube.viewmodel.YoutubeViewModel;
 public class YoutubeRowFragment extends RowsSupportFragment {
 
     private final static String TAG = YoutubeRowFragment.class.getSimpleName();
-    private List<YouTubeVideo> mVideoList = new ArrayList<>();
-    private Map<String, List<YouTubeVideo>> mRecommendedChannel;
-    private Map<String, List<YouTubeVideo>> mLatestChannel;
-    private Map<String, List<YouTubeVideo>> mMusicChannel;
-
-    private ViewGroup mContainer;
+    private VerticalGridView mGridView;
     private ArrayObjectAdapter mCardsAdapter;
     private ArrayObjectAdapter mRowsAdapter;
     private ListRowPresenter mListRowPresenter;
@@ -64,6 +62,22 @@ public class YoutubeRowFragment extends RowsSupportFragment {
 
     public static YoutubeRowFragment newInstance() {
         return new YoutubeRowFragment();
+    }
+
+    public static void highlightRowFocus(Context context, RowsSupportFragment rowsFragment){
+
+        VerticalGridView verticalGridView = rowsFragment.getVerticalGridView();
+
+        int selected_vertical = verticalGridView.getSelectedPosition();
+        ViewGroup rowContainer = (ViewGroup) verticalGridView.getChildAt(selected_vertical);  //row container
+
+        ListRowView listRowView = (ListRowView) rowContainer.getChildAt(1);
+        int selected_row = listRowView.getGridView().getSelectedPosition();
+
+        ImageCardView imgCard = listRowView.getGridView().getChildAt(selected_row).findViewById(R.id.img_card_view);
+        imgCard.setInfoAreaBackgroundColor(Color.WHITE);
+        ((TextView) imgCard.findViewById(R.id.title_text))
+                .setTextColor(context.getResources().getColor(R.color.background));
     }
 
     @Nullable
@@ -81,7 +95,8 @@ public class YoutubeRowFragment extends RowsSupportFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Log.i(TAG, "onActivityCreated");
+//        Log.i(TAG, "onActivityCreated");
+        mGridView = getVerticalGridView();
     }
 
     public void setRows(Map<String, List<YouTubeVideo>> channelList){
@@ -148,10 +163,61 @@ public class YoutubeRowFragment extends RowsSupportFragment {
                 // Reset the ImageCardView Info Color
                 if(imgCard != null){
                     imgCard.setInfoAreaBackgroundColor(getResources().getColor(R.color.background));
-                    ((TextView) imgCard.findViewById(R.id.title_text))
-                            .setTextColor(Color.WHITE);
+                    ((TextView) imgCard.findViewById(R.id.title_text)).setTextColor(Color.WHITE);
                 }
-//if(mCardsAdapter.indexOf(o) == 0) mYouTubeCardPresenter.setFocusOutNavigation(cardViewHolder);
+
+                ArrayObjectAdapter cardsAdapter = getCardsAdapter();
+                ArrayObjectAdapter rowsAdapter = getRowsAdapter();
+                YouTubeCardPresenter cardPresenter = getCardPresenter();
+                if(cardsAdapter.indexOf(o) == 0 && rowsAdapter.indexOf(row) == 0) {
+                    cardViewHolder.view.setOnKeyListener((v, keyCode, event) -> {
+                        if(event.getAction() == KeyEvent.ACTION_DOWN) {
+                            cardPresenter.setDefaultFocus(v, keyCode);
+                            if(keyCode == KeyEvent.KEYCODE_DPAD_LEFT || keyCode == KeyEvent.KEYCODE_DPAD_UP) {
+                                imgCard.setInfoAreaBackgroundColor(getResources().getColor(R.color.background));
+                                ((TextView) imgCard.findViewById(R.id.title_text))
+                                        .setTextColor(Color.WHITE);
+                            }
+                            if(keyCode == KeyEvent.KEYCODE_BACK) {
+                                cardPresenter.setPressBack(v);
+                                return true;
+                            }
+                        }
+                        return false;
+                    });
+                } else if(cardsAdapter.indexOf(o) == 0) {
+                    cardViewHolder.view.setOnKeyListener((v, keyCode, event) -> {
+                        if(event.getAction() == KeyEvent.ACTION_DOWN) {
+                            cardPresenter.setDefaultFocus(v, keyCode);
+                            if(keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
+                                imgCard.setInfoAreaBackgroundColor(getResources().getColor(R.color.background));
+                                ((TextView) imgCard.findViewById(R.id.title_text))
+                                        .setTextColor(Color.WHITE);
+                            }
+                            if(keyCode == KeyEvent.KEYCODE_BACK) {
+                                cardPresenter.setPressBack(v);
+                                return true;
+                            }
+                        }
+                        return false;
+                    });
+                } else if(rowsAdapter.indexOf(row) == 0) {
+                    cardViewHolder.view.setOnKeyListener((v, keyCode, event) -> {
+                        if(event.getAction() == KeyEvent.ACTION_DOWN) {
+                            cardPresenter.setDefaultFocus(v, keyCode);
+                            if(keyCode == KeyEvent.KEYCODE_DPAD_UP) {
+                                imgCard.setInfoAreaBackgroundColor(getResources().getColor(R.color.background));
+                                ((TextView) imgCard.findViewById(R.id.title_text)).setTextColor(Color.WHITE);
+                            }
+                            if(keyCode == KeyEvent.KEYCODE_BACK) {
+                                cardPresenter.setPressBack(v);
+                                return true;
+                            }
+                        }
+                        return false;
+                    });
+                }
+
                 // Set the Selected Color
                 imgCard = cardViewHolder.getImageCardView();
                 imgCard.setInfoAreaBackgroundColor(Color.WHITE);
@@ -187,5 +253,17 @@ public class YoutubeRowFragment extends RowsSupportFragment {
     // All Needs to Override this Method
     public YoutubeFragment.TabCategory getTabCategory() {
         return null;
+    }
+
+    public ArrayObjectAdapter getCardsAdapter() {
+        return mCardsAdapter;
+    }
+
+    public ArrayObjectAdapter getRowsAdapter() {
+        return mRowsAdapter;
+    }
+
+    public YouTubeCardPresenter getCardPresenter() {
+        return mYouTubeCardPresenter;
     }
 }

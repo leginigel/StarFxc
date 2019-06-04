@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.stars.tv.youtube.data.YouTubeVideo;
+import com.stars.tv.youtube.ui.YouTubeCardPresenter;
 import com.stars.tv.youtube.ui.youtube.YoutubeRowFragment;
 import com.stars.tv.youtube.viewmodel.SearchViewModel;
 
@@ -71,6 +72,22 @@ public class SearchRowFragment extends YoutubeRowFragment {
     }
 
     public void clear(){
+        if(mRowsAdapter != null)
         mRowsAdapter.clear();
+    }
+
+    @Override
+    public ArrayObjectAdapter getCardsAdapter() {
+        return mCardsAdapter;
+    }
+
+    @Override
+    public ArrayObjectAdapter getRowsAdapter() {
+        return mRowsAdapter;
+    }
+
+    @Override
+    public YouTubeCardPresenter getCardPresenter() {
+        return mSearchCardPresenter;
     }
 }

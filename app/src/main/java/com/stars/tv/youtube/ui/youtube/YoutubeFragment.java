@@ -5,6 +5,7 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -32,26 +33,30 @@ public class YoutubeFragment extends Fragment {
         return new YoutubeFragment();
     }
 
-    FragmentManager fm;
+    private FragmentManager fm;
 
-    RecommendedFragment recommendedFragment;
-    MusicFragment musicFragment;
-    GamingFragment gamingFragment;
-    EntertainFragment entertainFragment;
-    LatestFragment latestFragment;
+    private RecommendedFragment recommendedFragment;
+    private MusicFragment musicFragment;
+    private GamingFragment gamingFragment;
+    private EntertainFragment entertainFragment;
+    private LatestFragment latestFragment;
 
     private TabCategory mTab;
     private ViewGroup mContainerRow, mLeftNav;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         recommendedFragment = RecommendedFragment.newInstance();
         musicFragment = MusicFragment.newInstance();
         gamingFragment = GamingFragment.newInstance();
         entertainFragment = EntertainFragment.newInstance();
         latestFragment = LatestFragment.newInstance();
+    }
 
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.youtube_fragment, container, false);
         if(savedInstanceState == null) {
             fm = getFragmentManager();
@@ -101,6 +106,9 @@ public class YoutubeFragment extends Fragment {
                     if(getTabCategory() == category) {
                         button.setSelected(true);
                     }
+
+                    YoutubeRowFragment frag = (YoutubeRowFragment) fm.findFragmentById(R.id.container_row);
+                    YoutubeRowFragment.highlightRowFocus(getActivity(), frag);
                 }
                 if(keyCode == KeyEvent.KEYCODE_DPAD_LEFT && category == TabCategory.Recommended) {
                     button.setSelected(true);

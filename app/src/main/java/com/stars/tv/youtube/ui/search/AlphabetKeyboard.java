@@ -23,10 +23,10 @@ import com.stars.tv.youtube.viewmodel.SearchViewModel;
  * A simple {@link Fragment} subclass.
  * ViewModel {@link SearchViewModel}
  */
-public class AlphabetKeyborad extends Fragment {
+public class AlphabetKeyboard extends Fragment {
 
-    public static AlphabetKeyborad newInstance(){
-        return new AlphabetKeyborad();
+    public static AlphabetKeyboard newInstance(){
+        return new AlphabetKeyboard();
     }
     private SearchViewModel mViewModel;
     public static int OutId_Down, OutId_Left;
