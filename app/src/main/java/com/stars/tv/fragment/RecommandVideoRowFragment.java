@@ -260,6 +260,11 @@ public class RecommandVideoRowFragment extends Fragment {
 
                 }
             }
+
+            @Override
+            public void onLoadEnd() {
+
+            }
         });
     }
 

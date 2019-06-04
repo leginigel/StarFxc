@@ -216,6 +216,11 @@ public class SeriesVideoRowFragment extends Fragment {
                         24, 1, 1, "iqiyi", 1, "", 12);
                 }
             }
+
+            @Override
+            public void onLoadEnd() {
+
+            }
         });
         return view;
     }

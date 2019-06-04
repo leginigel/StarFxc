@@ -122,9 +122,16 @@ public class VideoVGridSampleMVPFragment
         //TODO 设置为focus行为
       }
     });
-    videoGrid.setOnLoadMoreListener(() -> {
+    videoGrid.setOnLoadMoreListener(new MyVerticalGridView.OnLoadMoreListener() {
+      @Override
+      public void onLoadMore() {
       mPageNum += 1;
       refreshRequest();
+      }
+
+      @Override
+      public void onLoadEnd() {
+      }
     });
     refreshRequest();
   }
