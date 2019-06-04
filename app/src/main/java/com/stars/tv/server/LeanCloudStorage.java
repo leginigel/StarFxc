@@ -11,23 +11,38 @@ import com.stars.tv.bean.IQiYiMovieBean;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.stars.tv.utils.Constants.CLOUD_FAVORITE_CLASS;
 import static com.stars.tv.utils.Constants.CLOUD_HISTORY_CLASS;
+import static com.stars.tv.utils.Constants.DRAG_VIDEO_ALBUM;
+import static com.stars.tv.utils.Constants.DRAG_VIDEO_COUNTER;
+import static com.stars.tv.utils.Constants.DRAG_VIDEO_CURRENT_VIEW_ORDER;
+import static com.stars.tv.utils.Constants.DRAG_VIDEO_DESCRIPTION;
+import static com.stars.tv.utils.Constants.DRAG_VIDEO_ID;
+import static com.stars.tv.utils.Constants.DRAG_VIDEO_IMAGE_URL;
+import static com.stars.tv.utils.Constants.DRAG_VIDEO_LATEST_ORDER;
+import static com.stars.tv.utils.Constants.DRAG_VIDEO_NAME;
+import static com.stars.tv.utils.Constants.DRAG_VIDEO_PLAYURL;
+import static com.stars.tv.utils.Constants.DRAG_VIDEO_TYPE;
+import static com.stars.tv.utils.Constants.VIDEO_TYPE_ANIMATION;
+import static com.stars.tv.utils.Constants.VIDEO_TYPE_CINEMA;
+import static com.stars.tv.utils.Constants.VIDEO_TYPE_DRAMA;
+import static com.stars.tv.utils.Constants.VIDEO_TYPE_LIVE;
+import static com.stars.tv.utils.Constants.VIDEO_TYPE_TVCHANNEL;
+import static com.stars.tv.utils.Constants.VIDEO_TYPE_VARIETY;
+import static com.stars.tv.utils.Constants.VIDEO_TYPE_YOUTUBE;
 
 public class LeanCloudStorage {
-  private static final String DRAG_VIDEO_ID = "VideoID";
-  private static final String DRAG_VIDEO_NAME = "VideoName";
-  private static final String DRAG_VIDEO_PLAYURL = "VideoPlayUrl";
-  private static final String DRAG_VIDEO_CURRENT_VIEW_ORDER = "VideoCurrentViewOrder";
-  private static final String DRAG_VIDEO_LATEST_ORDER = "VideoLatestOrder";
-  private static final String DRAG_VIDEO_DESCRIPTION = "VideoDescription";
-  private static final String DRAG_VIDEO_IMAGEFILE = "VideoImageFile";
   private List<DragVideoBean> mDragVideoList;
   private final String mClassName;
 
   public interface cloudFetchListener {
     void done(List<AVObject> objects, AVException e);
   }
+
+  public interface cloudCheckVideoListener {
+    void successed();
+    void failed();
+  }
+
 
   public LeanCloudStorage(String className){
     mClassName = className;
@@ -36,7 +51,7 @@ public class LeanCloudStorage {
 
   public void storageFetchListener(cloudFetchListener cr){
     AVQuery<AVObject> query = new AVQuery<>(mClassName);
-    query.whereExists(DRAG_VIDEO_ID);
+    query.whereExists(DRAG_VIDEO_ALBUM);
     query.findInBackground(new FindCallback<AVObject>() {
       @Override
       public void done(List<AVObject> avObjects, AVException e) {
@@ -49,8 +64,9 @@ public class LeanCloudStorage {
     return mDragVideoList;
   }
 
-  public void assignToDragVideoList(List<AVObject> objects){
+  public List<DragVideoBean> assignToDragVideoList(List<AVObject> objects){
     mDragVideoList = assignToVideoList(objects);
+    return mDragVideoList;
   }
 
   private List<DragVideoBean> assignToVideoList(List<AVObject> objects){
@@ -59,13 +75,16 @@ public class LeanCloudStorage {
     if ( objects != null && objects.size() > 0 ) {
       for ( AVObject obj : objects ) {
         item = new DragVideoBean();
+        item.setVideoType(obj.getString(DRAG_VIDEO_TYPE));
+        item.setAlbumId(obj.getString(DRAG_VIDEO_ALBUM));
         item.setVideoId(obj.getString(DRAG_VIDEO_ID));
         item.setVideoName(obj.getString(DRAG_VIDEO_NAME));
         item.setVideoPlayUrl(obj.getString(DRAG_VIDEO_PLAYURL));
         item.setVideoCurrentViewOrder(obj.getString(DRAG_VIDEO_CURRENT_VIEW_ORDER));
         item.setVideoLatestOrder(obj.getString(DRAG_VIDEO_LATEST_ORDER));
+        item.setVideoCounter(obj.getString(DRAG_VIDEO_COUNTER));
         item.setVideoDescription(obj.getString(DRAG_VIDEO_DESCRIPTION));
-        item.setVideoImageFile(obj.getString(DRAG_VIDEO_IMAGEFILE));
+        item.setVideoImageUrl(obj.getString(DRAG_VIDEO_IMAGE_URL));
         items.add(item);
       }
     }
@@ -84,19 +103,20 @@ public class LeanCloudStorage {
     });
   }
 
-  public int isVideoExist(DragVideoBean video){
-    int idx = 0;
-    if ( mDragVideoList != null && mDragVideoList.size() > 0) {
-      for ( DragVideoBean item : mDragVideoList ) {
-        if ( item.getVideoId().compareTo(video.getVideoId()) == 0 ) {
-          break;
+  public void VideoExistCheck(String album, cloudCheckVideoListener ccv){
+    AVQuery<AVObject> query = new AVQuery<>(mClassName);
+    query.whereEqualTo(DRAG_VIDEO_ALBUM, album);
+    query.getFirstInBackground(new GetCallback<AVObject>() {
+      @Override
+      public void done(AVObject object, AVException e) {
+        if (e != null){
+          ccv.successed();
         }
-        idx++;
+        else{
+          ccv.failed();
+        }
       }
-    }
-    else
-      return -1;
-    return idx;
+    });
   }
 
   private AVObject createClass(){
@@ -106,58 +126,78 @@ public class LeanCloudStorage {
     return AVObject.createWithoutData(mClassName, id);
   }
 
-  public void updateVideoByiQiy(IQiYiMovieBean iQiy){
-    AVQuery<AVObject> query = new AVQuery<>(CLOUD_HISTORY_CLASS);
-    query.whereEqualTo(DRAG_VIDEO_ID,iQiy.getTvId());
+  public void updateVideoByiQiy(DragVideoBean iQiy){
+    AVQuery<AVObject> query = new AVQuery<>(mClassName);
+    query.whereEqualTo(DRAG_VIDEO_ALBUM,iQiy.getAlbumId());
     query.getFirstInBackground(new GetCallback<AVObject>() {
       @Override
       public void done(AVObject object, AVException e) {
-        if ( e == null ) {
-          AVObject obj;
-          if ( object != null ) {
-            obj = updateListByID(object.getObjectId());
-            saveData(assignIQiyToAVObject(iQiy, obj));
-          }
-          else{
-            obj = createClass();
-          }
-          saveData(obj);
+      if ( e == null ) {
+        AVObject obj;
+        if ( object != null ) {
+          obj = assignIQiyToAVObject(iQiy, updateListByID(object.getObjectId()));
         }
         else{
-          if ( e.getCode() == AVException.OBJECT_NOT_FOUND ) {
-            saveData(createClass());
-          }
+          obj = createClass();
+        }
+        saveData(obj);
+      }
+      else{
+        if ( e.getCode() == AVException.OBJECT_NOT_FOUND ) {
+          saveData(createClass());
         }
       }
+    }
     });
   }
 
-  private AVObject IQiYToCloud(IQiYiMovieBean iQiy){
-    return assignIQiyToAVObject(iQiy, new AVObject(mClassName));
-  }
+  private AVObject assignIQiyToAVObject(DragVideoBean bean, AVObject obj){
+    obj.put(DRAG_VIDEO_TYPE, bean.getVideoType());
+    obj.put(DRAG_VIDEO_ALBUM, bean.getAlbumId());
+    obj.put(DRAG_VIDEO_ID, bean.getVideoId());
+    obj.put(DRAG_VIDEO_NAME, bean.getVideoName());
+    obj.put(DRAG_VIDEO_PLAYURL, bean.getVideoPlayUrl());
+    obj.put(DRAG_VIDEO_IMAGE_URL, bean.getVideoImageUrl());
+    obj.put(DRAG_VIDEO_CURRENT_VIEW_ORDER, bean.getVideoCurrentViewOrder());
+    obj.put(DRAG_VIDEO_LATEST_ORDER, bean.getVideoLatestOrder());
+    obj.put(DRAG_VIDEO_COUNTER, bean.getVideoCounter());
+    obj.put(DRAG_VIDEO_DESCRIPTION, bean.getVideoDescription());
 
-  private AVObject assignIQiyToAVObject(IQiYiMovieBean iQiy, AVObject obj){
-    obj.put(DRAG_VIDEO_ID, iQiy.getTvId());
-    obj.put(DRAG_VIDEO_NAME, iQiy.getName());
-    obj.put(DRAG_VIDEO_PLAYURL, iQiy.getPlayUrl());
-    obj.put(DRAG_VIDEO_CURRENT_VIEW_ORDER, iQiy.getVideoCount());
-    obj.put(DRAG_VIDEO_LATEST_ORDER, iQiy.getLatestOrder());
-    obj.put(DRAG_VIDEO_DESCRIPTION, iQiy.getDescription());
-    obj.put(DRAG_VIDEO_IMAGEFILE, iQiy.getImageUrl());
     return obj;
   }
 
-  public void createSampleListByIQIY(List<IQiYiMovieBean> iQiys){
-    List<AVObject> list = new ArrayList<>();
-    for ( IQiYiMovieBean iQiy : iQiys ){
-      list.add(IQiYToCloud(iQiy));
-    }
-    if ( list.size() > 0 ) {
-      AVObject.saveAllInBackground(list, new SaveCallback() {
-        @Override
-        public void done(AVException e) {
-        }
-      });
-    }
+
+  public DragVideoBean createIQiyDramaInfo (IQiYiMovieBean drama, IQiYiMovieBean episode, int chapter){
+    DragVideoBean bean = new DragVideoBean();
+
+    bean.setAlbumId(drama.getAlbumId());
+    bean.setVideoCurrentViewOrder(String.valueOf(chapter));
+    bean.setVideoCounter(drama.getVideoCount());
+    bean.setVideoLatestOrder(drama.getLatestOrder());
+    bean.setVideoDescription(drama.getDescription());
+    bean.setVideoType(String.valueOf(VIDEO_TYPE_DRAMA));
+    bean.setVideoId(episode.getTvId());
+    bean.setVideoName(episode.getName());
+    bean.setVideoImageUrl(episode.getImageUrl());
+    bean.setVideoPlayUrl(episode.getPlayUrl());
+
+    return bean;
+  }
+
+  public DragVideoBean createIQiyOtherInfoByType (IQiYiMovieBean iQiy, int types){
+    DragVideoBean bean = new DragVideoBean();
+
+    bean.setAlbumId(iQiy.getAlbumId());
+    bean.setVideoCurrentViewOrder(null);
+    bean.setVideoCounter(iQiy.getVideoCount());
+    bean.setVideoLatestOrder(iQiy.getLatestOrder());
+    bean.setVideoDescription(iQiy.getDescription());
+    bean.setVideoType(String.valueOf(types));
+    bean.setVideoId(iQiy.getTvId());
+    bean.setVideoName(iQiy.getName());
+    bean.setVideoImageUrl(iQiy.getImageUrl());
+    bean.setVideoPlayUrl(iQiy.getPlayUrl());
+
+    return bean;
   }
 }

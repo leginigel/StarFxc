@@ -135,7 +135,7 @@ public class VideoPreview extends BaseActivity {
 
   public void initVideoView() {
     //Log.v("VideoPreview1", mVideoPath);
-    Log.d("Test","Jack66, initVideoVidePath="+mVideoPath);
+    //Log.d("Test","Jack66, initVideoVidePath="+mVideoPath);
     // init UI
     mMediaController = new AndroidMediaController(this, false);
     mMediaController.clearFocus();
@@ -226,7 +226,7 @@ public class VideoPreview extends BaseActivity {
 //                selectedPositions =  Integer.valueOf());
         adapter.setSelectedPositions(Arrays.asList(selectedPositions));
         //Log.v("Clicktest", mVideoList.get(position).getTvId());
-        Log.d("Test", "Jack66, itemclick.TVID="+mVideoList.get(position).toString());
+        //Log.d("Test", "Jack66, itemclick.TVID="+mVideoList.get(position).toString());
       }
     });
     mHandler.postDelayed(new Runnable() {
@@ -239,7 +239,8 @@ public class VideoPreview extends BaseActivity {
 
   private void getVideoInfo() {
     videoBean = (IQiYiMovieBean) getIntent().getSerializableExtra("videoBean");
-    Log.v("videoBean", videoBean.toString());
+    //Log.v("videoBean", videoBean.toString());
+    //Log.d("Test", "Jack66, videoBean.contents="+videoBean.toString());
     name = videoBean.getName();
     score = videoBean.getScore();
     tvId = videoBean.getTvId();
@@ -278,6 +279,8 @@ public class VideoPreview extends BaseActivity {
     editor.putString("description", description);
     editor.commit();
 
+    //Log.d("Test", "Jack66, editor.contents="+editor.toString());
+
     parseIQiYiRealM3U8WithTvId(tvId);
     parseIQiYiEpisodeList(albumId, Integer.valueOf(latestOrder), 1);
   }
@@ -297,7 +300,7 @@ public class VideoPreview extends BaseActivity {
  //                Log.v("VideoPreview3",mVideoPath);
         for (IQiYiM3U8Bean bean : list) {
           //Log.v("VideoPreviewM3U8", bean.toString());
-          Log.d("Test", "Jack66, VideoPreviewM3U8="+bean.toString());
+          //Log.d("Test", "Jack66, VideoPreviewM3U8="+bean.toString());
         }
         initVideoView();       //Marked for Test
         loading(1);
@@ -331,7 +334,7 @@ public class VideoPreview extends BaseActivity {
         //TODO 获取电视剧剧集列表
         for (IQiYiMovieBean bean : list) {
           //Log.v("VideoPreviewEpisodeList",bean.toString());
-          Log.d("Test","Jack66, EpisodeList="+bean.toString());
+          //Log.d("Test","Jack66, EpisodeList="+bean.toString());
         }
       }
 

@@ -1,16 +1,57 @@
 package com.stars.tv.sample;
 
+import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVObject;
+import com.avos.avoscloud.SaveCallback;
 import com.stars.tv.bean.IQiYiMovieBean;
 import com.stars.tv.server.LeanCloudStorage;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.stars.tv.utils.Constants.CLOUD_FAVORITE_CLASS;
 import static com.stars.tv.utils.Constants.CLOUD_HISTORY_CLASS;
+import static com.stars.tv.utils.Constants.DRAG_VIDEO_ALBUM;
+import static com.stars.tv.utils.Constants.DRAG_VIDEO_COUNTER;
+import static com.stars.tv.utils.Constants.DRAG_VIDEO_CURRENT_VIEW_ORDER;
+import static com.stars.tv.utils.Constants.DRAG_VIDEO_DESCRIPTION;
+import static com.stars.tv.utils.Constants.DRAG_VIDEO_ID;
+import static com.stars.tv.utils.Constants.DRAG_VIDEO_IMAGE_URL;
+import static com.stars.tv.utils.Constants.DRAG_VIDEO_LATEST_ORDER;
+import static com.stars.tv.utils.Constants.DRAG_VIDEO_NAME;
+import static com.stars.tv.utils.Constants.DRAG_VIDEO_PLAYURL;
 
 public class DragSampleCloud {
   public static void addIQIYSampleList(List<IQiYiMovieBean> objectes){
-    new LeanCloudStorage(CLOUD_HISTORY_CLASS).createSampleListByIQIY(objectes);
-    new LeanCloudStorage(CLOUD_FAVORITE_CLASS).createSampleListByIQIY(objectes);
+    createSampleListByIQIY(objectes, CLOUD_HISTORY_CLASS);
+    createSampleListByIQIY(objectes, CLOUD_FAVORITE_CLASS);
+  }
+
+  public static void createSampleListByIQIY(List<IQiYiMovieBean> iQiys, String classname){
+    List<AVObject> list = new ArrayList<>();
+    for ( IQiYiMovieBean iQiy : iQiys ){
+      list.add(IQiYToCloud(iQiy, classname));
+    }
+    if ( list.size() > 0 ) {
+      AVObject.saveAllInBackground(list, new SaveCallback() {
+        @Override
+        public void done(AVException e) {
+        }
+      });
+    }
+  }
+
+  private static AVObject IQiYToCloud(IQiYiMovieBean iQiy, String classname){
+    AVObject obj = new AVObject(classname);
+    obj.put(DRAG_VIDEO_ALBUM, iQiy.getAlbumId());
+    obj.put(DRAG_VIDEO_ID, iQiy.getTvId());
+    obj.put(DRAG_VIDEO_NAME, iQiy.getName());
+    obj.put(DRAG_VIDEO_PLAYURL, iQiy.getPlayUrl());
+    obj.put(DRAG_VIDEO_IMAGE_URL, iQiy.getImageUrl());
+    obj.put(DRAG_VIDEO_CURRENT_VIEW_ORDER, null);
+    obj.put(DRAG_VIDEO_LATEST_ORDER, iQiy.getLatestOrder());
+    obj.put(DRAG_VIDEO_COUNTER, iQiy.getVideoCount());
+    obj.put(DRAG_VIDEO_DESCRIPTION, iQiy.getDescription());
+    return obj;
   }
 }

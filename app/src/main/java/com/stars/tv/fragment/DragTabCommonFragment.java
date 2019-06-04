@@ -29,9 +29,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-import static com.stars.tv.utils.Constants.CLOUD_FAVORITE_CLASS;
-import static com.stars.tv.utils.Constants.CLOUD_HISTORY_CLASS;
-
 public class DragTabCommonFragment extends DragBaseFragment{
   public final static String DRAG_TITLE_ID="dragTitleID";
   private int mItemPaddingPixel;
@@ -88,10 +85,9 @@ public class DragTabCommonFragment extends DragBaseFragment{
     mStorage.storageFetchListener(new LeanCloudStorage.cloudFetchListener() {
       @Override
       public void done(List<AVObject> objects, AVException e) {
-        mStorage.assignToDragVideoList(objects);
-        mVideoList = mStorage.getVideoList();
+        mVideoList = mStorage.assignToDragVideoList(objects);
         adapter.notifyDataSetChanged();
-    }
+      }
     });
     mDragContentsRecycler.setAdapter(adapter);
     return v;
@@ -158,7 +154,7 @@ public class DragTabCommonFragment extends DragBaseFragment{
 
       private void bindViewHolder (DragVideoBean vb){
         Glide.with(Objects.requireNonNull(getActivity()))
-          .load(vb.getVideoImageFile()).into(mVideoImage);
+          .load(vb.getVideoImageUrl()).into(mVideoImage);
         mVideoText.setText(vb.getVideoName());
       }
     }
