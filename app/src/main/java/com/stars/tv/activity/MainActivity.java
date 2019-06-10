@@ -118,6 +118,7 @@ public class MainActivity extends BaseActivity {
 //        parseIQiYiSearchResult("封神","",0,2,"",1,"");
 //        parseIQiYiMovieSimplifiedList(2, "15,24", "","", 24, 1,1,"iqiyi",1, "",48);
 //        parseIQiYiSearchSimplified("封神",1,10);
+//        parseIQiYiMovieBeanWithUrl("http://www.iqiyi.com/v_19rsjr50nw.html");
         initTitle();
         initContentViews();
         refreshRequest();
@@ -259,6 +260,21 @@ public class MainActivity extends BaseActivity {
                     Log.v(TAG, bean.toString());
                 }
 
+            }
+
+            @Override
+            public void error(String msg) {
+                //TODO 获取失败
+            }
+        });
+    }
+
+    private void parseIQiYiMovieBeanWithUrl(String url) {
+        IQiYiParseM3U8Presenter ps = new IQiYiParseM3U8Presenter();
+        ps.requestIQiYiMovieBeanWithUrl(url, new CallBack<IQiYiMovieBean>() {
+            @Override
+            public void success(IQiYiMovieBean bean) {
+                Log.v(TAG, bean.toString());
             }
 
             @Override
