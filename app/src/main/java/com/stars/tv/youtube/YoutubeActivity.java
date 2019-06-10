@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -41,11 +42,13 @@ public class YoutubeActivity extends FragmentActivity implements CustomAdapt,
 
     private SearchFragment searchFragment;
     private YoutubeFragment youtubeFragment;
+    private YouTubePlayerSupportFragment youTubePlayerFragment;
     private PlayerControlsFragment playerControlsFragment;
+    private PlayerControlsFragment.MyPlaybackEventListener playbackEventListener;
     private YouTubePlayer youTubePlayer;
 
     private ImageView searchIcon, homeIcon, subIcon, folderIcon, settingIcon;
-    private View playerBox, playerControls;
+    private View playerBox;
 
     @Override
     public boolean isBaseOnWidth() {
@@ -60,7 +63,6 @@ public class YoutubeActivity extends FragmentActivity implements CustomAdapt,
     public enum PageCategory {
         Search, Home, Subscription, Library, Account, Setting
     }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,8 +70,8 @@ public class YoutubeActivity extends FragmentActivity implements CustomAdapt,
 
         searchFragment = SearchFragment.newInstance();
         youtubeFragment = YoutubeFragment.newInstance();
-        playerControlsFragment = playerControlsFragment.newInstance();
-        YouTubePlayerSupportFragment youTubePlayerFragment = YouTubePlayerSupportFragment.newInstance();
+        playerControlsFragment = PlayerControlsFragment.newInstance();
+        youTubePlayerFragment = YouTubePlayerSupportFragment.newInstance();
         if(savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
 //                    .addToBackStack(tag)
@@ -79,29 +81,30 @@ public class YoutubeActivity extends FragmentActivity implements CustomAdapt,
 //                    .addToBackStack(tag)
                     .replace(R.id.fragment_youtube_player, youTubePlayerFragment)
                     .commit();
-            getSupportFragmentManager().beginTransaction()
-//                    .addToBackStack(tag)
-                    .replace(R.id.fragment_player_controls, playerControlsFragment)
-                    .commit();
         }
 
+        playbackEventListener = playerControlsFragment.getPlaybackEventListener();
         youTubePlayerFragment.initialize(YoutubeService.key, this);
-        playerControls = findViewById(R.id.fragment_player_controls);
-        playerControls.setVisibility(View.INVISIBLE);
+
         playerBox = findViewById(R.id.fragment_youtube_player);
         playerBox.setVisibility(View.INVISIBLE);
         playerBox.setOnKeyListener((v, keyCode, event) -> {
-            if(keyCode == KeyEvent.KEYCODE_DPAD_DOWN){
-                Log.d("onKey","KEYCODE_DPAD_DOWN");
-                playerControls.setVisibility(View.VISIBLE);
-                playerControls.requestFocus();
-                playerControlsFragment.showTime();
-                return true;
+            if(event.getAction() == KeyEvent.ACTION_DOWN) {
+                if(keyCode == KeyEvent.KEYCODE_DPAD_DOWN || keyCode == KeyEvent.KEYCODE_DPAD_UP
+                || keyCode == KeyEvent.KEYCODE_ENTER) {
+//                    Log.d("onKey", "KEYCODE_DPAD_DOWN");
+                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                    Fragment prev = getSupportFragmentManager().findFragmentByTag("dialog");
+                    if(prev != null) {
+                        ft.remove(prev);
+                    }
+//                getSupportFragmentManager().beginTransaction().addToBackStack(null);
+                    playerControlsFragment.show(ft, "dialog");
+                    return true;
+                }
             }
             return false;
         });
-
-        mPageCategory = PageCategory.Home;
 
         ViewGroup leftNav = findViewById(R.id.left_nav);
         leftNav.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
@@ -114,16 +117,12 @@ public class YoutubeActivity extends FragmentActivity implements CustomAdapt,
 
         homeIcon.setSelected(true);
         homeIcon.getDrawable().setColorFilter(getResources().getColor(R.color.button_selecting), PorterDuff.Mode.SRC_IN);
+        mPageCategory = PageCategory.Home;
 
         setIconFocusListener();
         setIconOnKeyListener();
 
         checkYouTubeApi();
-    }
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        return super.onKeyDown(keyCode, event);
     }
 
     private void setIconFocus(ImageView image, PageCategory category){
@@ -163,23 +162,6 @@ public class YoutubeActivity extends FragmentActivity implements CustomAdapt,
                     if(homeIcon.isSelected()){
                         YoutubeRowFragment frag = (YoutubeRowFragment) youtubeFragment.getFragmentManager().findFragmentById(R.id.container_row);
                         YoutubeRowFragment.highlightRowFocus(this, frag);
-//                        Log.d("check", ""+selected_row);
-//                        View e = listRowView.getGridView().getChildAt(selected_row);
-//                        i = ((ViewGroup)v.getChildAt(1)).getChildCount();
-//                        RecyclerView.ViewHolder cardViewHolder = listRowView.getGridView().getChildViewHolder(e);
-//                        listRowView.getGridView().findViewById()
-//                        int check = frag.getSelectedPosition();
-//                        ListRow listRow = (ListRow) frag.getAdapter().get(check);
-//                        ArrayObjectAdapter adapter = (ArrayObjectAdapter) listRow.getAdapter();
-//                        YouTubeVideo ytv = (YouTubeVideo) listRow.getAdapter().get(0);
-//                        YouTubeCardPresenter ycp = (YouTubeCardPresenter) adapter.getPresenter(ytv);
-
-//                        RecyclerView.ViewHolder cardViewHolder = verticalGridView.getChildViewHolder(v);
-//                        cardViewHolder.getLayoutPosition();
-//                        GridLayoutManager gridLayoutManager = (GridLayoutManager) frag.getVerticalGridView().getLayoutManager();
-//                        View v = gridLayoutManager.findViewByPosition(frag.getVerticalGridView().getSelectedPosition());
-//                        gridLayoutManager.getSelection();
-//                        adapter.getPresenter()
                     }
                     if(searchIcon.isSelected()) {
                         RecyclerView suggestions = searchFragment.getView().findViewById(R.id.rv_view);
@@ -228,6 +210,10 @@ public class YoutubeActivity extends FragmentActivity implements CustomAdapt,
         return youTubePlayer;
     }
 
+    public PlayerControlsFragment getPlayerControlsFragment() {
+        return playerControlsFragment;
+    }
+
     public YouTubePlayer.Provider getYouTubePlayerProvider() {
         return (YouTubePlayerSupportFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_youtube_player);
     }
@@ -235,17 +221,10 @@ public class YoutubeActivity extends FragmentActivity implements CustomAdapt,
     @Override
     public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean wasRestored) {
         youTubePlayer.setPlayerStyle(YouTubePlayer.PlayerStyle.CHROMELESS);
-//        youTubePlayer.setPlayerStyle(YouTubePlayer.PlayerStyle.MINIMAL);
-//            youTubePlayer.setFullscreenControlFlags(YouTubePlayer.FULLSCREEN_FLAG_CUSTOM_LAYOUT);
         this.youTubePlayer = youTubePlayer;
-//            youTubePlayer.setPlaylistEventListener(playlistEventListener);
-//            youTubePlayer.setPlayerStateChangeListener(playerStateChangeListener);
-//            youTubePlayer.setPlaybackEventListener(playbackEventListener);
+        youTubePlayer.setPlaybackEventListener(playbackEventListener);
         if (!wasRestored) {
             Log.d("CheckPoint", "CheckPoint !wasRestored");
-//                youTubePlayer.cueVideo(video.getId());
-//                youTubePlayer.play();
-//            youTubePlayer.loadVideo(video.getId());
         }
         else{
             Log.d("CheckPoint", "CheckPoint Restored");
@@ -267,11 +246,13 @@ public class YoutubeActivity extends FragmentActivity implements CustomAdapt,
     @Override
     public void onBackPressed() {
         if (playerBox.getVisibility() == View.VISIBLE){
-            playerBox.setVisibility(View.INVISIBLE);
-            playerControls.setVisibility(View.INVISIBLE);
+//            Log.d(TAG, "onBackPressed");
+//            getSupportFragmentManager().beginTransaction().hide(youtubeFragment);
+//            youTubePlayer.pause();
+            playerBox.setVisibility(View.GONE);
         }
         else
-        super.onBackPressed();
+            super.onBackPressed();
     }
 
     private void checkYouTubeApi() {
@@ -284,4 +265,5 @@ public class YoutubeActivity extends FragmentActivity implements CustomAdapt,
             Log.d("checkYouTubeApi", errorMessage);
         }
     }
+
 }
