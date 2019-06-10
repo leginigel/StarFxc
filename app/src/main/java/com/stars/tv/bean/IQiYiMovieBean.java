@@ -24,6 +24,7 @@ public class IQiYiMovieBean implements Serializable {
     private String payMarkUrl;
     private String secondInfo;
     private Cast cast;
+    private Cast people;
     private List<Category> categories;
     private String albumImageUrl;
     private String period;
@@ -56,6 +57,7 @@ public class IQiYiMovieBean implements Serializable {
                 ", payMarkUrl='" + payMarkUrl + '\'' +
                 ", secondInfo='" + secondInfo + '\'' +
                 ", cast=" + cast +
+                ", people=" + people +
                 ", categories=" + categories +
                 ", albumImageUrl='" + albumImageUrl + '\'' +
                 ", period='" + period + '\'' +
@@ -114,6 +116,14 @@ public class IQiYiMovieBean implements Serializable {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public Cast getPeople() {
+        return people;
+    }
+
+    public void setPeople(Cast people) {
+        this.people = people;
     }
 
     public Cast getCast() {
