@@ -1,8 +1,9 @@
 package com.stars.tv.bean;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class IQiYiTopListBean {
+public class IQiYiTopListBean implements Serializable {
     private long album_id;
     private int album_channel;
     private String album_name;

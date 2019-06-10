@@ -11,7 +11,6 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.stars.tv.R;
-import com.stars.tv.activity.VideoPreview;
 import com.stars.tv.bean.IQiYiMovieBean;
 import com.stars.tv.fragment.MediaInfoListFragment;
 import com.stars.tv.fragment.PreVideoRowFragment;
@@ -52,7 +51,7 @@ public class PreVideoItemPresenter extends Presenter {
 //            @Override
 
             public void onClick(View v) {
-//                Intent intent = new Intent( mcontext, VideoPreview.class);
+//                Intent intent = new Intent( mcontext, VideoPreviewActivity.class);
 //                intent.putExtra("videoBean", videoBean);
 //                mcontext.startActivity(intent);
                 Log.v("tttPClickvideoBean", videoBean.toString());

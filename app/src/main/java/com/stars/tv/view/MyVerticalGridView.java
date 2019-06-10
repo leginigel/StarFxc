@@ -59,6 +59,7 @@ public class MyVerticalGridView extends VerticalGridView {
 
     public interface OnLoadMoreListener {
         void onLoadMore();
+        void onLoadEnd();
     }
 
     public void setOnLoadMoreListener(OnLoadMoreListener cb) {
@@ -74,6 +75,9 @@ public class MyVerticalGridView extends VerticalGridView {
                     if (mMoreState == MORE_STATE_END) {
                         mMoreState = MORE_STATE_LOADING;
                         mOnLoadMoreListener.onLoadMore();
+                    }
+                    if (mMoreState == MORE_STATE_NO_DATA) {
+                        mOnLoadMoreListener.onLoadEnd();
                     }
                 }
             }

@@ -17,6 +17,8 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Function;
 import io.reactivex.observers.DisposableObserver;
 import io.reactivex.schedulers.Schedulers;
+import com.stars.tv.youtube.api.CompleteSuggestion;
+import com.stars.tv.youtube.api.GoogleResponse;
 import com.stars.tv.youtube.api.SearchResponse;
 import com.stars.tv.youtube.api.VideoResponse;
 import com.stars.tv.youtube.data.YouTubeVideo;
@@ -24,21 +26,104 @@ import com.stars.tv.youtube.network.NetworkDataModel;
 import retrofit2.Response;
 
 public class SearchViewModel extends ViewModel {
+    private static final String TAG = SearchViewModel.class.getSimpleName();
     private CompositeDisposable disposable;
 
     private MutableLiveData<List<YouTubeVideo>> videos;
 
     private NetworkDataModel networkDataModel = new NetworkDataModel();
 
+    private MutableLiveData<String> queryString = new MutableLiveData<>();
+
+    private MutableLiveData<List<String>> suggestions = new MutableLiveData<>();
+
+    private MutableLiveData<Boolean> isLoading = new MutableLiveData<>();
+
+    public void setIsLoading(boolean status) {
+        isLoading.postValue(status);
+    }
+
+    public LiveData<Boolean> getIsLoading(){
+        if(isLoading == null){
+            isLoading.postValue(false);
+        }
+        return isLoading;
+    }
+
+    public LiveData<List<String>> getSuggestions(){
+        return suggestions;
+    }
+
+    public LiveData<String> getQueryString(){
+        return queryString;
+    }
+
+    public void setQueryString(String query, boolean delete){
+        String now = queryString.getValue();
+
+        if(delete) {
+            if(query.equals("clear")) {
+                queryString.setValue("");
+                return;
+            }
+            else if(query.equals("")){
+                String after = now.substring(0, now.length() - 1);
+                queryString.setValue(after);
+                if(now.length() == 1)
+                    return;
+            }
+            else{
+                queryString.setValue(query);
+            }
+        }
+        else {
+            if(now != null) {
+                queryString.setValue(now + query);
+            } else
+                queryString.setValue(query);
+        }
+        searchSuggestion(queryString.getValue());
+    }
+
     public LiveData<List<YouTubeVideo>> getVideoList(){
         if(videos == null){
+            Log.v(TAG, "getVideoList NULL");
             videos = new MutableLiveData<>();
-            List<YouTubeVideo> list = new ArrayList<>();
-            for (int i = 0;i < 3;i++)
-                list.add(new YouTubeVideo("id","test", "test", 0, "now", null));
-            videos.setValue(list);
         }
         return videos;
+    }
+
+    public void searchSuggestion(String query){
+        List<String> temp = new ArrayList<>();
+        networkDataModel.searchSuggestion(query)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .filter(r-> r.code() == 200)
+                .subscribe(new DisposableObserver<Response<GoogleResponse>>() {
+                    @Override
+                    public void onNext(Response<GoogleResponse> googleResponseResponse) {
+                        Log.d("onNext", "" + googleResponseResponse.code());
+                        List<CompleteSuggestion> list
+                                = googleResponseResponse.body().getCompleteSuggestion();
+                        for (CompleteSuggestion i : list){
+                            String data = i.getSuggestion().getData();
+                            Log.v("data", data);
+                            temp.add(data);
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                        Log.d("onError", e.toString());
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Log.d("onComplete", "onComplete");
+                        suggestions.postValue(temp);
+                    }
+                });
     }
 
     public void searchRx(String query){
@@ -71,7 +156,7 @@ public class SearchViewModel extends ViewModel {
                     @RequiresApi(api = Build.VERSION_CODES.N)
                     @Override
                     public void onNext(Response<VideoResponse> videoResponse) {
-                            Log.d("YoutubeViewModel", "videoResponse : "
+                            Log.d("SearchViewModel", "videoResponse : "
                                     + videoResponse.body().getItems().get(0).getSnippet().getTitle());
                             for (int i = 0;i < temp.size();i++){
                                 if(temp.get(i).getId().getVideoId() != null &&
@@ -89,6 +174,7 @@ public class SearchViewModel extends ViewModel {
                                             ));
                                 }
                             }
+                            Log.d("SearchViewModel", "onNext :" + ytv.size());
                     }
 
                     @Override
@@ -99,9 +185,9 @@ public class SearchViewModel extends ViewModel {
                     @Override
                     public void onComplete() {
                         videos.setValue(ytv);
+                        isLoading.postValue(false);
                     }
-                })
-        ;
+                });
 //    );
     }
 
