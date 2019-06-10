@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#33121212"
+    android:background="#cc121212"
     tools:context=".ui.PlayerControlsFragment">
 
 
@@ -12,8 +12,11 @@
         android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="50dp"
-        android:layout_marginEnd="50dp"
+        android:layout_marginTop="35dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -24,26 +27,29 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintBottom_toTopOf="@+id/title_text"
+            app:layout_constraintBottom_toTopOf="@+id/play_title"
             app:layout_constraintStart_toStartOf="parent">
 
             <TextView
                 android:id="@+id/play_channel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="TextView" />
+                android:textColor="@color/text_white"
+                android:textSize="15sp" />
 
             <TextView
                 android:id="@+id/play_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="TextView" />
+                android:textColor="@color/text_white"
+                android:textSize="15sp" />
 
             <TextView
                 android:id="@+id/play_publish"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="TextView" />
+                android:textColor="@color/text_white"
+                android:textSize="15sp" />
         </LinearLayout>
 
         <TextView
@@ -52,48 +58,74 @@
             android:layout_height="wrap_content"
             android:ellipsize="marquee"
             android:maxLines="2"
-            android:text="KJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJ"
+            android:text="KJJJJJJJJJJJJJJJJJJJJJJJJJJJJJ"
             app:layout_constraintHorizontal_weight="1"
             app:layout_constraintTop_toBottomOf="@id/linearLayout"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@id/play_time"
             android:textColor="@color/text_white"
-            android:textSize="42sp" />
+            android:textSize="38sp" />
 
         <TextView
             android:id="@+id/play_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintHorizontal_weight="1"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/play_duration"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/play_title"
-            android:text="0:00:00/0:00:00" />
+            android:textColor="@color/text_white"
+            android:textSize="15sp"
+            android:text="0:00:00/" />
+
+        <TextView
+            android:id="@+id/play_duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/play_time"
+            android:textColor="@color/text_white"
+            android:textSize="15sp"
+            android:text="0:00:00" />
     </android.support.constraint.ConstraintLayout>
 
-    <ProgressBar
-        android:id="@+id/progressBar"
-        style="?android:attr/progressBarStyleHorizontal"
+    <SeekBar
+        android:id="@+id/seekBar"
+        style="@style/Widget.AppCompat.SeekBar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
         android:clickable="true"
         android:focusable="true"
+        android:progressTint="@color/primary"
+        android:thumbTint="@color/text_white"
         app:layout_constraintEnd_toEndOf="@+id/constraintLayout"
         app:layout_constraintStart_toStartOf="@+id/constraintLayout"
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
 
     <ImageButton
         android:id="@+id/play_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:layout_marginTop="15dp"
         android:clickable="true"
         android:focusable="true"
         android:src="@drawable/lb_ic_play"
+        android:background="@drawable/btn_player_bg"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/progressBar" />
+        app:layout_constraintTop_toBottomOf="@+id/seekBar" />
+
+    <TextView
+        android:id="@+id/play_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Play"
+        android:textColor="@color/text_white"
+        app:layout_constraintEnd_toEndOf="@+id/play_button"
+        app:layout_constraintStart_toStartOf="@+id/play_button"
+        app:layout_constraintTop_toBottomOf="@+id/play_button"/>
 
 </android.support.constraint.ConstraintLayout>

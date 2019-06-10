@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -91,9 +92,9 @@ public class SuggestListAdapter extends RecyclerView.Adapter<SuggestListAdapter.
                     mLeftNav.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
                     View searchRow = mSearchFragment.getView().findViewById(R.id.search_row);
                     if(searchRow.getVisibility() == View.VISIBLE) {
-                        SearchRowFragment frag =
-                                (SearchRowFragment) mSearchFragment.getFragmentManager().findFragmentById(R.id.search_row);
-                        YoutubeRowFragment.highlightRowFocus(mContext, frag);
+                        Fragment frag = mSearchFragment.getFragmentManager().findFragmentById(R.id.search_row);
+                        if(frag instanceof SearchRowFragment)
+                            YoutubeRowFragment.highlightRowFocus(mContext, (SearchRowFragment) frag);
                     }
                     v.setNextFocusDownId(R.id.search_row);
                     UpFromSuggestion = true;

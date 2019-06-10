@@ -124,13 +124,6 @@
         app:layout_constraintTop_toBottomOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         tools:context=".YoutubeActivity" />
-    
-    <FrameLayout
-        android:id="@+id/fragment_player_controls"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        
-    </FrameLayout>
 
 </android.support.constraint.ConstraintLayout>
 
