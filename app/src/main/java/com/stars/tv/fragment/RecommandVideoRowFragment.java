@@ -160,10 +160,15 @@ public class RecommandVideoRowFragment extends Fragment {
 
         if (mBannerInfoList != null) {
             Collections.shuffle(mBannerInfoList);
-            for (int i = 0; i < 2; i++) {
-                listRowAdapter.add(mBannerInfoList.get(i));
+            if (mBannerInfoList.size() >= 2) {
+                for (int i = 0; i < 2; i++) {
+                    listRowAdapter.add(mBannerInfoList.get(i));
+                }
+            } else {
+                for (int i = 0; i < mBannerInfoList.size(); i++) {
+                    listRowAdapter.add(mBannerInfoList.get(i));
+                }
             }
-
         }
         HotVideoListRow listRow = new HotVideoListRow(listRowAdapter);
         mRowsAdapter.add(listRow);
