@@ -74,6 +74,7 @@ public class LiveTvItemPresenter extends Presenter {
                     viewHolder.channelEpg.setText(viewHolder.view.getContext().getString(R.string.str_live_tv_epg_empty));
                 }
             }
+
             @Override
             public void error(String msg) {
                 viewHolder.channelEpg.setText(viewHolder.view.getContext().getString(R.string.str_live_tv_epg_empty));
@@ -83,10 +84,6 @@ public class LiveTvItemPresenter extends Presenter {
 
     @Override
     public void onUnbindViewHolder(Presenter.ViewHolder viewHolder) {
-        final ViewHolder vh = (ViewHolder) viewHolder;
-        if (vh.channelWave.getVisibility() == View.VISIBLE) {
-            vh.channelWave.setVisibility(View.GONE);
-        }
     }
 
     static class ViewHolder extends Presenter.ViewHolder {
