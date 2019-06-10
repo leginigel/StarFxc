@@ -189,7 +189,7 @@ public class MainActivity extends BaseActivity {
             return true;
           }
           else if ( keyEvent.getKeyCode() == KeyEvent.KEYCODE_DPAD_UP ){
-            Intent intent = new Intent(MainActivity.this, DragMainActivity.class);
+            Intent intent = new Intent(MainActivity.this, ExtMainActivity.class);
             startActivity(intent);
             return true;
           }

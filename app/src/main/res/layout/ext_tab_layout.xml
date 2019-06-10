@@ -6,16 +6,16 @@
   >
 
   <com.stars.tv.view.SlidingTabLayout
-    android:id="@+id/main_drag_tablayout"
+    android:id="@+id/main_ext_tablayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     >
   </com.stars.tv.view.SlidingTabLayout>
   <android.support.v4.view.ViewPager
-    android:id="@+id/main_drag_viewpager"
+    android:id="@+id/main_ext_viewpager"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_below="@+id/main_drag_tablayout"
+    android:layout_below="@+id/main_ext_tablayout"
     >
   </android.support.v4.view.ViewPager>
 </RelativeLayout>

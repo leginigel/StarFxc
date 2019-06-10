@@ -4,13 +4,13 @@ import android.support.annotation.NonNull;
 
 import java.io.Serializable;
 
-public class DragTitleBean implements Serializable {
+public class ExtTitleBean implements Serializable {
   private int mTabsIcon;
   private String mTabsName;
 
-  public DragTitleBean(String name, int resID){
-      mTabsIcon = resID;
-      mTabsName = name;
+  public ExtTitleBean(String name, int resID){
+    mTabsIcon = resID;
+    mTabsName = name;
   }
 
   @NonNull
@@ -23,11 +23,11 @@ public class DragTitleBean implements Serializable {
     return tmp;
   }
 
-  public String getDragName(){
+  public String getExtName(){
     return mTabsName;
   }
 
-  public int getDragResIcon(){
+  public int getExtResIcon(){
     return mTabsIcon;
   }
 }

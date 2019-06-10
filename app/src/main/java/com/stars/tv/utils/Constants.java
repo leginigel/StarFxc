@@ -21,23 +21,23 @@ public class Constants {
     public static final String CLOUD_HISTORY_CLASS = "History";
     public static final String CLOUD_FAVORITE_CLASS = "Favorite";
 
-    public static final String DRAG_VIDEO_TYPE = "VideoType";
-    public static final String DRAG_VIDEO_ALBUM = "VideoAlbum";
-    public static final String DRAG_VIDEO_ID = "VideoID";
-    public static final String DRAG_VIDEO_NAME = "VideoName";
-    public static final String DRAG_VIDEO_PLAYURL = "VideoPlayUrl";
-    public static final String DRAG_VIDEO_CURRENT_VIEW_ORDER = "VideoCurrentViewOrder";
-    public static final String DRAG_VIDEO_LATEST_ORDER = "VideoLatestOrder";
-    public static final String DRAG_VIDEO_COUNTER = "VideoCounter";
-    public static final String DRAG_VIDEO_DESCRIPTION = "VideoDescription";
-    public static final String DRAG_VIDEO_IMAGE_URL = "VideoImageFile";
+    public static final String EXT_VIDEO_TYPE = "VideoType";
+    public static final String EXT_VIDEO_ALBUM = "VideoAlbum";
+    public static final String EXT_VIDEO_ID = "VideoID";
+    public static final String EXT_VIDEO_NAME = "VideoName";
+    public static final String EXT_VIDEO_PLAYURL = "VideoPlayUrl";
+    public static final String EXT_VIDEO_CURRENT_VIEW_ORDER = "VideoCurrentViewOrder";
+    public static final String EXT_VIDEO_LATEST_ORDER = "VideoLatestOrder";
+    public static final String EXT_VIDEO_COUNTER = "VideoCounter";
+    public static final String EXT_VIDEO_DESCRIPTION = "VideoDescription";
+    public static final String EXT_VIDEO_IMAGE_URL = "VideoImageFile";
 
-    public static final int VIDEO_TYPE_CINEMA = 0;
-    public static final int VIDEO_TYPE_TVCHANNEL = 1;
-    public static final int VIDEO_TYPE_DRAMA = 2;
-    public static final int VIDEO_TYPE_ANIMATION = 3;
-    public static final int VIDEO_TYPE_VARIETY = 4;
-    public static final int VIDEO_TYPE_LIVE = 5;
-    public static final int VIDEO_TYPE_YOUTUBE = 6;
+    public static final String VIDEO_TYPE_CINEMA = "CINEMA";
+    public static final String VIDEO_TYPE_TVCHANNEL = "TVCHANNEL";
+    public static final String VIDEO_TYPE_TVSERIES = "TVSERIES";
+    public static final String VIDEO_TYPE_ANIMATION = "ANIMATION";
+    public static final String VIDEO_TYPE_VARIETY = "VARIETY";
+    public static final String VIDEO_TYPE_LIVE = "LIVE";
+    public static final String VIDEO_TYPE_YOUTUBE = "YOUTUBE";
 }
 

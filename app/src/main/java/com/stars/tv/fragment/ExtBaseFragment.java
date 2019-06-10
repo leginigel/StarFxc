@@ -3,7 +3,7 @@ package com.stars.tv.fragment;
 import android.graphics.Color;
 import android.support.v4.app.Fragment;
 
-public class DragBaseFragment extends Fragment {
+public class ExtBaseFragment extends Fragment {
   private String mTitle = "";
   private int mIconRes;
   private int indicatorColor = Color.BLUE;

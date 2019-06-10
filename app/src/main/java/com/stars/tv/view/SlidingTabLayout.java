@@ -21,7 +21,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.stars.tv.R;
-import com.stars.tv.adapter.DragTabFragmentPagerAdapter;
+import com.stars.tv.adapter.ExtTabFragmentPagerAdapter;
 
 public class SlidingTabLayout extends HorizontalScrollView {
 
@@ -130,8 +130,8 @@ public class SlidingTabLayout extends HorizontalScrollView {
     }
 
     private void populateTabStrip() {
-        final DragTabFragmentPagerAdapter adapter =
-          (DragTabFragmentPagerAdapter)mViewPager.getAdapter();
+        final ExtTabFragmentPagerAdapter adapter =
+          (ExtTabFragmentPagerAdapter)mViewPager.getAdapter();
         final View.OnClickListener tabClickListener = new TabClickListener();
 
         for (int i = 0; i < adapter.getCount(); i++) {

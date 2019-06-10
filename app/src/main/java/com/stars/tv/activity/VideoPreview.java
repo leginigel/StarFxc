@@ -1,14 +1,11 @@
 package com.stars.tv.activity;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -16,16 +13,16 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.SaveCallback;
 import com.stars.tv.R;
 import com.stars.tv.adapter.ChildrenAdapter;
 import com.stars.tv.adapter.EpisodeListView;
@@ -37,6 +34,7 @@ import com.stars.tv.fragment.MediaInfoListFragment;
 import com.stars.tv.fragment.PreVideoRowFragment;
 import com.stars.tv.presenter.IQiYiParseEpisodeListPresenter;
 import com.stars.tv.presenter.IQiYiParseM3U8Presenter;
+import com.stars.tv.server.LeanCloudStorage;
 import com.stars.tv.utils.CallBack;
 import com.stars.tv.widget.media.AndroidMediaController;
 import com.stars.tv.widget.media.IjkVideoView;
@@ -44,6 +42,8 @@ import com.stars.tv.widget.media.IjkVideoView;
 import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 
 import com.github.ybq.android.spinkit.style.Circle;
+
+import static com.stars.tv.utils.Constants.VIDEO_TYPE_TVSERIES;
 
 public class VideoPreview extends BaseActivity {
 
@@ -76,6 +76,7 @@ public class VideoPreview extends BaseActivity {
   private String hostname = "";
   private String image_url;
   private String name;
+  private String video_type;
   private long id;
 
   private ArrayList charactorlist;
@@ -225,8 +226,13 @@ public class VideoPreview extends BaseActivity {
         parseIQiYiRealM3U8WithTvId(tvId);
 //                selectedPositions =  Integer.valueOf());
         adapter.setSelectedPositions(Arrays.asList(selectedPositions));
+        LeanCloudStorage.updateIQiyHistory(videoBean,
+          mVideoList.get(position), position + 1, new SaveCallback() {
+            @Override
+            public void done(AVException e) {
+            }
+          });
         //Log.v("Clicktest", mVideoList.get(position).getTvId());
-        //Log.d("Test", "Jack66, itemclick.TVID="+mVideoList.get(position).toString());
       }
     });
     mHandler.postDelayed(new Runnable() {
@@ -244,9 +250,15 @@ public class VideoPreview extends BaseActivity {
     name = videoBean.getName();
     score = videoBean.getScore();
     tvId = videoBean.getTvId();
-    albumId = videoBean.getAlbumId();
     videoCount = videoBean.getVideoCount();
     latestOrder = videoBean.getLatestOrder();
+
+    /* for history/favorite usage */
+    albumId = videoBean.getAlbumId();
+    playUrl = videoBean.getPlayUrl();
+    image_url = videoBean.getImageUrl();
+    video_type = VIDEO_TYPE_TVSERIES;
+    /* -------------------------- */
 
     director = videoBean.getCast().getDirector();
     if (null != director) {
@@ -277,6 +289,13 @@ public class VideoPreview extends BaseActivity {
     editor.putString("main_charactorname", main_charactorname);
     editor.putString("hostname", hostname);
     editor.putString("description", description);
+
+    /* for History/Favorite usage */
+    editor.putString("albumId", albumId);
+    editor.putString("playurl", playUrl);
+    editor.putString("imageurl", image_url);
+    editor.putString("videotype", video_type);
+    /* -------------------------- */
     editor.commit();
 
     //Log.d("Test", "Jack66, editor.contents="+editor.toString());
@@ -297,6 +316,7 @@ public class VideoPreview extends BaseActivity {
       public void success(List<IQiYiM3U8Bean> list) {
         //TODO 获取成功在此得到真实播放地址的List，可能会有HD,SD,1080P
         mVideoPath = list.get(0).getM3u();
+        //Log.d("Test", "Jack66, mVideoPath_m3u8="+mVideoPath+",TVID="+tvId);
  //                Log.v("VideoPreview3",mVideoPath);
         for (IQiYiM3U8Bean bean : list) {
           //Log.v("VideoPreviewM3U8", bean.toString());

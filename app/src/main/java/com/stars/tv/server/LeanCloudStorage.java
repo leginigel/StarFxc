@@ -3,114 +3,95 @@ package com.stars.tv.server;
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
+import com.avos.avoscloud.DeleteCallback;
 import com.avos.avoscloud.FindCallback;
 import com.avos.avoscloud.GetCallback;
 import com.avos.avoscloud.SaveCallback;
-import com.stars.tv.bean.DragVideoBean;
+import com.stars.tv.bean.ExtVideoBean;
 import com.stars.tv.bean.IQiYiMovieBean;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.stars.tv.utils.Constants.CLOUD_FAVORITE_CLASS;
 import static com.stars.tv.utils.Constants.CLOUD_HISTORY_CLASS;
-import static com.stars.tv.utils.Constants.DRAG_VIDEO_ALBUM;
-import static com.stars.tv.utils.Constants.DRAG_VIDEO_COUNTER;
-import static com.stars.tv.utils.Constants.DRAG_VIDEO_CURRENT_VIEW_ORDER;
-import static com.stars.tv.utils.Constants.DRAG_VIDEO_DESCRIPTION;
-import static com.stars.tv.utils.Constants.DRAG_VIDEO_ID;
-import static com.stars.tv.utils.Constants.DRAG_VIDEO_IMAGE_URL;
-import static com.stars.tv.utils.Constants.DRAG_VIDEO_LATEST_ORDER;
-import static com.stars.tv.utils.Constants.DRAG_VIDEO_NAME;
-import static com.stars.tv.utils.Constants.DRAG_VIDEO_PLAYURL;
-import static com.stars.tv.utils.Constants.DRAG_VIDEO_TYPE;
-import static com.stars.tv.utils.Constants.VIDEO_TYPE_ANIMATION;
-import static com.stars.tv.utils.Constants.VIDEO_TYPE_CINEMA;
-import static com.stars.tv.utils.Constants.VIDEO_TYPE_DRAMA;
-import static com.stars.tv.utils.Constants.VIDEO_TYPE_LIVE;
-import static com.stars.tv.utils.Constants.VIDEO_TYPE_TVCHANNEL;
-import static com.stars.tv.utils.Constants.VIDEO_TYPE_VARIETY;
-import static com.stars.tv.utils.Constants.VIDEO_TYPE_YOUTUBE;
+import static com.stars.tv.utils.Constants.EXT_VIDEO_ALBUM;
+import static com.stars.tv.utils.Constants.EXT_VIDEO_COUNTER;
+import static com.stars.tv.utils.Constants.EXT_VIDEO_CURRENT_VIEW_ORDER;
+import static com.stars.tv.utils.Constants.EXT_VIDEO_DESCRIPTION;
+import static com.stars.tv.utils.Constants.EXT_VIDEO_ID;
+import static com.stars.tv.utils.Constants.EXT_VIDEO_IMAGE_URL;
+import static com.stars.tv.utils.Constants.EXT_VIDEO_LATEST_ORDER;
+import static com.stars.tv.utils.Constants.EXT_VIDEO_NAME;
+import static com.stars.tv.utils.Constants.EXT_VIDEO_PLAYURL;
+import static com.stars.tv.utils.Constants.EXT_VIDEO_TYPE;
+import static com.stars.tv.utils.Constants.VIDEO_TYPE_TVSERIES;
 
 public class LeanCloudStorage {
-  private List<DragVideoBean> mDragVideoList;
+  private List<ExtVideoBean> mExtVideoList;
   private final String mClassName;
 
-  public interface cloudFetchListener {
-    void done(List<AVObject> objects, AVException e);
-  }
-
   public interface cloudCheckVideoListener {
-    void successed();
+    void succeed();
     void failed();
   }
 
-
   public LeanCloudStorage(String className){
     mClassName = className;
-    mDragVideoList = new ArrayList<>();
+    mExtVideoList = new ArrayList<>();
   }
 
-  public void storageFetchListener(cloudFetchListener cr){
+  public void storageFetchListener(FindCallback<AVObject> cr){
     AVQuery<AVObject> query = new AVQuery<>(mClassName);
-    query.whereExists(DRAG_VIDEO_ALBUM);
-    query.findInBackground(new FindCallback<AVObject>() {
-      @Override
-      public void done(List<AVObject> avObjects, AVException e) {
-        cr.done(avObjects,e);
-      }
-    });
+    query.whereExists(EXT_VIDEO_ALBUM);
+    query.findInBackground(cr);
   }
 
-  public List<DragVideoBean> getVideoList(){
-    return mDragVideoList;
+  public List<ExtVideoBean> getVideoList(){
+    return mExtVideoList;
   }
 
-  public List<DragVideoBean> assignToDragVideoList(List<AVObject> objects){
-    mDragVideoList = assignToVideoList(objects);
-    return mDragVideoList;
+  public List<ExtVideoBean> assignToExtVideoList(List<AVObject> objects){
+    mExtVideoList = assignToVideoList(objects);
+    return mExtVideoList;
   }
 
-  private List<DragVideoBean> assignToVideoList(List<AVObject> objects){
-    List<DragVideoBean> items = new ArrayList<>();
-    DragVideoBean item;
+  private List<ExtVideoBean> assignToVideoList(List<AVObject> objects){
+    List<ExtVideoBean> items = new ArrayList<>();
+    ExtVideoBean item;
     if ( objects != null && objects.size() > 0 ) {
       for ( AVObject obj : objects ) {
-        item = new DragVideoBean();
-        item.setVideoType(obj.getString(DRAG_VIDEO_TYPE));
-        item.setAlbumId(obj.getString(DRAG_VIDEO_ALBUM));
-        item.setVideoId(obj.getString(DRAG_VIDEO_ID));
-        item.setVideoName(obj.getString(DRAG_VIDEO_NAME));
-        item.setVideoPlayUrl(obj.getString(DRAG_VIDEO_PLAYURL));
-        item.setVideoCurrentViewOrder(obj.getString(DRAG_VIDEO_CURRENT_VIEW_ORDER));
-        item.setVideoLatestOrder(obj.getString(DRAG_VIDEO_LATEST_ORDER));
-        item.setVideoCounter(obj.getString(DRAG_VIDEO_COUNTER));
-        item.setVideoDescription(obj.getString(DRAG_VIDEO_DESCRIPTION));
-        item.setVideoImageUrl(obj.getString(DRAG_VIDEO_IMAGE_URL));
+        item = new ExtVideoBean();
+        item.setVideoType(obj.getString(EXT_VIDEO_TYPE));
+        item.setAlbumId(obj.getString(EXT_VIDEO_ALBUM));
+        item.setVideoId(obj.getString(EXT_VIDEO_ID));
+        item.setVideoName(obj.getString(EXT_VIDEO_NAME));
+        item.setVideoPlayUrl(obj.getString(EXT_VIDEO_PLAYURL));
+        item.setVideoCurrentViewOrder(obj.getString(EXT_VIDEO_CURRENT_VIEW_ORDER));
+        item.setVideoLatestOrder(obj.getString(EXT_VIDEO_LATEST_ORDER));
+        item.setVideoCounter(obj.getString(EXT_VIDEO_COUNTER));
+        item.setVideoDescription(obj.getString(EXT_VIDEO_DESCRIPTION));
+        item.setVideoImageUrl(obj.getString(EXT_VIDEO_IMAGE_URL));
         items.add(item);
       }
     }
     return items;
   }
 
-  private void saveData(AVObject obj){
-    obj.saveInBackground(new SaveCallback() {
-      @Override
-      public void done(AVException e) {
-        if ( e == null ) {
-        }
-        else{
-        }
-      }
-    });
+  private void saveData(AVObject obj, SaveCallback cb){
+    obj.saveInBackground(cb);
   }
 
-  public void VideoExistCheck(String album, cloudCheckVideoListener ccv){
-    AVQuery<AVObject> query = new AVQuery<>(mClassName);
-    query.whereEqualTo(DRAG_VIDEO_ALBUM, album);
+  public static void VideoFavoriteCheckListener(String album, cloudCheckVideoListener ccv){
+    AVQuery<AVObject> query = new AVQuery<>(CLOUD_FAVORITE_CLASS);
+    query.whereEqualTo(EXT_VIDEO_ALBUM, album);
     query.getFirstInBackground(new GetCallback<AVObject>() {
       @Override
       public void done(AVObject object, AVException e) {
-        if (e != null){
-          ccv.successed();
+        if (e == null){
+          if ( object != null )
+            ccv.succeed();
+          else
+            ccv.failed();
         }
         else{
           ccv.failed();
@@ -126,56 +107,71 @@ public class LeanCloudStorage {
     return AVObject.createWithoutData(mClassName, id);
   }
 
-  public void updateVideoByiQiy(DragVideoBean iQiy){
+  private void updateVideoByiQiy(ExtVideoBean iQiy, SaveCallback cb){
     AVQuery<AVObject> query = new AVQuery<>(mClassName);
-    query.whereEqualTo(DRAG_VIDEO_ALBUM,iQiy.getAlbumId());
+    query.whereEqualTo(EXT_VIDEO_ALBUM,iQiy.getAlbumId());
     query.getFirstInBackground(new GetCallback<AVObject>() {
       @Override
       public void done(AVObject object, AVException e) {
-      if ( e == null ) {
-        AVObject obj;
-        if ( object != null ) {
-          obj = assignIQiyToAVObject(iQiy, updateListByID(object.getObjectId()));
+        if ( e == null ) {
+          AVObject obj;
+          if ( object != null ) {
+            obj = assignIQiyToAVObject(iQiy, updateListByID(object.getObjectId()));
+          }
+          else{
+            obj = assignIQiyToAVObject(iQiy, createClass());
+          }
+          saveData(obj, cb);
         }
         else{
-          obj = createClass();
-        }
-        saveData(obj);
-      }
-      else{
-        if ( e.getCode() == AVException.OBJECT_NOT_FOUND ) {
-          saveData(createClass());
+          if ( e.getCode() == AVException.OBJECT_NOT_FOUND ) {
+            saveData(assignIQiyToAVObject(iQiy, createClass()), cb);
+          }
         }
       }
-    }
     });
   }
 
-  private AVObject assignIQiyToAVObject(DragVideoBean bean, AVObject obj){
-    obj.put(DRAG_VIDEO_TYPE, bean.getVideoType());
-    obj.put(DRAG_VIDEO_ALBUM, bean.getAlbumId());
-    obj.put(DRAG_VIDEO_ID, bean.getVideoId());
-    obj.put(DRAG_VIDEO_NAME, bean.getVideoName());
-    obj.put(DRAG_VIDEO_PLAYURL, bean.getVideoPlayUrl());
-    obj.put(DRAG_VIDEO_IMAGE_URL, bean.getVideoImageUrl());
-    obj.put(DRAG_VIDEO_CURRENT_VIEW_ORDER, bean.getVideoCurrentViewOrder());
-    obj.put(DRAG_VIDEO_LATEST_ORDER, bean.getVideoLatestOrder());
-    obj.put(DRAG_VIDEO_COUNTER, bean.getVideoCounter());
-    obj.put(DRAG_VIDEO_DESCRIPTION, bean.getVideoDescription());
+  private void removeVideoByIQiy(String album, DeleteCallback cr){
+    AVQuery<AVObject> query = new AVQuery<>(mClassName);
+    query.whereEqualTo(EXT_VIDEO_ALBUM,album);
+    query.getFirstInBackground(new GetCallback<AVObject>() {
+      @Override
+      public void done(AVObject object, AVException e) {
+        if ( e == null ) {
+          object.deleteInBackground(cr);
+        }
+        else{
+        }
+      }
+    });
+  }
+
+  private AVObject assignIQiyToAVObject(ExtVideoBean bean, AVObject obj){
+    obj.put(EXT_VIDEO_TYPE, bean.getVideoType());
+    obj.put(EXT_VIDEO_ALBUM, bean.getAlbumId());
+    obj.put(EXT_VIDEO_ID, bean.getVideoId());
+    obj.put(EXT_VIDEO_NAME, bean.getVideoName());
+    obj.put(EXT_VIDEO_PLAYURL, bean.getVideoPlayUrl());
+    obj.put(EXT_VIDEO_IMAGE_URL, bean.getVideoImageUrl());
+    obj.put(EXT_VIDEO_CURRENT_VIEW_ORDER, bean.getVideoCurrentViewOrder());
+    obj.put(EXT_VIDEO_LATEST_ORDER, bean.getVideoLatestOrder());
+    obj.put(EXT_VIDEO_COUNTER, bean.getVideoCounter());
+    obj.put(EXT_VIDEO_DESCRIPTION, bean.getVideoDescription());
 
     return obj;
   }
 
 
-  public DragVideoBean createIQiyDramaInfo (IQiYiMovieBean drama, IQiYiMovieBean episode, int chapter){
-    DragVideoBean bean = new DragVideoBean();
+  private ExtVideoBean createIQiyTVSeriesInfo(IQiYiMovieBean IQiy, IQiYiMovieBean episode, int chapter){
+    ExtVideoBean bean = new ExtVideoBean();
 
-    bean.setAlbumId(drama.getAlbumId());
+    bean.setAlbumId(IQiy.getAlbumId());
     bean.setVideoCurrentViewOrder(String.valueOf(chapter));
-    bean.setVideoCounter(drama.getVideoCount());
-    bean.setVideoLatestOrder(drama.getLatestOrder());
-    bean.setVideoDescription(drama.getDescription());
-    bean.setVideoType(String.valueOf(VIDEO_TYPE_DRAMA));
+    bean.setVideoCounter(IQiy.getVideoCount());
+    bean.setVideoLatestOrder(IQiy.getLatestOrder());
+    bean.setVideoDescription(IQiy.getDescription());
+    bean.setVideoType(VIDEO_TYPE_TVSERIES);
     bean.setVideoId(episode.getTvId());
     bean.setVideoName(episode.getName());
     bean.setVideoImageUrl(episode.getImageUrl());
@@ -184,15 +180,15 @@ public class LeanCloudStorage {
     return bean;
   }
 
-  public DragVideoBean createIQiyOtherInfoByType (IQiYiMovieBean iQiy, int types){
-    DragVideoBean bean = new DragVideoBean();
+  private ExtVideoBean createIQiyOtherInfoByType (IQiYiMovieBean iQiy, String types){
+    ExtVideoBean bean = new ExtVideoBean();
 
     bean.setAlbumId(iQiy.getAlbumId());
     bean.setVideoCurrentViewOrder(null);
     bean.setVideoCounter(iQiy.getVideoCount());
     bean.setVideoLatestOrder(iQiy.getLatestOrder());
     bean.setVideoDescription(iQiy.getDescription());
-    bean.setVideoType(String.valueOf(types));
+    bean.setVideoType(types);
     bean.setVideoId(iQiy.getTvId());
     bean.setVideoName(iQiy.getName());
     bean.setVideoImageUrl(iQiy.getImageUrl());
@@ -200,4 +196,36 @@ public class LeanCloudStorage {
 
     return bean;
   }
+
+  public static void updateIQiyHistory(IQiYiMovieBean iQiy, String types, SaveCallback cb){
+    LeanCloudStorage storage = new LeanCloudStorage(CLOUD_HISTORY_CLASS);
+    ExtVideoBean bean;
+    bean = storage.createIQiyOtherInfoByType(iQiy, types);
+    storage.updateVideoByiQiy(bean, cb);
+  }
+
+  public static void updateIQiyHistory(IQiYiMovieBean iQiy,
+                                       IQiYiMovieBean episode, int chapter, SaveCallback cb) {
+    LeanCloudStorage storage = new LeanCloudStorage(CLOUD_HISTORY_CLASS);
+    ExtVideoBean bean;
+    bean = storage.createIQiyTVSeriesInfo(iQiy, episode, chapter);
+    storage.updateVideoByiQiy(bean, cb);
+  }
+
+  public static void updateIQiyFavorite(IQiYiMovieBean iQiy, String types, SaveCallback cb){
+    LeanCloudStorage storage = new LeanCloudStorage(CLOUD_FAVORITE_CLASS);
+    ExtVideoBean bean;
+    bean = storage.createIQiyOtherInfoByType(iQiy, types);
+    storage.updateVideoByiQiy(bean, cb);
+  }
+
+  public static void updateBeanFavorite(ExtVideoBean bean, SaveCallback cb){
+    new LeanCloudStorage(CLOUD_FAVORITE_CLASS).updateVideoByiQiy(bean, cb);
+
+  }
+
+  public static void removeIQiyFavorite(String album, DeleteCallback dr){
+    new LeanCloudStorage(CLOUD_FAVORITE_CLASS).removeVideoByIQiy(album, dr);
+  }
+
 }

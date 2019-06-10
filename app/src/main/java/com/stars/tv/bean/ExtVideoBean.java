@@ -1,9 +1,10 @@
 package com.stars.tv.bean;
 
 import android.support.annotation.NonNull;
+
 import java.io.Serializable;
 
-public class DragVideoBean implements Serializable {
+public class ExtVideoBean implements Serializable {
   private String mVideoType;
   private String mAlbumId;
   private String mVideoId;

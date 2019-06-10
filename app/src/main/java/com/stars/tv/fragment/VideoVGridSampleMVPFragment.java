@@ -25,7 +25,7 @@ import com.stars.tv.bean.IQiYiListBean;
 import com.stars.tv.bean.IQiYiMovieBean;
 import com.stars.tv.bean.contract.IQiYiMovieContract;
 import com.stars.tv.presenter.IQiYiMoviePresenter;
-import com.stars.tv.sample.DragSampleCloud;
+import com.stars.tv.sample.ExtSampleCloud;
 import com.stars.tv.server.LeanCloudStorage;
 import com.stars.tv.utils.ViewUtils;
 import com.stars.tv.view.MyVerticalGridView;
@@ -148,7 +148,7 @@ public class VideoVGridSampleMVPFragment
     mVideoList.addAll(beans);
     videoGrid.endMoreRefreshComplete();
     mHandler.sendEmptyMessage(REFRESH_MOVIE_CONTENT);
-    //DragSampleCloud.addIQIYSampleList(beans);
+    //ExtSampleCloud.addIQIYSampleList(beans);
   }
 
   @Override
