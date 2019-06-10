@@ -46,6 +46,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import tv.danmaku.ijk.media.player.IMediaPlayer;
 import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 
 public class LiveTVFragment extends LiveTVBaseFragment {
@@ -271,6 +272,15 @@ public class LiveTVFragment extends LiveTVBaseFragment {
 
         playerVideoView.setOnPreparedListener(iMediaPlayer -> {
             hideLoading();
+        });
+
+        playerVideoView.setOnInfoListener((iMediaPlayer, info, error) -> {
+            if (info == IMediaPlayer.MEDIA_INFO_BUFFERING_START) {
+                showLoading();
+            } else if (info == IMediaPlayer.MEDIA_INFO_BUFFERING_END) {
+                hideLoading();
+            }
+            return false;
         });
 
         playerVideoView.setOnErrorListener((iMediaPlayer, framework_err, impl_err) -> {
