@@ -156,16 +156,19 @@ public class RecommandVideoRowFragment extends Fragment {
 
     private void showBannerData() {
         RecBannerItemPresenter recBannerItemPresenter = new RecBannerItemPresenter();
-        ArrayObjectAdapter listRowAdapter = new ArrayObjectAdapter(recBannerItemPresenter);
+        ArrayObjectAdapter listRowAdapter = new ArrayObjectAdapter(recBannerItemPresenter); 
+        if(mBannerInfoList!=null) {
         Collections.shuffle(mBannerInfoList);
         for (int i = 0; i < 2; i++) {
             listRowAdapter.add(mBannerInfoList.get(i));
+        } 
         }
         HotVideoListRow listRow = new HotVideoListRow(listRowAdapter);
         mRowsAdapter.add(listRow);
 
         RecBannerItem1Presenter recBannerItem1Presenter = new RecBannerItem1Presenter();
-        ArrayObjectAdapter listRowAdapter1 = new ArrayObjectAdapter(recBannerItem1Presenter);
+        ArrayObjectAdapter listRowAdapter1 = new ArrayObjectAdapter(recBannerItem1Presenter); 
+         if(mBannerInfoList!=null) {
         if(mBannerInfoList.size()>=6) {
             for (int i = 2; i < 6; i++) {
                 listRowAdapter1.add(mBannerInfoList.get(i));
@@ -174,6 +177,7 @@ public class RecommandVideoRowFragment extends Fragment {
             for (int i = 2; i < mBannerInfoList.size(); i++) {
                 listRowAdapter1.add(mBannerInfoList.get(i));
             }
+        } 
         }
         HotVideoListRow listRow1 = new HotVideoListRow(listRowAdapter1);
         mRowsAdapter.add(listRow1);
