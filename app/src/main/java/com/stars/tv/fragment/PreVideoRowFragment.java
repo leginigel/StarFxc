@@ -25,11 +25,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.stars.tv.R;
-import com.stars.tv.activity.VideoPreview;
 import com.stars.tv.bean.IQiYiMovieBean;
 import com.stars.tv.presenter.IQiYiParseStarRecommendPresenter;
 import com.stars.tv.sample.MyPresenterSelector;
-import com.stars.tv.sample.PreVideoItemPresenter;
+import com.stars.tv.presenter.PreVideoItemPresenter;
 import com.stars.tv.utils.CallBack;
 import com.stars.tv.view.MyVerticalGridView;
 
@@ -50,12 +49,15 @@ public class PreVideoRowFragment extends Fragment {
     private static final int GRID_VIEW_TOP_PX = 30;
     private static final int GRID_VIEW_BOTTOM_PX = 50;
 
+    private String TAG;
+
     List<IQiYiMovieBean> mVideoList = new ArrayList<>();
     List<IQiYiMovieBean> mCharactorList = new ArrayList<>();
+//    List mVideoList = new ArrayList<>();
+//    List mCharactorList = new ArrayList<>();
 
     private String tvId;
 
-    private VideoPreview videoPreview;
     final int REFRESH_RecommendList = 0;
 
     @BindView(R.id.video_content_v_grid)
@@ -68,6 +70,7 @@ public class PreVideoRowFragment extends Fragment {
     int mSubPosition;
     ItemBridgeAdapter.ViewHolder mSelectedViewHolder;
     String mcharactor;
+    int mClickedCharactor=0;
 
     public PreVideoRowFragment() {
     }
@@ -117,11 +120,24 @@ public class PreVideoRowFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        videoPreview = (VideoPreview) context;
-        videoPreview.setHandler(mHandler);
+//        videoPreviewActivity = (VideoPreviewActivity) context;
+//        videoPreviewActivity.setHandler(mHandler);
+//        Log.v("tttonmHandleroutput", mHandler.toString());
+    }
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+    public void setData(Bundle bundle) {
+        int position = bundle.getInt("clickvalue",0);
+       Log.v("CCCposition",position+"");
+//        for (int i = 0; i < mCharactorList.size(); i++) {
+//            if(mCharactorList.get(i).getName()==clickvalue){
+//                mClickedCharactor=i;
+//            }
+//            Log.v("mClickedCharactor",""+mClickedCharactor);
+//        }
+        mClickedCharactor=position;
+        refreshRequest();
 
-        Log.v("tttonmHandleroutput", mHandler.toString());
     }
 
     @SuppressLint("HandlerLeak")
@@ -144,9 +160,9 @@ public class PreVideoRowFragment extends Fragment {
         List<IQiYiMovieBean> list = mVideoList;
         final MyPresenterSelector myPresenterSelector = new MyPresenterSelector();
         mRowsAdapter = new ArrayObjectAdapter(myPresenterSelector);
-        PreVideoItemPresenter videoItemPresenter = new PreVideoItemPresenter();
 
-        ArrayObjectAdapter listRowAdapter1 = new ArrayObjectAdapter(videoItemPresenter);
+        PreVideoItemPresenter charactorItemPresenter = new PreVideoItemPresenter();
+        ArrayObjectAdapter listRowAdapter1 = new ArrayObjectAdapter(charactorItemPresenter);
         for (int i = 0; i < mCharactorList.size(); i++) {
             listRowAdapter1.add(mCharactorList.get(i));
         }
@@ -154,6 +170,7 @@ public class PreVideoRowFragment extends Fragment {
         ListRow listRow1 = new ListRow(header1, listRowAdapter1);
         mRowsAdapter.add(listRow1);
 
+        PreVideoItemPresenter videoItemPresenter = new PreVideoItemPresenter();
         ArrayObjectAdapter listRowAdapter2 = new ArrayObjectAdapter(videoItemPresenter);
         for (int j = 0; j < mVideoList.size(); j++) {
             listRowAdapter2.add(mVideoList.get(j));
@@ -222,7 +239,10 @@ public class PreVideoRowFragment extends Fragment {
 
         tvId = videoinfoshare.getString("tvId", "");
 
-        parseIQiYiStarRecommendList(mCharactorList.get(0).getAlbumId(), "6", tvId, true);
+        if(null!=mCharactorList) {
+            Log.v("pppmCharactorList",mCharactorList.toString());
+            parseIQiYiStarRecommendList(mCharactorList.get(mClickedCharactor).getAlbumId(), "6", tvId, true);
+        }
     }
 
     /**
@@ -233,7 +253,7 @@ public class PreVideoRowFragment extends Fragment {
     private void parseJSONWithJSONObject(String jsonData) {
         try {
             JSONArray jsonArray = new JSONArray(jsonData);
-            Log.v("tttparseJSON", jsonArray.toString());
+//            Log.v("tttparseJSON", jsonArray.toString());
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
 
@@ -246,7 +266,7 @@ public class PreVideoRowFragment extends Fragment {
                 videoBean.setName(name);
                 videoBean.setAlbumId(id);     //this is starid
                 mCharactorList.add(videoBean);
-                Log.v("tttmCharactorList", mCharactorList.toString());
+//                Log.v("tttmCharactorList", mCharactorList.toString());
 
             }
 
@@ -282,4 +302,5 @@ public class PreVideoRowFragment extends Fragment {
         });
 
     }
+
 }

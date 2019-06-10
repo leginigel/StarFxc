@@ -15,6 +15,7 @@ public class Constants {
     public static final String BASE_IQIYI_SEARCH_SUGGEST_WORD_URL="http://suggest.video.iqiyi.com/";
     public static final String BASE_IQIYI_HOT_LIST_URL ="http://v.iqiyi.com/";
     public static final String BASE_IQIYI_POST_CONSUMER_URL ="http://pcw-api.iqiyi.com/";
+    public static final String LIVE_TV_TVMAO_EPG_URL ="http://www.tvmao.com/";
 
     public static final String STAR_CLOUD_ID = "BzBYpOslngYEvh0Nz7zAUgd3-gzGzoHsz";
     public static final String STAR_CLOUD_KEY = "V2B1Wuo3YPQYDHU8iCjDQHtt";

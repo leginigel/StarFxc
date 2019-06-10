@@ -16,6 +16,10 @@ import com.stars.tv.bean.IQiYiStarInfoBean;
 import com.stars.tv.bean.IQiYiTopListBean;
 import com.stars.tv.bean.IQiYiVideoBaseInfoBean;
 import com.stars.tv.bean.TvTitle;
+import com.stars.tv.fragment.RecommandVideoRowFragment;
+import com.stars.tv.fragment.LiveTVBaseFragment;
+import com.stars.tv.fragment.LiveTVFragment;
+import com.stars.tv.fragment.SeriesVideoRowFragment;
 import com.stars.tv.fragment.VideoRowSampleFragment;
 import com.stars.tv.model.TvTitleModel;
 import com.stars.tv.presenter.IQiYiMovieSimplifiedListPresenter;
@@ -33,6 +37,7 @@ import com.stars.tv.presenter.IQiYiParseVideoBaseInfoPresenter;
 import com.stars.tv.presenter.TvTitlePresenter;
 import com.stars.tv.fragment.VideoVGridSampleMVPFragment;
 import com.stars.tv.utils.CallBack;
+import com.stars.tv.db.DBManager;
 import com.stars.tv.utils.ViewUtils;
 import com.stars.tv.view.SpaceItemDecoration;
 
@@ -53,6 +58,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,17 +77,23 @@ public class MainActivity extends BaseActivity {
   private static final int TITLE_TOP_PADDING_PC = 0;
   private static final int TITLE_RIGHT_PADDING_PC = 20;
 
+    private static LiveTVBaseFragment curFragment;
+
   private String TAG = "MainActivity";
 
-  @BindView(R.id.hg_title) HorizontalGridView hgTitle;
-  @BindView(R.id.page_vp) ViewPager pageVp;
-  @BindView(R.id.search_btn) Button searchBtn;
+    @BindView(R.id.hg_title)
+    HorizontalGridView hgTitle;
+    @BindView(R.id.page_vp)
+    ViewPager pageVp;
+    @BindView(R.id.search_btn)
+    Button searchBtn;
 
   FragAdapter mFragAdapter;
-//    List<VideoRowSampleFragment> mFragmentList = new ArrayList<>();
+    //    List<VideoRowSampleFragment> mFragmentList = new ArrayList<>();
   List<Fragment> mFragmentList = new ArrayList<>();
 
   Unbinder unbinder;
+    private long clickTime = 0;
 
 
   @Override
@@ -109,10 +121,11 @@ public class MainActivity extends BaseActivity {
     initTitle();
     initContentViews();
     refreshRequest();
+        DBManager.initDatabase(this);
     initLeanCloud();
   }
 
-  private void initLeanCloud(){
+    private void initLeanCloud() {
     AVOSCloud.initialize(this, STAR_CLOUD_ID, STAR_CLOUD_KEY);
     AVOSCloud.useAVCloudCN();
     AVOSCloud.setDebugLogEnabled(true);
@@ -153,23 +166,46 @@ public class MainActivity extends BaseActivity {
         child.itemView.setTag(position);
         child.itemView.setOnFocusChangeListener((view, hasFocus) -> {
           // show search button
-          if(hasFocus) {
+                    if (hasFocus) {
             searchBtn.setVisibility(View.VISIBLE);
           }
-          ViewUtils.scaleAnimator(view, hasFocus,1.2f,150);
+                    ViewUtils.scaleAnimator(view, hasFocus, 1.2f, 150);
           TextView tv = view.findViewById(R.id.tv_title);
           View lineView = view.findViewById(R.id.title_under_line);
           lineView.setBackgroundColor(getResources().getColor(hasFocus ? R.color.color_focus : R.color.color_transparent));
           tv.setTextColor(getResources().getColor(hasFocus ? R.color.color_focus : R.color.color_all_white));
-          if ((int) view.getTag() == pageVp.getCurrentItem())
-          {
-            ViewUtils.scaleAnimator(view, true,1.2f,150);
+                    if ((int) view.getTag() == pageVp.getCurrentItem()) {
+                        ViewUtils.scaleAnimator(view, true, 1.2f, 150);
           }
         });
         pageVp.setCurrentItem(position);
       }
     });
   }
+
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (mFragmentList.get(pageVp.getCurrentItem()) instanceof LiveTVFragment) {
+            if (keyCode == KeyEvent.KEYCODE_BACK) {
+                if (pageVp.hasFocus()) {
+                    hgTitle.requestFocus();
+                } else {
+                    if ((System.currentTimeMillis() - clickTime) > 2000) {
+                        Toast.makeText(this, "再按一次退出Start TV", Toast.LENGTH_SHORT).show();
+                        clickTime = System.currentTimeMillis();
+                    } else {
+                onBackPressed();
+                    }
+                }
+                return true;
+            } else {
+                curFragment = (LiveTVFragment) mFragmentList.get(pageVp.getCurrentItem());
+                return curFragment.onKeyDown(event);
+            }
+        }
+        return super.onKeyDown(keyCode, event);
+    }
 
   private void initContentViews() {
     mFragAdapter = new FragAdapter(getSupportFragmentManager());
@@ -182,13 +218,12 @@ public class MainActivity extends BaseActivity {
     searchBtn.setOnKeyListener(new View.OnKeyListener() {
       @Override
       public boolean onKey(View view, int i, KeyEvent keyEvent) {
-        if (keyEvent.getAction() == KeyEvent.ACTION_DOWN ) {
-          if ( keyEvent.getKeyCode() == KeyEvent.KEYCODE_DPAD_DOWN) {
+                if (keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
+                    if (keyEvent.getKeyCode() == KeyEvent.KEYCODE_DPAD_DOWN) {
             searchBtn.setFocusable(false);
             hgTitle.requestFocusFromTouch();
             return true;
-          }
-          else if ( keyEvent.getKeyCode() == KeyEvent.KEYCODE_DPAD_UP ){
+                    } else if (keyEvent.getKeyCode() == KeyEvent.KEYCODE_DPAD_UP) {
             Intent intent = new Intent(MainActivity.this, ExtMainActivity.class);
             startActivity(intent);
             return true;
@@ -201,27 +236,27 @@ public class MainActivity extends BaseActivity {
       @Override
       public void onClick(View view) {
         //TODO
-        Intent intent = new Intent(MainActivity.this, VideoPreview.class);
+                Intent intent = new Intent(MainActivity.this, VideoPreviewActivity.class);
         startActivity(intent);
       }
     });
-    pageVp.setOffscreenPageLimit(1); // 缓存2个页面
+        pageVp.setOffscreenPageLimit(1); // 缓存1个页面
     pageVp.setAdapter(mFragAdapter);
   }
 
   /**
    * 获取视频真是播放M3U8
+     *
    * @param url 播放url，不支持电视剧的列表简介页面 test url "http://www.iqiyi.com/v_19rsfhgzfw.html"
    */
-  private void parseIQiYiRealM3U8(String url){
+    private void parseIQiYiRealM3U8(String url) {
     IQiYiParseM3U8Presenter ps = new IQiYiParseM3U8Presenter();
     ps.requestIQiYiRealPlayUrl(url, new CallBack<List<IQiYiM3U8Bean>>() {
       @Override
       public void success(List<IQiYiM3U8Bean> list) {
         //TODO 获取成功在此得到真实播放地址的List，可能会有HD,SD,1080P
-        for(IQiYiM3U8Bean bean:list)
-        {
-          Log.v(TAG,bean.toString());
+                for (IQiYiM3U8Bean bean : list) {
+                    Log.v(TAG, bean.toString());
         }
 
       }
@@ -235,17 +270,17 @@ public class MainActivity extends BaseActivity {
 
   /**
    * 获取视频真是播放M3U8 （知否第1集）
+     *
    * @param tvId  视频tvId  1745487500
    */
-  private void parseIQiYiRealM3U8WithTvId(String tvId){
+    private void parseIQiYiRealM3U8WithTvId(String tvId) {
     IQiYiParseM3U8Presenter ps = new IQiYiParseM3U8Presenter();
     ps.requestIQiYiRealPlayUrlWithTvId(tvId, new CallBack<List<IQiYiM3U8Bean>>() {
       @Override
       public void success(List<IQiYiM3U8Bean> list) {
         //TODO 获取成功在此得到真实播放地址的List，可能会有HD,SD,1080P
-        for(IQiYiM3U8Bean bean:list)
-        {
-          Log.v(TAG,bean.toString());
+                for (IQiYiM3U8Bean bean : list) {
+                    Log.v(TAG, bean.toString());
         }
 
       }
@@ -259,20 +294,21 @@ public class MainActivity extends BaseActivity {
 
   /**
    * 获取视频真是播放M3U8 （知否第1集）
+     *
    * @param tvId  视频tvId  1745487500
    * @param vid  视频vid 785c82b2b8949a49c6be38876fede723
    */
-  private void parseIQiYiRealM3U8(String tvId,String vid){
+    private void parseIQiYiRealM3U8(String tvId, String vid) {
     IQiYiParseM3U8Presenter ps = new IQiYiParseM3U8Presenter();
-    ps.requestIQiYiRealPlayUrl(tvId,vid, new CallBack<List<IQiYiM3U8Bean>>() {
+        ps.requestIQiYiRealPlayUrl(tvId, vid, new CallBack<List<IQiYiM3U8Bean>>() {
       @Override
       public void success(List<IQiYiM3U8Bean> list) {
         //TODO 获取成功在此得到真实播放地址的List，可能会有HD,SD,1080P
-        for(IQiYiM3U8Bean bean:list)
-        {
-          Log.v(TAG,bean.toString());
+                for (IQiYiM3U8Bean bean : list) {
+                    Log.v(TAG, bean.toString());
         }
       }
+
       @Override
       public void error(String msg) {
         //TODO 获取失败
@@ -282,19 +318,19 @@ public class MainActivity extends BaseActivity {
 
   /**
    *  获取电视剧剧集列表
+     *
    * @param albumId 专辑id， 216266201 //知否知否
    * @param size  获取集数
    * @param pageNum 页码
    */
-  private void parseIQiYiEpisodeList(String albumId, int size, int pageNum){
+    private void parseIQiYiEpisodeList(String albumId, int size, int pageNum) {
     IQiYiParseEpisodeListPresenter ps = new IQiYiParseEpisodeListPresenter();
-    ps.requestIQiYiEpisodeList(albumId,size,pageNum, new CallBack<List<IQiYiMovieBean>>() {
+        ps.requestIQiYiEpisodeList(albumId, size, pageNum, new CallBack<List<IQiYiMovieBean>>() {
       @Override
       public void success(List<IQiYiMovieBean> list) {
         //TODO 获取电视剧剧集列表
-        for(IQiYiMovieBean bean:list)
-        {
-          Log.v(TAG,bean.toString());
+                for (IQiYiMovieBean bean : list) {
+                    Log.v(TAG, bean.toString());
         }
       }
 
@@ -307,18 +343,18 @@ public class MainActivity extends BaseActivity {
 
   /**
    *  获取综艺剧集列表
+     *
    * @param albumId 专辑id， 233071001 //王牌对王牌第四季
    * @param timeList 时间list 例如2019/ 201904/ 201903/
    */
-  private void parseIQiYiVarietyAlbumList(String albumId, String timeList){
+    private void parseIQiYiVarietyAlbumList(String albumId, String timeList) {
     IQiYiParseVarietyAlbumListPresenter ps = new IQiYiParseVarietyAlbumListPresenter();
-    ps.requestIQiYiVarietyAlbumList(albumId,timeList, new CallBack<List<IQiYiMovieBean>>() {
+        ps.requestIQiYiVarietyAlbumList(albumId, timeList, new CallBack<List<IQiYiMovieBean>>() {
       @Override
       public void success(List<IQiYiMovieBean> list) {
         //TODO 获取综艺剧集列表
-        for(IQiYiMovieBean bean:list)
-        {
-          Log.v(TAG,bean.toString());
+                for (IQiYiMovieBean bean : list) {
+                    Log.v(TAG, bean.toString());
         }
       }
 
@@ -331,16 +367,15 @@ public class MainActivity extends BaseActivity {
   }
 
   /**
-   *
    * @param url 明星url， test url "http://www.iqiyi.com/lib/s_213640105.html" 沈腾
    */
-  private void parseIQiYiStarsInfo(String url){
+    private void parseIQiYiStarsInfo(String url) {
     IQiYiParseStarInfoPresenter ps = new IQiYiParseStarInfoPresenter();
     ps.requestIQiYiStarsInfo(url, new CallBack<IQiYiStarInfoBean>() {
       @Override
       public void success(IQiYiStarInfoBean list) {
         //TODO 获取明星信息
-        Log.v(TAG,list.toString());
+                Log.v(TAG, list.toString());
       }
 
       @Override
@@ -351,16 +386,15 @@ public class MainActivity extends BaseActivity {
   }
 
   /**
-   *
    * @param url 热搜榜， test url "http://v.iqiyi.com/index/dianying/dongzuo/index.html
    */
-  private void parseIQiYiHotSearchList(String url){
+    private void parseIQiYiHotSearchList(String url) {
     IQiYiParseHotSearchListPresenter ps = new IQiYiParseHotSearchListPresenter();
     ps.requestIQiYiHotList(url, new CallBack<List<IQiYiHotSearchItemBean>>() {
       @Override
       public void success(List<IQiYiHotSearchItemBean> list) {
         //TODO 获取榜单
-        for(IQiYiHotSearchItemBean bean:list) {
+                for (IQiYiHotSearchItemBean bean : list) {
           Log.v(TAG, bean.toString());
         }
       }
@@ -374,17 +408,18 @@ public class MainActivity extends BaseActivity {
 
   /**
    * 获取明星推荐视频
+     *
    * @param starId  明星id 205633105
    * @param size 需要推荐的个数  20
    * @param tvId 此处无意义，但是必须要有，可以填入当前视频的tvId   875112600
    * @param withCookie 此处根据需要填入，true/false
    */
-  private void parseIQiYiStarRecommendList(String starId, String size,String tvId, boolean withCookie){
+    private void parseIQiYiStarRecommendList(String starId, String size, String tvId, boolean withCookie) {
     IQiYiParseStarRecommendPresenter ps = new IQiYiParseStarRecommendPresenter();
     ps.requestIQiYiStarRecommendList(starId, size, tvId, withCookie, new CallBack<List<IQiYiMovieBean>>() {
       @Override
       public void success(List<IQiYiMovieBean> list) {
-        for(IQiYiMovieBean bean:list) {
+                for (IQiYiMovieBean bean : list) {
           Log.v(TAG, bean.toString());
         }
       }
@@ -399,11 +434,12 @@ public class MainActivity extends BaseActivity {
 
   /**
    * 获取Video Basic info
+     *
    * @param tvId tvId   1745487500
    */
-  private void parseIQiYiVideoBaseInfo(String tvId){
+    private void parseIQiYiVideoBaseInfo(String tvId) {
     IQiYiParseVideoBaseInfoPresenter ps = new IQiYiParseVideoBaseInfoPresenter();
-    ps.requestIQiYiVideoBaseInfo( tvId, new CallBack<IQiYiVideoBaseInfoBean>() {
+        ps.requestIQiYiVideoBaseInfo(tvId, new CallBack<IQiYiVideoBaseInfoBean>() {
       @Override
       public void success(IQiYiVideoBaseInfoBean bean) {
         Log.v(TAG, bean.toString());
@@ -419,17 +455,18 @@ public class MainActivity extends BaseActivity {
 
   /**
    * 获取Top list
+     *
    * @param cid channel id , 热播榜为-1，其余根据list定义， 电视剧为2，电影为1
    * @param type 播放指数榜：playindex   飙升榜：rise  热度榜：realTime
    * @param size 获取个数
    * @param page 获取页面page number
    */
-  private void parseIQiYiTopList(String cid, String type,int size, int page){
+    private void parseIQiYiTopList(String cid, String type, int size, int page) {
     IQiYiParseTopListPresenter ps = new IQiYiParseTopListPresenter();
-    ps.requestIQiYiTopList( cid,type,size,page, new CallBack<List<IQiYiTopListBean>>() {
+        ps.requestIQiYiTopList(cid, type, size, page, new CallBack<List<IQiYiTopListBean>>() {
       @Override
       public void success(List<IQiYiTopListBean> list) {
-        for(IQiYiTopListBean bean:list) {
+                for (IQiYiTopListBean bean : list) {
           Log.v(TAG, bean.toString());
         }
       }
@@ -443,14 +480,15 @@ public class MainActivity extends BaseActivity {
 
   /**
    * 获取明星基本信息
+     *
    * @param starId 明星id , 沈腾 213640105
    * @param channleIds channel id list  1,2,6 电影/电视剧/综艺
    * @param size 获取作品最大个数
    */
 
-  private void parseIQiYiBasicStarInfo(String starId, String channleIds, int size){
+    private void parseIQiYiBasicStarInfo(String starId, String channleIds, int size) {
     IQiYiParseBasicStarInfoPresenter ps = new IQiYiParseBasicStarInfoPresenter();
-    ps.requestIQiYiStarsInfo( starId,channleIds,size, new CallBack<IQiYiBasicStarInfoBean>() {
+        ps.requestIQiYiStarsInfo(starId, channleIds, size, new CallBack<IQiYiBasicStarInfoBean>() {
       @Override
       public void success(IQiYiBasicStarInfoBean bean) {
         Log.v(TAG, bean.toString());
@@ -465,15 +503,16 @@ public class MainActivity extends BaseActivity {
 
   /**
    * 获取推荐栏位基本信息
+     *
    * @param channel  电视剧：dianshiju    电影：dianying  综艺：zongyi   动漫：dongman     微电影：weidianying     推荐：""
    */
 
-  private void parseIQiYiBasicStarInfo(String channel){
+    private void parseIQiYiBannerInfo(String channel) {
     IQiYiParseBannerInfoPresenter ps = new IQiYiParseBannerInfoPresenter();
-    ps.requestIQiYiBannerInfo( channel, new CallBack<List<IQiYiBannerInfoBean>>() {
+        ps.requestIQiYiBannerInfo(channel, new CallBack<List<IQiYiBannerInfoBean>>() {
       @Override
       public void success(List<IQiYiBannerInfoBean> list) {
-        for(IQiYiBannerInfoBean bean:list) {
+                for (IQiYiBannerInfoBean bean : list) {
           Log.v(TAG, bean.toString());
         }
       }
@@ -488,12 +527,12 @@ public class MainActivity extends BaseActivity {
   /**
    * 获取爱奇艺搜索热词
    */
-  private void parseIQiYiSearchHotQueryWord(){
+    private void parseIQiYiSearchHotQueryWord() {
     IQiYiParseSearchPresenter ps = new IQiYiParseSearchPresenter();
-    ps.requestIQiYiSearchHotQueryWord( new CallBack<List<IQiYiHotQueryBean>>() {
+        ps.requestIQiYiSearchHotQueryWord(new CallBack<List<IQiYiHotQueryBean>>() {
       @Override
       public void success(List<IQiYiHotQueryBean> list) {
-        for(IQiYiHotQueryBean bean:list) {
+                for (IQiYiHotQueryBean bean : list) {
           Log.v(TAG, bean.toString());
         }
       }
@@ -507,15 +546,16 @@ public class MainActivity extends BaseActivity {
 
   /**
    * 获取爱奇艺搜索关键字提示
+     *
    * @param keyWord  搜索keyword
    * @param resultNum 返回结果数量
    */
-  private void parseIQiYiSearchSuggestWord(String keyWord,int resultNum){
+    private void parseIQiYiSearchSuggestWord(String keyWord, int resultNum) {
     IQiYiParseSearchPresenter ps = new IQiYiParseSearchPresenter();
-    ps.requestIQiYiSearchSuggestWord(keyWord,resultNum, new CallBack<List<IQiYiSearchSuggestBean>>() {
+        ps.requestIQiYiSearchSuggestWord(keyWord, resultNum, new CallBack<List<IQiYiSearchSuggestBean>>() {
       @Override
       public void success(List<IQiYiSearchSuggestBean> list) {
-        for(IQiYiSearchSuggestBean bean:list) {
+                for (IQiYiSearchSuggestBean bean : list) {
           Log.v(TAG, bean.toString());
         }
       }
@@ -529,6 +569,7 @@ public class MainActivity extends BaseActivity {
 
   /**
    * 获取爱奇艺搜索结果
+     *
    * @param keyWord 搜索词
    * @param channel 电影 电视剧 动漫 音乐 综艺等
    * @param duration 时长 全部:0  0-10分钟:2  10-30分钟:3  30-60分钟:4  60分钟以上:5
@@ -537,14 +578,13 @@ public class MainActivity extends BaseActivity {
    * @param sort  筛选条件    相关:1     最新:4     最热:11
    * @param pictureQuality  画质    全部:""  高清:"3"  超清:"6"  720:"4"    1080P:"7"
    */
-  private void parseIQiYiSearchResult(String keyWord, String channel,int duration, int pageNum, String publishTime, int sort, String pictureQuality){
+    private void parseIQiYiSearchResult(String keyWord, String channel, int duration, int pageNum, String publishTime, int sort, String pictureQuality) {
     IQiYiParseSearchPresenter ps = new IQiYiParseSearchPresenter();
     ps.requestIQiYiSearchResult(keyWord, channel, duration, pageNum, publishTime, sort, pictureQuality, new CallBack<IQiYiSearchResultBean>() {
       @Override
       public void success(IQiYiSearchResultBean bean) {
         Log.v(TAG, bean.getResultNum());
-        for(IQiYiSearchResultBean.ResultItem item:bean.getItemList())
-        {
+                for (IQiYiSearchResultBean.ResultItem item : bean.getItemList()) {
           Log.v(TAG, item.toString());
         }
       }
@@ -558,20 +598,20 @@ public class MainActivity extends BaseActivity {
 
   /**
    * 获取爱奇艺搜索结果
+     *
    * @param keyWord 搜索词
    * @param pageNum   页码 便于翻页
    * @param pageSize 每页个数
    */
-  private void parseIQiYiSearchSimplified(String keyWord,  int pageNum, int pageSize){
+    private void parseIQiYiSearchSimplified(String keyWord, int pageNum, int pageSize) {
     IQiYiParseSearchPresenter ps = new IQiYiParseSearchPresenter();
     ps.requestIQiYiSearchSimplified(keyWord, pageNum, pageSize, new CallBack<IQiYiSearchSimplifyDataBean>() {
       @Override
       public void success(IQiYiSearchSimplifyDataBean bean) {
-        Log.v(TAG, "result_num =："+ bean.getResult_num());
-        Log.v(TAG, "real_query = ："+ bean.getReal_query());
+                Log.v(TAG, "result_num =：" + bean.getResult_num());
+                Log.v(TAG, "real_query = ：" + bean.getReal_query());
         List<IQiYiSearchSimplifyDataBean.DocinfosBean> list = bean.getDocinfos();
-        for(int i=0;i<list.size();i++)
-        {
+                for (int i = 0; i < list.size(); i++) {
           Log.v(TAG, list.get(i).toString());
         }
       }
@@ -586,21 +626,21 @@ public class MainActivity extends BaseActivity {
   /**
    * 获取爱奇艺片库筛选结果List
    * 参数请参看iqiyidata.json
+     *
    * @param orderList 筛选组合，请参看iqiyidata.json中order-list部分,  "15,24"; 为内地，古装筛选组合
    * @param pageSize 每页个数
    */
   private void parseIQiYiMovieSimplifiedList(int channel, String orderList, String payStatus, String myYear,
                                              int sortType, int pageNum, int dataType, String siteType,
-                                             int sourceType, String comicsStatus, int pageSize){
+                                               int sourceType, String comicsStatus, int pageSize) {
     IQiYiMovieSimplifiedListPresenter ps = new IQiYiMovieSimplifiedListPresenter();
-    ps.requestIQiYiMovieSimplifiedList(channel,orderList,payStatus,myYear,sortType,pageNum,
-      dataType,siteType,sourceType,comicsStatus,pageSize, new CallBack<IQiYiMovieSimplifiedBean>() {
+        ps.requestIQiYiMovieSimplifiedList(channel, orderList, payStatus, myYear, sortType, pageNum,
+                dataType, siteType, sourceType, comicsStatus, pageSize, new CallBack<IQiYiMovieSimplifiedBean>() {
         @Override
         public void success(IQiYiMovieSimplifiedBean bean) {
-          Log.v(TAG, "result_num =："+ bean.getResult_num());
+                        Log.v(TAG, "result_num =：" + bean.getResult_num());
           List<IQiYiMovieBean> list = bean.getList();
-          for(int i=0;i<list.size();i++)
-          {
+                        for (int i = 0; i < list.size(); i++) {
             Log.v(TAG, list.get(i).toString());
           }
         }
@@ -614,15 +654,21 @@ public class MainActivity extends BaseActivity {
 
   private void refreshRequest() {
     mFragmentList.clear();
-    AtomicInteger i= new AtomicInteger();
+        AtomicInteger i = new AtomicInteger();
     for (TvTitle titleMode : TvTitleModel.getTitleList()) {
-      if(i.get() %2==0)
-      {
+            if (titleMode.getName().matches("精选")) {
+                mFragmentList.add(RecommandVideoRowFragment.getInstance(titleMode.getName()));
+            } else if (titleMode.getName().equals("频道")) {
+                    mFragmentList.add(LiveTVFragment.getInstance(titleMode.getName()));
+            }else if(titleMode.getName().matches("电视剧")){
+                    mFragmentList.add(SeriesVideoRowFragment.getInstance(titleMode.getName()));
+            }else {
+                if ((i.get() % 2 == 0)) {
         mFragmentList.add(VideoRowSampleFragment.getInstance(titleMode.getName()));
-      }else
-      {
+                } else {
         mFragmentList.add(VideoVGridSampleMVPFragment.getInstance(titleMode.getName()));
       }
+            }
       i.getAndIncrement();
     }
     mFragAdapter.notifyDataSetChanged();
@@ -634,6 +680,7 @@ public class MainActivity extends BaseActivity {
     super.onDestroy();
     unbinder.unbind();
   }
+
   /**
    * 内容 framgnt Adapter.
    */

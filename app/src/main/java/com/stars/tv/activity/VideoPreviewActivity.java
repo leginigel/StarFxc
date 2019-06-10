@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.SaveCallback;
 import com.stars.tv.R;
 import com.stars.tv.adapter.ChildrenAdapter;
 import com.stars.tv.adapter.EpisodeListView;
@@ -38,6 +40,7 @@ import com.stars.tv.presenter.IQiYiParseM3U8Presenter;
 import com.stars.tv.presenter.IQiYiParseStarRecommendPresenter;
 import com.stars.tv.presenter.IQiYiParseVideoBaseInfoPresenter;
 import com.stars.tv.presenter.PreVideoItemPresenter;
+import com.stars.tv.server.LeanCloudStorage;
 import com.stars.tv.utils.CallBack;
 import com.stars.tv.utils.ViewUtils;
 import com.stars.tv.view.SpaceItemDecoration;
@@ -45,6 +48,8 @@ import com.stars.tv.widget.media.AndroidMediaController;
 import com.stars.tv.widget.media.IjkVideoView;
 import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 import com.github.ybq.android.spinkit.style.Circle;
+
+import static com.stars.tv.utils.Constants.VIDEO_TYPE_TVSERIES;
 
 public class VideoPreviewActivity extends BaseActivity {
 
@@ -63,7 +68,11 @@ public class VideoPreviewActivity extends BaseActivity {
     private String description;
     private String videoCount;
     private String latestOrder;
-    //    private List<IQiYiMovieBean.Role> director;
+    private String playUrl;
+    private String image_url;
+    private String video_type;
+
+  //    private List<IQiYiMovieBean.Role> director;
     private List<IQiYiVideoBaseInfoBean.Director> director;
     private List<IQiYiVideoBaseInfoBean.Director> host;
     private List<IQiYiVideoBaseInfoBean.Director> guest;
@@ -319,7 +328,13 @@ public class VideoPreviewActivity extends BaseActivity {
                 parseIQiYiRealM3U8WithTvId(tvId);
 //                selectedPositions =  Integer.valueOf());
                 adapter.setSelectedPositions(Arrays.asList(selectedPositions));
-                Log.v("Clicktest", mEplisodeList.get(position).getTvId());
+                LeanCloudStorage.updateIQiyHistory(videoBean,
+                mVideoList.get(position), position + 1, new SaveCallback() {
+                @Override
+                public void done(AVException e) {
+                }
+              });
+              Log.v("Clicktest", mEplisodeList.get(position).getTvId());
             }
         });
         mHandler.postDelayed(new Runnable() {
@@ -338,7 +353,14 @@ public class VideoPreviewActivity extends BaseActivity {
         videoCount = videoBean.getVideoCount();
         latestOrder = videoBean.getLatestOrder();
 
-        parseIQiYiEpisodeList(albumId, Integer.valueOf(latestOrder), 1);
+      /* for history/favorite usage */
+      albumId = videoBean.getAlbumId();
+      playUrl = videoBean.getPlayUrl();
+      image_url = videoBean.getImageUrl();
+      video_type = VIDEO_TYPE_TVSERIES;
+      /* -------------------------- */
+
+      parseIQiYiEpisodeList(albumId, Integer.valueOf(latestOrder), 1);
         parseIQiYiVideoBaseInfo(albumId);
     }
 
@@ -355,7 +377,15 @@ public class VideoPreviewActivity extends BaseActivity {
         editor.putString("hostname", hostname);
         editor.putString("guestname", guestname);
         editor.putString("description", description);
-        editor.commit();
+
+        /* for History/Favorite usage */
+        editor.putString("albumId", albumId);
+        editor.putString("playurl", playUrl);
+        editor.putString("imageurl", image_url);
+        editor.putString("videotype", video_type);
+        /* -------------------------- */
+
+      editor.commit();
     }
 
     private void initGV(){

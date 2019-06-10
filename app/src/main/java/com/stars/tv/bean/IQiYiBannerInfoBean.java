@@ -1,6 +1,8 @@
 package com.stars.tv.bean;
 
-public class IQiYiBannerInfoBean {
+import java.io.Serializable;
+
+public class IQiYiBannerInfoBean implements Serializable{
 
     private String name;
     private String playUrl;
