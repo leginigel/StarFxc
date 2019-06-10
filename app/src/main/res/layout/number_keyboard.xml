@@ -1,0 +1,582 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp"
+    android:clipToPadding="false"
+    tools:context=".ui.search.NumberKeyboard">
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cardViewNum1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:descendantFocusability="afterDescendants"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:focusedByDefault="false"
+        app:cardElevation="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/keyboard_text_1"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:background="@drawable/btn_bg_right"
+            android:clickable="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:gravity="center"
+            android:text="1"
+            android:textColor="@color/btn_text_keyboard"
+            android:textSize="20sp" />
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cardViewNum2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:descendantFocusability="afterDescendants"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:focusedByDefault="false"
+        app:cardElevation="0dp"
+        app:layout_constraintStart_toEndOf="@+id/cardViewNum1"
+        app:layout_constraintTop_toTopOf="@+id/cardViewNum1">
+
+        <TextView
+            android:id="@+id/keyboard_text_2"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:background="@drawable/btn_bg_right"
+            android:clickable="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:gravity="center"
+            android:text="2"
+            android:textColor="@color/btn_text_keyboard"
+            android:textSize="20sp" />
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cardViewNum3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:descendantFocusability="afterDescendants"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:focusedByDefault="false"
+        app:cardElevation="0dp"
+        app:layout_constraintStart_toEndOf="@+id/cardViewNum2"
+        app:layout_constraintTop_toTopOf="@+id/cardViewNum1">
+
+        <TextView
+            android:id="@+id/keyboard_text_3"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:background="@drawable/btn_bg_right"
+            android:clickable="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:gravity="center"
+            android:text="3"
+            android:textColor="@color/btn_text_keyboard"
+            android:textSize="20sp" />
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cardViewNum4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:descendantFocusability="afterDescendants"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:focusedByDefault="false"
+        app:cardElevation="0dp"
+        app:layout_constraintStart_toEndOf="@+id/cardViewNum3"
+        app:layout_constraintTop_toTopOf="@+id/cardViewNum1">
+
+        <TextView
+            android:id="@+id/keyboard_text_4"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:background="@drawable/btn_bg_right"
+            android:clickable="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:gravity="center"
+            android:text="&amp;"
+            android:textColor="@color/btn_text_keyboard"
+            android:textSize="20sp" />
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cardViewNum5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:descendantFocusability="afterDescendants"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:focusedByDefault="false"
+        app:cardElevation="0dp"
+        app:layout_constraintStart_toEndOf="@+id/cardViewNum4"
+        app:layout_constraintTop_toTopOf="@+id/cardViewNum1">
+
+        <TextView
+            android:id="@+id/keyboard_text_5"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:background="@drawable/btn_bg_right"
+            android:clickable="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:gravity="center"
+            android:text="#"
+            android:textColor="@color/btn_text_keyboard"
+            android:textSize="20sp" />
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cardViewNum6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:descendantFocusability="afterDescendants"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:focusedByDefault="false"
+        app:cardElevation="0dp"
+        app:layout_constraintStart_toEndOf="@+id/cardViewNum5"
+        app:layout_constraintTop_toTopOf="@+id/cardViewNum1">
+
+        <TextView
+            android:id="@+id/keyboard_text_6"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:background="@drawable/btn_bg_right"
+            android:clickable="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:gravity="center"
+            android:text="("
+            android:textColor="@color/btn_text_keyboard"
+            android:textSize="20sp" />
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cardViewNum7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:descendantFocusability="afterDescendants"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:focusedByDefault="false"
+        app:cardElevation="0dp"
+        app:layout_constraintStart_toEndOf="@+id/cardViewNum6"
+        app:layout_constraintTop_toTopOf="@+id/cardViewNum1">
+
+        <TextView
+            android:id="@+id/keyboard_text_7"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:background="@drawable/btn_bg_right"
+            android:clickable="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:gravity="center"
+            android:text=")"
+            android:textColor="@color/btn_text_keyboard"
+            android:textSize="20sp" />
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cardViewNum8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:descendantFocusability="afterDescendants"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:focusedByDefault="false"
+        app:cardElevation="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cardViewNum1">
+
+        <TextView
+            android:id="@+id/keyboard_text_8"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:background="@drawable/btn_bg_right"
+            android:clickable="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:gravity="center"
+            android:text="4"
+            android:textColor="@color/btn_text_keyboard"
+            android:textSize="20sp" />
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cardViewNum9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:descendantFocusability="afterDescendants"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:focusedByDefault="false"
+        app:cardElevation="0dp"
+        app:layout_constraintStart_toEndOf="@+id/cardViewNum8"
+        app:layout_constraintTop_toBottomOf="@+id/cardViewNum1">
+
+        <TextView
+            android:id="@+id/keyboard_text_9"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:background="@drawable/btn_bg_right"
+            android:clickable="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:gravity="center"
+            android:text="5"
+            android:textColor="@color/btn_text_keyboard"
+            android:textSize="20sp" />
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cardViewNum10"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:descendantFocusability="afterDescendants"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:focusedByDefault="false"
+        app:cardElevation="0dp"
+        app:layout_constraintStart_toEndOf="@+id/cardViewNum9"
+        app:layout_constraintTop_toBottomOf="@+id/cardViewNum1">
+
+        <TextView
+            android:id="@+id/keyboard_text_10"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:background="@drawable/btn_bg_right"
+            android:clickable="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:gravity="center"
+            android:text="6"
+            android:textColor="@color/btn_text_keyboard"
+            android:textSize="20sp" />
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cardViewNum11"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:descendantFocusability="afterDescendants"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:focusedByDefault="false"
+        app:cardElevation="0dp"
+        app:layout_constraintStart_toEndOf="@+id/cardViewNum10"
+        app:layout_constraintTop_toBottomOf="@+id/cardViewNum1">
+
+        <TextView
+            android:id="@+id/keyboard_text_11"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:background="@drawable/btn_bg_right"
+            android:clickable="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:gravity="center"
+            android:text="\@"
+            android:textColor="@color/btn_text_keyboard"
+            android:textSize="20sp" />
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cardViewNum12"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:descendantFocusability="afterDescendants"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:focusedByDefault="false"
+        app:cardElevation="0dp"
+        app:layout_constraintStart_toEndOf="@+id/cardViewNum11"
+        app:layout_constraintTop_toBottomOf="@+id/cardViewNum1">
+
+        <TextView
+            android:id="@+id/keyboard_text_12"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:background="@drawable/btn_bg_right"
+            android:clickable="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:gravity="center"
+            android:text="!"
+            android:textColor="@color/btn_text_keyboard"
+            android:textSize="20sp" />
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cardViewNum13"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:descendantFocusability="afterDescendants"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:focusedByDefault="false"
+        app:cardElevation="0dp"
+        app:layout_constraintStart_toEndOf="@+id/cardViewNum12"
+        app:layout_constraintTop_toBottomOf="@+id/cardViewNum1">
+
+        <TextView
+            android:id="@+id/keyboard_text_13"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:background="@drawable/btn_bg_right"
+            android:clickable="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:gravity="center"
+            android:text="\?"
+            android:textColor="@color/btn_text_keyboard"
+            android:textSize="20sp"
+            tools:ignore="HardcodedText" />
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cardViewNum14"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:descendantFocusability="afterDescendants"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:focusedByDefault="false"
+        app:cardElevation="0dp"
+        app:layout_constraintStart_toEndOf="@+id/cardViewNum13"
+        app:layout_constraintTop_toBottomOf="@+id/cardViewNum1">
+
+        <TextView
+            android:id="@+id/keyboard_text_14"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:background="@drawable/btn_bg_right"
+            android:clickable="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:gravity="center"
+            android:text=":"
+            android:textColor="@color/btn_text_keyboard"
+            android:textSize="20sp" />
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cardViewNum15"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:descendantFocusability="afterDescendants"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:focusedByDefault="false"
+        app:cardElevation="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cardViewNum8">
+
+        <TextView
+            android:id="@+id/keyboard_text_15"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:background="@drawable/btn_bg_right"
+            android:clickable="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:gravity="center"
+            android:text="7"
+            android:textColor="@color/btn_text_keyboard"
+            android:textSize="20sp" />
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cardViewNum16"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:descendantFocusability="afterDescendants"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:focusedByDefault="false"
+        app:cardElevation="0dp"
+        app:layout_constraintStart_toEndOf="@+id/cardViewNum15"
+        app:layout_constraintTop_toBottomOf="@+id/cardViewNum8">
+
+        <TextView
+            android:id="@+id/keyboard_text_16"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:background="@drawable/btn_bg_right"
+            android:clickable="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:gravity="center"
+            android:text="8"
+            android:textColor="@color/btn_text_keyboard"
+            android:textSize="20sp" />
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cardViewNum17"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:descendantFocusability="afterDescendants"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:focusedByDefault="false"
+        app:cardElevation="0dp"
+        app:layout_constraintStart_toEndOf="@+id/cardViewNum16"
+        app:layout_constraintTop_toBottomOf="@+id/cardViewNum8">
+
+        <TextView
+            android:id="@+id/keyboard_text_17"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:background="@drawable/btn_bg_right"
+            android:clickable="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:gravity="center"
+            android:text="9"
+            android:textColor="@color/btn_text_keyboard"
+            android:textSize="20sp" />
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cardViewNum18"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:descendantFocusability="afterDescendants"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:focusedByDefault="false"
+        app:cardElevation="0dp"
+        app:layout_constraintStart_toEndOf="@+id/cardViewNum17"
+        app:layout_constraintTop_toBottomOf="@+id/cardViewNum8">
+
+        <TextView
+            android:id="@+id/keyboard_text_18"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:background="@drawable/btn_bg_right"
+            android:clickable="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:gravity="center"
+            android:text="0"
+            android:textColor="@color/btn_text_keyboard"
+            android:textSize="20sp" />
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cardViewNum19"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:descendantFocusability="afterDescendants"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:focusedByDefault="false"
+        app:cardElevation="0dp"
+        app:layout_constraintStart_toEndOf="@+id/cardViewNum18"
+        app:layout_constraintTop_toBottomOf="@+id/cardViewNum8">
+
+        <TextView
+            android:id="@+id/keyboard_text_19"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:background="@drawable/btn_bg_right"
+            android:clickable="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:gravity="center"
+            android:text="."
+            android:textColor="@color/btn_text_keyboard"
+            android:textSize="20sp" />
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cardViewNum20"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:descendantFocusability="afterDescendants"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:focusedByDefault="false"
+        app:cardElevation="0dp"
+        app:layout_constraintStart_toEndOf="@+id/cardViewNum19"
+        app:layout_constraintTop_toBottomOf="@+id/cardViewNum8">
+
+        <TextView
+            android:id="@+id/keyboard_text_20"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:background="@drawable/btn_bg_right"
+            android:clickable="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:gravity="center"
+            android:text="_"
+            android:textColor="@color/btn_text_keyboard"
+            android:textSize="20sp" />
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cardViewNum21"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:descendantFocusability="afterDescendants"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:focusedByDefault="false"
+        app:cardElevation="0dp"
+        app:layout_constraintStart_toEndOf="@+id/cardViewNum20"
+        app:layout_constraintTop_toBottomOf="@+id/cardViewNum8">
+
+        <TextView
+            android:id="@+id/keyboard_text_21"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:background="@drawable/btn_bg_right"
+            android:clickable="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:gravity="center"
+            android:text='"'
+            android:textColor="@color/btn_text_keyboard"
+            android:textSize="20sp" />
+    </android.support.v7.widget.CardView>
+
+</android.support.constraint.ConstraintLayout>
