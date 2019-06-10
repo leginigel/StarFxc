@@ -29,7 +29,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.google.android.youtube.player.YouTubePlayer;
-import com.google.android.youtube.player.YouTubePlayerSupportFragment;
 
 import java.util.List;
 import java.util.Map;
@@ -56,8 +55,6 @@ public class YoutubeRowFragment extends RowsSupportFragment {
     private ListRowPresenter mListRowPresenter;
     private YouTubeCardPresenter mYouTubeCardPresenter;
     private View mVideoBox;
-    private YouTubePlayer mPlayer;
-    private YouTubePlayerSupportFragment youTubePlayerFragment;
     private PlayerControlsFragment playerControlsFragment;
 
     public static YoutubeRowFragment newInstance() {
@@ -80,6 +77,12 @@ public class YoutubeRowFragment extends RowsSupportFragment {
                 .setTextColor(context.getResources().getColor(R.color.background));
     }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Log.d(TAG, "onCreate");
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -95,8 +98,10 @@ public class YoutubeRowFragment extends RowsSupportFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-//        Log.i(TAG, "onActivityCreated");
+        Log.d(TAG, "onActivityCreated");
         mGridView = getVerticalGridView();
+        playerControlsFragment = ((YoutubeActivity) getActivity()).getPlayerControlsFragment();
+        mVideoBox = ((YoutubeActivity) getActivity()).getPlayerBox();
     }
 
     public void setRows(Map<String, List<YouTubeVideo>> channelList){
@@ -141,16 +146,9 @@ public class YoutubeRowFragment extends RowsSupportFragment {
         mRowsAdapter = new ArrayObjectAdapter(mListRowPresenter);
 
         setRows(null);
-
-        youTubePlayerFragment = (YouTubePlayerSupportFragment) getActivity()
-                .getSupportFragmentManager().findFragmentById(R.id.fragment_youtube_player);
-        playerControlsFragment = (PlayerControlsFragment) getActivity()
-                .getSupportFragmentManager().findFragmentById(R.id.fragment_player_controls);
-        mVideoBox = ((YoutubeActivity) getActivity()).getPlayerBox();
-        mPlayer = ((YoutubeActivity) getActivity()).getYouTubePlayer();
     }
 
-    public final class YouTubeCardSelectedListener implements OnItemViewSelectedListener{
+    public final class YouTubeCardSelectedListener implements OnItemViewSelectedListener {
 
         private ImageCardView imgCard = null;
 //        private CustomCardView imgCard = null;
@@ -229,8 +227,6 @@ public class YoutubeRowFragment extends RowsSupportFragment {
     }
 
     public final class YouTubeCardClickedListener implements OnItemViewClickedListener {
-
-        // TODO: 2019/5/21 The Video Player Should Change
         private YouTubeVideo video = null;
 
         @Override
@@ -240,6 +236,7 @@ public class YoutubeRowFragment extends RowsSupportFragment {
                 if(((YouTubeVideo) o).getId() != null){
                     video = (YouTubeVideo) o;
                     if (mVideoBox.getVisibility() != View.VISIBLE) {
+                        YouTubePlayer mPlayer = ((YoutubeActivity) getActivity()).getYouTubePlayer();
                         playerControlsFragment.setVideo(video);
                         mVideoBox.setVisibility(View.VISIBLE);
                         mVideoBox.requestFocus();
