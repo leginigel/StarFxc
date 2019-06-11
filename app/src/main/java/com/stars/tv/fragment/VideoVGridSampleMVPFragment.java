@@ -20,7 +20,6 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.stars.tv.R;
 import com.stars.tv.activity.VideoPreviewActivity;
-import com.stars.tv.bean.IQiYiListBean;
 import com.stars.tv.bean.IQiYiMovieBean;
 import com.stars.tv.bean.contract.IQiYiMovieContract;
 import com.stars.tv.presenter.IQiYiMoviePresenter;
@@ -37,8 +36,6 @@ import java.util.Objects;
 import butterknife.BindView;
 import me.jessyan.autosize.AutoSizeConfig;
 import me.jessyan.autosize.utils.AutoSizeUtils;
-
-import static com.stars.tv.utils.Utils.getIQiYiListUrl;
 
 public class VideoVGridSampleMVPFragment
         extends IQiYiBaseFragment<IQiYiMovieContract.IQiYiMoviePresenter>
@@ -100,12 +97,8 @@ public class VideoVGridSampleMVPFragment
   }
 
   private void refreshRequest() {
-    //TODO,获取资源是请根据iqiyidata.json中order-list的name添加id到orderList
         // orderList必须用逗号分隔id，否则会出错
-
-        IQiYiListBean listBean = new IQiYiListBean(2, "15,24", "","",
-      24, mPageNum,1,"iqiyi",1, "");
-    mPresenter.requestIQiYiMovie(getIQiYiListUrl(listBean));
+        mPresenter.requestIQiYiMovie(2, "15,24", "", "", 24, mPageNum, 1, "iqiyi", 1, "", 48);
   }
 
   @Override
@@ -150,7 +143,7 @@ public class VideoVGridSampleMVPFragment
 
 
   @Override
-  public void returnIQiYiMovieList(ArrayList<IQiYiMovieBean> beans) {
+    public void returnIQiYiMovieList(List<IQiYiMovieBean> beans) {
     mVideoList.addAll(beans);
     videoGrid.endMoreRefreshComplete();
     mHandler.sendEmptyMessage(REFRESH_MOVIE_CONTENT);

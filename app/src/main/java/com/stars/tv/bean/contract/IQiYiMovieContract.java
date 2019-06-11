@@ -4,18 +4,17 @@ import com.stars.tv.bean.IQiYiMovieBean;
 import com.stars.tv.model.IQiYiBaseView;
 import com.stars.tv.presenter.IQiYiBasePresenter;
 
-import java.util.ArrayList;
-
-import io.reactivex.Observable;
-import okhttp3.ResponseBody;
+import java.util.List;
 
 public interface IQiYiMovieContract {
 
     interface IQiYiMovieView extends IQiYiBaseView {
-        void returnIQiYiMovieList(ArrayList<IQiYiMovieBean> beans);
+        void returnIQiYiMovieList(List<IQiYiMovieBean> beans);
     }
 
     abstract class IQiYiMoviePresenter extends IQiYiBasePresenter<IQiYiMovieView> {
-        public abstract void requestIQiYiMovie(String url);
+        public abstract void requestIQiYiMovie(int channel, String orderList, String payStatus, String myYear,
+                                                    int sortType, int pageNum, int dataType, String siteType,
+                                                    int sourceType, String comicsStatus, int pageSize);
     }
 }

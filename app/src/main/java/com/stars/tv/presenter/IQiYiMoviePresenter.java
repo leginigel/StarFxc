@@ -3,6 +3,7 @@ package com.stars.tv.presenter;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.stars.tv.bean.IQiYiMovieBean;
+import com.stars.tv.bean.IQiYiMovieSimplifiedBean;
 import com.stars.tv.bean.contract.IQiYiMovieContract;
 import com.stars.tv.server.RetrofitFactory;
 import com.stars.tv.server.RetrofitService;
@@ -26,34 +27,37 @@ import okhttp3.ResponseBody;
 
 public class IQiYiMoviePresenter extends IQiYiMovieContract.IQiYiMoviePresenter {
 
-    public Observable<ResponseBody> getIQiYiMovie(String url) {
-        return RetrofitFactory.createApi(RetrofitService.class, Constants.BASE_IQIYI_LIST_URL)
-                .getIQiYiMovieList(url).compose(RxUtils.rxSchedulerHelper());
+    private Observable<ResponseBody> getIQiYiPostConsumerUrl(int channel, String orderList, String payStatus, String myYear,
+                                                             int sortType, int pageNum, int dataType, String siteType,
+                                                             int sourceType, String comicsStatus, int pageSize) {
+
+        return RetrofitFactory.createApi(RetrofitService.class, Constants.BASE_IQIYI_POST_CONSUMER_URL)
+                .getIQiYiMovieSimplifiedList(channel,orderList,payStatus,myYear,sortType,pageNum,
+                        dataType,siteType,sourceType,comicsStatus,pageSize).compose(RxUtils.rxSchedulerHelper());
     }
 
     @Override
-    public void requestIQiYiMovie(String url) {
-        RxManager.add(getIQiYiMovie(url).subscribe(responseBody -> {
+    public void requestIQiYiMovie(int channel, String orderList, String payStatus, String myYear,
+                                  int sortType, int pageNum, int dataType, String siteType,
+                                  int sourceType, String comicsStatus, int pageSize) {
+        RxManager.add(getIQiYiPostConsumerUrl(channel, orderList, payStatus, myYear, sortType, pageNum,
+                dataType, siteType, sourceType, comicsStatus, pageSize).subscribe(responseBody -> {
+            IQiYiMovieSimplifiedBean movieListBean;
             try {
-                ArrayList<IQiYiMovieBean> simpleList;
-                Document doc = Jsoup.parse(responseBody.string());
-                if (null!=doc){
-                    Elements block = doc.select("div[id=block-D]");
-                    String result = block.attr(":first-search-list");
-                    try {
-                        JSONObject root = new JSONObject(result);
-                        String movieList = root.getString("list");
-                        Type listType = new TypeToken<List<IQiYiMovieBean>>() {}.getType();
-                        simpleList = new Gson().fromJson(movieList, listType);
-                        mView.returnIQiYiMovieList(simpleList);
+                JSONObject root = new JSONObject(responseBody.string());
+                String code = root.getString("code");
+                if (!code.equals("A00000")) {
+                    //error
+                    mView.showError("返回值错误");
+                }
+                String data = root.getString("data");
+                Type type = new TypeToken<IQiYiMovieSimplifiedBean>() {
+                }.getType();
+                movieListBean = new Gson().fromJson(data, type);
+                mView.returnIQiYiMovieList(movieListBean.getList());
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                }
-
-            } catch (IOException | StringIndexOutOfBoundsException e) {
-                e.printStackTrace();
-            }
         }, Throwable -> mView.showError(Throwable.toString())));
     }
 }
