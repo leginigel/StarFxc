@@ -219,12 +219,12 @@ public class MainActivity extends BaseActivity {
     searchBtn.setOnKeyListener(new View.OnKeyListener() {
       @Override
       public boolean onKey(View view, int i, KeyEvent keyEvent) {
-                if (keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
-                    if (keyEvent.getKeyCode() == KeyEvent.KEYCODE_DPAD_DOWN) {
+        if (keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
+          if (keyEvent.getKeyCode() == KeyEvent.KEYCODE_DPAD_DOWN) {
             searchBtn.setFocusable(false);
             hgTitle.requestFocusFromTouch();
             return true;
-                    } else if (keyEvent.getKeyCode() == KeyEvent.KEYCODE_DPAD_UP) {
+          } else if (keyEvent.getKeyCode() == KeyEvent.KEYCODE_DPAD_UP) {
             Intent intent = new Intent(MainActivity.this, ExtMainActivity.class);
             startActivity(intent);
             return true;
@@ -237,7 +237,7 @@ public class MainActivity extends BaseActivity {
       @Override
       public void onClick(View view) {
         //TODO
-                Intent intent = new Intent(MainActivity.this, VideoPreviewActivity.class);
+        Intent intent = new Intent(MainActivity.this, VideoPreviewActivity.class);
         startActivity(intent);
       }
     });
@@ -670,21 +670,21 @@ public class MainActivity extends BaseActivity {
 
   private void refreshRequest() {
     mFragmentList.clear();
-        AtomicInteger i = new AtomicInteger();
+    AtomicInteger i = new AtomicInteger();
     for (TvTitle titleMode : TvTitleModel.getTitleList()) {
-            if (titleMode.getName().matches("精选")) {
-                mFragmentList.add(RecommandVideoRowFragment.getInstance(titleMode.getName()));
-            } else if (titleMode.getName().equals("频道")) {
-                    mFragmentList.add(LiveTVFragment.getInstance(titleMode.getName()));
-            }else if(titleMode.getName().matches("电视剧")){
-                    mFragmentList.add(SeriesVideoRowFragment.getInstance(titleMode.getName()));
-            }else {
-                if ((i.get() % 2 == 0)) {
-        mFragmentList.add(VideoRowSampleFragment.getInstance(titleMode.getName()));
-                } else {
-        mFragmentList.add(VideoVGridSampleMVPFragment.getInstance(titleMode.getName()));
+      if (titleMode.getName().matches("精选")) {
+        mFragmentList.add(RecommandVideoRowFragment.getInstance(titleMode.getName()));
+      } else if (titleMode.getName().equals("频道")) {
+        mFragmentList.add(LiveTVFragment.getInstance(titleMode.getName()));
+      }else if(titleMode.getName().matches("电视剧")){
+        mFragmentList.add(SeriesVideoRowFragment.getInstance(titleMode.getName()));
+      }else {
+        if ((i.get() % 2 == 0)) {
+          mFragmentList.add(VideoRowSampleFragment.getInstance(titleMode.getName()));
+        } else {
+          mFragmentList.add(VideoVGridSampleMVPFragment.getInstance(titleMode.getName()));
+        }
       }
-            }
       i.getAndIncrement();
     }
     mFragAdapter.notifyDataSetChanged();

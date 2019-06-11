@@ -19,15 +19,18 @@ public class ExtVideoBean implements Serializable {
   @NonNull
   @Override
   public String toString() {
-    return this.getClass().getName() + "{" +
-      "VideoId=" + mVideoId +
-      ", Name=" + mVideoName +
-      ", PlayUrl=" + mVideoPlayUrl +
-      ", CurrentViewOrder=" + mVideoCurrentViewOrder +
-      ", LatestOrder=" + mVideoLatestOrder +
-      ", Description=" + mVideoDescription +
-      ", ImageUrl=" + mVideoImageUrl +
-      "}";
+    return this.getClass().getName() + "={" +
+      "\nVideoType=" + mVideoType +
+      "\nAlbumId=" + mAlbumId +
+      "\nVideoId=" + mVideoId +
+      "\nVideoName=" + mVideoName +
+      "\nPlayUrl=" + mVideoPlayUrl +
+      "\nCurrentViewOrder=" + mVideoCurrentViewOrder +
+      "\nLatestOrder=" + mVideoLatestOrder +
+      "\nVideoCounter=" + mVideoLatestOrder +
+      "\nDescription=" + mVideoDescription +
+      "\nImageUrl=" + mVideoImageUrl +
+      "\n}";
   }
   public String getVideoType() {
     return mVideoType;

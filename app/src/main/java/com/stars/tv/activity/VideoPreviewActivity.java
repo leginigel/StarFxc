@@ -329,7 +329,7 @@ public class VideoPreviewActivity extends BaseActivity {
 //                selectedPositions =  Integer.valueOf());
                 adapter.setSelectedPositions(Arrays.asList(selectedPositions));
                 LeanCloudStorage.updateIQiyHistory(videoBean,
-                mVideoList.get(position), position + 1, new SaveCallback() {
+                  mEplisodeList.get(position), position + 1, new SaveCallback() {
                 @Override
                 public void done(AVException e) {
                 }
