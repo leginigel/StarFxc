@@ -40,6 +40,7 @@ import com.stars.tv.utils.CallBack;
 import com.stars.tv.db.DBManager;
 import com.stars.tv.utils.ViewUtils;
 import com.stars.tv.view.SpaceItemDecoration;
+import com.stars.tv.youtube.YoutubeActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -57,6 +58,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -87,6 +89,8 @@ public class MainActivity extends BaseActivity {
     ViewPager pageVp;
     @BindView(R.id.search_btn)
     Button searchBtn;
+    @BindView(R.id.yt_imageButton)
+    ImageButton ytBtn;
 
     FragAdapter mFragAdapter;
     //    List<VideoRowSampleFragment> mFragmentList = new ArrayList<>();
@@ -154,6 +158,7 @@ public class MainActivity extends BaseActivity {
                 if (event.getAction() == KeyEvent.ACTION_DOWN && event.getKeyCode() == KeyEvent.KEYCODE_DPAD_DOWN) {
                     // hide search button
                     searchBtn.setVisibility(View.GONE);
+                    ytBtn.setVisibility(View.GONE);
                 }
                 return false;
             }
@@ -169,6 +174,7 @@ public class MainActivity extends BaseActivity {
                     // show search button
                     if (hasFocus) {
                         searchBtn.setVisibility(View.VISIBLE);
+                        ytBtn.setVisibility(View.VISIBLE);
                     }
                     ViewUtils.scaleAnimator(view, hasFocus, 1.2f, 150);
                     TextView tv = view.findViewById(R.id.tv_title);
@@ -210,6 +216,25 @@ public class MainActivity extends BaseActivity {
 
     private void initContentViews() {
         mFragAdapter = new FragAdapter(getSupportFragmentManager());
+        ytBtn.setOnFocusChangeListener((view, b) ->
+                ytBtn.setImageDrawable(b ? getDrawable(R.drawable.ic_youtube_color_icon) : getDrawable(R.drawable.ic_youtube_dark_icon)));
+        ytBtn.setOnKeyListener((view, i, keyEvent) -> {
+            if (keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
+                if (keyEvent.getKeyCode() == KeyEvent.KEYCODE_DPAD_DOWN) {
+                    hgTitle.requestFocusFromTouch();
+                    return true;
+                } else if (keyEvent.getKeyCode() == KeyEvent.KEYCODE_DPAD_UP) {
+                    Intent intent = new Intent(MainActivity.this, DragMainActivity.class);
+                    startActivity(intent);
+                    return true;
+                }
+            }
+            return false;
+        });
+        ytBtn.setOnClickListener(view -> {
+            Intent intent = new Intent(MainActivity.this, YoutubeActivity.class);
+            startActivity(intent);
+        });
         searchBtn.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean b) {
