@@ -5,15 +5,15 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import com.stars.tv.fragment.DragBaseFragment;
+import com.stars.tv.fragment.ExtBaseFragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class DragTabFragmentPagerAdapter extends FragmentPagerAdapter {
-  List<DragBaseFragment> mFragments = null;
+public class ExtTabFragmentPagerAdapter extends FragmentPagerAdapter {
+  List<ExtBaseFragment> mFragments = null;
 
-  public DragTabFragmentPagerAdapter(FragmentManager fm, List<DragBaseFragment> fragments ){
+  public ExtTabFragmentPagerAdapter(FragmentManager fm, List<ExtBaseFragment> fragments ){
     super(fm);
     if ( fragments == null ){
       mFragments = new ArrayList<>();

@@ -15,12 +15,14 @@ import android.widget.TextView;
 
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVObject;
+import com.avos.avoscloud.FindCallback;
 import com.bumptech.glide.Glide;
 import com.stars.tv.R;
-import com.stars.tv.bean.DragTitleBean;
-import com.stars.tv.bean.DragVideoBean;
+import com.stars.tv.bean.ExtTitleBean;
+import com.stars.tv.bean.ExtVideoBean;
 import com.stars.tv.server.LeanCloudStorage;
 import com.stars.tv.utils.ViewUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -29,31 +31,29 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-import static com.stars.tv.utils.Constants.CLOUD_FAVORITE_CLASS;
-import static com.stars.tv.utils.Constants.CLOUD_HISTORY_CLASS;
-
-public class DragTabCommonFragment extends DragBaseFragment{
-  public final static String DRAG_TITLE_ID="dragTitleID";
+public class ExtTabCommonFragment extends ExtBaseFragment{
+  public final static String EXT_TITLE_ID="extTitleID";
   private int mItemPaddingPixel;
   private LeanCloudStorage mStorage;
 
   private String mFragID;
   Unbinder unbinder;
-  @BindView(R.id.drag_frame_recycler)  RecyclerView mDragContentsRecycler;
-  private List<DragVideoBean> mVideoList = new ArrayList<>();
+  @BindView(R.id.ext_frame_recycler)
+  RecyclerView mExtContentsRecycler;
+  private List<ExtVideoBean> mVideoList = new ArrayList<>();
 
-  public DragTabCommonFragment(){
+  public ExtTabCommonFragment(){
   }
 
-  public static DragTabCommonFragment newInstance(
-    DragTitleBean tab, int indicatorColor, int dividerColor){
-    DragTabCommonFragment f = new DragTabCommonFragment();
-    f.setTitle(tab.getDragName());
-    f.setIconRes(tab.getDragResIcon());
+  public static ExtTabCommonFragment newInstance(
+    ExtTitleBean tab, int indicatorColor, int dividerColor){
+    ExtTabCommonFragment f = new ExtTabCommonFragment();
+    f.setTitle(tab.getExtName());
+    f.setIconRes(tab.getExtResIcon());
     f.setIndicatorColor(indicatorColor);
     f.setDividerColor(dividerColor);
     Bundle bundle = new Bundle();
-    bundle.putString(DRAG_TITLE_ID, tab.getDragName());
+    bundle.putString(EXT_TITLE_ID, tab.getExtName());
     f.setArguments(bundle);
     return f;
   }
@@ -61,7 +61,7 @@ public class DragTabCommonFragment extends DragBaseFragment{
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    mFragID = getArguments().getString(DRAG_TITLE_ID);
+    mFragID = getArguments().getString(EXT_TITLE_ID);
     mStorage = new LeanCloudStorage(mFragID);
   }
 
@@ -74,40 +74,39 @@ public class DragTabCommonFragment extends DragBaseFragment{
   @Nullable
   @Override
   public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-    View v = inflater.inflate(R.layout.drag_videos_recycler_layout, container, false);
+    View v = inflater.inflate(R.layout.ext_videos_recycler_layout, container, false);
     unbinder = ButterKnife.bind(this, v);
 
     mItemPaddingPixel = ViewUtils.getPixelFromDp(getContext(), 4);
-    mDragContentsRecycler.setLayoutManager(
+    mExtContentsRecycler.setLayoutManager(
       new GridLayoutManager(getContext(), 6,
         GridLayoutManager.VERTICAL, false));
 
     mVideoList = mStorage.getVideoList();
 
-    DragContentAdapter adapter = new DragContentAdapter();
-    mStorage.storageFetchListener(new LeanCloudStorage.cloudFetchListener() {
+    ExtContentAdapter adapter = new ExtContentAdapter();
+    mStorage.storageFetchListener(new FindCallback<AVObject>() {
       @Override
-      public void done(List<AVObject> objects, AVException e) {
-        mStorage.assignToDragVideoList(objects);
-        mVideoList = mStorage.getVideoList();
+      public void done(List<AVObject> avObjects, AVException avException) {
+        mVideoList = mStorage.assignToExtVideoList(avObjects);
         adapter.notifyDataSetChanged();
-    }
+      }
     });
-    mDragContentsRecycler.setAdapter(adapter);
+    mExtContentsRecycler.setAdapter(adapter);
     return v;
   }
 
-  private class DragContentAdapter extends RecyclerView.Adapter<DragContentAdapter.ViewHolder>{
+  private class ExtContentAdapter extends RecyclerView.Adapter<ExtContentAdapter.ViewHolder>{
     @NonNull
     @Override
-    public DragContentAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-      View v = getLayoutInflater().inflate(R.layout.drag_videos_layout, null);
-      return new DragContentAdapter.ViewHolder(v);
+    public ExtContentAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+      View v = getLayoutInflater().inflate(R.layout.ext_videos_layout, null);
+      return new ExtContentAdapter.ViewHolder(v);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull DragContentAdapter.ViewHolder vh, int i) {
-      DragVideoBean vb = mVideoList.get(i);
+    public void onBindViewHolder(@NonNull ExtContentAdapter.ViewHolder vh, int i) {
+      ExtVideoBean vb = mVideoList.get(i);
       vh.bindViewHolder(vb);
     }
 
@@ -122,32 +121,32 @@ public class DragTabCommonFragment extends DragBaseFragment{
 
       public ViewHolder(@NonNull View itemView) {
         super(itemView);
-        mVideoImage = itemView.findViewById(R.id.drag_contents_imageview);
-        mVideoText = itemView.findViewById(R.id.drag_contents_textview);
+        mVideoImage = itemView.findViewById(R.id.ext_contents_imageview);
+        mVideoText = itemView.findViewById(R.id.ext_contents_textview);
         itemView.setFocusable(true);
         itemView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
           @Override
           public void onFocusChange(View v, boolean hasFocus) {
-            ConstraintLayout mLayout = v.findViewById(R.id.drag_view_items_container);
+            ConstraintLayout mLayout = v.findViewById(R.id.ext_view_items_container);
 
             if (hasFocus){
-              mLayout.setBackground(getResources().getDrawable(R.drawable.drag_content_bolder_focus));
+              mLayout.setBackground(getResources().getDrawable(R.drawable.ext_content_bolder_focus));
               mLayout.setPadding(mItemPaddingPixel,mItemPaddingPixel,mItemPaddingPixel,mItemPaddingPixel);
-              //mVideoText.setBackground(getResources().getDrawable(R.drawable.drag_content_bolder_focus));
+              //mVideoText.setBackground(getResources().getDrawable(R.drawable.ext_content_bolder_focus));
             }else {
-              mLayout.setBackground(getResources().getDrawable(R.drawable.drag_content_bolder_normal));
+              mLayout.setBackground(getResources().getDrawable(R.drawable.ext_content_bolder_normal));
               mLayout.setPadding(mItemPaddingPixel,mItemPaddingPixel,mItemPaddingPixel,mItemPaddingPixel);
-              //mVideoText.setBackground(getResources().getDrawable(R.drawable.drag_content_bolder_normal));
+              //mVideoText.setBackground(getResources().getDrawable(R.drawable.ext_content_bolder_normal));
             }
           }
         });
         itemView.setOnKeyListener(new View.OnKeyListener() {
           @Override
           public boolean onKey(View v, int keyCode, KeyEvent event) {
-            int itemIdx = mDragContentsRecycler.getChildAdapterPosition(v);
+            int itemIdx = mExtContentsRecycler.getChildAdapterPosition(v);
             if ( itemIdx < 6 ){
               if ( keyCode == KeyEvent.KEYCODE_DPAD_UP && event.getAction() == KeyEvent.ACTION_DOWN ){
-                mDragContentsRecycler.clearFocus();
+                mExtContentsRecycler.clearFocus();
                 return true;
               }
             }
@@ -156,9 +155,9 @@ public class DragTabCommonFragment extends DragBaseFragment{
         });
       }
 
-      private void bindViewHolder (DragVideoBean vb){
+      private void bindViewHolder (ExtVideoBean vb){
         Glide.with(Objects.requireNonNull(getActivity()))
-          .load(vb.getVideoImageFile()).into(mVideoImage);
+          .load(vb.getVideoImageUrl()).into(mVideoImage);
         mVideoText.setText(vb.getVideoName());
       }
     }

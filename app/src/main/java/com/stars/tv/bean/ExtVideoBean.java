@@ -1,29 +1,59 @@
 package com.stars.tv.bean;
 
 import android.support.annotation.NonNull;
+
 import java.io.Serializable;
 
-public class DragVideoBean implements Serializable {
+public class ExtVideoBean implements Serializable {
+  private String mVideoType;
+  private String mAlbumId;
   private String mVideoId;
   private String mVideoName;
   private String mVideoPlayUrl;
   private String mVideoCurrentViewOrder;
   private String mVideoLatestOrder;
+  private String mVideoCounter;
   private String mVideoDescription;
-  private String mVideoImageFile;
+  private String mVideoImageUrl;
 
   @NonNull
   @Override
   public String toString() {
-    return this.getClass().getName() + "{" +
-      "VideoId=" + mVideoId +
-      ", Name=" + mVideoName +
-      ", PlayUrl=" + mVideoPlayUrl +
-      ", CurrentViewOrder=" + mVideoCurrentViewOrder +
-      ", LatestOrder=" + mVideoLatestOrder +
-      ", Description=" + mVideoDescription +
-      ", ImageUrl=" + mVideoImageFile+
-      "}";
+    return this.getClass().getName() + "={" +
+      "\nVideoType=" + mVideoType +
+      "\nAlbumId=" + mAlbumId +
+      "\nVideoId=" + mVideoId +
+      "\nVideoName=" + mVideoName +
+      "\nPlayUrl=" + mVideoPlayUrl +
+      "\nCurrentViewOrder=" + mVideoCurrentViewOrder +
+      "\nLatestOrder=" + mVideoLatestOrder +
+      "\nVideoCounter=" + mVideoLatestOrder +
+      "\nDescription=" + mVideoDescription +
+      "\nImageUrl=" + mVideoImageUrl +
+      "\n}";
+  }
+  public String getVideoType() {
+    return mVideoType;
+  }
+
+  public void setVideoType(String videoType) {
+    mVideoType = videoType;
+  }
+
+  public String getAlbumId() {
+    return mAlbumId;
+  }
+
+  public void setAlbumId(String albumId) {
+    mAlbumId = albumId;
+  }
+
+  public String getVideoCounter() {
+    return mVideoCounter;
+  }
+
+  public void setVideoCounter(String videoCounter) {
+    mVideoCounter = videoCounter;
   }
 
   public String getVideoId() {
@@ -74,11 +104,11 @@ public class DragVideoBean implements Serializable {
     mVideoDescription = videoDescription;
   }
 
-  public String getVideoImageFile() {
-    return mVideoImageFile;
+  public String getVideoImageUrl() {
+    return mVideoImageUrl;
   }
 
-  public void setVideoImageFile(String videoImageFile) {
-    mVideoImageFile = videoImageFile;
+  public void setVideoImageUrl(String videoImageUrl) {
+    mVideoImageUrl = videoImageUrl;
   }
 }
