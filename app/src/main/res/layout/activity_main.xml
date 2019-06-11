@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -32,6 +33,18 @@
             android:focusableInTouchMode="false"
             android:textSize="8sp"
             tools:ignore="SmallSp" />
+
+        <ImageButton
+            android:id="@+id/yt_imageButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="3dp"
+            android:layout_toEndOf="@+id/search_btn"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:background="@color/color_transparent"
+            android:src="@drawable/ic_youtube_dark_icon" />
 
         <!-- 标题栏 -->
         <android.support.v17.leanback.widget.HorizontalGridView
