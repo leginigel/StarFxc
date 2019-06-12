@@ -28,12 +28,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.SaveCallback;
 import com.google.android.youtube.player.YouTubePlayer;
 
 import java.util.List;
 import java.util.Map;
 
 import com.stars.tv.R;
+import com.stars.tv.server.LeanCloudStorage;
 import com.stars.tv.youtube.YoutubeActivity;
 import com.stars.tv.youtube.data.YouTubeVideo;
 import com.stars.tv.youtube.ui.PlayerControlsFragment;
@@ -240,6 +243,11 @@ public class YoutubeRowFragment extends RowsSupportFragment {
                         playerControlsFragment.setVideo(video);
                         mVideoBox.setVisibility(View.VISIBLE);
                         mVideoBox.requestFocus();
+                        LeanCloudStorage.updateYoutubeHistory(video, new SaveCallback() {
+                            @Override
+                            public void done(AVException e) {
+                            }
+                        });
                         mPlayer.loadVideo(video.getId());
                     }
                 }

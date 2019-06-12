@@ -21,6 +21,8 @@ public class Constants {
     public static final String STAR_CLOUD_KEY = "V2B1Wuo3YPQYDHU8iCjDQHtt";
     public static final String CLOUD_HISTORY_CLASS = "History";
     public static final String CLOUD_FAVORITE_CLASS = "Favorite";
+    public static final String CLOUD_YT_HISTORY_CLASS = "History_YT";
+    public static final String CLOUD_YT_FAVORITE_CLASS = "Favorite_YT";
 
     public static final String EXT_VIDEO_TYPE = "VideoType";
     public static final String EXT_VIDEO_ALBUM = "VideoAlbum";
