@@ -1,6 +1,5 @@
 package com.stars.tv.activity;
 
-import com.avos.avoscloud.AVOSCloud;
 import com.stars.tv.R;
 import com.stars.tv.bean.IQiYiBannerInfoBean;
 import com.stars.tv.bean.IQiYiBasicStarInfoBean;
@@ -36,14 +35,17 @@ import com.stars.tv.presenter.IQiYiParseVarietyAlbumListPresenter;
 import com.stars.tv.presenter.IQiYiParseVideoBaseInfoPresenter;
 import com.stars.tv.presenter.TvTitlePresenter;
 import com.stars.tv.fragment.VideoVGridSampleMVPFragment;
+import com.stars.tv.server.LeanCloudStorage;
 import com.stars.tv.utils.CallBack;
 import com.stars.tv.db.DBManager;
 import com.stars.tv.utils.ViewUtils;
 import com.stars.tv.view.SpaceItemDecoration;
 import com.stars.tv.youtube.YoutubeActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v17.leanback.widget.ArrayObjectAdapter;
 import android.support.v17.leanback.widget.BaseGridView;
 import android.support.v17.leanback.widget.HorizontalGridView;
@@ -70,16 +72,15 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-import static com.stars.tv.utils.Constants.STAR_CLOUD_ID;
-import static com.stars.tv.utils.Constants.STAR_CLOUD_KEY;
-
 public class MainActivity extends BaseActivity {
 
   private static final int TITLE_PADDING_LEFT_PX = 60;
   private static final int TITLE_TOP_PADDING_PC = 0;
   private static final int TITLE_RIGHT_PADDING_PC = 20;
 
-    private static LiveTVBaseFragment curFragment;
+  private static LiveTVBaseFragment curFragment;
+  private Handler mStorageHDL;
+  private Runnable mStorageRun;
 
   private String TAG = "MainActivity";
 
@@ -130,10 +131,18 @@ public class MainActivity extends BaseActivity {
     initLeanCloud();
   }
 
-    private void initLeanCloud() {
-    AVOSCloud.initialize(this, STAR_CLOUD_ID, STAR_CLOUD_KEY);
-    AVOSCloud.useAVCloudCN();
-    AVOSCloud.setDebugLogEnabled(true);
+  private void initLeanCloud() {
+    mStorageHDL = new Handler();
+    Context context = this;
+    LeanCloudStorage.initLeanCloudStorage(this);
+    mStorageRun = new Runnable() {
+      @Override
+      public void run() {
+        LeanCloudStorage.initLeanCloudStorage(getApplicationContext());
+        mStorageHDL.postDelayed(this, 5000);
+      }
+    };
+    mStorageHDL.postDelayed(mStorageRun, 5000);
   }
 
   private void initTitle() {
@@ -718,6 +727,7 @@ public class MainActivity extends BaseActivity {
 
   @Override
   public void onDestroy() {
+    mStorageHDL.removeCallbacks(mStorageRun);
     super.onDestroy();
     unbinder.unbind();
   }

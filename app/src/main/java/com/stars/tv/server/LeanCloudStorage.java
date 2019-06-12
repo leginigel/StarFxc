@@ -1,6 +1,10 @@
 package com.stars.tv.server;
 
+import android.content.Context;
+import android.util.Log;
+
 import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVOSCloud;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.DeleteCallback;
@@ -9,6 +13,7 @@ import com.avos.avoscloud.GetCallback;
 import com.avos.avoscloud.SaveCallback;
 import com.stars.tv.bean.ExtVideoBean;
 import com.stars.tv.bean.IQiYiMovieBean;
+import com.stars.tv.utils.NetUtil;
 import com.stars.tv.youtube.data.YouTubeVideo;
 
 import java.util.ArrayList;
@@ -28,12 +33,15 @@ import static com.stars.tv.utils.Constants.EXT_VIDEO_LATEST_ORDER;
 import static com.stars.tv.utils.Constants.EXT_VIDEO_NAME;
 import static com.stars.tv.utils.Constants.EXT_VIDEO_PLAYURL;
 import static com.stars.tv.utils.Constants.EXT_VIDEO_TYPE;
+import static com.stars.tv.utils.Constants.STAR_CLOUD_ID;
+import static com.stars.tv.utils.Constants.STAR_CLOUD_KEY;
 import static com.stars.tv.utils.Constants.VIDEO_TYPE_TVSERIES;
 import static com.stars.tv.utils.Constants.VIDEO_TYPE_YOUTUBE;
 
 public class LeanCloudStorage {
   private List<ExtVideoBean> mExtVideoList;
   private final String mClassName;
+  private static boolean isInitialDone=false;
 
   public interface cloudCheckVideoListener {
     void succeed();
@@ -44,6 +52,20 @@ public class LeanCloudStorage {
     mClassName = className;
     mExtVideoList = new ArrayList<>();
   }
+
+  public static void initLeanCloudStorage(Context context){
+    boolean tmp = NetUtil.isConnected();
+    if ( tmp && !isInitialDone) {
+      AVOSCloud.initialize(context, STAR_CLOUD_ID, STAR_CLOUD_KEY);
+      AVOSCloud.useAVCloudCN();
+      AVOSCloud.setDebugLogEnabled(true);
+      isInitialDone = true;
+    }
+    else if ( !tmp ){
+      isInitialDone = false;
+    }
+  }
+
 
   public void storageFetchListener(FindCallback<AVObject> cr){
     AVQuery<AVObject> query = new AVQuery<>(mClassName);
@@ -87,22 +109,23 @@ public class LeanCloudStorage {
   }
 
   public static void VideoFavoriteCheckListener(String album, cloudCheckVideoListener ccv){
-    AVQuery<AVObject> query = new AVQuery<>(CLOUD_FAVORITE_CLASS);
-    query.whereEqualTo(EXT_VIDEO_ALBUM, album);
-    query.getFirstInBackground(new GetCallback<AVObject>() {
-      @Override
-      public void done(AVObject object, AVException e) {
-        if (e == null){
-          if ( object != null )
-            ccv.succeed();
-          else
+    if ( NetUtil.isConnected() ) {
+      AVQuery<AVObject> query = new AVQuery<>(CLOUD_FAVORITE_CLASS);
+      query.whereEqualTo(EXT_VIDEO_ALBUM, album);
+      query.getFirstInBackground(new GetCallback<AVObject>() {
+        @Override
+        public void done(AVObject object, AVException e) {
+          if ( e == null ) {
+            if ( object != null )
+              ccv.succeed();
+            else
+              ccv.failed();
+          } else {
             ccv.failed();
+          }
         }
-        else{
-          ccv.failed();
-        }
-      }
-    });
+      });
+    }
   }
 
   private AVObject createClass(){
@@ -237,44 +260,61 @@ public class LeanCloudStorage {
   }
 
   public static void updateIQiyHistory(IQiYiMovieBean iQiy, String types, SaveCallback cb){
-    LeanCloudStorage storage = new LeanCloudStorage(CLOUD_HISTORY_CLASS);
-    storage.updateVideoByiQiy(storage.createIQiyOtherInfoByType(iQiy, types), cb);
+    if ( NetUtil.isConnected() ) {
+      LeanCloudStorage storage = new LeanCloudStorage(CLOUD_HISTORY_CLASS);
+      storage.updateVideoByiQiy(storage.createIQiyOtherInfoByType(iQiy, types), cb);
+    }
   }
 
   public static void updateIQiyHistory(IQiYiMovieBean iQiy,
                                        IQiYiMovieBean episode, int chapter, SaveCallback cb) {
-    LeanCloudStorage storage = new LeanCloudStorage(CLOUD_HISTORY_CLASS);
-    storage.updateVideoByiQiy(storage.createIQiyTVSeriesInfo(iQiy, episode, chapter), cb);
+    if ( NetUtil.isConnected() ) {
+      LeanCloudStorage storage = new LeanCloudStorage(CLOUD_HISTORY_CLASS);
+      storage.updateVideoByiQiy(storage.createIQiyTVSeriesInfo(iQiy, episode, chapter), cb);
+    }
   }
 
   public static void updateIQiyFavorite(IQiYiMovieBean iQiy, String types, SaveCallback cb){
-    LeanCloudStorage storage = new LeanCloudStorage(CLOUD_FAVORITE_CLASS);
-    storage.updateVideoByiQiy(storage.createIQiyOtherInfoByType(iQiy, types), cb);
+    if ( NetUtil.isConnected() ) {
+      LeanCloudStorage storage = new LeanCloudStorage(CLOUD_FAVORITE_CLASS);
+      storage.updateVideoByiQiy(storage.createIQiyOtherInfoByType(iQiy, types), cb);
+    }
   }
 
   public static void updateIQiyBeanFavorite(ExtVideoBean bean, SaveCallback cb){
-    new LeanCloudStorage(CLOUD_FAVORITE_CLASS).updateVideoByiQiy(bean, cb);
-
+    if ( NetUtil.isConnected() ) {
+      new LeanCloudStorage(CLOUD_FAVORITE_CLASS).updateVideoByiQiy(bean, cb);
+    }
   }
 
   public static void removeIQiyFavorite(String album, DeleteCallback dr){
-    new LeanCloudStorage(CLOUD_FAVORITE_CLASS).removeVideoByAlbum(album, dr);
+    if ( NetUtil.isConnected() ) {
+      new LeanCloudStorage(CLOUD_FAVORITE_CLASS).removeVideoByAlbum(album, dr);
+    }
   }
 
   public static void removeYoutubeFavorite(String album, DeleteCallback dr){
-    new LeanCloudStorage(CLOUD_YT_FAVORITE_CLASS).removeVideoByAlbum(album, dr);
+    if ( NetUtil.isConnected() ) {
+      new LeanCloudStorage(CLOUD_YT_FAVORITE_CLASS).removeVideoByAlbum(album, dr);
+    }
   }
 
   public static void removeIQiyHistory(String album, DeleteCallback dr){
-    new LeanCloudStorage(CLOUD_HISTORY_CLASS).removeVideoByAlbum(album, dr);
+    if ( NetUtil.isConnected() ) {
+      new LeanCloudStorage(CLOUD_HISTORY_CLASS).removeVideoByAlbum(album, dr);
+    }
   }
 
   public static void removeYoutubeHistory(String album, DeleteCallback dr){
-    new LeanCloudStorage(CLOUD_YT_HISTORY_CLASS).removeVideoByAlbum(album, dr);
+    if ( NetUtil.isConnected() ) {
+      new LeanCloudStorage(CLOUD_YT_HISTORY_CLASS).removeVideoByAlbum(album, dr);
+    }
   }
 
 
   public static void updateYoutubeHistory(YouTubeVideo yt, SaveCallback cb){
-    new LeanCloudStorage(CLOUD_YT_HISTORY_CLASS).updateVideoByYoutube(yt, cb);
+    if ( NetUtil.isConnected() ) {
+      new LeanCloudStorage(CLOUD_YT_HISTORY_CLASS).updateVideoByYoutube(yt, cb);
+    }
   }
 }
