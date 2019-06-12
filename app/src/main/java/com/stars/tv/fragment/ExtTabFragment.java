@@ -21,6 +21,8 @@ import java.util.List;
 
 import static com.stars.tv.utils.Constants.CLOUD_FAVORITE_CLASS;
 import static com.stars.tv.utils.Constants.CLOUD_HISTORY_CLASS;
+import static com.stars.tv.utils.Constants.CLOUD_YT_FAVORITE_CLASS;
+import static com.stars.tv.utils.Constants.CLOUD_YT_HISTORY_CLASS;
 
 public class ExtTabFragment extends Fragment {
   private SlidingTabLayout tabs;
@@ -72,6 +74,8 @@ public class ExtTabFragment extends Fragment {
     List<ExtTitleBean> title = new ArrayList<>();
     title.add(new ExtTitleBean(CLOUD_HISTORY_CLASS, R.drawable.history_40x32));
     title.add(new ExtTitleBean(CLOUD_FAVORITE_CLASS, R.drawable.star_40x32));
+    title.add(new ExtTitleBean(CLOUD_YT_HISTORY_CLASS, R.drawable.history_40x32));
+    title.add(new ExtTitleBean(CLOUD_YT_FAVORITE_CLASS, R.drawable.star_40x32));
 
     for ( int i = 0 ; i < title.size() ; i++ ){
       fgs.add(ExtTabCommonFragment.newInstance(title.get(i), indicatorColor, dividerColor));

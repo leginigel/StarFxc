@@ -79,7 +79,7 @@ public class ExtTabCommonFragment extends ExtBaseFragment{
 
     mItemPaddingPixel = ViewUtils.getPixelFromDp(getContext(), 4);
     mExtContentsRecycler.setLayoutManager(
-      new GridLayoutManager(getContext(), 6,
+      new GridLayoutManager(getContext(), 5,
         GridLayoutManager.VERTICAL, false));
 
     mVideoList = mStorage.getVideoList();
@@ -87,9 +87,11 @@ public class ExtTabCommonFragment extends ExtBaseFragment{
     ExtContentAdapter adapter = new ExtContentAdapter();
     mStorage.storageFetchListener(new FindCallback<AVObject>() {
       @Override
-      public void done(List<AVObject> avObjects, AVException avException) {
-        mVideoList = mStorage.assignToExtVideoList(avObjects);
-        adapter.notifyDataSetChanged();
+      public void done(List<AVObject> avObjects, AVException e) {
+        if ( e == null ) {
+          mVideoList = mStorage.assignToExtVideoList(avObjects);
+          adapter.notifyDataSetChanged();
+        }
       }
     });
     mExtContentsRecycler.setAdapter(adapter);

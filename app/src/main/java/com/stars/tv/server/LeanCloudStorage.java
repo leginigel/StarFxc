@@ -9,11 +9,15 @@ import com.avos.avoscloud.GetCallback;
 import com.avos.avoscloud.SaveCallback;
 import com.stars.tv.bean.ExtVideoBean;
 import com.stars.tv.bean.IQiYiMovieBean;
+import com.stars.tv.youtube.data.YouTubeVideo;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.stars.tv.utils.Constants.CLOUD_FAVORITE_CLASS;
 import static com.stars.tv.utils.Constants.CLOUD_HISTORY_CLASS;
+import static com.stars.tv.utils.Constants.CLOUD_YT_FAVORITE_CLASS;
+import static com.stars.tv.utils.Constants.CLOUD_YT_HISTORY_CLASS;
 import static com.stars.tv.utils.Constants.EXT_VIDEO_ALBUM;
 import static com.stars.tv.utils.Constants.EXT_VIDEO_COUNTER;
 import static com.stars.tv.utils.Constants.EXT_VIDEO_CURRENT_VIEW_ORDER;
@@ -25,6 +29,7 @@ import static com.stars.tv.utils.Constants.EXT_VIDEO_NAME;
 import static com.stars.tv.utils.Constants.EXT_VIDEO_PLAYURL;
 import static com.stars.tv.utils.Constants.EXT_VIDEO_TYPE;
 import static com.stars.tv.utils.Constants.VIDEO_TYPE_TVSERIES;
+import static com.stars.tv.utils.Constants.VIDEO_TYPE_YOUTUBE;
 
 public class LeanCloudStorage {
   private List<ExtVideoBean> mExtVideoList;
@@ -116,30 +121,55 @@ public class LeanCloudStorage {
         if ( e == null ) {
           AVObject obj;
           if ( object != null ) {
-            obj = assignIQiyToAVObject(iQiy, updateListByID(object.getObjectId()));
+            obj = assignBeanToAVObject(iQiy, updateListByID(object.getObjectId()));
           }
           else{
-            obj = assignIQiyToAVObject(iQiy, createClass());
+            obj = assignBeanToAVObject(iQiy, createClass());
           }
           saveData(obj, cb);
         }
         else{
           if ( e.getCode() == AVException.OBJECT_NOT_FOUND ) {
-            saveData(assignIQiyToAVObject(iQiy, createClass()), cb);
+            saveData(assignBeanToAVObject(iQiy, createClass()), cb);
           }
         }
       }
     });
   }
 
-  private void removeVideoByIQiy(String album, DeleteCallback cr){
+  private void updateVideoByYoutube(YouTubeVideo yt, SaveCallback cb){
+    AVQuery<AVObject> query = new AVQuery<>(mClassName);
+    query.whereEqualTo(EXT_VIDEO_ALBUM,yt.getId());
+    query.getFirstInBackground(new GetCallback<AVObject>() {
+      @Override
+      public void done(AVObject object, AVException e) {
+        if ( e == null ) {
+          AVObject obj;
+          if ( object != null ) {
+            obj = assignYoutubeToAVObject(yt, updateListByID(object.getObjectId()));
+          }
+          else{
+            obj = assignYoutubeToAVObject(yt, createClass());
+          }
+          saveData(obj, cb);
+        }
+        else{
+          if ( e.getCode() == AVException.OBJECT_NOT_FOUND ) {
+            saveData(assignYoutubeToAVObject(yt, createClass()), cb);
+          }
+        }
+      }
+    });
+  }
+
+  private void removeVideoByAlbum(String album, DeleteCallback dr){
     AVQuery<AVObject> query = new AVQuery<>(mClassName);
     query.whereEqualTo(EXT_VIDEO_ALBUM,album);
     query.getFirstInBackground(new GetCallback<AVObject>() {
       @Override
       public void done(AVObject object, AVException e) {
         if ( e == null ) {
-          object.deleteInBackground(cr);
+          object.deleteInBackground(dr);
         }
         else{
         }
@@ -147,7 +177,7 @@ public class LeanCloudStorage {
     });
   }
 
-  private AVObject assignIQiyToAVObject(ExtVideoBean bean, AVObject obj){
+  private AVObject assignBeanToAVObject(ExtVideoBean bean, AVObject obj){
     obj.put(EXT_VIDEO_TYPE, bean.getVideoType());
     obj.put(EXT_VIDEO_ALBUM, bean.getAlbumId());
     obj.put(EXT_VIDEO_ID, bean.getVideoId());
@@ -162,6 +192,15 @@ public class LeanCloudStorage {
     return obj;
   }
 
+  private AVObject assignYoutubeToAVObject(YouTubeVideo yt, AVObject obj){
+    ExtVideoBean bean = new ExtVideoBean();
+    bean.setVideoId(yt.getId());
+    bean.setAlbumId(yt.getId());
+    bean.setVideoName(yt.getTitle());
+    bean.setVideoType(VIDEO_TYPE_YOUTUBE);
+    bean.setVideoImageUrl("https://i.ytimg.com/vi/"+ yt.getId() +"/0.jpg");
+    return ( assignBeanToAVObject(bean, obj));
+  }
 
   private ExtVideoBean createIQiyTVSeriesInfo(IQiYiMovieBean IQiy, IQiYiMovieBean episode, int chapter){
     ExtVideoBean bean = new ExtVideoBean();
@@ -174,7 +213,7 @@ public class LeanCloudStorage {
     bean.setVideoType(VIDEO_TYPE_TVSERIES);
     bean.setVideoId(episode.getTvId());
     bean.setVideoName(episode.getName());
-    bean.setVideoImageUrl(episode.getImageUrl());
+    bean.setVideoImageUrl(IQiy.getImageUrl());
     bean.setVideoPlayUrl(episode.getPlayUrl());
 
     return bean;
@@ -199,33 +238,43 @@ public class LeanCloudStorage {
 
   public static void updateIQiyHistory(IQiYiMovieBean iQiy, String types, SaveCallback cb){
     LeanCloudStorage storage = new LeanCloudStorage(CLOUD_HISTORY_CLASS);
-    ExtVideoBean bean;
-    bean = storage.createIQiyOtherInfoByType(iQiy, types);
-    storage.updateVideoByiQiy(bean, cb);
+    storage.updateVideoByiQiy(storage.createIQiyOtherInfoByType(iQiy, types), cb);
   }
 
   public static void updateIQiyHistory(IQiYiMovieBean iQiy,
                                        IQiYiMovieBean episode, int chapter, SaveCallback cb) {
     LeanCloudStorage storage = new LeanCloudStorage(CLOUD_HISTORY_CLASS);
-    ExtVideoBean bean;
-    bean = storage.createIQiyTVSeriesInfo(iQiy, episode, chapter);
-    storage.updateVideoByiQiy(bean, cb);
+    storage.updateVideoByiQiy(storage.createIQiyTVSeriesInfo(iQiy, episode, chapter), cb);
   }
 
   public static void updateIQiyFavorite(IQiYiMovieBean iQiy, String types, SaveCallback cb){
     LeanCloudStorage storage = new LeanCloudStorage(CLOUD_FAVORITE_CLASS);
-    ExtVideoBean bean;
-    bean = storage.createIQiyOtherInfoByType(iQiy, types);
-    storage.updateVideoByiQiy(bean, cb);
+    storage.updateVideoByiQiy(storage.createIQiyOtherInfoByType(iQiy, types), cb);
   }
 
-  public static void updateBeanFavorite(ExtVideoBean bean, SaveCallback cb){
+  public static void updateIQiyBeanFavorite(ExtVideoBean bean, SaveCallback cb){
     new LeanCloudStorage(CLOUD_FAVORITE_CLASS).updateVideoByiQiy(bean, cb);
 
   }
 
   public static void removeIQiyFavorite(String album, DeleteCallback dr){
-    new LeanCloudStorage(CLOUD_FAVORITE_CLASS).removeVideoByIQiy(album, dr);
+    new LeanCloudStorage(CLOUD_FAVORITE_CLASS).removeVideoByAlbum(album, dr);
   }
 
+  public static void removeYoutubeFavorite(String album, DeleteCallback dr){
+    new LeanCloudStorage(CLOUD_YT_FAVORITE_CLASS).removeVideoByAlbum(album, dr);
+  }
+
+  public static void removeIQiyHistory(String album, DeleteCallback dr){
+    new LeanCloudStorage(CLOUD_HISTORY_CLASS).removeVideoByAlbum(album, dr);
+  }
+
+  public static void removeYoutubeHistory(String album, DeleteCallback dr){
+    new LeanCloudStorage(CLOUD_YT_HISTORY_CLASS).removeVideoByAlbum(album, dr);
+  }
+
+
+  public static void updateYoutubeHistory(YouTubeVideo yt, SaveCallback cb){
+    new LeanCloudStorage(CLOUD_YT_HISTORY_CLASS).updateVideoByYoutube(yt, cb);
+  }
 }
