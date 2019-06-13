@@ -1,10 +1,8 @@
 package com.stars.tv.youtube.ui.search;
 
 import android.arch.lifecycle.ViewModelProviders;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
 import android.support.v17.leanback.widget.ArrayObjectAdapter;
 import android.support.v17.leanback.widget.FocusHighlight;
 import android.support.v17.leanback.widget.ListRow;
@@ -34,7 +32,6 @@ public class SearchRowFragment extends YoutubeRowFragment {
         return new SearchRowFragment();
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);

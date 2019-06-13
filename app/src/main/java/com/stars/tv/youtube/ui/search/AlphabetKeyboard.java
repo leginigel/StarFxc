@@ -28,13 +28,15 @@ public class AlphabetKeyboard extends Fragment {
     public static AlphabetKeyboard newInstance(){
         return new AlphabetKeyboard();
     }
+    public static final String TAG = AlphabetKeyboard.class.getSimpleName();
     private SearchViewModel mViewModel;
     public static int OutId_Down, OutId_Left;
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        Log.i(TAG, "onCreateView");
         View view = inflater.inflate(R.layout.alphabet_keyboard, container, false);
         ViewGroup viewGroup = (ViewGroup) view;
         Fragment fragment = getActivity().getSupportFragmentManager().findFragmentById(R.id.container_home);
@@ -77,7 +79,7 @@ public class AlphabetKeyboard extends Fragment {
                     }
                     else if(keyCode == KeyEvent.KEYCODE_DPAD_DOWN) {
                         if(finalI > 20) {
-                            Log.d("Check", textView.getText().toString());
+//                            Log.d("Check", textView.getText().toString());
                             OutId_Down = v.getId();
                         }
                     }

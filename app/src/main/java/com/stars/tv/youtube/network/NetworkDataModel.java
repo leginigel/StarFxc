@@ -40,8 +40,8 @@ public class NetworkDataModel {
     }
 
     //RxJava2
-    public Observable<Response<SearchResponse>> searchVideoRx(String query){
-        return youtubeService.searchVideoRx(query);
+    public Observable<Response<SearchResponse>> searchVideoRx(String query, String relatedVideoId){
+        return youtubeService.searchVideoRx(query, relatedVideoId);
     }
 
     public Observable<Response<VideoResponse>> videoDetail(String id){

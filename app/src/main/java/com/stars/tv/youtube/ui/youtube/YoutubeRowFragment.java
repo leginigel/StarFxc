@@ -28,18 +28,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.avos.avoscloud.AVException;
-import com.avos.avoscloud.SaveCallback;
-import com.google.android.youtube.player.YouTubePlayer;
-
 import java.util.List;
 import java.util.Map;
 
 import com.stars.tv.R;
-import com.stars.tv.server.LeanCloudStorage;
 import com.stars.tv.youtube.YoutubeActivity;
 import com.stars.tv.youtube.data.YouTubeVideo;
-import com.stars.tv.youtube.ui.PlayerControlsFragment;
 import com.stars.tv.youtube.ui.YouTubeCardPresenter;
 import com.stars.tv.youtube.viewmodel.YoutubeViewModel;
 
@@ -48,7 +42,6 @@ import com.stars.tv.youtube.viewmodel.YoutubeViewModel;
  *
  */
 
-@RequiresApi(api = Build.VERSION_CODES.N)
 public class YoutubeRowFragment extends RowsSupportFragment {
 
     private final static String TAG = YoutubeRowFragment.class.getSimpleName();
@@ -57,8 +50,6 @@ public class YoutubeRowFragment extends RowsSupportFragment {
     private ArrayObjectAdapter mRowsAdapter;
     private ListRowPresenter mListRowPresenter;
     private YouTubeCardPresenter mYouTubeCardPresenter;
-    private View mVideoBox;
-    private PlayerControlsFragment playerControlsFragment;
 
     public static YoutubeRowFragment newInstance() {
         return new YoutubeRowFragment();
@@ -86,6 +77,7 @@ public class YoutubeRowFragment extends RowsSupportFragment {
         Log.d(TAG, "onCreate");
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -103,10 +95,9 @@ public class YoutubeRowFragment extends RowsSupportFragment {
         super.onActivityCreated(savedInstanceState);
         Log.d(TAG, "onActivityCreated");
         mGridView = getVerticalGridView();
-        playerControlsFragment = ((YoutubeActivity) getActivity()).getPlayerControlsFragment();
-        mVideoBox = ((YoutubeActivity) getActivity()).getPlayerBox();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public void setRows(Map<String, List<YouTubeVideo>> channelList){
 
         if(channelList == null){
@@ -141,6 +132,7 @@ public class YoutubeRowFragment extends RowsSupportFragment {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public void initial(){
         mYouTubeCardPresenter = new YouTubeCardPresenter();
         mListRowPresenter = new ListRowPresenter(FocusHighlight.ZOOM_FACTOR_XSMALL);
@@ -232,24 +224,14 @@ public class YoutubeRowFragment extends RowsSupportFragment {
     public final class YouTubeCardClickedListener implements OnItemViewClickedListener {
         private YouTubeVideo video = null;
 
+        @RequiresApi(api = Build.VERSION_CODES.N)
         @Override
         public void onItemClicked(Presenter.ViewHolder viewHolder, Object o,
                                   RowPresenter.ViewHolder viewHolder1, Row row) {
             if(o instanceof YouTubeVideo) {
                 if(((YouTubeVideo) o).getId() != null){
                     video = (YouTubeVideo) o;
-                    if (mVideoBox.getVisibility() != View.VISIBLE) {
-                        YouTubePlayer mPlayer = ((YoutubeActivity) getActivity()).getYouTubePlayer();
-                        playerControlsFragment.setVideo(video);
-                        mVideoBox.setVisibility(View.VISIBLE);
-                        mVideoBox.requestFocus();
-                        LeanCloudStorage.updateYoutubeHistory(video, new SaveCallback() {
-                            @Override
-                            public void done(AVException e) {
-                            }
-                        });
-                        mPlayer.loadVideo(video.getId());
-                    }
+                    ((YoutubeActivity) getActivity()).playVideo(video);
                 }
             }
         }

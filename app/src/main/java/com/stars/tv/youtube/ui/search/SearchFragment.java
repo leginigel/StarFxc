@@ -1,11 +1,9 @@
 package com.stars.tv.youtube.ui.search;
 
 import android.arch.lifecycle.ViewModelProviders;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.CardView;
@@ -27,7 +25,6 @@ import com.stars.tv.youtube.viewmodel.SearchViewModel;
  * A simple {@link Fragment} subclass.
  * ViewModel {@link SearchViewModel}
  */
-@RequiresApi(api = Build.VERSION_CODES.N)
 public class SearchFragment extends Fragment {
 
     private static final String TAG = SearchFragment.class.getSimpleName();

@@ -14,7 +14,8 @@ public interface YoutubeService {
 
     //RxJava2
     @GET("search?part=snippet&maxResults=10&type=video&key=" + key)
-    Observable<Response<SearchResponse>> searchVideoRx(@Query("q") String query);
+    Observable<Response<SearchResponse>> searchVideoRx(@Query("q") String query,
+                                                       @Query("relatedToVideoId") String relatedVideoId);
 
     @GET("search?part=snippet" +
             "&fields=items(id,snippet(title,channelTitle))" +
