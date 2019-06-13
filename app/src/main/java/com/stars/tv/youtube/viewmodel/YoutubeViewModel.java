@@ -44,26 +44,25 @@ public class YoutubeViewModel extends ViewModel {
 //                "PLkLNgKNlFzZ35-B8UdoLWnMCAf3GsPbr9",
 //                "PL57quI9usf_vDPXuhqIjyrPIjkw3C1oPe",
     };
-
     private static final String music_url = "UC-9-kyTW8ZkZNDHQJ6FgpwQ";
     private static final String gaming_url = "UCOpNcN46UbXVtpKMrmU4Abg";
     private static final String entertain_url = "UCi-g4cjqGV7jvU8aeSuj0jQ";
-
     private final static String TAG = YoutubeViewModel.class.getSimpleName();
 
     private CompositeDisposable disposable;
-
     private NetworkDataModel networkDataModel = new NetworkDataModel();
 
     private MutableLiveData<Map<String, List<YouTubeVideo>>> recommendedChannelList;
-
     private MutableLiveData<Map<String, List<YouTubeVideo>>> musicChannelList;
-
     private MutableLiveData<Map<String, List<YouTubeVideo>>> latestChannelList;
-
     private MutableLiveData<Map<String, List<YouTubeVideo>>> entertainChannelList;
-
     private MutableLiveData<Map<String, List<YouTubeVideo>>> gamingChannelList;
+    private List<YouTubeVideo> relatedVideos;
+    private boolean isGettingRelated;
+
+    public  List<YouTubeVideo> getRelatedVideos(){
+        return relatedVideos;
+    }
 
     public LiveData<Map<String, List<YouTubeVideo>>> getLatestChannelList() {
         if(latestChannelList == null) {
@@ -108,6 +107,68 @@ public class YoutubeViewModel extends ViewModel {
             playlist(recommend_playlistId_url);
         }
         return recommendedChannelList;
+    }
+
+    public void searchRelatedVideo(String relatedVideoId){
+        List<SearchResponse.Items> temp = new ArrayList<>();
+        List<YouTubeVideo> ytv = new ArrayList<>();
+        networkDataModel.searchVideoRx(null, relatedVideoId)
+                .flatMap(new Function<Response<SearchResponse>, Observable<String>>() {
+                    @Override
+                    public Observable<String> apply(Response<SearchResponse> searchResponse) throws Exception {
+                        List<SearchResponse.Items> items = searchResponse.body().getItems();
+                        temp.addAll(items);
+                        String multi_id = "";
+                        for (SearchResponse.Items i : items){
+                            multi_id = multi_id + i.getId().getVideoId() + ",";
+                        }
+                        return Observable.just(multi_id);
+                    }
+                })
+                .flatMap(new Function<String, ObservableSource<Response<VideoResponse>>>() {
+                    @Override
+                    public ObservableSource<Response<VideoResponse>> apply(String s) throws Exception {
+                        return networkDataModel.videoDetail(s);
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .filter(r-> r.code() == 200)
+                .subscribe(new DisposableObserver<Response<VideoResponse>>() {
+                    @RequiresApi(api = Build.VERSION_CODES.N)
+                    @Override
+                    public void onNext(Response<VideoResponse> videoResponse) {
+                        Log.d("ViewModel", "videoResponse : "
+                                + videoResponse.body().getItems().get(0).getSnippet().getTitle());
+                        for (int i = 0;i < temp.size();i++){
+                            if(temp.get(i).getId().getVideoId() != null &&
+                                    temp.get(i).getId().getVideoId().equals(videoResponse.body().getItems().get(i).getId())) {
+//                                    Log.d("test", "onActivityCreated:" + videoResponse.body().getItems().get(i).getSnippet().getTitle());
+                                ytv.add(
+                                        new YouTubeVideo(
+                                                temp.get(i).getId().getVideoId(),
+                                                temp.get(i).getSnippet().getTitle(),
+                                                temp.get(i).getSnippet().getChannelTitle(),
+                                                videoResponse.body().getItems().get(i).getStatistics().getViewCount(),
+                                                videoResponse.body().getItems().get(i).getSnippet().getPublishedAt(),
+                                                videoResponse.body().getItems().get(i).getContentDetails().getDuration()
+                                        ));
+                            }
+                        }
+                        Log.d("ViewModel", "onNext :" + ytv.size());
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        relatedVideos = ytv;
+                        isGettingRelated = false;
+                    }
+                });
     }
 
     private void popular(){
@@ -388,6 +449,14 @@ public class YoutubeViewModel extends ViewModel {
     @Override
     protected void onCleared() {
         super.onCleared();
-//        disposable.clear();
+        disposable.clear();
+    }
+
+    public boolean getRelated() {
+        return isGettingRelated;
+    }
+
+    public void setRelated(boolean gettingRelated) {
+        isGettingRelated = gettingRelated;
     }
 }

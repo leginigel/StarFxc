@@ -16,7 +16,6 @@ import com.stars.tv.youtube.viewmodel.YoutubeViewModel;
 /**
  * {@link YoutubeRowFragment} subclass.
  */
-@RequiresApi(api = Build.VERSION_CODES.N)
 public class RecommendedFragment extends YoutubeRowFragment {
 
     public static RecommendedFragment newInstance() {
@@ -28,6 +27,7 @@ public class RecommendedFragment extends YoutubeRowFragment {
     private Map<String, List<YouTubeVideo>> mRecommendedChannel;
     private final YoutubeFragment.TabCategory mTabCategory = YoutubeFragment.TabCategory.Recommended;
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);

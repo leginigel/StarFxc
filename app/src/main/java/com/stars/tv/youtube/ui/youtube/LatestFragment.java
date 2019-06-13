@@ -17,7 +17,6 @@ import com.stars.tv.youtube.viewmodel.YoutubeViewModel;
 /**
  * {@link YoutubeRowFragment} subclass.
  */
-@RequiresApi(api = Build.VERSION_CODES.N)
 public class LatestFragment extends YoutubeRowFragment {
     public static LatestFragment newInstance() {
         return new LatestFragment();
@@ -28,6 +27,7 @@ public class LatestFragment extends YoutubeRowFragment {
     private Map<String, List<YouTubeVideo>> mLatestChannel;
     private final YoutubeFragment.TabCategory mTabCategory = YoutubeFragment.TabCategory.Latest;
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
