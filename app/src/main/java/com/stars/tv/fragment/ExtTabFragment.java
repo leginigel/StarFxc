@@ -72,10 +72,10 @@ public class ExtTabFragment extends Fragment {
 
     List<ExtBaseFragment> fgs = new ArrayList<>();
     List<ExtTitleBean> title = new ArrayList<>();
-    title.add(new ExtTitleBean(CLOUD_HISTORY_CLASS, R.drawable.history_40x32));
-    title.add(new ExtTitleBean(CLOUD_FAVORITE_CLASS, R.drawable.star_40x32));
-    title.add(new ExtTitleBean(CLOUD_YT_HISTORY_CLASS, R.drawable.history_40x32));
-    title.add(new ExtTitleBean(CLOUD_YT_FAVORITE_CLASS, R.drawable.star_40x32));
+    title.add(new ExtTitleBean(CLOUD_HISTORY_CLASS,  "历史", R.drawable.history_40x32));
+    title.add(new ExtTitleBean(CLOUD_FAVORITE_CLASS,"收藏", R.drawable.star_40x32));
+    title.add(new ExtTitleBean(CLOUD_YT_HISTORY_CLASS, "Youtube历史", R.drawable.history_40x32));
+    title.add(new ExtTitleBean(CLOUD_YT_FAVORITE_CLASS, "Youtube收藏", R.drawable.star_40x32));
 
     for ( int i = 0 ; i < title.size() ; i++ ){
       fgs.add(ExtTabCommonFragment.newInstance(title.get(i), indicatorColor, dividerColor));

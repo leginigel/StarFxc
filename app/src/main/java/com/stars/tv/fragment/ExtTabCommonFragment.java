@@ -48,7 +48,7 @@ public class ExtTabCommonFragment extends ExtBaseFragment{
   public static ExtTabCommonFragment newInstance(
     ExtTitleBean tab, int indicatorColor, int dividerColor){
     ExtTabCommonFragment f = new ExtTabCommonFragment();
-    f.setTitle(tab.getExtName());
+    f.setTitle(tab.getTabsText());
     f.setIconRes(tab.getExtResIcon());
     f.setIndicatorColor(indicatorColor);
     f.setDividerColor(dividerColor);

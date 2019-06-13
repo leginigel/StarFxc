@@ -127,13 +127,12 @@ public class MainActivity extends BaseActivity {
     initTitle();
     initContentViews();
     refreshRequest();
-        DBManager.initDatabase(this);
+    DBManager.initDatabase(this);
     initLeanCloud();
   }
 
   private void initLeanCloud() {
     mStorageHDL = new Handler();
-    Context context = this;
     LeanCloudStorage.initLeanCloudStorage(this);
     mStorageRun = new Runnable() {
       @Override
