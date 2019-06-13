@@ -3,10 +3,8 @@ package com.stars.tv.youtube.ui.youtube;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -24,7 +22,6 @@ import com.stars.tv.youtube.viewmodel.YoutubeViewModel;
  * A simple {@link Fragment} subclass.
  * ViewModel {@link YoutubeViewModel}
  */
-@RequiresApi(api = Build.VERSION_CODES.N)
 public class YoutubeFragment extends Fragment {
 
     private final static String TAG = YoutubeFragment.class.getSimpleName();

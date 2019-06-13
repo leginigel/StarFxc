@@ -2,9 +2,7 @@ package com.stars.tv.youtube.ui.search;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
-import android.os.Build;
 import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.CardView;
@@ -23,7 +21,6 @@ import com.stars.tv.R;
 import com.stars.tv.youtube.ui.youtube.YoutubeRowFragment;
 import com.stars.tv.youtube.viewmodel.SearchViewModel;
 
-@RequiresApi(api = Build.VERSION_CODES.N)
 public class SuggestListAdapter extends RecyclerView.Adapter<SuggestListAdapter.ViewHolder> {
 
     private String [] default_suggestion = {

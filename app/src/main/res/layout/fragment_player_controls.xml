@@ -9,18 +9,21 @@
 
 
     <android.support.constraint.ConstraintLayout
+        android:id="@+id/view_group"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    <android.support.constraint.ConstraintLayout
         android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="35dp"
+        android:layout_marginBottom="10dp"
         android:layout_marginStart="30dp"
         android:layout_marginEnd="30dp"
         android:paddingStart="20dp"
         android:paddingEnd="20dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/seekBar"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintStart_toStartOf="parent">
 
         <LinearLayout
             android:id="@+id/linearLayout"
@@ -59,36 +62,36 @@
             android:ellipsize="marquee"
             android:maxLines="2"
             android:text="KJJJJJJJJJJJJJJJJJJJJJJJJJJJJJ"
-            app:layout_constraintHorizontal_weight="1"
-            app:layout_constraintTop_toBottomOf="@id/linearLayout"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/play_time"
             android:textColor="@color/text_white"
-            android:textSize="38sp" />
+            android:textSize="35sp"
+            app:layout_constraintEnd_toStartOf="@id/play_time"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/linearLayout" />
 
         <TextView
             android:id="@+id/play_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintHorizontal_weight="1"
-            app:layout_constraintEnd_toStartOf="@id/play_duration"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/play_title"
+            android:text="0:00:00/"
             android:textColor="@color/text_white"
             android:textSize="15sp"
-            android:text="0:00:00/" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/play_duration"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toEndOf="@id/play_title" />
 
         <TextView
             android:id="@+id/play_duration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintHorizontal_weight="1"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/play_time"
+            android:text="0:00:00"
             android:textColor="@color/text_white"
             android:textSize="15sp"
-            android:text="0:00:00" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toEndOf="@id/play_time" />
     </android.support.constraint.ConstraintLayout>
 
     <SeekBar
@@ -96,24 +99,50 @@
         style="@style/Widget.AppCompat.SeekBar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
         android:clickable="true"
         android:focusable="true"
         android:progressTint="@color/primary"
         android:thumbTint="@color/text_white"
         app:layout_constraintEnd_toEndOf="@+id/constraintLayout"
         app:layout_constraintStart_toStartOf="@+id/constraintLayout"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
+        app:layout_constraintTop_toTopOf="@id/guideline" />
+
+    <ImageButton
+        android:id="@+id/more_button"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/btn_player_bg"
+        android:clickable="true"
+        android:contentDescription="more"
+        android:focusable="true"
+        app:layout_constraintStart_toStartOf="@id/seekBar"
+        app:layout_constraintTop_toBottomOf="@+id/seekBar" />
+
+    <TextView
+        android:id="@+id/more_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="More"
+        android:textColor="@color/text_white"
+        android:textSize="12sp"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="@+id/more_button"
+        app:layout_constraintStart_toStartOf="@+id/more_button"
+        app:layout_constraintTop_toBottomOf="@+id/more_button" />
 
     <ImageButton
         android:id="@+id/play_button"
-        android:layout_width="55dp"
-        android:layout_height="55dp"
-        android:layout_marginTop="15dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/btn_player_bg"
         android:clickable="true"
+        android:contentDescription="play"
         android:focusable="true"
         android:src="@drawable/lb_ic_play"
-        android:background="@drawable/btn_player_bg"
+        android:nextFocusDown="@id/player_control_row"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/seekBar" />
@@ -124,8 +153,86 @@
         android:layout_height="wrap_content"
         android:text="Play"
         android:textColor="@color/text_white"
+        android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="@+id/play_button"
         app:layout_constraintStart_toStartOf="@+id/play_button"
-        app:layout_constraintTop_toBottomOf="@+id/play_button"/>
+        app:layout_constraintTop_toBottomOf="@+id/play_button" />
 
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/constraintLayout2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/seekBar">
+
+        <ImageButton
+            android:id="@+id/favorite_button"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="30dp"
+            android:background="@drawable/btn_player_bg"
+            android:clickable="true"
+            android:contentDescription="favorite"
+            android:focusable="true"
+            android:src="@drawable/ic_favorite_24dp"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/favorite_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Favorite"
+            android:textColor="@color/text_white"
+            android:textSize="12sp"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="@+id/favorite_button"
+            app:layout_constraintStart_toStartOf="@+id/favorite_button"
+            app:layout_constraintTop_toBottomOf="@+id/favorite_button" />
+
+        <ImageButton
+            android:id="@+id/quality_button"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/btn_player_bg"
+            android:clickable="true"
+            android:contentDescription="quality"
+            android:focusable="true"
+            android:src="@drawable/lb_ic_hq"
+            android:visibility="gone"
+            app:layout_constraintStart_toEndOf="@id/favorite_button"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/quality_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Quality"
+            android:textColor="@color/text_white"
+            android:textSize="12sp"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="@+id/quality_button"
+            app:layout_constraintStart_toStartOf="@+id/quality_button"
+            app:layout_constraintTop_toBottomOf="@+id/quality_button" />
+    </android.support.constraint.ConstraintLayout>
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="335dp" />
+    </android.support.constraint.ConstraintLayout>
+    <FrameLayout
+        android:id="@+id/player_control_row"
+        android:layout_width="match_parent"
+        android:layout_height="90dp"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        app:layout_constraintBottom_toBottomOf="parent" />
 </android.support.constraint.ConstraintLayout>

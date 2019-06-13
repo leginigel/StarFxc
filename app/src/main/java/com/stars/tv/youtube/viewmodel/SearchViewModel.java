@@ -29,14 +29,10 @@ public class SearchViewModel extends ViewModel {
     private static final String TAG = SearchViewModel.class.getSimpleName();
     private CompositeDisposable disposable;
 
-    private MutableLiveData<List<YouTubeVideo>> videos;
-
     private NetworkDataModel networkDataModel = new NetworkDataModel();
-
+    private MutableLiveData<List<YouTubeVideo>> videos;
     private MutableLiveData<String> queryString = new MutableLiveData<>();
-
     private MutableLiveData<List<String>> suggestions = new MutableLiveData<>();
-
     private MutableLiveData<Boolean> isLoading = new MutableLiveData<>();
 
     public void setIsLoading(boolean status) {
@@ -114,7 +110,6 @@ public class SearchViewModel extends ViewModel {
 
                     @Override
                     public void onError(Throwable e) {
-
                         Log.d("onError", e.toString());
                     }
 
@@ -130,7 +125,7 @@ public class SearchViewModel extends ViewModel {
         List<SearchResponse.Items> temp = new ArrayList<>();
         List<YouTubeVideo> ytv = new ArrayList<>();
 //        disposable.add(
-        networkDataModel.searchVideoRx(query)
+        networkDataModel.searchVideoRx(query, null)
                 .flatMap(new Function<Response<SearchResponse>, Observable<String>>() {
                     @Override
                     public Observable<String> apply(Response<SearchResponse> searchResponse) throws Exception {
@@ -161,8 +156,7 @@ public class SearchViewModel extends ViewModel {
                             for (int i = 0;i < temp.size();i++){
                                 if(temp.get(i).getId().getVideoId() != null &&
                                         temp.get(i).getId().getVideoId().equals(videoResponse.body().getItems().get(i).getId())) {
-                                    Log.d("test", "onActivityCreated:"
-                                            + videoResponse.body().getItems().get(i).getSnippet().getTitle());
+//                                    Log.d("test", "onActivityCreated:" + videoResponse.body().getItems().get(i).getSnippet().getTitle());
                                     ytv.add(
                                             new YouTubeVideo(
                                                     temp.get(i).getId().getVideoId(),
@@ -192,7 +186,7 @@ public class SearchViewModel extends ViewModel {
     }
 
     public Observable<Response<SearchResponse>> searchVideo(String query, boolean oldpass){
-        return networkDataModel.searchVideoRx(query);
+        return networkDataModel.searchVideoRx(query, null);
     }
 
     public Observable<Response<VideoResponse>> videoDetail(String id, boolean oldpass){
