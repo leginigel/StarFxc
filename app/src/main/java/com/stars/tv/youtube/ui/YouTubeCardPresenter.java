@@ -2,8 +2,6 @@ package com.stars.tv.youtube.ui;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.os.Build;
-import android.support.annotation.RequiresApi;
 import android.support.v17.leanback.widget.BaseCardView;
 import android.support.v17.leanback.widget.ImageCardView;
 import android.support.v17.leanback.widget.Presenter;
@@ -61,7 +59,7 @@ public class YouTubeCardPresenter extends Presenter {
         return new CardViewHolder(view);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
+
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, Object o) {
         Log.v("YouTubeCardPresenter" , "onBindViewHolder");
@@ -104,7 +102,6 @@ public class YouTubeCardPresenter extends Presenter {
 
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     protected void setFocusNavigation(CardViewHolder cardViewHolder){
         switch (((YoutubeFragment) mFragment).getTabCategory()){
             case Recommended:
@@ -153,14 +150,14 @@ public class YouTubeCardPresenter extends Presenter {
         ((TextView) imgCard.findViewById(R.id.title_text)).setTextColor(Color.WHITE);
     }
 
-    public class CardViewHolder extends ViewHolder{
+    public class CardViewHolder extends Presenter.ViewHolder{
 
         private ImageCardView mImageCardView;
         private TextView mTimeStamp;
         private TextView mTitle;
         private TextView mContent;
 //        private CustomCardView mImageCardView;
-        private CardViewHolder(View view) {
+        public CardViewHolder(View view) {
             super(view);
 //            mImageCardView = (CustomCardView) view;
             view.setFocusable(true);
@@ -215,6 +212,10 @@ public class YouTubeCardPresenter extends Presenter {
 
         public ImageCardView getImageCardView() {
             return mImageCardView;
+        }
+
+        public TextView getTitle() {
+            return mTitle;
         }
     }
 }

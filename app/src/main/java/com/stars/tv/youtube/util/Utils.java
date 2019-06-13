@@ -76,7 +76,7 @@ public class Utils {
     }
 
     public static String TimeConverter(String time) {
-
+        if(time == null) return "0";
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
         String convTime = null;
         try {
