@@ -8,6 +8,7 @@ import com.stars.tv.bean.IQiYiHotSearchItemBean;
 import com.stars.tv.bean.IQiYiM3U8Bean;
 import com.stars.tv.bean.IQiYiMovieBean;
 import com.stars.tv.bean.IQiYiMovieSimplifiedBean;
+import com.stars.tv.bean.IQiYiSearchMovieBean;
 import com.stars.tv.bean.IQiYiSearchSimplifyDataBean;
 import com.stars.tv.bean.IQiYiSearchResultBean;
 import com.stars.tv.bean.IQiYiSearchSuggestBean;
@@ -124,6 +125,7 @@ public class MainActivity extends BaseActivity {
 //        parseIQiYiMovieSimplifiedList(2, "15,24", "","", 24, 1,1,"iqiyi",1, "",48);
 //        parseIQiYiSearchSimplified("封神",1,10);
 //        parseIQiYiMovieBeanWithUrl("http://www.iqiyi.com/v_19rsjr50nw.html");
+//        parseIQiYiSearchMovieList("封神",1,10);
     initTitle();
     initContentViews();
     refreshRequest();
@@ -673,6 +675,32 @@ public class MainActivity extends BaseActivity {
   }
 
   /**
+     * 获取爱奇艺搜索结果
+     *
+     * @param keyWord  搜索词
+     * @param pageNum  页码 便于翻页
+     * @param pageSize 每页个数
+     */
+    private void parseIQiYiSearchMovieList(String keyWord, int pageNum, int pageSize) {
+        IQiYiParseSearchPresenter ps = new IQiYiParseSearchPresenter();
+        ps.requestIQiYiSearchMovieBeanList(keyWord, pageNum, pageSize, new CallBack<IQiYiSearchMovieBean>() {
+            @Override
+            public void success(IQiYiSearchMovieBean bean) {
+                Log.v(TAG, "result_num =：" + bean.getResult_num());
+                List<IQiYiMovieBean> list = bean.getMovieList();
+                for (int i = 0; i < list.size(); i++) {
+                    Log.v(TAG, list.get(i).toString());
+                }
+            }
+
+            @Override
+            public void error(String msg) {
+                //TODO 获取失败
+            }
+        });
+    }
+
+    /**
    * 获取爱奇艺片库筛选结果List
    * 参数请参看iqiyidata.json
      *

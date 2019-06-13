@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 
-public class IQiYiMovieBean implements Serializable {
+public class IQiYiMovieBean extends IQiYiBaseBean implements Serializable {
 
     private String name;
     private String docId;

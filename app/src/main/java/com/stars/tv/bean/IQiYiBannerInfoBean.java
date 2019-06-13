@@ -2,7 +2,7 @@ package com.stars.tv.bean;
 
 import java.io.Serializable;
 
-public class IQiYiBannerInfoBean implements Serializable{
+public class IQiYiBannerInfoBean extends IQiYiBaseBean implements Serializable {
 
     private String name;
     private String playUrl;

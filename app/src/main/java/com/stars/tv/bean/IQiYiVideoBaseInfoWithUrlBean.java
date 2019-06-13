@@ -1,6 +1,6 @@
 package com.stars.tv.bean;
 
-public class IQiYiVideoBaseInfoWithUrlBean {
+public class IQiYiVideoBaseInfoWithUrlBean extends IQiYiBaseBean{
 
     private int albumId;
     private String albumName;

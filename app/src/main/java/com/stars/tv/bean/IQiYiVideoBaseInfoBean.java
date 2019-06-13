@@ -2,10 +2,10 @@ package com.stars.tv.bean;
 
 import java.util.List;
 
-public class IQiYiVideoBaseInfoBean {
+public class IQiYiVideoBaseInfoBean extends IQiYiBaseBean{
 
-    private long tvId;
-    private long albumId;
+    private String tvId;
+    private String albumId;
     private int channelId;
     private String description;
     private String subtitle;
@@ -13,8 +13,8 @@ public class IQiYiVideoBaseInfoBean {
     private String vid;
     private String name;
     private String playUrl;
-    private long issueTime;
-    private long publishTime;
+    private String issueTime;
+    private String publishTime;
     private int featureAlbumId;
     private int contentType;
     private boolean displayCircle;
@@ -52,7 +52,7 @@ public class IQiYiVideoBaseInfoBean {
     private boolean solo;
     private String albumFocus;
     private int fgtwVideo;
-    private long qitanId;
+    private String qitanId;
     private boolean downloadAllowed;
     private String featureKeyword;
     private int is1080p;
@@ -64,7 +64,7 @@ public class IQiYiVideoBaseInfoBean {
     private String formatIssueTime;
     private int durationSec;
     private String pagePublishStatus;
-    private double score;
+    private String score;
 
     @Override
     public String toString() {
@@ -134,17 +134,17 @@ public class IQiYiVideoBaseInfoBean {
     }
 
 
-    public void setTvId(long tvId) {
+    public void setTvId(String tvId) {
          this.tvId = tvId;
      }
-     public long getTvId() {
+     public String getTvId() {
          return tvId;
      }
 
-    public void setAlbumId(long albumId) {
+    public void setAlbumId(String albumId) {
          this.albumId = albumId;
      }
-     public long getAlbumId() {
+     public String getAlbumId() {
          return albumId;
      }
 
@@ -197,17 +197,17 @@ public class IQiYiVideoBaseInfoBean {
          return playUrl;
      }
 
-    public void setIssueTime(long issueTime) {
+    public void setIssueTime(String issueTime) {
          this.issueTime = issueTime;
      }
-     public long getIssueTime() {
+     public String getIssueTime() {
          return issueTime;
      }
 
-    public void setPublishTime(long publishTime) {
+    public void setPublishTime(String publishTime) {
          this.publishTime = publishTime;
      }
-     public long getPublishTime() {
+     public String getPublishTime() {
          return publishTime;
      }
 
@@ -470,10 +470,10 @@ public class IQiYiVideoBaseInfoBean {
          return fgtwVideo;
      }
 
-    public void setQitanId(long qitanId) {
+    public void setQitanId(String qitanId) {
          this.qitanId = qitanId;
      }
-     public long getQitanId() {
+     public String getQitanId() {
          return qitanId;
      }
 
@@ -554,10 +554,10 @@ public class IQiYiVideoBaseInfoBean {
          return pagePublishStatus;
      }
 
-    public void setScore(double score) {
+    public void setScore(String score) {
          this.score = score;
      }
-     public double getScore() {
+     public String getScore() {
          return score;
      }
 
@@ -654,13 +654,13 @@ public class IQiYiVideoBaseInfoBean {
                     '}';
         }
 
-        private long id;
+        private String id;
         private String name;
         private String image_url;
-        public void setId(long id) {
+        public void setId(String id) {
             this.id = id;
         }
-        public long getId() {
+        public String getId() {
             return id;
         }
 

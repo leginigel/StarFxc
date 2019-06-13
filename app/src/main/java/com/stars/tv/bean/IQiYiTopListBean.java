@@ -3,8 +3,8 @@ package com.stars.tv.bean;
 import java.io.Serializable;
 import java.util.List;
 
-public class IQiYiTopListBean implements Serializable {
-    private long album_id;
+public class IQiYiTopListBean extends IQiYiBaseBean implements Serializable {
+    private String album_id;
     private int album_channel;
     private String album_name;
     private String album_play_url;
@@ -12,6 +12,22 @@ public class IQiYiTopListBean implements Serializable {
     private List<Album_main_actor> album_main_actor;
     private String episode_play_url;
     private String prompt_description;
+    private String short_title;
+    private int latest_order;
+    private int video_count;
+    private String period;
+    private int charge_pay_mark;
+    private String vid;
+    private String sns_score;
+    private boolean is_solo;
+    private boolean is_juji;
+    private boolean is_source;
+    private boolean is_qiyi_produced;
+    private boolean is_exclusive;
+    private boolean is_1080p;
+    private boolean is_member_only;
+    private int album_rank_trend;
+    private int hot_idx;
 
     @Override
     public String toString() {
@@ -43,26 +59,10 @@ public class IQiYiTopListBean implements Serializable {
                 '}';
     }
 
-    private String short_title;
-    private int latest_order;
-    private int video_count;
-    private String period;
-    private int charge_pay_mark;
-    private String vid;
-    private double sns_score;
-    private boolean is_solo;
-    private boolean is_juji;
-    private boolean is_source;
-    private boolean is_qiyi_produced;
-    private boolean is_exclusive;
-    private boolean is_1080p;
-    private boolean is_member_only;
-    private int album_rank_trend;
-    private int hot_idx;
-    public void setAlbum_id(long album_id) {
+    public void setAlbum_id(String album_id) {
         this.album_id = album_id;
     }
-    public long getAlbum_id() {
+    public String getAlbum_id() {
         return album_id;
     }
 
@@ -157,10 +157,10 @@ public class IQiYiTopListBean implements Serializable {
         return vid;
     }
 
-    public void setSns_score(double sns_score) {
+    public void setSns_score(String sns_score) {
         this.sns_score = sns_score;
     }
-    public double getSns_score() {
+    public String getSns_score() {
         return sns_score;
     }
 

@@ -72,9 +72,18 @@ public class IQiYiParseM3U8Presenter {
             public void onNext(ResponseBody responseBody) {
                 List<IQiYiM3U8Bean> list = null;
                 try {
+                    JSONObject root = new JSONObject(responseBody.string());
+                    String code = root.getString("code");
+                    if (!code.equals("A00000")) {
+                        listener.error("返回值错误");
+                    }else
+                    {
                     list = getPlayList(responseBody.string());
+                    }
                 } catch (IOException e) {
                     listener.error(e.toString());
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
                     if (listener != null) {
                         listener.success(list);
@@ -113,11 +122,22 @@ public class IQiYiParseM3U8Presenter {
                 .subscribe(new DisposableObserver<ResponseBody>() {
                     @Override
                     public void onNext(ResponseBody responseBody) {
+
                         List<IQiYiM3U8Bean> list = null;
                         try {
+                            JSONObject root = new JSONObject(responseBody.string());
+                            String code = root.getString("code");
+                            if (!code.equals("A00000")) {
+                                listener.error("返回值错误");
+                            }else
+                            {
                             list = getPlayList(responseBody.string());
+                            }
+
                         } catch (IOException e) {
                             listener.error(e.toString());
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
                 if (listener != null) {
                     listener.success(list);

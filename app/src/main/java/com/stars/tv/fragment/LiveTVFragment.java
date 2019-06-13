@@ -111,7 +111,6 @@ public class LiveTVFragment extends LiveTVBaseFragment {
     private int chPosition; // curTvChannel channel position
     private View cCurView; // curTvChannel channel view
     private View cPreView; // curTvChannel channel last view
-    private AnimationDrawable frameAnim;
 
     public static LiveTVFragment getInstance(String titleMode) {
         return newInstance(titleMode);
@@ -155,6 +154,11 @@ public class LiveTVFragment extends LiveTVBaseFragment {
         listPosition = (int) Utils.getSharedValue(mContext, "listPosition", 1);
         chPosition = (int) Utils.getSharedValue(mContext, "chPosition", 0);
         setChannelList(listPosition);
+        if (channelList.size() == 0) {
+            listPosition = 1;
+            chPosition = 0;
+            setChannelList(listPosition);
+        }
         curTvChannel = channelList.get(chPosition);
     }
 
@@ -270,9 +274,7 @@ public class LiveTVFragment extends LiveTVBaseFragment {
         playerVideoView.setMediaController(null);
         playerVideoView.setHudView(playerHudView);
 
-        playerVideoView.setOnPreparedListener(iMediaPlayer -> {
-            hideLoading();
-        });
+        playerVideoView.setOnPreparedListener(iMediaPlayer -> hideLoading());
 
         playerVideoView.setOnInfoListener((iMediaPlayer, info, error) -> {
             if (info == IMediaPlayer.MEDIA_INFO_BUFFERING_START) {
@@ -312,8 +314,8 @@ public class LiveTVFragment extends LiveTVBaseFragment {
         }
     }
 
-    private void showFullScreen(boolean isFull) {
-        isFullScreen = isFull;
+    private void showFullScreen() {
+        isFullScreen = true;
         if (NetUtil.isConnected()) {
             //TODO ENTER full screen
         } else {
@@ -416,7 +418,7 @@ public class LiveTVFragment extends LiveTVBaseFragment {
 
     private void showWaveAnimation(@NonNull ImageView view, boolean isShow) {
         if (isShow) {
-            frameAnim = (AnimationDrawable) getResources().getDrawable(R.drawable.anim_wave);
+            AnimationDrawable frameAnim = (AnimationDrawable) getResources().getDrawable(R.drawable.anim_wave);
             view.setBackground(frameAnim);
             view.setVisibility(View.VISIBLE);
             if (frameAnim != null) {
@@ -546,7 +548,7 @@ public class LiveTVFragment extends LiveTVBaseFragment {
         Log.v(TAG, "onKeyDown:" + event);
         switch (event.getKeyCode()) {
             case KeyEvent.KEYCODE_DPAD_RIGHT: // 向右
-                if (rootLayout.hasFocus()) {
+                if (rootLayout != null && rootLayout.hasFocus()) {
                     if (rootLayout.getFocusedChild().getId() == R.id.live_tv_channel_list_title) {
                         isRemaining = true;
                         contentVg.requestFocus();
@@ -556,7 +558,6 @@ public class LiveTVFragment extends LiveTVBaseFragment {
                         return true;
                     }
                     if (rootLayout.getFocusedChild().getId() == R.id.live_tv_channel_list_content) {
-                        removeTimer(PLAY_CURRENT_CHANNEL);
                         isRemaining = true;
                         playerLayout.requestFocus();
                         return true;
@@ -564,7 +565,7 @@ public class LiveTVFragment extends LiveTVBaseFragment {
                 }
                 break;
             case KeyEvent.KEYCODE_DPAD_LEFT:
-                if (rootLayout.hasFocus()) {
+                if (rootLayout != null && rootLayout.hasFocus()) {
                     if (rootLayout.getFocusedChild().getId() == R.id.live_tv_channel_list_content) {
                         removeTimer(PLAY_CURRENT_CHANNEL);
                         isRemaining = false;
@@ -575,15 +576,15 @@ public class LiveTVFragment extends LiveTVBaseFragment {
                 break;
             case KeyEvent.KEYCODE_DPAD_CENTER:
             case KeyEvent.KEYCODE_ENTER:
-                if (rootLayout.hasFocus()) {
+                if (rootLayout != null && rootLayout.hasFocus()) {
                     if (rootLayout.getFocusedChild().getId() == R.id.live_tv_player) {
-                        showFullScreen(true);
+                        showFullScreen();
                         return true;
                     }
                 }
                 break;
             case KeyEvent.KEYCODE_DPAD_UP:
-                if (rootLayout.hasFocus()) {
+                if (rootLayout != null && rootLayout.hasFocus()) {
                     if (cPreView != null && contentVg.indexOfChild(cPreView) == contentVg.getChildCount() - 1) {
                         cPreView.findViewById(R.id.item_live_tv_channel_wave).setVisibility(View.GONE);
                         return false;
@@ -591,6 +592,7 @@ public class LiveTVFragment extends LiveTVBaseFragment {
                 }
                 break;
             case KeyEvent.KEYCODE_DPAD_DOWN:
+                if (rootLayout != null) {
                 if (!rootLayout.hasFocus()) {
                     if (channelList.size() != 0) {
                         contentVg.requestFocus();
@@ -605,6 +607,7 @@ public class LiveTVFragment extends LiveTVBaseFragment {
                             return false;
                         }
                     }
+                }
                 }
                 break;
         }
