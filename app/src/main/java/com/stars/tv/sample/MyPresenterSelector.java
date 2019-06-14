@@ -13,15 +13,23 @@ public class MyPresenterSelector extends PresenterSelector {
     private HotVideoListRowPresenter hotVideoListRowPresenter = new HotVideoListRowPresenter();
     private RecButtonRowPresenter recbuttonRowPresenter = new RecButtonRowPresenter();
     private LandscapeVideoListRowPresenter landscapevideoListRowPresenter = new LandscapeVideoListRowPresenter();
+    private FilmVideoListRowPresenter filmVideoListRowPresenter = new FilmVideoListRowPresenter();
+    private FilmButtonRowPresenter filmButtonRowPresenter = new FilmButtonRowPresenter();
+    private FilmHotListRowPresenter filmHotListRowPresenter = new FilmHotListRowPresenter();
 
     public MyPresenterSelector() {
 
         videoListRowPresenter.setNumRows(1);
         videoListRowPresenter.setHeaderPresenter(new HeaderPresenter());
+        filmVideoListRowPresenter.setNumRows(2);
+        filmVideoListRowPresenter.setHeaderPresenter(new HeaderPresenter());
+        filmVideoListRowPresenter.setHeaderPresenter(new HeaderPresenter());
         buttonRowPresenter.setHeaderPresenter(new HeaderPresenter());
 
         hotVideoListRowPresenter.setNumRows(1);
         seriesButtonRowPresenter.setHeaderPresenter(new HeaderPresenter());
+        filmHotListRowPresenter.setNumRows(1);
+        filmButtonRowPresenter.setHeaderPresenter(new HeaderPresenter());
         portraitvideoListRowPresenter.setNumRows(2);
         portraitvideoListRowPresenter.setHeaderPresenter(new HeaderPresenter());
         portraitvideoListRow1Presenter.setHeaderPresenter(new HeaderPresenter());
@@ -51,6 +59,12 @@ public class MyPresenterSelector extends PresenterSelector {
             return recbuttonRowPresenter;
         if((item instanceof LandscapeVideoListRow))
             return landscapevideoListRowPresenter;
+        if((item instanceof FilmVideoListRow))
+            return filmVideoListRowPresenter;
+        if((item instanceof FilmHotListRow))
+            return filmHotListRowPresenter;
+        if((item instanceof FilmButtonListRow))
+            return filmButtonRowPresenter;
         return videoListRowPresenter;
     }
 
@@ -64,7 +78,10 @@ public class MyPresenterSelector extends PresenterSelector {
                 portraitvideoListRowPresenter,
                 portraitvideoListRow1Presenter,
                 landscapevideoListRowPresenter,
-                recbuttonRowPresenter
+                recbuttonRowPresenter,
+                filmButtonRowPresenter,
+                filmHotListRowPresenter,
+                filmVideoListRowPresenter
         };
     }
 }
