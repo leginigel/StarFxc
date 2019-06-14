@@ -193,7 +193,7 @@ public class MediaInfoListFragment extends Fragment {
     mVideoInfo.setVideoCurrentViewOrder("");
     mVideoInfo.setVideoDescription(medplot);
 
-    LeanCloudStorage.VideoFavoriteCheckListener(mVideoInfo.getAlbumId(),
+    LeanCloudStorage.IQiyFavoriteCheckListener(mVideoInfo.getAlbumId(),
       new LeanCloudStorage.cloudCheckVideoListener() {
       @Override
       public void succeed() {

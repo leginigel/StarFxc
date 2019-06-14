@@ -146,7 +146,7 @@ public class ExtTabCommonFragment extends ExtBaseFragment{
           @Override
           public boolean onKey(View v, int keyCode, KeyEvent event) {
             int itemIdx = mExtContentsRecycler.getChildAdapterPosition(v);
-            if ( itemIdx < 6 ){
+            if ( itemIdx < 5 ){
               if ( keyCode == KeyEvent.KEYCODE_DPAD_UP && event.getAction() == KeyEvent.ACTION_DOWN ){
                 mExtContentsRecycler.clearFocus();
                 return true;

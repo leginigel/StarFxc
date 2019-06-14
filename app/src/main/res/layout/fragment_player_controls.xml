@@ -176,7 +176,7 @@
             android:clickable="true"
             android:contentDescription="favorite"
             android:focusable="true"
-            android:src="@drawable/ic_favorite_24dp"
+            android:src="@drawable/ic_favorite_border_24dp"
             android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

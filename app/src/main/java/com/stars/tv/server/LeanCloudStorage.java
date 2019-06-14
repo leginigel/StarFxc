@@ -108,24 +108,23 @@ public class LeanCloudStorage {
     obj.saveInBackground(cb);
   }
 
-  public static void VideoFavoriteCheckListener(String album, cloudCheckVideoListener ccv){
-    if ( NetUtil.isConnected() ) {
-      AVQuery<AVObject> query = new AVQuery<>(CLOUD_FAVORITE_CLASS);
-      query.whereEqualTo(EXT_VIDEO_ALBUM, album);
-      query.getFirstInBackground(new GetCallback<AVObject>() {
-        @Override
-        public void done(AVObject object, AVException e) {
-          if ( e == null ) {
-            if ( object != null )
-              ccv.succeed();
-            else
-              ccv.failed();
-          } else {
+  private void VideoFavoriteCheckListener(String album,
+                                                 cloudCheckVideoListener ccv){
+    AVQuery<AVObject> query = new AVQuery<>(mClassName);
+    query.whereEqualTo(EXT_VIDEO_ALBUM, album);
+    query.getFirstInBackground(new GetCallback<AVObject>() {
+      @Override
+      public void done(AVObject object, AVException e) {
+        if ( e == null ) {
+          if ( object != null )
+            ccv.succeed();
+          else
             ccv.failed();
-          }
+        } else {
+          ccv.failed();
         }
-      });
-    }
+      }
+    });
   }
 
   private AVObject createClass(){
@@ -311,10 +310,28 @@ public class LeanCloudStorage {
     }
   }
 
-
   public static void updateYoutubeHistory(YouTubeVideo yt, SaveCallback cb){
     if ( NetUtil.isConnected() ) {
       new LeanCloudStorage(CLOUD_YT_HISTORY_CLASS).updateVideoByYoutube(yt, cb);
     }
   }
+
+  public static void updateYoutubeFavorite(YouTubeVideo yt, SaveCallback cb){
+    if ( NetUtil.isConnected() ) {
+      new LeanCloudStorage(CLOUD_YT_FAVORITE_CLASS).updateVideoByYoutube(yt, cb);
+    }
+  }
+
+  public static void YoutubeFavoriteCheckListener(String album, cloudCheckVideoListener ccv){
+    if ( NetUtil.isConnected() ){
+      new LeanCloudStorage(CLOUD_YT_FAVORITE_CLASS).VideoFavoriteCheckListener(album, ccv);
+    }
+  }
+
+  public static void IQiyFavoriteCheckListener(String album, cloudCheckVideoListener ccv){
+    if ( NetUtil.isConnected() ){
+      new LeanCloudStorage(CLOUD_FAVORITE_CLASS).VideoFavoriteCheckListener(album, ccv);
+    }
+  }
+
 }
