@@ -3,6 +3,7 @@ package com.stars.tv.adapter;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -81,6 +82,8 @@ public class ChildrenAdapter extends RecyclerView.Adapter<ChildrenAdapter.MyView
 
             if (mSelectedPositions != null && mSelectedPositions.contains(position)) {
                 holder.textView.setSelected(true);
+                holder.textView.requestFocus();
+                Log.v("mSelectedPositionsFocus","mSelectedPositions");
             }
 
         } else {

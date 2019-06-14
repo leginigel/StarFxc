@@ -27,8 +27,8 @@ public class IQiYiVideoBaseInfoBean extends IQiYiBaseBean {
     private String duration;
     private String ppsUrl;
     private boolean commentAllowed;
-    private int videoCount;
-    private int latestOrder;
+    private String videoCount;
+    private String latestOrder;
     private boolean topChart;
     private String publicLevel;
     private int startTime;
@@ -330,19 +330,17 @@ public class IQiYiVideoBaseInfoBean extends IQiYiBaseBean {
         return commentAllowed;
     }
 
-    public void setVideoCount(int videoCount) {
+    public void setVideoCount(String videoCount) {
         this.videoCount = videoCount;
     }
-
-    public int getVideoCount() {
+     public String getVideoCount() {
         return videoCount;
     }
 
-    public void setLatestOrder(int latestOrder) {
+    public void setLatestOrder(String latestOrder) {
         this.latestOrder = latestOrder;
     }
-
-    public int getLatestOrder() {
+     public String getLatestOrder() {
         return latestOrder;
     }
 

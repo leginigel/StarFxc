@@ -13,6 +13,7 @@ import com.avos.avoscloud.GetCallback;
 import com.avos.avoscloud.SaveCallback;
 import com.stars.tv.bean.ExtVideoBean;
 import com.stars.tv.bean.IQiYiMovieBean;
+import com.stars.tv.bean.IQiYiVideoBaseInfoBean;
 import com.stars.tv.utils.NetUtil;
 import com.stars.tv.youtube.data.YouTubeVideo;
 
@@ -224,7 +225,7 @@ public class LeanCloudStorage {
     return ( assignBeanToAVObject(bean, obj));
   }
 
-  private ExtVideoBean createIQiyTVSeriesInfo(IQiYiMovieBean IQiy, IQiYiMovieBean episode, int chapter){
+  private ExtVideoBean createIQiyTVSeriesInfo(IQiYiVideoBaseInfoBean IQiy, IQiYiMovieBean episode, int chapter){
     ExtVideoBean bean = new ExtVideoBean();
 
     bean.setAlbumId(IQiy.getAlbumId());
@@ -265,7 +266,7 @@ public class LeanCloudStorage {
     }
   }
 
-  public static void updateIQiyHistory(IQiYiMovieBean iQiy,
+  public static void updateIQiyHistory(IQiYiVideoBaseInfoBean iQiy,
                                        IQiYiMovieBean episode, int chapter, SaveCallback cb) {
     if ( NetUtil.isConnected() ) {
       LeanCloudStorage storage = new LeanCloudStorage(CLOUD_HISTORY_CLASS);

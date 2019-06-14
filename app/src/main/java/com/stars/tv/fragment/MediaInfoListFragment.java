@@ -5,10 +5,14 @@ package com.stars.tv.fragment;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,13 +20,23 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.DeleteCallback;
 import com.avos.avoscloud.SaveCallback;
 import com.stars.tv.R;
 import com.stars.tv.bean.ExtVideoBean;
+import com.stars.tv.bean.IQiYiMovieBean;
 import com.stars.tv.server.LeanCloudStorage;
+
+import com.stars.tv.activity.FullPlaybackActivity;
+import com.stars.tv.activity.VideoPreviewActivity;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class MediaInfoListFragment extends Fragment {
   private TextView mName,mScore;
@@ -35,10 +49,19 @@ public class MediaInfoListFragment extends Fragment {
   private ExtVideoBean mVideoInfo;
   private boolean isFavorite;
 
+ final int TURNTOFULLSCREEN = 2;
+
   public static MediaInfoListFragment newInstance() {
     MediaInfoListFragment f = new MediaInfoListFragment();
     return f;
   }
+
+    public Handler mHandler = new Handler();
+
+    public void setHandler(Handler handler) {
+        this.mHandler = handler;
+        Log.v("HHHonmHandlerinput1", mHandler.toString());
+    }
 
   @Nullable
   @Override
@@ -137,6 +160,12 @@ public class MediaInfoListFragment extends Fragment {
       }
     });
     mFullScreen=(Button) viewGroup.findViewById(R.id.full_btn);
+        mFullScreen.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mHandler.sendEmptyMessage(TURNTOFULLSCREEN);
+            }
+        });
     mFavorite=(Button) viewGroup.findViewById(R.id.fav_btn);
     /* for Favorite usage */
     mFavorite.setClickable(false);

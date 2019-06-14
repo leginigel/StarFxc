@@ -261,7 +261,7 @@ public class IQiYiTopListBean extends IQiYiBaseBean implements Serializable {
         return hot_idx;
     }
 
-    public class Album_main_actor {
+    public class Album_main_actor implements Serializable{
 
         private long tag_id;
 

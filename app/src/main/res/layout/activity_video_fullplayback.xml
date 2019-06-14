@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/main_bg"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:id="@+id/videoview_parent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.stars.tv.widget.media.IjkVideoView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/mvideoView">
+        </com.stars.tv.widget.media.IjkVideoView>
+
+        <TableLayout
+            android:id="@+id/mhud_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:visibility="invisible"
+            android:padding="8dp"/>
+
+        <TextView
+            android:id="@+id/mloading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"/>
+
+        <!--<SurfaceView-->
+            <!--android:id="@+id/surfaceView"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent" />-->
+
+        <!--<com.stars.tv.adapter.EpisodeListView-->
+            <!--android:id="@+id/mepisodelistview"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="90dp"-->
+            <!--android:padding="3dp"-->
+            <!--android:focusable="true"-->
+            <!--android:layout_gravity="bottom|center"/>-->
+
+    </FrameLayout>
+
+
+</LinearLayout>
