@@ -2,7 +2,7 @@ package com.stars.tv.bean;
 
 import java.io.Serializable;
 
-public class IQiYiBannerInfoBean implements Serializable{
+public class IQiYiBannerInfoBean extends IQiYiBaseBean implements Serializable {
 
     private String name;
     private String playUrl;
@@ -49,5 +49,10 @@ public class IQiYiBannerInfoBean implements Serializable{
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    @Override
+    public String getId() {
+        return null;
     }
 }

@@ -3,6 +3,8 @@ package com.stars.tv.presenter;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.stars.tv.bean.IQiYiHotQueryBean;
+import com.stars.tv.bean.IQiYiMovieBean;
+import com.stars.tv.bean.IQiYiSearchMovieBean;
 import com.stars.tv.bean.IQiYiSearchSimplifyDataBean;
 import com.stars.tv.bean.IQiYiSearchResultBean;
 import com.stars.tv.bean.IQiYiSearchSuggestBean;
@@ -174,6 +176,100 @@ public class IQiYiParseSearchPresenter {
 
                 if (listener != null) {
                     listener.success(searchBean);
+                }
+            }catch (JSONException e) {
+                e.printStackTrace();
+            }
+        },Throwable ->listener.error(Throwable.toString())));
+    }
+
+    public void requestIQiYiSearchMovieBeanList(String keyWord, int pageNum, int pageSize, CallBack<IQiYiSearchMovieBean> listener) {
+        RxManager.add(getIQiYiSearchSimplified(keyWord, pageNum, pageSize).subscribe(responseBody -> {
+            IQiYiSearchMovieBean searchMovieBean = new IQiYiSearchMovieBean();
+            IQiYiSearchSimplifyDataBean searchBean;
+            List<IQiYiMovieBean> movieList = new ArrayList<>();
+            try {
+                JSONObject root = new JSONObject(responseBody.string());
+                String code = root.getString("code");
+                if (!code.equals("A00000")) {
+                    //error
+                    listener.error("返回值错误");
+                }
+                String data = root.getString("data");
+                searchBean = new Gson().fromJson(data, IQiYiSearchSimplifyDataBean.class);
+
+                searchMovieBean.setResult_num(searchBean.getResult_num());
+                searchMovieBean.setPage_num(searchBean.getPage_num());
+                searchMovieBean.setPage_size(searchBean.getPage_size());
+                searchMovieBean.setMax_result_number(searchBean.getMax_result_number());
+                for(int i = 0; i<searchBean.getDocinfos().size();i++)
+                {
+                    IQiYiMovieBean bean = new IQiYiMovieBean();
+                    bean.setName(searchBean.getDocinfos().get(i).getAlbumDocInfo().getAlbumTitle());
+                    bean.setDocId(searchBean.getDocinfos().get(i).getDoc_id());
+                    bean.setAlbumId(searchBean.getDocinfos().get(i).getAlbumDocInfo().getAlbumId());
+                    bean.setSourceId(searchBean.getDocinfos().get(i).getAlbumDocInfo().getAlbumId());
+                    bean.setFocus(searchBean.getDocinfos().get(i).getAlbumDocInfo().getTvFocus());
+                    bean.setScore(searchBean.getDocinfos().get(i).getAlbumDocInfo().getScore());
+
+                    bean.setImageUrl(searchBean.getDocinfos().get(i).getAlbumDocInfo().getAlbumImg());
+                    bean.setLatestOrder(searchBean.getDocinfos().get(i).getAlbumDocInfo().getNewest_item_number());
+                    bean.setVideoCount(searchBean.getDocinfos().get(i).getAlbumDocInfo().getItemTotalNumber());
+                    bean.setVideoInfoType(searchBean.getDocinfos().get(i).getAlbumDocInfo().getVideoDocType());
+                    bean.setPayMarkUrl(searchBean.getDocinfos().get(i).getAlbumDocInfo().getPay_mark_url());
+                    bean.setSecondInfo(searchBean.getDocinfos().get(i).getAlbumDocInfo().getStragyTime());
+
+                    bean.setAlbumImageUrl(searchBean.getDocinfos().get(i).getAlbumDocInfo().getAlbumImg());
+                    bean.setPeriod(searchBean.getDocinfos().get(i).getAlbumDocInfo().getReleaseDate());
+                    bean.setShortTitle(searchBean.getDocinfos().get(i).getAlbumDocInfo().getAlbumAlias());
+                    if(searchBean.getDocinfos().get(i).getAlbumDocInfo().getVideo_lib_meta()!=null)
+                    {
+                        bean.setDescription(searchBean.getDocinfos().get(i).getAlbumDocInfo().getVideo_lib_meta().getDescription());
+                        bean.setDuration(searchBean.getDocinfos().get(i).getAlbumDocInfo().getVideo_lib_meta().getDuration());
+                        if(searchBean.getDocinfos().get(i).getAlbumDocInfo().getVideo_lib_meta().getCategory()!=null) {
+                            int catSize = searchBean.getDocinfos().get(i).getAlbumDocInfo().getVideo_lib_meta().getCategory().size();
+                            List<IQiYiMovieBean.Category> categories = new ArrayList<>();
+                            for (int j = 0; j < catSize; j++) {
+                                IQiYiMovieBean.Category category = bean.new Category();
+                                category.setName(searchBean.getDocinfos().get(i).getAlbumDocInfo().getVideo_lib_meta().getCategory().get(j));
+                                categories.add(category);
+                            }
+                            bean.setCategories(categories);
+                        }
+
+                        IQiYiMovieBean.Cast cast = bean.new Cast();
+                        if(searchBean.getDocinfos().get(i).getAlbumDocInfo().getVideo_lib_meta().getActor()!=null) {
+                            cast.setMain_charactor(searchBean.getDocinfos().get(i).getAlbumDocInfo().getVideo_lib_meta().getActor());
+                        }
+                        if(searchBean.getDocinfos().get(i).getAlbumDocInfo().getVideo_lib_meta().getDirector()!=null) {
+                            cast.setDirector(searchBean.getDocinfos().get(i).getAlbumDocInfo().getVideo_lib_meta().getDirector());
+                        }
+                        if(searchBean.getDocinfos().get(i).getAlbumDocInfo().getVideo_lib_meta().getHost()!=null) {
+                            cast.setHost(searchBean.getDocinfos().get(i).getAlbumDocInfo().getVideo_lib_meta().getHost());
+                        }
+                        bean.setCast(cast);
+                    }
+
+                    if(searchBean.getDocinfos().get(i).getAlbumDocInfo().getVideoinfos()!=null &&
+                            searchBean.getDocinfos().get(i).getAlbumDocInfo().getVideoinfos().size()>0)
+                    {
+                        bean.setTvId(searchBean.getDocinfos().get(i).getAlbumDocInfo().getVideoinfos().get(0).getTvId());
+                        bean.setVid(searchBean.getDocinfos().get(i).getAlbumDocInfo().getVideoinfos().get(0).getVid());
+                        bean.setSubtitle(searchBean.getDocinfos().get(i).getAlbumDocInfo().getVideoinfos().get(0).getSubTitle());
+                        bean.setPlayUrl(searchBean.getDocinfos().get(i).getAlbumDocInfo().getVideoinfos().get(0).getItemLink());
+                        if(searchBean.getDocinfos().get(i).getAlbumDocInfo().getVideoinfos().get(0).getLatest_video()!=null)
+                        {
+                            bean.setLatestVideoUrl(searchBean.getDocinfos().get(i).getAlbumDocInfo().getVideoinfos().get(0).getLatest_video().getPage_url());
+                            bean.setLatestTvId(searchBean.getDocinfos().get(i).getAlbumDocInfo().getVideoinfos().get(0).getLatest_video().getTvid());
+                        }
+                    }
+                    movieList.add(bean);
+                }
+
+                searchMovieBean.setMovieList(movieList);
+
+                if (listener != null) {
+                    listener.success(searchMovieBean);
                 }
             }catch (JSONException e) {
                 e.printStackTrace();

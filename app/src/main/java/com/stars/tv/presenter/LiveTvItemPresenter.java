@@ -40,6 +40,7 @@ public class LiveTvItemPresenter extends Presenter {
 
             vh.channelNumber.setText(String.valueOf(curBean.getChannelNumber()));
             vh.channelName.setText(curBean.getChannelName());
+            vh.channelName.setSelected(true);
 
             if (type != 0) {
                 vh.channelEpg.setVisibility(View.GONE);

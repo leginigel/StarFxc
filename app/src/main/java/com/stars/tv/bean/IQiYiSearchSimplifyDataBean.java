@@ -145,23 +145,23 @@ public class IQiYiSearchSimplifyDataBean {
         private String region;
         private String season;
         private String releaseDate;
-        private int itemTotalNumber;
+        private String itemTotalNumber;
         private String siteName;
         private String siteId;
         private String albumImg;
         private int contentType;
         private int isPurchase;
         private int playCount;
-        private double score;
+        private String score;
         private boolean series;
         private String threeCategory;
         private String tvFocus;
-        private int videoDocType;
+        private String videoDocType;
         private String stragyTime;
         private String qipu_id;
         private int latest_update_time;
         private int album_type;
-        private int newest_item_number;
+        private String newest_item_number;
         private String bitrate;
         private String pay_mark_url;
         private int episode_type;
@@ -303,11 +303,11 @@ public class IQiYiSearchSimplifyDataBean {
             this.releaseDate = releaseDate;
         }
 
-        public int getItemTotalNumber() {
+        public String getItemTotalNumber() {
             return itemTotalNumber;
         }
 
-        public void setItemTotalNumber(int itemTotalNumber) {
+        public void setItemTotalNumber(String itemTotalNumber) {
             this.itemTotalNumber = itemTotalNumber;
         }
 
@@ -359,11 +359,11 @@ public class IQiYiSearchSimplifyDataBean {
             this.playCount = playCount;
         }
 
-        public double getScore() {
+        public String getScore() {
             return score;
         }
 
-        public void setScore(double score) {
+        public void setScore(String score) {
             this.score = score;
         }
 
@@ -391,11 +391,11 @@ public class IQiYiSearchSimplifyDataBean {
             this.tvFocus = tvFocus;
         }
 
-        public int getVideoDocType() {
+        public String getVideoDocType() {
             return videoDocType;
         }
 
-        public void setVideoDocType(int videoDocType) {
+        public void setVideoDocType(String videoDocType) {
             this.videoDocType = videoDocType;
         }
 
@@ -431,11 +431,11 @@ public class IQiYiSearchSimplifyDataBean {
             this.album_type = album_type;
         }
 
-        public int getNewest_item_number() {
+        public String getNewest_item_number() {
             return newest_item_number;
         }
 
-        public void setNewest_item_number(int newest_item_number) {
+        public void setNewest_item_number(String newest_item_number) {
             this.newest_item_number = newest_item_number;
         }
 
@@ -516,16 +516,24 @@ public class IQiYiSearchSimplifyDataBean {
     public class VideoLibMetaBean {
         private String entity_id;
         private String title;
-        private List<Role> director;
-        private List<Role> actor;
+        private List<IQiYiMovieBean.Role> director;
+        private List<IQiYiMovieBean.Role> actor;
+        private List<IQiYiMovieBean.Role> host;
+        private String duration;
+        private String description;
+        private List<String> category;
 
         @Override
         public String toString() {
-            return "{" +
-                    "entity_id=" + entity_id +
+            return "VideoLibMetaBean{" +
+                    "entity_id='" + entity_id + '\'' +
                     ", title='" + title + '\'' +
                     ", director=" + director +
                     ", actor=" + actor +
+                    ", host=" + host +
+                    ", duration='" + duration + '\'' +
+                    ", description='" + description + '\'' +
+                    ", category=" + category +
                     '}';
         }
 
@@ -545,20 +553,52 @@ public class IQiYiSearchSimplifyDataBean {
             this.title = title;
         }
 
-        public List<Role> getDirector() {
+        public List<IQiYiMovieBean.Role> getDirector() {
             return director;
         }
 
-        public void setDirector(List<Role> director) {
+        public void setDirector(List<IQiYiMovieBean.Role> director) {
             this.director = director;
         }
 
-        public List<Role> getActor() {
+        public List<IQiYiMovieBean.Role> getActor() {
             return actor;
         }
 
-        public void setActor(List<Role> actor) {
+        public void setActor(List<IQiYiMovieBean.Role> actor) {
             this.actor = actor;
+        }
+
+        public List<IQiYiMovieBean.Role> getHost() {
+            return host;
+        }
+
+        public void setHost(List<IQiYiMovieBean.Role> host) {
+            this.host = host;
+        }
+
+        public String getDuration() {
+            return duration;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
+        public void setDescription(String description) {
+            this.description = description;
+        }
+
+        public void setDuration(String duration) {
+            this.duration = duration;
+        }
+
+        public List<String> getCategory() {
+            return category;
+        }
+
+        public void setCategory(List<String> category) {
+            this.category = category;
         }
     }
 

@@ -3,8 +3,9 @@ package com.stars.tv.bean;
 import java.io.Serializable;
 import java.util.List;
 
-public class IQiYiTopListBean implements Serializable {
-    private long album_id;
+public class IQiYiTopListBean extends IQiYiBaseBean implements Serializable {
+    private String album_id;
+    private String tv_id;
     private int album_channel;
     private String album_name;
     private String album_play_url;
@@ -12,11 +13,28 @@ public class IQiYiTopListBean implements Serializable {
     private List<Album_main_actor> album_main_actor;
     private String episode_play_url;
     private String prompt_description;
+    private String short_title;
+    private int latest_order;
+    private int video_count;
+    private String period;
+    private int charge_pay_mark;
+    private String vid;
+    private String sns_score;
+    private boolean is_solo;
+    private boolean is_juji;
+    private boolean is_source;
+    private boolean is_qiyi_produced;
+    private boolean is_exclusive;
+    private boolean is_1080p;
+    private boolean is_member_only;
+    private int album_rank_trend;
+    private int hot_idx;
 
     @Override
     public String toString() {
         return "IQiYiTopListBean{" +
-                "album_id=" + album_id +
+                "album_id='" + album_id + '\'' +
+                ", tv_id='" + tv_id + '\'' +
                 ", album_channel=" + album_channel +
                 ", album_name='" + album_name + '\'' +
                 ", album_play_url='" + album_play_url + '\'' +
@@ -30,7 +48,7 @@ public class IQiYiTopListBean implements Serializable {
                 ", period='" + period + '\'' +
                 ", charge_pay_mark=" + charge_pay_mark +
                 ", vid='" + vid + '\'' +
-                ", sns_score=" + sns_score +
+                ", sns_score='" + sns_score + '\'' +
                 ", is_solo=" + is_solo +
                 ", is_juji=" + is_juji +
                 ", is_source=" + is_source +
@@ -43,26 +61,23 @@ public class IQiYiTopListBean implements Serializable {
                 '}';
     }
 
-    private String short_title;
-    private int latest_order;
-    private int video_count;
-    private String period;
-    private int charge_pay_mark;
-    private String vid;
-    private double sns_score;
-    private boolean is_solo;
-    private boolean is_juji;
-    private boolean is_source;
-    private boolean is_qiyi_produced;
-    private boolean is_exclusive;
-    private boolean is_1080p;
-    private boolean is_member_only;
-    private int album_rank_trend;
-    private int hot_idx;
-    public void setAlbum_id(long album_id) {
+    @Override
+    public String getId() {
+        if(tv_id!=null)
+        {
+            return tv_id;
+        }else if(album_id!=null)
+        {
+            return album_id;
+        }else{
+            return null;
+        }
+    }
+
+    public void setAlbum_id(String album_id) {
         this.album_id = album_id;
     }
-    public long getAlbum_id() {
+    public String getAlbum_id() {
         return album_id;
     }
 
@@ -157,10 +172,10 @@ public class IQiYiTopListBean implements Serializable {
         return vid;
     }
 
-    public void setSns_score(double sns_score) {
+    public void setSns_score(String sns_score) {
         this.sns_score = sns_score;
     }
-    public double getSns_score() {
+    public String getSns_score() {
         return sns_score;
     }
 
@@ -225,6 +240,14 @@ public class IQiYiTopListBean implements Serializable {
     }
     public int getHot_idx() {
         return hot_idx;
+    }
+
+    public String getTv_id() {
+        return tv_id;
+    }
+
+    public void setTv_id(String tv_id) {
+        this.tv_id = tv_id;
     }
 
     public class Album_main_actor {

@@ -1,7 +1,5 @@
 package com.stars.tv.presenter;
 
-import android.util.Log;
-
 import com.stars.tv.bean.LiveTvBean;
 import com.stars.tv.bean.LiveTvEpgBean;
 import com.stars.tv.server.RetrofitFactory;
@@ -47,6 +45,9 @@ public class ParseLiveTVEpgPresenter {
                 String programName = nodes.select("td.td" + i).text().split(" ")[0];
                 epgBean.setProgramName(programName);
                 epgBean.setStartTime(startTime);
+                if (programName.equals("")) {
+                    break;
+                }
                 epgList.add(epgBean);
             }
             if (listener != null) {

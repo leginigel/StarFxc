@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 
-public class IQiYiMovieBean implements Serializable {
+public class IQiYiMovieBean extends IQiYiBaseBean implements Serializable {
 
     private String name;
     private String docId;
@@ -300,6 +300,19 @@ public class IQiYiMovieBean implements Serializable {
 
     public void setFormatPeriod(String formatPeriod) {
         this.formatPeriod = formatPeriod;
+    }
+
+    @Override
+    public String getId() {
+        if(tvId!=null)
+        {
+            return tvId;
+        }else if(albumId!=null)
+        {
+            return albumId;
+        }else{
+            return null;
+        }
     }
 
 
