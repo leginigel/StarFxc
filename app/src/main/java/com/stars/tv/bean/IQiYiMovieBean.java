@@ -90,6 +90,7 @@ public class IQiYiMovieBean extends IQiYiBaseBean implements Serializable {
     public void setPayMarkUrl(String payMarkUrl) {
         this.payMarkUrl = payMarkUrl;
     }
+
     public String getPayMarkUrl() {
         return payMarkUrl;
     }
@@ -304,19 +305,20 @@ public class IQiYiMovieBean extends IQiYiBaseBean implements Serializable {
 
     @Override
     public String getId() {
-        if(tvId!=null)
-        {
+        if (tvId != null) {
             return tvId;
-        }else if(albumId!=null)
-        {
-            return albumId;
-        }else{
+        } else {
             return null;
         }
     }
 
+    @Override
+    public String getUrl() {
+        return playUrl;
+    }
 
-    public class Role implements Serializable{
+
+    public class Role implements Serializable {
 
         private String image_url;
         private String name;
@@ -375,9 +377,11 @@ public class IQiYiMovieBean extends IQiYiBaseBean implements Serializable {
     public class Category implements Serializable {
 
         private String name;
+
         public void setName(String name) {
             this.name = name;
         }
+
         public String getName() {
             return name;
         }
@@ -389,7 +393,7 @@ public class IQiYiMovieBean extends IQiYiBaseBean implements Serializable {
 
     }
 
-    public class Cast implements Serializable{
+    public class Cast implements Serializable {
         private List<Role> director;
         private List<Role> main_charactor;
         private List<Role> host;
@@ -406,6 +410,7 @@ public class IQiYiMovieBean extends IQiYiBaseBean implements Serializable {
         public void setMain_charactor(List<Role> main_charactor) {
             this.main_charactor = main_charactor;
         }
+
         public List<Role> getMain_charactor() {
             return main_charactor;
         }
@@ -427,7 +432,7 @@ public class IQiYiMovieBean extends IQiYiBaseBean implements Serializable {
         }
     }
 
-    public class VideoFocuse implements Serializable{
+    public class VideoFocuse implements Serializable {
 
         private String id;
         private String description;

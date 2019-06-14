@@ -2,7 +2,7 @@ package com.stars.tv.bean;
 
 import java.util.List;
 
-public class IQiYiVideoBaseInfoBean extends IQiYiBaseBean{
+public class IQiYiVideoBaseInfoBean extends IQiYiBaseBean {
 
     private String tvId;
     private String albumId;
@@ -30,7 +30,6 @@ public class IQiYiVideoBaseInfoBean extends IQiYiBaseBean{
     private int videoCount;
     private int latestOrder;
     private boolean topChart;
-    private boolean bossMixerAlbum;
     private String publicLevel;
     private int startTime;
     private int endTime;
@@ -95,7 +94,6 @@ public class IQiYiVideoBaseInfoBean extends IQiYiBaseBean{
                 ", videoCount=" + videoCount +
                 ", latestOrder=" + latestOrder +
                 ", topChart=" + topChart +
-                ", bossMixerAlbum=" + bossMixerAlbum +
                 ", publicLevel='" + publicLevel + '\'' +
                 ", startTime=" + startTime +
                 ", endTime=" + endTime +
@@ -135,444 +133,498 @@ public class IQiYiVideoBaseInfoBean extends IQiYiBaseBean{
 
     @Override
     public String getId() {
-        if(tvId!=null)
-        {
+        if (tvId != null) {
             return tvId;
-        }else if(albumId!=null)
-        {
-            return albumId;
-        }else{
+        } else {
             return null;
         }
     }
 
+    @Override
+    public String getUrl() {
+        return null;
+    }
+
 
     public void setTvId(String tvId) {
-         this.tvId = tvId;
-     }
-     public String getTvId() {
-         return tvId;
-     }
+        this.tvId = tvId;
+    }
+
+    public String getTvId() {
+        return tvId;
+    }
 
     public void setAlbumId(String albumId) {
-         this.albumId = albumId;
-     }
-     public String getAlbumId() {
-         return albumId;
-     }
+        this.albumId = albumId;
+    }
+
+    public String getAlbumId() {
+        return albumId;
+    }
 
     public void setChannelId(int channelId) {
-         this.channelId = channelId;
-     }
-     public int getChannelId() {
-         return channelId;
-     }
+        this.channelId = channelId;
+    }
+
+    public int getChannelId() {
+        return channelId;
+    }
 
     public void setDescription(String description) {
-         this.description = description;
-     }
-     public String getDescription() {
-         return description;
-     }
+        this.description = description;
+    }
+
+    public String getDescription() {
+        return description;
+    }
 
     public void setSubtitle(String subtitle) {
-         this.subtitle = subtitle;
-     }
-     public String getSubtitle() {
-         return subtitle;
-     }
+        this.subtitle = subtitle;
+    }
+
+    public String getSubtitle() {
+        return subtitle;
+    }
 
     public void setRewardAllowed(boolean rewardAllowed) {
-         this.rewardAllowed = rewardAllowed;
-     }
-     public boolean getRewardAllowed() {
-         return rewardAllowed;
-     }
+        this.rewardAllowed = rewardAllowed;
+    }
+
+    public boolean getRewardAllowed() {
+        return rewardAllowed;
+    }
 
     public void setVid(String vid) {
-         this.vid = vid;
-     }
-     public String getVid() {
-         return vid;
-     }
+        this.vid = vid;
+    }
+
+    public String getVid() {
+        return vid;
+    }
 
     public void setName(String name) {
-         this.name = name;
-     }
-     public String getName() {
-         return name;
-     }
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
 
     public void setPlayUrl(String playUrl) {
-         this.playUrl = playUrl;
-     }
-     public String getPlayUrl() {
-         return playUrl;
-     }
+        this.playUrl = playUrl;
+    }
+
+    public String getPlayUrl() {
+        return playUrl;
+    }
 
     public void setIssueTime(String issueTime) {
-         this.issueTime = issueTime;
-     }
-     public String getIssueTime() {
-         return issueTime;
-     }
+        this.issueTime = issueTime;
+    }
+
+    public String getIssueTime() {
+        return issueTime;
+    }
 
     public void setPublishTime(String publishTime) {
-         this.publishTime = publishTime;
-     }
-     public String getPublishTime() {
-         return publishTime;
-     }
+        this.publishTime = publishTime;
+    }
+
+    public String getPublishTime() {
+        return publishTime;
+    }
 
     public void setFeatureAlbumId(int featureAlbumId) {
-         this.featureAlbumId = featureAlbumId;
-     }
-     public int getFeatureAlbumId() {
-         return featureAlbumId;
-     }
+        this.featureAlbumId = featureAlbumId;
+    }
+
+    public int getFeatureAlbumId() {
+        return featureAlbumId;
+    }
 
     public void setContentType(int contentType) {
-         this.contentType = contentType;
-     }
-     public int getContentType() {
-         return contentType;
-     }
+        this.contentType = contentType;
+    }
+
+    public int getContentType() {
+        return contentType;
+    }
 
     public void setDisplayCircle(boolean displayCircle) {
-         this.displayCircle = displayCircle;
-     }
-     public boolean getDisplayCircle() {
-         return displayCircle;
-     }
+        this.displayCircle = displayCircle;
+    }
+
+    public boolean getDisplayCircle() {
+        return displayCircle;
+    }
 
     public void setPayMark(int payMark) {
-         this.payMark = payMark;
-     }
-     public int getPayMark() {
-         return payMark;
-     }
+        this.payMark = payMark;
+    }
+
+    public int getPayMark() {
+        return payMark;
+    }
 
     public void setDisplayUpDown(boolean displayUpDown) {
-         this.displayUpDown = displayUpDown;
-     }
-     public boolean getDisplayUpDown() {
-         return displayUpDown;
-     }
+        this.displayUpDown = displayUpDown;
+    }
+
+    public boolean getDisplayUpDown() {
+        return displayUpDown;
+    }
 
     public void setPayMarkUrl(String payMarkUrl) {
-         this.payMarkUrl = payMarkUrl;
-     }
-     public String getPayMarkUrl() {
-         return payMarkUrl;
-     }
+        this.payMarkUrl = payMarkUrl;
+    }
+
+    public String getPayMarkUrl() {
+        return payMarkUrl;
+    }
 
     public void setEditorInfo(String editorInfo) {
-         this.editorInfo = editorInfo;
-     }
-     public String getEditorInfo() {
-         return editorInfo;
-     }
+        this.editorInfo = editorInfo;
+    }
+
+    public String getEditorInfo() {
+        return editorInfo;
+    }
 
     public void setImageUrl(String imageUrl) {
-         this.imageUrl = imageUrl;
-     }
-     public String getImageUrl() {
-         return imageUrl;
-     }
+        this.imageUrl = imageUrl;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
 
     public void setVideoType(String videoType) {
-         this.videoType = videoType;
-     }
-     public String getVideoType() {
-         return videoType;
-     }
+        this.videoType = videoType;
+    }
+
+    public String getVideoType() {
+        return videoType;
+    }
 
     public void setDuration(String duration) {
-         this.duration = duration;
-     }
-     public String getDuration() {
-         return duration;
-     }
+        this.duration = duration;
+    }
+
+    public String getDuration() {
+        return duration;
+    }
 
     public void setPpsUrl(String ppsUrl) {
-         this.ppsUrl = ppsUrl;
-     }
-     public String getPpsUrl() {
-         return ppsUrl;
-     }
+        this.ppsUrl = ppsUrl;
+    }
+
+    public String getPpsUrl() {
+        return ppsUrl;
+    }
 
     public void setCommentAllowed(boolean commentAllowed) {
-         this.commentAllowed = commentAllowed;
-     }
-     public boolean getCommentAllowed() {
-         return commentAllowed;
-     }
+        this.commentAllowed = commentAllowed;
+    }
+
+    public boolean getCommentAllowed() {
+        return commentAllowed;
+    }
 
     public void setVideoCount(int videoCount) {
-         this.videoCount = videoCount;
-     }
-     public int getVideoCount() {
-         return videoCount;
-     }
+        this.videoCount = videoCount;
+    }
+
+    public int getVideoCount() {
+        return videoCount;
+    }
 
     public void setLatestOrder(int latestOrder) {
-         this.latestOrder = latestOrder;
-     }
-     public int getLatestOrder() {
-         return latestOrder;
-     }
+        this.latestOrder = latestOrder;
+    }
+
+    public int getLatestOrder() {
+        return latestOrder;
+    }
 
     public void setTopChart(boolean topChart) {
-         this.topChart = topChart;
-     }
-     public boolean getTopChart() {
-         return topChart;
-     }
+        this.topChart = topChart;
+    }
 
-    public void setBossMixerAlbum(boolean bossMixerAlbum) {
-         this.bossMixerAlbum = bossMixerAlbum;
-     }
-     public boolean getBossMixerAlbum() {
-         return bossMixerAlbum;
-     }
+    public boolean getTopChart() {
+        return topChart;
+    }
 
     public void setPublicLevel(String publicLevel) {
-         this.publicLevel = publicLevel;
-     }
-     public String getPublicLevel() {
-         return publicLevel;
-     }
+        this.publicLevel = publicLevel;
+    }
+
+    public String getPublicLevel() {
+        return publicLevel;
+    }
 
     public void setStartTime(int startTime) {
-         this.startTime = startTime;
-     }
-     public int getStartTime() {
-         return startTime;
-     }
+        this.startTime = startTime;
+    }
+
+    public int getStartTime() {
+        return startTime;
+    }
 
     public void setEndTime(int endTime) {
-         this.endTime = endTime;
-     }
-     public int getEndTime() {
-         return endTime;
-     }
+        this.endTime = endTime;
+    }
+
+    public int getEndTime() {
+        return endTime;
+    }
 
     public void setCategories(List<Categories> categories) {
-         this.categories = categories;
-     }
-     public List<Categories> getCategories() {
-         return categories;
-     }
+        this.categories = categories;
+    }
+
+    public List<Categories> getCategories() {
+        return categories;
+    }
 
     public void setAlbumName(String albumName) {
-         this.albumName = albumName;
-     }
-     public String getAlbumName() {
-         return albumName;
-     }
+        this.albumName = albumName;
+    }
+
+    public String getAlbumName() {
+        return albumName;
+    }
 
     public void setBaikeUrl(String baikeUrl) {
-         this.baikeUrl = baikeUrl;
-     }
-     public String getBaikeUrl() {
-         return baikeUrl;
-     }
+        this.baikeUrl = baikeUrl;
+    }
+
+    public String getBaikeUrl() {
+        return baikeUrl;
+    }
 
     public void setAlbumImageUrl(String albumImageUrl) {
-         this.albumImageUrl = albumImageUrl;
-     }
-     public String getAlbumImageUrl() {
-         return albumImageUrl;
-     }
+        this.albumImageUrl = albumImageUrl;
+    }
+
+    public String getAlbumImageUrl() {
+        return albumImageUrl;
+    }
 
     public void setUserId(int userId) {
-         this.userId = userId;
-     }
-     public int getUserId() {
-         return userId;
-     }
+        this.userId = userId;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
 
     public void setPeriod(String period) {
-         this.period = period;
-     }
-     public String getPeriod() {
-         return period;
-     }
+        this.period = period;
+    }
+
+    public String getPeriod() {
+        return period;
+    }
 
     public void setExclusive(boolean exclusive) {
-         this.exclusive = exclusive;
-     }
-     public boolean getExclusive() {
-         return exclusive;
-     }
+        this.exclusive = exclusive;
+    }
+
+    public boolean getExclusive() {
+        return exclusive;
+    }
 
     public void setOrder(int order) {
-         this.order = order;
-     }
-     public int getOrder() {
-         return order;
-     }
+        this.order = order;
+    }
+
+    public int getOrder() {
+        return order;
+    }
 
     public void setPlaylistReason(String playlistReason) {
-         this.playlistReason = playlistReason;
-     }
-     public String getPlaylistReason() {
-         return playlistReason;
-     }
+        this.playlistReason = playlistReason;
+    }
+
+    public String getPlaylistReason() {
+        return playlistReason;
+    }
 
     public void setEffective(boolean effective) {
-         this.effective = effective;
-     }
-     public boolean getEffective() {
-         return effective;
-     }
+        this.effective = effective;
+    }
+
+    public boolean getEffective() {
+        return effective;
+    }
 
     public void setQiyiProduced(boolean qiyiProduced) {
-         this.qiyiProduced = qiyiProduced;
-     }
-     public boolean getQiyiProduced() {
-         return qiyiProduced;
-     }
+        this.qiyiProduced = qiyiProduced;
+    }
+
+    public boolean getQiyiProduced() {
+        return qiyiProduced;
+    }
 
     public void setAlbumUrl(String albumUrl) {
-         this.albumUrl = albumUrl;
-     }
-     public String getAlbumUrl() {
-         return albumUrl;
-     }
+        this.albumUrl = albumUrl;
+    }
+
+    public String getAlbumUrl() {
+        return albumUrl;
+    }
 
     public void setSourceId(int sourceId) {
-         this.sourceId = sourceId;
-     }
-     public int getSourceId() {
-         return sourceId;
-     }
+        this.sourceId = sourceId;
+    }
+
+    public int getSourceId() {
+        return sourceId;
+    }
 
     public void setFocus(String focus) {
-         this.focus = focus;
-     }
-     public String getFocus() {
-         return focus;
-     }
+        this.focus = focus;
+    }
+
+    public String getFocus() {
+        return focus;
+    }
 
     public void setShortTitle(String shortTitle) {
-         this.shortTitle = shortTitle;
-     }
-     public String getShortTitle() {
-         return shortTitle;
-     }
+        this.shortTitle = shortTitle;
+    }
+
+    public String getShortTitle() {
+        return shortTitle;
+    }
 
     public void setSolo(boolean solo) {
-         this.solo = solo;
-     }
-     public boolean getSolo() {
-         return solo;
-     }
+        this.solo = solo;
+    }
+
+    public boolean getSolo() {
+        return solo;
+    }
 
     public void setAlbumFocus(String albumFocus) {
-         this.albumFocus = albumFocus;
-     }
-     public String getAlbumFocus() {
-         return albumFocus;
-     }
+        this.albumFocus = albumFocus;
+    }
+
+    public String getAlbumFocus() {
+        return albumFocus;
+    }
 
     public void setFgtwVideo(int fgtwVideo) {
-         this.fgtwVideo = fgtwVideo;
-     }
-     public int getFgtwVideo() {
-         return fgtwVideo;
-     }
+        this.fgtwVideo = fgtwVideo;
+    }
+
+    public int getFgtwVideo() {
+        return fgtwVideo;
+    }
 
     public void setQitanId(String qitanId) {
-         this.qitanId = qitanId;
-     }
-     public String getQitanId() {
-         return qitanId;
-     }
+        this.qitanId = qitanId;
+    }
+
+    public String getQitanId() {
+        return qitanId;
+    }
 
     public void setDownloadAllowed(boolean downloadAllowed) {
-         this.downloadAllowed = downloadAllowed;
-     }
-     public boolean getDownloadAllowed() {
-         return downloadAllowed;
-     }
+        this.downloadAllowed = downloadAllowed;
+    }
+
+    public boolean getDownloadAllowed() {
+        return downloadAllowed;
+    }
 
     public void setFeatureKeyword(String featureKeyword) {
-         this.featureKeyword = featureKeyword;
-     }
-     public String getFeatureKeyword() {
-         return featureKeyword;
-     }
+        this.featureKeyword = featureKeyword;
+    }
+
+    public String getFeatureKeyword() {
+        return featureKeyword;
+    }
 
     public void setIs1080p(int is1080p) {
-         this.is1080p = is1080p;
-     }
-     public int getIs1080p() {
-         return is1080p;
-     }
+        this.is1080p = is1080p;
+    }
+
+    public int getIs1080p() {
+        return is1080p;
+    }
 
     public void setIs720p(int is720p) {
-         this.is720p = is720p;
-     }
-     public int getIs720p() {
-         return is720p;
-     }
+        this.is720p = is720p;
+    }
+
+    public int getIs720p() {
+        return is720p;
+    }
 
     public void setPeople(People people) {
-         this.people = people;
-     }
-     public People getPeople() {
-         return people;
-     }
+        this.people = people;
+    }
+
+    public People getPeople() {
+        return people;
+    }
 
     public void setDisplayBarrage(boolean displayBarrage) {
-         this.displayBarrage = displayBarrage;
-     }
-     public boolean getDisplayBarrage() {
-         return displayBarrage;
-     }
+        this.displayBarrage = displayBarrage;
+    }
+
+    public boolean getDisplayBarrage() {
+        return displayBarrage;
+    }
 
     public void setPreviewImageUrl(String previewImageUrl) {
-         this.previewImageUrl = previewImageUrl;
-     }
-     public String getPreviewImageUrl() {
-         return previewImageUrl;
-     }
+        this.previewImageUrl = previewImageUrl;
+    }
+
+    public String getPreviewImageUrl() {
+        return previewImageUrl;
+    }
 
     public void setPublishDate(String publishDate) {
-         this.publishDate = publishDate;
-     }
-     public String getPublishDate() {
-         return publishDate;
-     }
+        this.publishDate = publishDate;
+    }
+
+    public String getPublishDate() {
+        return publishDate;
+    }
 
     public void setFormatIssueTime(String formatIssueTime) {
-         this.formatIssueTime = formatIssueTime;
-     }
-     public String getFormatIssueTime() {
-         return formatIssueTime;
-     }
+        this.formatIssueTime = formatIssueTime;
+    }
+
+    public String getFormatIssueTime() {
+        return formatIssueTime;
+    }
 
     public void setDurationSec(int durationSec) {
-         this.durationSec = durationSec;
-     }
-     public int getDurationSec() {
-         return durationSec;
-     }
+        this.durationSec = durationSec;
+    }
+
+    public int getDurationSec() {
+        return durationSec;
+    }
 
     public void setPagePublishStatus(String pagePublishStatus) {
-         this.pagePublishStatus = pagePublishStatus;
-     }
-     public String getPagePublishStatus() {
-         return pagePublishStatus;
-     }
+        this.pagePublishStatus = pagePublishStatus;
+    }
+
+    public String getPagePublishStatus() {
+        return pagePublishStatus;
+    }
 
     public void setScore(String score) {
-         this.score = score;
-     }
-     public String getScore() {
-         return score;
-     }
+        this.score = score;
+    }
+
+    public String getScore() {
+        return score;
+    }
 
     public class Categories {
 
@@ -599,9 +651,11 @@ public class IQiYiVideoBaseInfoBean extends IQiYiBaseBean{
 
         private int qipuId;
         private int parentId;
+
         public void setId(int id) {
             this.id = id;
         }
+
         public int getId() {
             return id;
         }
@@ -609,6 +663,7 @@ public class IQiYiVideoBaseInfoBean extends IQiYiBaseBean{
         public void setName(String name) {
             this.name = name;
         }
+
         public String getName() {
             return name;
         }
@@ -616,6 +671,7 @@ public class IQiYiVideoBaseInfoBean extends IQiYiBaseBean{
         public void setUrl(String url) {
             this.url = url;
         }
+
         public String getUrl() {
             return url;
         }
@@ -623,6 +679,7 @@ public class IQiYiVideoBaseInfoBean extends IQiYiBaseBean{
         public void setSubType(int subType) {
             this.subType = subType;
         }
+
         public int getSubType() {
             return subType;
         }
@@ -630,6 +687,7 @@ public class IQiYiVideoBaseInfoBean extends IQiYiBaseBean{
         public void setSubName(String subName) {
             this.subName = subName;
         }
+
         public String getSubName() {
             return subName;
         }
@@ -637,6 +695,7 @@ public class IQiYiVideoBaseInfoBean extends IQiYiBaseBean{
         public void setLevel(int level) {
             this.level = level;
         }
+
         public int getLevel() {
             return level;
         }
@@ -644,6 +703,7 @@ public class IQiYiVideoBaseInfoBean extends IQiYiBaseBean{
         public void setQipuId(int qipuId) {
             this.qipuId = qipuId;
         }
+
         public int getQipuId() {
             return qipuId;
         }
@@ -651,6 +711,7 @@ public class IQiYiVideoBaseInfoBean extends IQiYiBaseBean{
         public void setParentId(int parentId) {
             this.parentId = parentId;
         }
+
         public int getParentId() {
             return parentId;
         }
@@ -670,9 +731,11 @@ public class IQiYiVideoBaseInfoBean extends IQiYiBaseBean{
         private String id;
         private String name;
         private String image_url;
+
         public void setId(String id) {
             this.id = id;
         }
+
         public String getId() {
             return id;
         }
@@ -680,6 +743,7 @@ public class IQiYiVideoBaseInfoBean extends IQiYiBaseBean{
         public void setName(String name) {
             this.name = name;
         }
+
         public String getName() {
             return name;
         }
@@ -687,6 +751,7 @@ public class IQiYiVideoBaseInfoBean extends IQiYiBaseBean{
         public void setImage_url(String image_url) {
             this.image_url = image_url;
         }
+
         public String getImage_url() {
             return image_url;
         }
@@ -708,9 +773,11 @@ public class IQiYiVideoBaseInfoBean extends IQiYiBaseBean{
         private String name;
         private String image_url;
         private List<String> character;
+
         public void setId(long id) {
             this.id = id;
         }
+
         public long getId() {
             return id;
         }
@@ -718,6 +785,7 @@ public class IQiYiVideoBaseInfoBean extends IQiYiBaseBean{
         public void setName(String name) {
             this.name = name;
         }
+
         public String getName() {
             return name;
         }
@@ -725,6 +793,7 @@ public class IQiYiVideoBaseInfoBean extends IQiYiBaseBean{
         public void setImage_url(String image_url) {
             this.image_url = image_url;
         }
+
         public String getImage_url() {
             return image_url;
         }
@@ -732,6 +801,7 @@ public class IQiYiVideoBaseInfoBean extends IQiYiBaseBean{
         public void setCharacter(List<String> character) {
             this.character = character;
         }
+
         public List<String> getCharacter() {
             return character;
         }
@@ -770,9 +840,11 @@ public class IQiYiVideoBaseInfoBean extends IQiYiBaseBean{
         private List<Director> host;
         private List<Director> guest;
         private List<Main_charactor> main_charactor;
+
         public void setDirector(List<Director> director) {
             this.director = director;
         }
+
         public List<Director> getDirector() {
             return director;
         }
@@ -780,6 +852,7 @@ public class IQiYiVideoBaseInfoBean extends IQiYiBaseBean{
         public void setMain_charactor(List<Main_charactor> main_charactor) {
             this.main_charactor = main_charactor;
         }
+
         public List<Main_charactor> getMain_charactor() {
             return main_charactor;
         }
