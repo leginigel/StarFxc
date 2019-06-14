@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -130,15 +131,18 @@ public class ExtTabCommonFragment extends ExtBaseFragment{
           @Override
           public void onFocusChange(View v, boolean hasFocus) {
             ConstraintLayout mLayout = v.findViewById(R.id.ext_view_items_container);
+            TextView vi = v.findViewById(R.id.ext_contents_textview);
 
             if (hasFocus){
               mLayout.setBackground(getResources().getDrawable(R.drawable.ext_content_bolder_focus));
+              vi.setEllipsize(TextUtils.TruncateAt.MARQUEE);
+              vi.setSelected(true);
               mLayout.setPadding(mItemPaddingPixel,mItemPaddingPixel,mItemPaddingPixel,mItemPaddingPixel);
-              //mVideoText.setBackground(getResources().getDrawable(R.drawable.ext_content_bolder_focus));
             }else {
               mLayout.setBackground(getResources().getDrawable(R.drawable.ext_content_bolder_normal));
+              vi.setEllipsize(TextUtils.TruncateAt.END);
+              vi.setSelected(false);
               mLayout.setPadding(mItemPaddingPixel,mItemPaddingPixel,mItemPaddingPixel,mItemPaddingPixel);
-              //mVideoText.setBackground(getResources().getDrawable(R.drawable.ext_content_bolder_normal));
             }
           }
         });
