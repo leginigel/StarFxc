@@ -302,6 +302,19 @@ public class IQiYiMovieBean extends IQiYiBaseBean implements Serializable {
         this.formatPeriod = formatPeriod;
     }
 
+    @Override
+    public String getId() {
+        if(tvId!=null)
+        {
+            return tvId;
+        }else if(albumId!=null)
+        {
+            return albumId;
+        }else{
+            return null;
+        }
+    }
+
 
     public class Role implements Serializable{
 

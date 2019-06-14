@@ -1,5 +1,7 @@
 
 package com.stars.tv.bean;
 
-public class IQiYiBaseBean {
+public abstract class IQiYiBaseBean {
+
+    public abstract String getId();
 }

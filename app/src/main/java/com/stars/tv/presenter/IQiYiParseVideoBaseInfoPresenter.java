@@ -2,7 +2,6 @@ package com.stars.tv.presenter;
 
 import com.google.gson.Gson;
 import com.stars.tv.bean.IQiYiVideoBaseInfoBean;
-import com.stars.tv.bean.IQiYiVideoBaseInfoWithUrlBean;
 import com.stars.tv.server.RetrofitFactory;
 import com.stars.tv.server.RetrofitService;
 import com.stars.tv.server.RxManager;
@@ -16,7 +15,12 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
+import java.io.IOException;
+
 import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
+import io.reactivex.functions.Function;
+import io.reactivex.observers.DisposableObserver;
 import okhttp3.ResponseBody;
 
 public class IQiYiParseVideoBaseInfoPresenter {
@@ -54,20 +58,54 @@ public class IQiYiParseVideoBaseInfoPresenter {
         },Throwable ->listener.error(Throwable.toString())));
     }
 
-    public void requestIQiYiVideoBaseInfoWithUrl(String playUrl, CallBack<IQiYiVideoBaseInfoWithUrlBean> listener) {
+    public void requestIQiYiVideoBaseInfoWithUrl(String playUrl, CallBack<IQiYiVideoBaseInfoBean> listener) {
 
-        RxManager.add(getIQiYiBaseUrl(playUrl).subscribe(responseBody -> {
-            Document doc = Jsoup.parse(responseBody.string());
-            IQiYiVideoBaseInfoWithUrlBean bean;
-            if (null!=doc){
-                Elements lis = doc.select("div[id=iqiyi-main]").select("div[is=i71-play]");
-                String pageinfo = lis.attr(":page-info");
-                bean = new Gson().fromJson(pageinfo, IQiYiVideoBaseInfoWithUrlBean.class);
-                if (listener != null) {
-                    listener.success(bean);
+        getIQiYiBaseUrl(playUrl)
+                .flatMap((Function<ResponseBody, ObservableSource<ResponseBody>>) responseBody -> {
+                    Document doc = Jsoup.parse(responseBody.string());
+                    String tvId = "";
+                    if (null != doc) {
+                        Elements lis = doc.select("div[id=iqiyi-main]").select("div[is=i71-play]");
+                        String pageinfo = lis.attr(":page-info");
+                        JSONObject root = new JSONObject(pageinfo);
+                        tvId = root.getString("tvId");
+                    }
+                    return getIQiYiPostConsumerUrl(tvId);
+                }).subscribe(new DisposableObserver<ResponseBody>() {
+            @Override
+            public void onNext(ResponseBody responseBody) {
+                IQiYiVideoBaseInfoBean bean;
+                try {
+                    JSONObject root = new JSONObject(responseBody.string());
+                    String code = root.getString("code");
+                    if (!code.equals("A00000")) {
+                        //error
+                        listener.error("返回值错误");
+                    }
+
+                    String data = root.getString("data");
+                    bean = new Gson().fromJson(data, IQiYiVideoBaseInfoBean.class);
+
+                    if (listener != null) {
+                        listener.success(bean);
+                    }
+                }catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
-        }, Throwable ->listener.error(Throwable.toString())));
+
+            @Override
+            public void onError(Throwable e) {
+                listener.error(e.toString());
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        });
     }
 
 }

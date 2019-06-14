@@ -5,6 +5,7 @@ import java.util.List;
 
 public class IQiYiTopListBean extends IQiYiBaseBean implements Serializable {
     private String album_id;
+    private String tv_id;
     private int album_channel;
     private String album_name;
     private String album_play_url;
@@ -32,7 +33,8 @@ public class IQiYiTopListBean extends IQiYiBaseBean implements Serializable {
     @Override
     public String toString() {
         return "IQiYiTopListBean{" +
-                "album_id=" + album_id +
+                "album_id='" + album_id + '\'' +
+                ", tv_id='" + tv_id + '\'' +
                 ", album_channel=" + album_channel +
                 ", album_name='" + album_name + '\'' +
                 ", album_play_url='" + album_play_url + '\'' +
@@ -46,7 +48,7 @@ public class IQiYiTopListBean extends IQiYiBaseBean implements Serializable {
                 ", period='" + period + '\'' +
                 ", charge_pay_mark=" + charge_pay_mark +
                 ", vid='" + vid + '\'' +
-                ", sns_score=" + sns_score +
+                ", sns_score='" + sns_score + '\'' +
                 ", is_solo=" + is_solo +
                 ", is_juji=" + is_juji +
                 ", is_source=" + is_source +
@@ -57,6 +59,19 @@ public class IQiYiTopListBean extends IQiYiBaseBean implements Serializable {
                 ", album_rank_trend=" + album_rank_trend +
                 ", hot_idx=" + hot_idx +
                 '}';
+    }
+
+    @Override
+    public String getId() {
+        if(tv_id!=null)
+        {
+            return tv_id;
+        }else if(album_id!=null)
+        {
+            return album_id;
+        }else{
+            return null;
+        }
     }
 
     public void setAlbum_id(String album_id) {
@@ -225,6 +240,14 @@ public class IQiYiTopListBean extends IQiYiBaseBean implements Serializable {
     }
     public int getHot_idx() {
         return hot_idx;
+    }
+
+    public String getTv_id() {
+        return tv_id;
+    }
+
+    public void setTv_id(String tv_id) {
+        this.tv_id = tv_id;
     }
 
     public class Album_main_actor {

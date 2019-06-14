@@ -50,4 +50,9 @@ public class IQiYiBannerInfoBean extends IQiYiBaseBean implements Serializable {
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }
+
+    @Override
+    public String getId() {
+        return null;
+    }
 }

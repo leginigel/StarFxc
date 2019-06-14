@@ -133,6 +133,19 @@ public class IQiYiVideoBaseInfoBean extends IQiYiBaseBean{
                 '}';
     }
 
+    @Override
+    public String getId() {
+        if(tvId!=null)
+        {
+            return tvId;
+        }else if(albumId!=null)
+        {
+            return albumId;
+        }else{
+            return null;
+        }
+    }
+
 
     public void setTvId(String tvId) {
          this.tvId = tvId;
