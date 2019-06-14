@@ -39,23 +39,6 @@ public class YouTubeCardPresenter extends Presenter {
         mTopNav = ((FragmentActivity) mContext).findViewById(R.id.top_nav);
         LayoutInflater inflater = LayoutInflater.from(mContext);
         View view = inflater.inflate(R.layout.card_image, viewGroup, false);
-
-//        CustomCardView customCardView = new CustomCardView(mContext);
-//        customCardView.setNextFocusLeftId(R.id.home_btn);
-//        customCardView.setCardType(ImageCardView.CARD_TYPE_INFO_UNDER);
-//        customCardView.setInfoVisibility(BaseCardView.CARD_REGION_VISIBLE_ACTIVATED);
-//        customCardView.setFocusable(true);
-//        customCardView.setFocusableInTouchMode(true);
-//        customCardView.setMainImageDimensions(500, 281);
-//        customCardView.setInfoAreaBackgroundColor(mContext.getResources().getColor(R.color.background));
-//        customCardView.setBackgroundColor(mContext.getResources().getColor(R.color.card_loading));
-//
-//        ((TextView) customCardView.findViewById(R.id.title_text)).setMaxLines(2);
-//        ((TextView) customCardView.findViewById(R.id.title_text)).setTextSize(20);
-//        ((TextView) customCardView.findViewById(R.id.content_text)).setLines(2);
-//        ((TextView) customCardView.findViewById(R.id.content_text)).setTextSize(14);
-//        ((TextView) customCardView.findViewById(R.id.content_text))
-//                .setTextColor(mContext.getResources().getColor(R.color.card_content));
         return new CardViewHolder(view);
     }
 
@@ -91,7 +74,7 @@ public class YouTubeCardPresenter extends Presenter {
         Glide.with(mContext)
                 .asBitmap()
 //                .placeholder(mContext.getResources().getDrawable(R.drawable.ic_folder_24dp))
-                .load("https://i.ytimg.com/vi/"+ youTubeVideo.getId() +"/0.jpg")
+                .load(youTubeVideo.getId() != null ? "https://i.ytimg.com/vi/"+ youTubeVideo.getId() +"/0.jpg" : null)
                 .into(imgCard.getMainImageView());
     }
 
@@ -106,6 +89,9 @@ public class YouTubeCardPresenter extends Presenter {
         switch (((YoutubeFragment) mFragment).getTabCategory()){
             case Recommended:
                 cardViewHolder.view.setNextFocusUpId(R.id.recommend_btn);
+                break;
+            case Latest:
+                cardViewHolder.view.setNextFocusUpId(R.id.latest_btn);
                 break;
             case Music:
                 cardViewHolder.view.setNextFocusUpId(R.id.music_btn);
@@ -144,7 +130,23 @@ public class YouTubeCardPresenter extends Presenter {
     }
 
     public void setPressBack(View v){
-        mTopNav.requestFocus();
+        switch (((YoutubeFragment) mFragment).getTabCategory()){
+            case Recommended:
+                mTopNav.getChildAt(0).requestFocus();
+                break;
+            case Latest:
+                mTopNav.getChildAt(1).requestFocus();
+                break;
+            case Music:
+                mTopNav.getChildAt(2).requestFocus();
+                break;
+            case Entertainment:
+                mTopNav.getChildAt(3).requestFocus();
+                break;
+            case Gaming:
+                mTopNav.getChildAt(4).requestFocus();
+                break;
+        }
         ImageCardView imgCard = v.findViewById(R.id.img_card_view);
         imgCard.setInfoAreaBackgroundColor(mContext.getResources().getColor(R.color.background));
         ((TextView) imgCard.findViewById(R.id.title_text)).setTextColor(Color.WHITE);

@@ -5,9 +5,12 @@ import android.graphics.Color;
 import android.support.v17.leanback.widget.Presenter;
 import android.support.v4.app.FragmentActivity;
 import android.text.Html;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import com.stars.tv.R;
 import com.stars.tv.youtube.data.YouTubeVideo;
@@ -36,6 +39,14 @@ public class ControlCardPresenter extends YouTubeCardPresenter {
         cardViewHolder.getImageCardView().setBackgroundColor(Color.TRANSPARENT);
         if(youTubeVideo.getId() != null){
             cardViewHolder.getImageCardView().setTitleText(Html.fromHtml(youTubeVideo.getTitle()));
+            TextView stamp = cardViewHolder.view.findViewById(R.id.img_card_time_stamp);
+            FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) stamp.getLayoutParams();
+            params.topMargin = 195;
+            stamp.setLayoutParams(params);
+            TextView contentText = cardViewHolder.getImageCardView().findViewById(R.id.content_text);
+            contentText.setMaxLines(1);
+            contentText.setLines(1);
+            contentText.setEllipsize(TextUtils.TruncateAt.MARQUEE);
             cardViewHolder.getImageCardView().setContentText(youTubeVideo.getChannel() + " ‧ "
                     + Utils.CountConverter(youTubeVideo.getNumber_views()) +" views");
         }
