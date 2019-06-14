@@ -55,4 +55,9 @@ public class IQiYiBannerInfoBean extends IQiYiBaseBean implements Serializable {
     public String getId() {
         return null;
     }
+
+    @Override
+    public String getUrl() {
+        return playUrl;
+    }
 }

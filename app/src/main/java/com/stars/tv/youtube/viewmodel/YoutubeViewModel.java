@@ -449,7 +449,7 @@ public class YoutubeViewModel extends ViewModel {
     @Override
     protected void onCleared() {
         super.onCleared();
-        disposable.clear();
+//        disposable.clear();
     }
 
     public boolean getRelated() {

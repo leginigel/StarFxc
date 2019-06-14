@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/button_chi"
+            android:layout_width="75dp"
+            android:layout_height="30dp"
+            android:layout_marginRight="10dp"
+            android:background="@color/color_pink"
+            android:text="华语"
+            android:textColor="#FFF8F8F8" />
+
+        <Button
+            android:id="@+id/button_hon"
+            android:layout_width="75dp"
+            android:layout_height="30dp"
+            android:layout_marginRight="10dp"
+            android:background="@color/color_orange"
+            android:text="香港"
+            android:textColor="#FFF8F8F8" />
+
+        <Button
+            android:id="@+id/button_ame"
+            android:layout_width="75dp"
+            android:layout_height="30dp"
+            android:layout_marginRight="10dp"
+            android:background="@color/color_yellow"
+            android:text="美国"
+            android:textColor="#FFF8F8F8" />
+
+        <Button
+            android:id="@+id/button_eur"
+            android:layout_width="75dp"
+            android:layout_height="30dp"
+            android:layout_marginRight="10dp"
+            android:background="@color/color_green"
+            android:text="欧洲"
+            android:textColor="#FFF8F8F8" />
+
+        <Button
+            android:id="@+id/button_jap"
+            android:layout_width="75dp"
+            android:layout_height="30dp"
+            android:layout_marginRight="10dp"
+            android:background="@color/color_cyan"
+            android:text="日本"
+            android:textColor="#FFF8F8F8" />
+
+        <Button
+            android:id="@+id/button_kor"
+            android:layout_width="75dp"
+            android:layout_height="30dp"
+            android:layout_marginRight="10dp"
+            android:background="@color/color_blue"
+            android:text="韩国"
+            android:textColor="#FFF8F8F8" />
+
+        <Button
+            android:id="@+id/button_tha"
+            android:layout_width="75dp"
+            android:layout_height="30dp"
+            android:layout_marginRight="10dp"
+            android:background="@color/color_purple"
+            android:text="全部"
+            android:textColor="#FFF8F8F8" />
+
+    </LinearLayout>
+    <LinearLayout android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        xmlns:android="http://schemas.android.com/apk/res/android">
+
+        <Button
+            android:text="喜剧"
+            android:layout_width="75dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="20dp"
+            android:textColor="#FFF8F8F8"
+            android:textSize="10dp"
+            android:background="@color/color_pink"
+            android:layout_below="@+id/button_ame"
+            android:id="@+id/button_com" />
+
+        <Button
+            android:text="惊悚"
+            android:layout_width="75dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="20dp"
+            android:textColor="#FFF8F8F8"
+            android:textSize="10dp"
+            android:background="@color/color_orange"
+            android:layout_below="@+id/button_hon"
+            android:id="@+id/button_pan" />
+
+        <Button
+            android:text="悲剧"
+            android:layout_width="75dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="20dp"
+            android:textColor="#FFF8F8F8"
+            android:textSize="10dp"
+            android:background="@color/color_yellow"
+            android:layout_below="@+id/button_ame"
+            android:id="@+id/button_tra" />
+
+        <Button
+            android:text="爱情"
+            android:layout_width="75dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="20dp"
+            android:textColor="#FFF8F8F8"
+            android:textSize="10dp"
+            android:background="@color/color_green"
+            android:id="@+id/button_lov"
+            android:layout_below="@+id/button_eur" />
+
+        <Button
+            android:text="动作"
+            android:layout_width="75dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="20dp"
+            android:textColor="#FFF8F8F8"
+            android:textSize="10dp"
+            android:background="@color/color_cyan"
+            android:id="@+id/button_mov"
+            android:layout_below="@+id/button_jap" />
+
+        <Button
+            android:text="犯罪"
+            android:layout_width="75dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="20dp"
+            android:textColor="#FFF8F8F8"
+            android:textSize="10dp"
+            android:background="@color/color_blue"
+            android:id="@+id/button_cri"
+            android:layout_below="@+id/button_kor" />
+
+        <Button
+            android:text="全部"
+            android:layout_width="75dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="20dp"
+            android:textColor="#FFF8F8F8"
+            android:textSize="10dp"
+            android:background="@color/color_purple"
+            android:id="@+id/button_ter"
+            android:layout_below="@+id/button_tha" />
+    </LinearLayout>
+</LinearLayout>

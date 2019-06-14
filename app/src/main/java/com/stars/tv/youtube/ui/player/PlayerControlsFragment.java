@@ -197,12 +197,13 @@ public class PlayerControlsFragment extends DialogFragment {
     });
     playButton.setOnKeyListener((v, keyCode, event) -> {
       if(event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_DPAD_DOWN){
+        controlRowFragment.setExpand(true);
         ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) mControlRow.getLayoutParams();
-        layoutParams.height = 600;
+        float factor = getResources().getDisplayMetrics().density;
+        layoutParams.height = (int) (300 * factor);
         mControlRow.setLayoutParams(layoutParams);
         mConstraint.setVisibility(View.INVISIBLE);
         controlRowFragment.getVerticalGridView().requestFocus();
-        controlRowFragment.setExpand(true);
         CountDown = 10;
       }
       return false;
@@ -225,7 +226,8 @@ public class PlayerControlsFragment extends DialogFragment {
 
   public void closeRow(){
     ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) mControlRow.getLayoutParams();
-    layoutParams.height = 180;
+    float factor = getResources().getDisplayMetrics().density;
+    layoutParams.height = (int) (75 * factor);
     mControlRow.setLayoutParams(layoutParams);
     mConstraint.setVisibility(View.VISIBLE);
     controlRowFragment.setExpand(false);
