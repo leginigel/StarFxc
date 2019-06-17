@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.LiveTVActivity">
+
+    <FrameLayout
+        android:id="@+id/live_tv_player"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:focusable="false">
+
+        <com.stars.tv.widget.media.IjkVideoView
+            android:id="@+id/live_tv_player_video_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TableLayout
+            android:id="@+id/live_tv_player_hud_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:padding="8dp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/live_tv_player_loading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:visibility="gone" />
+
+    </FrameLayout>
+
+    <!-- 频道列表 -->
+    <RelativeLayout
+        android:id="@+id/live_tv_channel_list"
+        android:layout_width="210dp"
+        android:layout_height="match_parent"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/ic_translucent_round_bg"
+        android:padding="5dp"
+        android:visibility="gone">
+
+        <RelativeLayout
+            android:id="@+id/live_tv_channel_list_title"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:focusable="false"
+            android:focusableInTouchMode="false">
+
+            <ImageView
+                android:id="@+id/live_tv_channel_list_title_arrow_left"
+                android:layout_width="14dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentStart="true"
+                android:contentDescription="@null"
+                android:src="@drawable/ic_arrow_left" />
+
+            <TextView
+                android:id="@+id/live_tv_channel_list_title_text"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_toStartOf="@+id/live_tv_channel_list_title_arrow_right"
+                android:layout_toEndOf="@+id/live_tv_channel_list_title_arrow_left"
+                android:gravity="center"
+                android:textColor="@color/color_all_white"
+                android:textSize="14sp" />
+
+            <ImageView
+                android:id="@+id/live_tv_channel_list_title_arrow_right"
+                android:layout_width="14dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentEnd="true"
+                android:contentDescription="@null"
+                android:src="@drawable/ic_arrow_right" />
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/live_tv_channel_list_tips"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/live_tv_channel_list_title"
+            android:gravity="center"
+            android:textColor="@color/color_all_white"
+            android:textSize="7sp"
+            tools:ignore="SmallSp" />
+
+        <android.support.v17.leanback.widget.VerticalGridView
+            android:id="@+id/live_tv_channel_list_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/live_tv_channel_list_tips"
+            android:layout_marginTop="3dp"
+            android:focusable="true"
+            android:focusableInTouchMode="true" />
+    </RelativeLayout>
+
+    <!-- 频道Info Banner -->
+    <RelativeLayout
+        android:id="@+id/live_tv_info_banner"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_gravity="center|bottom"
+        android:layout_marginBottom="40dp"
+        android:background="@drawable/ic_translucent_round_bg"
+        android:padding="3dp"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/live_tv_info_banner_channel_logo"
+            android:layout_width="25dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="5dp"
+            android:contentDescription="@null"
+            android:gravity="center"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_logo_tv" />
+
+        <TextView
+            android:id="@+id/live_tv_info_banner_channel_num"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_toEndOf="@+id/live_tv_info_banner_channel_logo"
+            android:gravity="center"
+            android:textColor="@color/color_all_white"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/live_tv_info_banner_channel_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/live_tv_info_banner_channel_num"
+            android:layout_marginStart="5dp"
+            android:layout_toEndOf="@+id/live_tv_info_banner_channel_num"
+            android:gravity="start|center"
+            android:minWidth="80dp"
+            android:textColor="@color/color_all_white"
+            android:textSize="14sp" />
+
+        <TextClock
+            android:id="@+id/live_tv_info_banner_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="2dp"
+            android:layout_toEndOf="@+id/live_tv_info_banner_channel_name"
+            android:format12Hour="hh:mm aa"
+            android:format24Hour="HH:mm"
+            android:gravity="start|center"
+            android:textColor="@color/color_all_white"
+            android:textSize="8sp"
+            tools:ignore="SmallSp" />
+
+        <TextView
+            android:id="@+id/live_tv_info_banner_epg_current_tips"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/live_tv_info_banner_channel_name"
+            android:layout_marginStart="5dp"
+            android:layout_toEndOf="@+id/live_tv_info_banner_channel_logo"
+            android:gravity="start|center"
+            android:text="@string/str_live_tv_epg_current_tips"
+            android:textColor="@color/color_all_white"
+            android:textSize="8sp"
+            tools:ignore="SmallSp" />
+
+        <TextView
+            android:id="@+id/live_tv_info_banner_epg_current"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/live_tv_info_banner_channel_name"
+            android:layout_alignEnd="@id/live_tv_info_banner_time"
+            android:layout_marginStart="2dp"
+            android:layout_toEndOf="@+id/live_tv_info_banner_epg_current_tips"
+            android:ellipsize="marquee"
+            android:gravity="start|center"
+            android:singleLine="true"
+            android:text="@string/str_live_tv_epg_info_loading"
+            android:textColor="@color/color_all_white"
+            android:textSize="8sp"
+            tools:ignore="SmallSp" />
+
+        <TextView
+            android:id="@+id/live_tv_info_banner_epg_next_tips"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="5dp"
+            android:layout_marginBottom="2dp"
+            android:layout_toEndOf="@+id/live_tv_info_banner_channel_logo"
+            android:ellipsize="marquee"
+            android:gravity="start|center"
+            android:singleLine="true"
+            android:text="@string/str_live_tv_epg_next_tips"
+            android:textColor="@color/color_all_white"
+            android:textSize="8sp"
+            tools:ignore="SmallSp" />
+
+        <TextView
+            android:id="@+id/live_tv_info_banner_epg_next"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@id/live_tv_info_banner_time"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="2dp"
+            android:layout_marginBottom="2dp"
+            android:layout_toEndOf="@+id/live_tv_info_banner_epg_next_tips"
+            android:ellipsize="marquee"
+            android:gravity="start|center"
+            android:singleLine="true"
+            android:text="@string/str_live_tv_epg_info_loading"
+            android:textColor="@color/color_all_white"
+            android:textSize="8sp"
+            tools:ignore="SmallSp" />
+
+        <View
+            android:id="@+id/live_tv_info_banner_divide_line"
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_toEndOf="@+id/live_tv_info_banner_time"
+            android:background="@color/color_white_50a" />
+
+        <TextView
+            android:id="@+id/live_tv_info_banner_tips_up_down"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="5dp"
+            android:layout_toEndOf="@+id/live_tv_info_banner_divide_line"
+            android:drawableStart="@drawable/ic_arrow_up_down"
+            android:drawablePadding="2dp"
+            android:gravity="start|center"
+            android:text="@string/str_live_tv_tips_up_down"
+            android:textColor="@color/color_all_white"
+            android:textSize="8sp"
+            tools:ignore="SmallSp" />
+
+        <TextView
+            android:id="@+id/live_tv_info_banner_tips_ok"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="8dp"
+            android:layout_toEndOf="@+id/live_tv_info_banner_divide_line"
+            android:drawableStart="@drawable/ic_ok"
+            android:drawablePadding="2dp"
+            android:gravity="start|center"
+            android:text="@string/str_live_tv_tips_ok"
+            android:textColor="@color/color_all_white"
+            android:textSize="8sp"
+            tools:ignore="SmallSp" />
+    </RelativeLayout>
+</FrameLayout>

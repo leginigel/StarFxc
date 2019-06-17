@@ -81,7 +81,14 @@
     <string name="str_code_error">加载失败！错误代码:( %1$s )</string>
     <string name="str_network_error">网络连接失败，请检查网络！</string>
     <string name="str_live_tv_epg_data">正在播出: %1$s </string>
+    <string name="str_live_tv_epg_current_tips">正在播出:</string>
+    <string name="str_live_tv_epg_next_tips">即将播出:</string>
     <string name="str_live_tv_epg_info_loading">正在获取节目信息</string>
+    <string name="str_live_tv_channel_list_tips_default">左右键切换列表,长按OK键增/删喜爱列表</string>
+    <string name="str_live_tv_channel_list_tips_history">长按OK键增/删喜爱列表，菜单键清空历史列表</string>
+    <string name="str_live_tv_channel_list_tips_favorite">左右键切换列表，长按OK键移除喜爱列表</string>
+    <string name="str_live_tv_tips_ok">OK键显示列表</string>
+    <string name="str_live_tv_tips_up_down">上下键切换频道</string>
     <string name="str_live_tv_epg_empty">未获取到节目信息</string>
     <string name="str_live_tv_channel_list_history">观看历史</string>
     <string name="str_live_tv_channel_list_all">全部</string>

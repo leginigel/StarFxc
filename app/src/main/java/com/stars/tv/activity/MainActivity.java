@@ -277,7 +277,7 @@ public class MainActivity extends BaseActivity {
         startActivity(intent);
       }
     });
-        pageVp.setOffscreenPageLimit(1); // 缓存1个页面
+        pageVp.setOffscreenPageLimit(2); // 缓存2个页面
     pageVp.setAdapter(mFragAdapter);
   }
 

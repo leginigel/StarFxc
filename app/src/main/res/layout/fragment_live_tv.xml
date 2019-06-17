@@ -102,10 +102,12 @@
             android:id="@+id/live_tv_info_banner_epg_text"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_alignBaseline="@+id/live_tv_info_banner_channel_name"
             android:layout_marginStart="10dp"
             android:layout_toEndOf="@+id/live_tv_info_banner_channel_name"
-            android:layout_alignBaseline="@+id/live_tv_info_banner_channel_name"
+            android:ellipsize="marquee"
             android:gravity="start"
+            android:singleLine="true"
             android:textColor="@color/color_all_white"
             android:textSize="12sp" />
 

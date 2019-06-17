@@ -9,6 +9,8 @@ import android.net.NetworkInfo;
 
 import com.stars.tv.MyApplication;
 
+import java.io.IOException;
+
 /**
  * 网络工具类
  *
@@ -32,6 +34,26 @@ public class NetUtil {
             if (null != info && info.isConnected()) {
                 return info.getState() == NetworkInfo.State.CONNECTED;
             }
+        }
+        return false;
+    }
+
+    public static boolean isAvailableByPing() {
+        String ip = "www.baidu.com";
+        Runtime runtime = Runtime.getRuntime();
+        Process ipProcess = null;
+        try {
+            //-c 后边跟随的是重复的次数，-w后边跟随的是超时的时间，单位是秒，不是毫秒，要不然也不会anr了
+            ipProcess = runtime.exec("ping -c 3 -w 2 "+ip);
+            int exitValue = ipProcess.waitFor();
+            return (exitValue == 0);
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        } finally {
+            if (ipProcess != null) {
+                ipProcess.destroy();
+            }
+            runtime.gc();
         }
         return false;
     }
