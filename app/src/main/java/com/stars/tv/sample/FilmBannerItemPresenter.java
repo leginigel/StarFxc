@@ -18,6 +18,9 @@ import java.util.Objects;
 import me.jessyan.autosize.AutoSizeConfig;
 import me.jessyan.autosize.utils.AutoSizeUtils;
 
+import static com.stars.tv.utils.Constants.EXT_VIDEO_TYPE;
+import static com.stars.tv.utils.Constants.VIDEO_TYPE_CINEMA;
+
 public class FilmBannerItemPresenter extends Presenter {
     private static final String TAG = "BannerItemPresenter";
     private static final int GRID_VIEW_LEFT_PX = 80;
@@ -58,6 +61,7 @@ public class FilmBannerItemPresenter extends Presenter {
 //                Toast.makeText(mContext,"click the Video",Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(mContext, VideoPreviewActivity.class);
                 intent.putExtra("videoBean", videoBean.toString());
+                intent.putExtra(EXT_VIDEO_TYPE, VIDEO_TYPE_CINEMA);
                 mContext.startActivity(intent);
             }
         });

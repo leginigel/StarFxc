@@ -37,7 +37,6 @@ import com.stars.tv.bean.IQiYiBannerInfoBean;
 import com.stars.tv.bean.IQiYiBaseBean;
 import com.stars.tv.bean.IQiYiM3U8Bean;
 import com.stars.tv.bean.IQiYiMovieBean;
-import com.stars.tv.bean.IQiYiTopListBean;
 import com.stars.tv.bean.IQiYiVideoBaseInfoBean;
 import com.stars.tv.fragment.MediaInfoListFragment;
 import com.stars.tv.presenter.IQiYiParseEpisodeListPresenter;
@@ -407,13 +406,7 @@ public class VideoPreviewActivity extends BaseActivity {
                 parseIQiYiRealM3U8WithTvId(tvId);
                 adapter.setSelectedPositions(Arrays.asList(position));
                 mEpisode = position;
-                LeanCloudStorage.updateIQiyHistory(mVideoBase,
-                        mEplisodeList.get(position), position + 1, new SaveCallback() {
-                            @Override
-                            public void done(AVException e) {
-                            }
-                        });
-            }
+           }
         });
         mHandler.postDelayed(new Runnable() {
             @Override
@@ -689,6 +682,14 @@ public class VideoPreviewActivity extends BaseActivity {
         intent.putExtra("currentPosition", mVideoView.getCurrentPosition());
         intent.putExtra("mEpisode", mEpisode);
 
+        if ( Integer.valueOf(mVideoBase.getVideoCount()) > 1 ) {
+            LeanCloudStorage.updateIQiyHistory(mVideoBase,
+              mEplisodeList.get(mEpisode), mEpisode + 1, new SaveCallback() {
+                  @Override
+                  public void done(AVException e) {
+                  }
+              });
+        }
         mCircleDrawable.stop();
         mVideoView.stopPlayback();
         mVideoView.release(true);
