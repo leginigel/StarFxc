@@ -111,6 +111,12 @@ public class YoutubeFragment extends Fragment {
                     button.setSelected(true);
                     mLeftNav.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
                 }
+                if(keyCode == KeyEvent.KEYCODE_BACK) {
+                    button.setSelected(true);
+                    mLeftNav.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
+                    mLeftNav.getChildAt(2).requestFocus();
+                    return true;
+                }
             }
             return false;
         });
@@ -121,10 +127,11 @@ public class YoutubeFragment extends Fragment {
             if(hasFocus) {
                 button.setSelected(false);
                 button.setTextColor(Color.BLACK);
-                if(getTabCategory() != category)
+                if(getTabCategory() != category) {
                     setTabCategory(category);
-                fm.beginTransaction()
-                        .replace(R.id.container_row, fragment).commit();
+                    fm.beginTransaction()
+                            .replace(R.id.container_row, fragment).commit();
+                }
                 mContainerRow.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
                 mLeftNav.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
             }
@@ -142,21 +149,6 @@ public class YoutubeFragment extends Fragment {
 
     public void setTabCategory(TabCategory category){
         this.mTab = category;
-//        switch (category){
-//            case Recommended:
-//                Log.d(TAG, "Fragment setTabCategory Recommended");
-//                setRows(mRecommendedChannel);
-//                break;
-//            case Latest:
-//                setRows(mLatestChannel);
-//                break;
-//            case Music:
-//                Log.d(TAG, "Fragment setTabCategory Music");
-//                setRows(mMusicChannel);
-//                break;
-//            case Entertainment:break;
-//            case Gaming:break;
-//        }
     }
 
     public TabCategory getTabCategory() {

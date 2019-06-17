@@ -76,6 +76,12 @@ public class NumberKeyboard extends Fragment {
                             OutId_Down = v.getId();
                         }
                     }
+                    if(keyCode == KeyEvent.KEYCODE_BACK){
+                        SearchFragment.KeyboardFocusId = v.getId();
+                        ((ViewGroup) getActivity().findViewById(R.id.left_nav)).getChildAt(1).requestFocus();
+                        ((SearchFragment) fragment).setFocus(SearchFragment.FocusLocation.Keyboard);
+                        return true;
+                    }
                 }
                 return false;
             });
