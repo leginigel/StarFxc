@@ -152,7 +152,7 @@ public class VideoPreviewActivity extends BaseActivity {
         setContentView(R.layout.activity_video_preview);
         scrollView = (ScrollView) findViewById(R.id.scrollView);
 
-        loading(2);
+        loading(View.VISIBLE);
         initView();
         videoBean = (IQiYiBaseBean) getIntent().getSerializableExtra("videoBean");
         Log.v("videoBean", videoBean.toString());
@@ -188,8 +188,8 @@ public class VideoPreviewActivity extends BaseActivity {
         Log.v("vvvVideoPreview1", mVideoPath);
         // init UI
         mMediaController = new AndroidMediaController(this, false);
-        mMediaController.clearFocus();
-        mMediaController.hide();
+//        mMediaController.clearFocus();
+        mMediaController.setVisibility(View.GONE);
         // init player
         IjkMediaPlayer.loadLibrariesOnce(null);
         IjkMediaPlayer.native_profileBegin("libijkplayer.so");
@@ -198,6 +198,7 @@ public class VideoPreviewActivity extends BaseActivity {
         mVideoView.setMediaController(mMediaController);
         mHudView = (TableLayout) findViewById(R.id.hud_view);
         mVideoView.setHudView(mHudView);
+        mVideoView.setOnPreparedListener(iMediaPlayer ->loading(View.INVISIBLE));
 
         pre_videoLayout = (FrameLayout) findViewById(R.id.pre_video);
         pre_videoLayout.setOnFocusChangeListener((view1, hasFocus) -> {
@@ -209,8 +210,9 @@ public class VideoPreviewActivity extends BaseActivity {
     }
 
     private void startPlay() {
+
         if (mVideoPath == "") {
-            Toast.makeText(this, "No Video Found! Press Back Button To Exit", Toast.LENGTH_LONG).show();
+            parseError();
         } else {
             mVideoView.setVideoURI(Uri.parse(mVideoPath));
             mVideoView.start();
@@ -282,17 +284,13 @@ public class VideoPreviewActivity extends BaseActivity {
 
         shareInfoForFragment();
 
-        if (mVideoPath != "") {
-            initMediaInfo();
-            if (Integer.valueOf(videoCount) > 1) {
-                initEpisodeList();
-            } else {
-                mEpisodeListView.setVisibility(View.GONE);
-            }
-
+        initMediaInfo();
+        if (Integer.valueOf(videoCount) > 1) {
+            initEpisodeList();
         } else {
-            parseError();
+            mEpisodeListView.setVisibility(View.GONE);
         }
+
     }
 
     private void getVideoInfo() {
@@ -403,6 +401,7 @@ public class VideoPreviewActivity extends BaseActivity {
         mEpisodeListView.setChildrenItemClickListener(new ChildrenAdapter.OnItemClickListener() {
             @Override
             public void onEpisodesItemClick(View view, int position) {
+                loading(View.VISIBLE);
                 tvId = mEplisodeList.get(position).getTvId();
                 parseIQiYiRealM3U8WithTvId(tvId);
                 adapter.setSelectedPositions(Arrays.asList(position));
@@ -491,7 +490,7 @@ public class VideoPreviewActivity extends BaseActivity {
                     // TODO Item点击事件
 //                    mVideoView.pause();
                     scrollView.scrollTo(0, 0);
-                    loading(2);
+                    loading(View.VISIBLE);
                     if (null != mVideoList.get(position).getUrl()) {
                         parseIQiYiVideoBaseInfoByURL(mVideoList.get(position).getUrl());
                     }
@@ -528,7 +527,6 @@ public class VideoPreviewActivity extends BaseActivity {
                     mVideoPath = list.get(0).getM3u();
                     Log.v("vvvVideoPreview3", mVideoPath);
                     startPlay();
-                    loading(1);
                 } else {
                     mVideoPath = "";
                     parseError();
@@ -559,7 +557,7 @@ public class VideoPreviewActivity extends BaseActivity {
             @Override
             public void success(List<IQiYiMovieBean> list) {
                 mEplisodeList.clear();
-                textLoading.setVisibility(View.GONE);
+                textLoading.setText("");
                 mEplisodeList.addAll(list);
                 ctvid = mEplisodeList.get(0).getTvId();
                 Log.v("vvvctvid", ctvid);
@@ -592,7 +590,7 @@ public class VideoPreviewActivity extends BaseActivity {
             @Override
             public void success(IQiYiVideoBaseInfoBean bean) {
                 mVideoBase = bean;
-                textLoading.setVisibility(View.GONE);
+                textLoading.setText("");
                 Log.v("parseIQiYiVideoBaseInfo", bean.toString());
                 mHandler.sendEmptyMessage(REFRESH_VideoBaseInfo);
             }
@@ -618,7 +616,7 @@ public class VideoPreviewActivity extends BaseActivity {
             @Override
             public void success(IQiYiVideoBaseInfoBean bean) {
                 mVideoBase = bean;
-                textLoading.setVisibility(View.GONE);
+                textLoading.setText("");
                 Log.v("parseIQiYiVideoBaseInfo", bean.toString());
                 mHandler.sendEmptyMessage(REFRESH_VideoBaseInfo);
             }
@@ -646,7 +644,7 @@ public class VideoPreviewActivity extends BaseActivity {
             @Override
             public void success(List<IQiYiMovieBean> list) {
                 mVideoList.clear();
-                textLoading.setVisibility(View.GONE);
+                textLoading.setText("");
                 mVideoList.addAll(list);
                 Log.v("VVVmVideoList", mVideoList.toString());
                 for (IQiYiMovieBean bean : list) {

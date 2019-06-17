@@ -1,23 +1,12 @@
 package com.stars.tv.activity;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.PopupWindow;
 import android.widget.TableLayout;
 import android.widget.TextView;
@@ -39,7 +28,6 @@ import com.stars.tv.widget.media.IjkVideoView;
 
 import android.os.Handler;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -62,6 +50,7 @@ public class FullPlaybackActivity extends BaseActivity {
     private TextView textLoading;
     private Circle mCircleDrawable;
 
+    private EpisodeListViewAdapter<String> adapter;
     private List<IQiYiMovieBean> mEplisodeList = new ArrayList<>();
     private String tvId, mVideoPath, name, albumId, latestOrder;
     private int currentPosition, mEpisode;
@@ -88,10 +77,11 @@ public class FullPlaybackActivity extends BaseActivity {
         latestOrder = getIntent().getStringExtra("latestOrder");
         currentPosition = getIntent().getIntExtra("currentPosition", 0);
         mEpisode = getIntent().getIntExtra("mEpisode", 0);
+        Log.v("FFFmEpisode",mEpisode+"");
 
         densityRatio = getResources().getDisplayMetrics().density; // 表示获取真正的密度
 
-        loading(2);
+        loading(View.VISIBLE);
         initVideoView();
         startPlay();
         parseIQiYiEpisodeList(albumId, Integer.valueOf(latestOrder), 1);
@@ -115,7 +105,16 @@ public class FullPlaybackActivity extends BaseActivity {
         mVideoView.setMediaController(mMediaController);
         mHudView = (TableLayout) findViewById(R.id.mhud_view);
         mVideoView.setHudView(mHudView);
-
+        mVideoView.setOnPreparedListener(iMediaPlayer -> loading(View.INVISIBLE));
+        mVideoView.setOnCompletionListener(new IMediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(IMediaPlayer mp) {
+                loading(View.VISIBLE);
+                mEpisode=mEpisode+1;
+                parseIQiYiRealM3U8WithTvId(mEplisodeList.get(mEpisode).getTvId());
+                adapter.setSelectedPositions(Arrays.asList(mEpisode));
+            }
+        });
     }
 
     private void startPlay() {
@@ -139,6 +138,12 @@ public class FullPlaybackActivity extends BaseActivity {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        mCircleDrawable.start();
+    }
+
+    @Override
     public void onStop() {
         super.onStop();
         mCircleDrawable.stop();
@@ -159,7 +164,8 @@ public class FullPlaybackActivity extends BaseActivity {
                     showOrHideEpisode();
                     if (!mEpisodeListView.isShown()) {
                         mEpisodeListView.setVisibility(View.VISIBLE);
-                        mEpisodeListView.requestFocus();
+//                        mEpisodeListView.requestFocus();
+                        adapter.setSelectedPositions(Arrays.asList(mEpisode));
                         return true;
                     }
                     break;
@@ -167,7 +173,8 @@ public class FullPlaybackActivity extends BaseActivity {
                     showOrHideEpisode();
                     if (!mEpisodeListView.isShown()) {
                         mEpisodeListView.setVisibility(View.VISIBLE);
-                        mEpisodeListView.requestFocus();
+//                        mEpisodeListView.requestFocus();
+                        adapter.setSelectedPositions(Arrays.asList(mEpisode));
                         return true;
                     }
                     break;
@@ -201,9 +208,7 @@ public class FullPlaybackActivity extends BaseActivity {
         Intent intent = new Intent();
         //把返回数据存入Intent
         intent.putExtra("currentPosition", mVideoView.getCurrentPosition());
-        Log.v("FFFcurrentPosition", mVideoView.getCurrentPosition() + "");
         intent.putExtra("currentEpisode", mEpisode);
-        Log.v("FFFcurrentEpisode", mEpisode + "");
         intent.putExtra("currentPath", mVideoPath);
         //设置返回数据
         FullPlaybackActivity.this.setResult(RESULT_OK, intent);
@@ -242,7 +247,7 @@ public class FullPlaybackActivity extends BaseActivity {
         final String[] groups = stringArrayList.toArray(new String[stringArrayList.size()]);
         Log.v("VideoPreviewgroups", stringArrayList.toString());
 
-        final EpisodeListViewAdapter<String> adapter = new EpisodeListViewAdapter<String>() {
+        adapter = new EpisodeListViewAdapter<String>() {
             @Override
             public List<String> getChildrenList() {
                 return Arrays.asList(episodes);
@@ -264,15 +269,16 @@ public class FullPlaybackActivity extends BaseActivity {
             }
         };
 
-//        adapter.setSelectedPositions(Arrays.asList(selectedPositions));
+//        adapter.setSelectedPositions(Arrays.asList(3));
         mEpisodeListView.setAdapter(adapter);
         mEpisodeListView.setChildrenItemClickListener(new ChildrenAdapter.OnItemClickListener() {
             @Override
             public void onEpisodesItemClick(View view, int position) {
+                loading(View.VISIBLE);
                 tvId = mEplisodeList.get(position).getTvId();
                 parseIQiYiRealM3U8WithTvId(tvId);
-                adapter.setSelectedPositions(Arrays.asList(position));
                 mEpisode = position;
+                adapter.setSelectedPositions(Arrays.asList(mEpisode));
             }
         });
 
@@ -302,13 +308,10 @@ public class FullPlaybackActivity extends BaseActivity {
             public void success(List<IQiYiM3U8Bean> list) {
                 //TODO 获取成功在此得到真实播放地址的List，可能会有HD,SD,1080P
                 mVideoPath = list.get(0).getM3u();
-                Log.v("vvvVideoPreview3", mVideoPath);
                 for (IQiYiM3U8Bean bean : list) {
-                    Log.v("vvvVideoPreviewM3U8", bean.toString());
+                    Log.v("VideoPreviewM3U8", bean.toString());
                 }
-//                initVideoView();       //Marked for Test
                 startPlay();
-                loading(1);
 
             }
 
