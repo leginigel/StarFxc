@@ -5,16 +5,16 @@ import android.support.annotation.NonNull;
 import java.io.Serializable;
 
 public class ExtVideoBean implements Serializable {
-  private String mVideoType;
+  private int mVideoType;
   private String mAlbumId;
   private String mVideoId;
   private String mVideoName;
   private String mVideoPlayUrl;
-  private String mVideoCurrentViewOrder;
-  private String mVideoLatestOrder;
-  private String mVideoCounter;
-  private String mVideoDescription;
-  private String mVideoImageUrl;
+  private String mAlbumImageUrl;
+  private int mVideoCurrentViewOrder;
+  private int mVideoLatestOrder;
+  private int mVideoCount;
+  private int mVideoPlayPosition;
 
   @NonNull
   @Override
@@ -25,18 +25,18 @@ public class ExtVideoBean implements Serializable {
       "\nVideoId=" + mVideoId +
       "\nVideoName=" + mVideoName +
       "\nPlayUrl=" + mVideoPlayUrl +
+      "\nAlbumImageUrl=" + mAlbumImageUrl +
       "\nCurrentViewOrder=" + mVideoCurrentViewOrder +
       "\nLatestOrder=" + mVideoLatestOrder +
-      "\nVideoCounter=" + mVideoLatestOrder +
-      "\nDescription=" + mVideoDescription +
-      "\nImageUrl=" + mVideoImageUrl +
+      "\nVideoCounter=" + mVideoCount +
+      "\nVideoPlayPosition=" + mVideoPlayPosition +
       "\n}";
   }
-  public String getVideoType() {
+  public int getVideoType() {
     return mVideoType;
   }
 
-  public void setVideoType(String videoType) {
+  public void setVideoType(int videoType) {
     mVideoType = videoType;
   }
 
@@ -48,12 +48,12 @@ public class ExtVideoBean implements Serializable {
     mAlbumId = albumId;
   }
 
-  public String getVideoCounter() {
-    return mVideoCounter;
+  public int getVideoCount() {
+    return mVideoCount;
   }
 
-  public void setVideoCounter(String videoCounter) {
-    mVideoCounter = videoCounter;
+  public void setVideoCount(int videoCounter) {
+    mVideoCount = videoCounter;
   }
 
   public String getVideoId() {
@@ -80,35 +80,35 @@ public class ExtVideoBean implements Serializable {
     mVideoPlayUrl = videoPlayUrl;
   }
 
-  public String getVideoCurrentViewOrder() {
+  public String getAlbumImageUrl() {
+    return mAlbumImageUrl;
+  }
+
+  public void setAlbumImageUrl(String albumImageUrl) {
+    mAlbumImageUrl = albumImageUrl;
+  }
+
+  public int getVideoCurrentViewOrder() {
     return mVideoCurrentViewOrder;
   }
 
-  public void setVideoCurrentViewOrder(String videoCurrentViewOrder) {
+  public void setVideoCurrentViewOrder(int videoCurrentViewOrder) {
     mVideoCurrentViewOrder = videoCurrentViewOrder;
   }
 
-  public String getVideoLatestOrder() {
+  public int getVideoLatestOrder() {
     return mVideoLatestOrder;
   }
 
-  public void setVideoLatestOrder(String videoLatestOrder) {
+  public void setVideoLatestOrder(int videoLatestOrder) {
     mVideoLatestOrder = videoLatestOrder;
   }
 
-  public String getVideoDescription() {
-    return mVideoDescription;
+  public int getVideoPlayPosition() {
+    return mVideoPlayPosition;
   }
 
-  public void setVideoDescription(String videoDescription) {
-    mVideoDescription = videoDescription;
-  }
-
-  public String getVideoImageUrl() {
-    return mVideoImageUrl;
-  }
-
-  public void setVideoImageUrl(String videoImageUrl) {
-    mVideoImageUrl = videoImageUrl;
+  public void setVideoPlayPosition(int videoPlayPosition) {
+    mVideoPlayPosition = videoPlayPosition;
   }
 }

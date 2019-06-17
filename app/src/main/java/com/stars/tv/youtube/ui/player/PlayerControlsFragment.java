@@ -2,7 +2,6 @@ package com.stars.tv.youtube.ui.player;
 
 
 import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -24,6 +23,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.DeleteCallback;
 import com.avos.avoscloud.SaveCallback;
 import com.google.android.youtube.player.YouTubePlayer;
@@ -33,6 +33,7 @@ import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.stars.tv.R;
+import com.stars.tv.bean.ExtVideoBean;
 import com.stars.tv.server.LeanCloudStorage;
 import com.stars.tv.youtube.YoutubeActivity;
 import com.stars.tv.youtube.data.YouTubeVideo;
@@ -115,10 +116,10 @@ public class PlayerControlsFragment extends DialogFragment {
     favButton = view.findViewById(R.id.favorite_button);
     favText = view.findViewById(R.id.favorite_text);
 
-    LeanCloudStorage.YoutubeFavoriteCheckListener(mVideo.getId(),
+    LeanCloudStorage.getYoutubeFavoriteListener(mVideo.getId(),
       new LeanCloudStorage.cloudCheckVideoListener() {
         @Override
-        public void succeed() {
+        public void succeed(ExtVideoBean bean) {
           favButton.setImageResource(R.drawable.ic_favorite_24dp);
           mIsFavorite = true;
         }

@@ -163,7 +163,7 @@ public class ExtTabCommonFragment extends ExtBaseFragment{
 
       private void bindViewHolder (ExtVideoBean vb){
         Glide.with(Objects.requireNonNull(getActivity()))
-          .load(vb.getVideoImageUrl()).into(mVideoImage);
+          .load(vb.getAlbumImageUrl()).into(mVideoImage);
         mVideoText.setText(vb.getVideoName());
       }
     }

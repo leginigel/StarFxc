@@ -27,8 +27,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.avos.avoscloud.AVException;
-import com.avos.avoscloud.SaveCallback;
 import com.stars.tv.R;
 import com.stars.tv.adapter.ChildrenAdapter;
 import com.stars.tv.adapter.EpisodeListView;
@@ -44,7 +42,6 @@ import com.stars.tv.presenter.IQiYiParseM3U8Presenter;
 import com.stars.tv.presenter.IQiYiParseStarRecommendPresenter;
 import com.stars.tv.presenter.IQiYiParseVideoBaseInfoPresenter;
 import com.stars.tv.presenter.PreVideoItemPresenter;
-import com.stars.tv.server.LeanCloudStorage;
 import com.stars.tv.utils.CallBack;
 import com.stars.tv.utils.ViewUtils;
 import com.stars.tv.view.SpaceItemDecoration;
@@ -55,7 +52,11 @@ import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 
 import com.github.ybq.android.spinkit.style.Circle;
 
-import static com.stars.tv.utils.Constants.VIDEO_TYPE_TVSERIES;
+import static com.stars.tv.utils.Constants.EXT_VIDEO_ALBUM;
+import static com.stars.tv.utils.Constants.EXT_VIDEO_COUNT;
+import static com.stars.tv.utils.Constants.EXT_VIDEO_IMAGE_URL;
+import static com.stars.tv.utils.Constants.EXT_VIDEO_PLAYURL;
+import static com.stars.tv.utils.Constants.EXT_VIDEO_TYPE;
 
 public class VideoPreviewActivity extends BaseActivity {
 
@@ -75,9 +76,10 @@ public class VideoPreviewActivity extends BaseActivity {
     private String description;
     private String videoCount;
     private String latestOrder;
-    private String playUrl;
-    private String image_url;
-    private String video_type;
+    private String mVideoCount;
+    private String mPlayUrl;
+    private String mAlbumImageUrl;
+    private int mVideoType;
 
     private List<IQiYiVideoBaseInfoBean.Director> director;
     private List<IQiYiVideoBaseInfoBean.Director> host;
@@ -302,12 +304,12 @@ public class VideoPreviewActivity extends BaseActivity {
         videoCount = mVideoBase.getVideoCount();
         latestOrder = mVideoBase.getLatestOrder();
 
-        /* for history/favorite usage */
-        albumId = mVideoBase.getAlbumId();
-        playUrl = mVideoBase.getPlayUrl();
-        image_url = mVideoBase.getImageUrl();
-        video_type = VIDEO_TYPE_TVSERIES;
-        /* -------------------------- */
+        // For Favorite Usage
+        mVideoType = Integer.valueOf(mVideoBase.getVideoType());
+        mVideoCount = mVideoBase.getVideoCount();
+        mPlayUrl = mVideoBase.getPlayUrl();
+        mAlbumImageUrl = mVideoBase.getAlbumImageUrl();
+        // ------------------
 
         if (Integer.valueOf(videoCount) > 1) {
             parseIQiYiEpisodeList(albumId, Integer.valueOf(latestOrder), 1);
@@ -329,13 +331,12 @@ public class VideoPreviewActivity extends BaseActivity {
         editor.putString("guestname", guestname);
         editor.putString("description", description);
 
-        /* for History/Favorite usage */
-        editor.putString("albumId", albumId);
-        editor.putString("playurl", playUrl);
-        editor.putString("imageurl", image_url);
-        editor.putString("videotype", video_type);
-        /* -------------------------- */
-
+        // For Favorite Usage
+        editor.putInt(EXT_VIDEO_TYPE, mVideoType);
+        editor.putString(EXT_VIDEO_ALBUM, albumId);
+        editor.putString(EXT_VIDEO_PLAYURL, mPlayUrl);
+        editor.putString(EXT_VIDEO_IMAGE_URL, mAlbumImageUrl);
+        // ------------------
         editor.commit();
     }
 
@@ -682,14 +683,13 @@ public class VideoPreviewActivity extends BaseActivity {
         intent.putExtra("currentPosition", mVideoView.getCurrentPosition());
         intent.putExtra("mEpisode", mEpisode);
 
-        if ( Integer.valueOf(mVideoBase.getVideoCount()) > 1 ) {
-            LeanCloudStorage.updateIQiyHistory(mVideoBase,
-              mEplisodeList.get(mEpisode), mEpisode + 1, new SaveCallback() {
-                  @Override
-                  public void done(AVException e) {
-                  }
-              });
-        }
+        // for history usage
+        intent.putExtra(EXT_VIDEO_TYPE, mVideoBase.getChannelId());
+        intent.putExtra(EXT_VIDEO_COUNT, mVideoCount);
+        intent.putExtra(EXT_VIDEO_PLAYURL, mPlayUrl);
+        intent.putExtra(EXT_VIDEO_IMAGE_URL, mAlbumImageUrl);
+        // -----------------
+
         mCircleDrawable.stop();
         mVideoView.stopPlayback();
         mVideoView.release(true);
