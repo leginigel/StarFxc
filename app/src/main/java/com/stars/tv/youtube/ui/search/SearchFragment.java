@@ -36,6 +36,9 @@ public class SearchFragment extends Fragment {
     public static SearchFragment newInstance() {
         return new SearchFragment();
     }
+
+    public static int KeyboardFocusId = 0;
+
     private FragmentManager fm;
     private TextView searchBar;
     private CardView searchIcon, clearIcon, spaceIcon, backspaceIcon, shiftIcon;
@@ -91,47 +94,9 @@ public class SearchFragment extends Fragment {
         recyclerView.setItemAnimator(null);
         recyclerView.setAdapter(mSuggestListAdapter);
 
-        spaceIcon.getChildAt(0).setOnClickListener(v -> {
-            if(searchBar.getText() != "Search")
-                mViewModel.setQueryString(" ", false);
-        });
-        clearIcon.getChildAt(0).setOnClickListener(v -> clearSearchBar());
-        shiftIcon.getChildAt(0).setOnClickListener(v -> switchKeyboard());
-        searchIcon.getChildAt(0).setOnClickListener(v -> querySearchResult(searchBar.getText().toString()));
-        backspaceIcon.getChildAt(0).setOnClickListener(v -> deleteBarChar());
+        setOnClickListener();
 
-        spaceIcon.getChildAt(0).setOnKeyListener((v, keyCode, event) ->{
-            if(event.getAction() == KeyEvent.ACTION_DOWN ) {
-                if(keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
-                    RightFromSpace = true;
-                    recyclerView.getChildAt(SuggestListAdapter.OutId).requestFocus();
-                    return true;
-                }
-                if(keyCode == KeyEvent.KEYCODE_DPAD_DOWN && mRow.getVisibility() == View.VISIBLE) {
-                    YoutubeRowFragment.highlightRowFocus(getActivity(), rowFragment);
-                    SuggestListAdapter.UpFromSuggestion = false;
-                }
-            }
-            return false;
-        });
-        clearIcon.getChildAt(0).setOnKeyListener((v, keyCode, event) ->{
-            if(event.getAction() == KeyEvent.ACTION_DOWN ) {
-                if(keyCode == KeyEvent.KEYCODE_DPAD_DOWN && mRow.getVisibility() == View.VISIBLE) {
-                    YoutubeRowFragment.highlightRowFocus(getActivity(), rowFragment);
-                    SuggestListAdapter.UpFromSuggestion = false;
-                }
-            }
-            return false;
-        });
-        searchIcon.getChildAt(0).setOnKeyListener((v, keyCode, event) ->{
-            if(event.getAction() == KeyEvent.ACTION_DOWN ) {
-                if(keyCode == KeyEvent.KEYCODE_DPAD_DOWN && mRow.getVisibility() == View.VISIBLE) {
-                    YoutubeRowFragment.highlightRowFocus(getActivity(), rowFragment);
-                    SuggestListAdapter.UpFromSuggestion = false;
-                }
-            }
-            return false;
-        });
+        setOnKeyListener();
 
         setOnFocusListener();
 
@@ -172,6 +137,8 @@ public class SearchFragment extends Fragment {
         super.onResume();
         Log.i(TAG, "onResume");
         SuggestListAdapter.OutId = 0;
+        mFocus = FocusLocation.Suggestion;
+        RightFromSpace = false;
         clearSearchBar();
     }
 
@@ -184,6 +151,92 @@ public class SearchFragment extends Fragment {
         spaceIcon = view.findViewById(R.id.cardViewSpace);
         backspaceIcon = view.findViewById(R.id.cardViewBackspace);
         shiftIcon = view.findViewById(R.id.cardViewShift);
+    }
+
+    private void setOnClickListener(){
+        spaceIcon.getChildAt(0).setOnClickListener(v -> {
+            if(searchBar.getText() != "Search")
+                mViewModel.setQueryString(" ", false);
+        });
+        clearIcon.getChildAt(0).setOnClickListener(v -> clearSearchBar());
+        shiftIcon.getChildAt(0).setOnClickListener(v -> switchKeyboard());
+        searchIcon.getChildAt(0).setOnClickListener(v -> querySearchResult(searchBar.getText().toString()));
+        backspaceIcon.getChildAt(0).setOnClickListener(v -> deleteBarChar());
+    }
+
+    private void setOnKeyListener(){
+        spaceIcon.getChildAt(0).setOnKeyListener((v, keyCode, event) ->{
+            if(event.getAction() == KeyEvent.ACTION_DOWN ) {
+                if(keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
+                    RightFromSpace = true;
+                    recyclerView.getChildAt(SuggestListAdapter.OutId).requestFocus();
+                    return true;
+                }
+                if(keyCode == KeyEvent.KEYCODE_DPAD_DOWN && mRow.getVisibility() == View.VISIBLE) {
+                    YoutubeRowFragment.highlightRowFocus(getActivity(), rowFragment);
+                    SuggestListAdapter.UpFromSuggestion = false;
+                }
+                if(keyCode == KeyEvent.KEYCODE_BACK){
+                    KeyboardFocusId = v.getId();
+                    ((ViewGroup) getActivity().findViewById(R.id.left_nav)).getChildAt(1).requestFocus();
+                    setFocus(FocusLocation.Keyboard);
+                    return true;
+                }
+            }
+            return false;
+        });
+        clearIcon.getChildAt(0).setOnKeyListener((v, keyCode, event) ->{
+            if(event.getAction() == KeyEvent.ACTION_DOWN ) {
+                if(keyCode == KeyEvent.KEYCODE_DPAD_DOWN && mRow.getVisibility() == View.VISIBLE) {
+                    YoutubeRowFragment.highlightRowFocus(getActivity(), rowFragment);
+                    SuggestListAdapter.UpFromSuggestion = false;
+                }
+                if(keyCode == KeyEvent.KEYCODE_BACK){
+                    KeyboardFocusId = v.getId();
+                    ((ViewGroup) getActivity().findViewById(R.id.left_nav)).getChildAt(1).requestFocus();
+                    setFocus(FocusLocation.Keyboard);
+                    return true;
+                }
+            }
+            return false;
+        });
+        searchIcon.getChildAt(0).setOnKeyListener((v, keyCode, event) ->{
+            if(event.getAction() == KeyEvent.ACTION_DOWN ) {
+                if(keyCode == KeyEvent.KEYCODE_DPAD_DOWN && mRow.getVisibility() == View.VISIBLE) {
+                    YoutubeRowFragment.highlightRowFocus(getActivity(), rowFragment);
+                    SuggestListAdapter.UpFromSuggestion = false;
+                }
+                if(keyCode == KeyEvent.KEYCODE_BACK){
+                    KeyboardFocusId = v.getId();
+                    ((ViewGroup) getActivity().findViewById(R.id.left_nav)).getChildAt(1).requestFocus();
+                    setFocus(FocusLocation.Keyboard);
+                    return true;
+                }
+            }
+            return false;
+        });
+        shiftIcon.getChildAt(0).setOnKeyListener((v, keyCode, event) ->{
+            if(event.getAction() == KeyEvent.ACTION_DOWN ) {
+                if(keyCode == KeyEvent.KEYCODE_BACK){
+                    KeyboardFocusId = v.getId();
+                    ((ViewGroup) getActivity().findViewById(R.id.left_nav)).getChildAt(1).requestFocus();
+                    setFocus(FocusLocation.Keyboard);
+                    return true;
+                }
+            }
+            return false;
+        });
+        backspaceIcon.getChildAt(0).setOnKeyListener((v, keyCode, event) ->{
+            if(event.getAction() == KeyEvent.ACTION_DOWN ) {
+                if(keyCode == KeyEvent.KEYCODE_BACK){
+                    KeyboardFocusId = v.getId();
+                    ((ViewGroup) getActivity().findViewById(R.id.left_nav)).getChildAt(1).requestFocus();
+                    setFocus(FocusLocation.Keyboard);
+                    return true;
+                }
+            }
+            return false;
+        });
     }
 
     private void setOnFocusListener(){
