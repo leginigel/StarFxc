@@ -1,5 +1,6 @@
 package com.stars.tv.server;
 
+import android.accounts.NetworkErrorException;
 import android.content.Context;
 
 import com.avos.avoscloud.AVException;
@@ -11,8 +12,6 @@ import com.avos.avoscloud.FindCallback;
 import com.avos.avoscloud.GetCallback;
 import com.avos.avoscloud.SaveCallback;
 import com.stars.tv.bean.ExtVideoBean;
-import com.stars.tv.bean.IQiYiMovieBean;
-import com.stars.tv.bean.IQiYiVideoBaseInfoBean;
 import com.stars.tv.utils.NetUtil;
 import com.stars.tv.youtube.data.YouTubeVideo;
 
@@ -35,15 +34,13 @@ import static com.stars.tv.utils.Constants.EXT_VIDEO_PLAYURL;
 import static com.stars.tv.utils.Constants.EXT_VIDEO_TYPE;
 import static com.stars.tv.utils.Constants.STAR_CLOUD_ID;
 import static com.stars.tv.utils.Constants.STAR_CLOUD_KEY;
-import static com.stars.tv.utils.Constants.VIDEO_TYPE_TVSERIES;
-import static com.stars.tv.utils.Constants.VIDEO_TYPE_YOUTUBE;
 
 public class LeanCloudStorage {
   private List<ExtVideoBean> mExtVideoList;
   private final String mClassName;
   private static boolean isInitialDone=false;
 
-  public interface cloudCheckVideoListener {
+  public interface VideoSeeker {
     void succeed(ExtVideoBean bean);
     void failed();
   }
@@ -123,8 +120,8 @@ public class LeanCloudStorage {
     return bean;
   }
 
-  private void VideoCheckListener(String album,
-                                  cloudCheckVideoListener ccv){
+  private void VideoSeekerListener(String album,
+                                   VideoSeeker ccv){
     AVQuery<AVObject> query = new AVQuery<>(mClassName);
     query.whereEqualTo(EXT_VIDEO_ALBUM, album);
     query.getFirstInBackground(new GetCallback<AVObject>() {
@@ -150,25 +147,25 @@ public class LeanCloudStorage {
     return AVObject.createWithoutData(mClassName, id);
   }
 
-  private void updateVideoByiQiy(ExtVideoBean iQiy, SaveCallback cb){
+  private void updateVideoByiQiy(ExtVideoBean bean, SaveCallback cb){
     AVQuery<AVObject> query = new AVQuery<>(mClassName);
-    query.whereEqualTo(EXT_VIDEO_ALBUM,iQiy.getAlbumId());
+    query.whereEqualTo(EXT_VIDEO_ALBUM,bean.getAlbumId());
     query.getFirstInBackground(new GetCallback<AVObject>() {
       @Override
       public void done(AVObject object, AVException e) {
         if ( e == null ) {
           AVObject obj;
           if ( object != null ) {
-            obj = assignBeanToAVObject(iQiy, updateListByID(object.getObjectId()));
+            obj = assignBeanToAVObject(bean, updateListByID(object.getObjectId()));
           }
           else{
-            obj = assignBeanToAVObject(iQiy, createClass());
+            obj = assignBeanToAVObject(bean, createClass());
           }
           saveData(obj, cb);
         }
         else{
           if ( e.getCode() == AVException.OBJECT_NOT_FOUND ) {
-            saveData(assignBeanToAVObject(iQiy, createClass()), cb);
+            saveData(assignBeanToAVObject(bean, createClass()), cb);
           }
         }
       }
@@ -240,76 +237,124 @@ public class LeanCloudStorage {
   }
 
   // IQIY
-  public static void updateIQiyHistory(ExtVideoBean iQiy, SaveCallback cb){
+  public static void updateIQiyHistory(ExtVideoBean bean,
+                                       SaveCallback cb) throws NetworkErrorException{
     if ( NetUtil.isConnected() ){
-      new LeanCloudStorage(CLOUD_HISTORY_CLASS).updateVideoByiQiy(iQiy, cb);
+      new LeanCloudStorage(CLOUD_HISTORY_CLASS).updateVideoByiQiy(bean, cb);
+    }
+    else{
+      throw new NetworkErrorException("Network Inactivity");
     }
   }
 
-  public static void removeIQiyHistory(String album, DeleteCallback dr){
+  public static void removeIQiyHistory(String album,
+                                       DeleteCallback dr) throws NetworkErrorException{
     if ( NetUtil.isConnected() ) {
       new LeanCloudStorage(CLOUD_HISTORY_CLASS).removeVideoByAlbum(album, dr);
     }
+    else{
+      throw new NetworkErrorException("Network Inactivity");
+    }
   }
 
-  public static void updateIQiyFavorite(ExtVideoBean bean, SaveCallback cb){
+  public static void updateIQiyFavorite(ExtVideoBean bean,
+                                        SaveCallback cb) throws NetworkErrorException{
     if ( NetUtil.isConnected() ) {
       new LeanCloudStorage(CLOUD_FAVORITE_CLASS).updateVideoByiQiy(bean, cb);
     }
+    else{
+      throw new NetworkErrorException("Network Inactivity");
+    }
   }
 
-  public static void removeIQiyFavorite(String album, DeleteCallback dr){
+  public static void removeIQiyFavorite(String album,
+                                        DeleteCallback dr) throws NetworkErrorException{
     if ( NetUtil.isConnected() ) {
       new LeanCloudStorage(CLOUD_FAVORITE_CLASS).removeVideoByAlbum(album, dr);
     }
-  }
-
-  public static void getIQiyHistoryListener(String album, cloudCheckVideoListener ccv){
-    if ( NetUtil.isConnected() ){
-      new LeanCloudStorage(CLOUD_HISTORY_CLASS).VideoCheckListener(album, ccv);
+    else{
+      throw new NetworkErrorException("Network Inactivity");
     }
   }
 
-  public static void getIQiyFavoriteListener(String album, cloudCheckVideoListener ccv){
+  public static void getIQiyHistoryListener(String album,
+                                            VideoSeeker ccv) throws NetworkErrorException{
     if ( NetUtil.isConnected() ){
-      new LeanCloudStorage(CLOUD_FAVORITE_CLASS).VideoCheckListener(album, ccv);
+      new LeanCloudStorage(CLOUD_HISTORY_CLASS).VideoSeekerListener(album, ccv);
+    }
+    else{
+      throw new NetworkErrorException("Network Inactivity");
+    }
+  }
+
+  public static void getIQiyFavoriteListener(String album,
+                                             VideoSeeker ccv) throws NetworkErrorException{
+    if ( NetUtil.isConnected() ){
+      new LeanCloudStorage(CLOUD_FAVORITE_CLASS).VideoSeekerListener(album, ccv);
+    }
+    else{
+      throw new NetworkErrorException("Network Inactivity");
     }
   }
 
   // Youtube
-  public static void updateYoutubeHistory(YouTubeVideo yt, SaveCallback cb){
+  public static void updateYoutubeHistory(YouTubeVideo yt,
+                                          SaveCallback cb) throws NetworkErrorException{
     if ( NetUtil.isConnected() ) {
       new LeanCloudStorage(CLOUD_YT_HISTORY_CLASS).updateVideoByYoutube(yt, cb);
     }
+    else{
+      throw new NetworkErrorException("Network Inactivity");
+    }
   }
 
-  public static void removeYoutubeHistory(String album, DeleteCallback dr){
+  public static void removeYoutubeHistory(String album,
+                                          DeleteCallback dr) throws NetworkErrorException{
     if ( NetUtil.isConnected() ) {
       new LeanCloudStorage(CLOUD_YT_HISTORY_CLASS).removeVideoByAlbum(album, dr);
     }
+    else{
+      throw new NetworkErrorException("Network Inactivity");
+    }
   }
 
-  public static void updateYoutubeFavorite(YouTubeVideo yt, SaveCallback cb){
+  public static void updateYoutubeFavorite(YouTubeVideo yt,
+                                           SaveCallback cb) throws NetworkErrorException{
     if ( NetUtil.isConnected() ) {
       new LeanCloudStorage(CLOUD_YT_FAVORITE_CLASS).updateVideoByYoutube(yt, cb);
     }
+    else{
+      throw new NetworkErrorException("Network Inactivity");
+    }
   }
 
-  public static void removeYoutubeFavorite(String album, DeleteCallback dr){
+  public static void removeYoutubeFavorite(String album,
+                                           DeleteCallback dr) throws NetworkErrorException{
     if ( NetUtil.isConnected() ) {
       new LeanCloudStorage(CLOUD_YT_FAVORITE_CLASS).removeVideoByAlbum(album, dr);
     }
-  }
-
-  public static void getYoutubeHistoryListener(String album, cloudCheckVideoListener ccv){
-    if ( NetUtil.isConnected() ){
-      new LeanCloudStorage(CLOUD_YT_HISTORY_CLASS).VideoCheckListener(album, ccv);
+    else{
+      throw new NetworkErrorException("Network Inactivity");
     }
   }
 
-  public static void getYoutubeFavoriteListener(String album, cloudCheckVideoListener ccv){
+  public static void getYoutubeHistoryListener(String album,
+                                               VideoSeeker ccv) throws NetworkErrorException{
     if ( NetUtil.isConnected() ){
-      new LeanCloudStorage(CLOUD_YT_FAVORITE_CLASS).VideoCheckListener(album, ccv);
+      new LeanCloudStorage(CLOUD_YT_HISTORY_CLASS).VideoSeekerListener(album, ccv);
+    }
+    else{
+      throw new NetworkErrorException("Network Inactivity");
+    }
+  }
+
+  public static void getYoutubeFavoriteListener(String album,
+                                                VideoSeeker ccv) throws NetworkErrorException{
+    if ( NetUtil.isConnected() ){
+      new LeanCloudStorage(CLOUD_YT_FAVORITE_CLASS).VideoSeekerListener(album, ccv);
+    }
+    else{
+      throw new NetworkErrorException("Network Inactivity");
     }
   }
 }

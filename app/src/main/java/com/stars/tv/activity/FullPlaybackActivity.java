@@ -1,5 +1,6 @@
 package com.stars.tv.activity;
 
+import android.accounts.NetworkErrorException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -18,6 +19,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.MediaController;
 import android.widget.PopupWindow;
 import android.widget.TableLayout;
 import android.widget.TextView;
@@ -142,7 +144,6 @@ public class FullPlaybackActivity extends BaseActivity {
             mVideoView.setVideoURI(Uri.parse(mVideoPath));
             mVideoView.seekTo(currentPosition);
             mVideoView.start();
-
         }
     }
 
@@ -226,15 +227,14 @@ public class FullPlaybackActivity extends BaseActivity {
             bean.setVideoCount(mVideoCount);
             bean.setVideoLatestOrder(Integer.valueOf(latestOrder));
             bean.setVideoPlayPosition(mVideoView.getCurrentPosition());
-            if ( NetUtil.isConnected() ) {
+            try {
                 LeanCloudStorage.updateIQiyHistory(bean, new SaveCallback() {
                     @Override
                     public void done(AVException e) {
                         returnPlayData();
                     }
                 });
-            }
-            else{
+            }catch ( Exception e ){
                 returnPlayData();
             }
         }

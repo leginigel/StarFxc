@@ -76,7 +76,7 @@ public class VideoPreviewActivity extends BaseActivity {
     private String description;
     private String videoCount;
     private String latestOrder;
-    private String mVideoCount;
+    private int mVideoCount;
     private String mPlayUrl;
     private String mAlbumImageUrl;
     private int mVideoType;
@@ -305,8 +305,8 @@ public class VideoPreviewActivity extends BaseActivity {
         latestOrder = mVideoBase.getLatestOrder();
 
         // For Favorite Usage
-        mVideoType = Integer.valueOf(mVideoBase.getVideoType());
-        mVideoCount = mVideoBase.getVideoCount();
+        mVideoType = mVideoBase.getChannelId();
+        mVideoCount = Integer.valueOf(mVideoBase.getVideoCount());
         mPlayUrl = mVideoBase.getPlayUrl();
         mAlbumImageUrl = mVideoBase.getAlbumImageUrl();
         // ------------------

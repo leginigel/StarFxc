@@ -2,6 +2,7 @@ package com.stars.tv.fragment;
 
 //Alice@20190424
 
+import android.accounts.NetworkErrorException;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -216,45 +217,54 @@ public class MediaInfoListFragment extends Fragment {
     mVideoInfo.setVideoPlayPosition(0);
     // ----------------------
 
-    LeanCloudStorage.getIQiyFavoriteListener(mVideoInfo.getAlbumId(),
-      new LeanCloudStorage.cloudCheckVideoListener() {
-      @Override
-      public void succeed(ExtVideoBean bean) {
-        mFavorite.setSelected(true);
-        mFavorite.setClickable(true);
-        isFavorite = true;
-      }
+    try {
+      LeanCloudStorage.getIQiyFavoriteListener(mVideoInfo.getAlbumId(),
+        new LeanCloudStorage.VideoSeeker() {
+          @Override
+          public void succeed(ExtVideoBean bean) {
+            mFavorite.setSelected(true);
+            mFavorite.setClickable(true);
+            isFavorite = true;
+          }
 
-      @Override
-      public void failed() {
-        mFavorite.setSelected(false);
-        mFavorite.setClickable(true);
-        isFavorite = false;
-      }
-    });
+          @Override
+          public void failed() {
+            mFavorite.setSelected(false);
+            mFavorite.setClickable(true);
+            isFavorite = false;
+          }
+        });
+    }catch (Exception e){
+    }
 
     mFavorite.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
         if ( isFavorite ){
-          LeanCloudStorage.removeIQiyFavorite(mVideoInfo.getAlbumId(), new DeleteCallback() {
-            @Override
-            public void done(AVException e) {
-              mFavorite.setSelected(false);
-              isFavorite = false;
-            }
-          });
+          try {
+            LeanCloudStorage.removeIQiyFavorite(mVideoInfo.getAlbumId(), new DeleteCallback() {
+              @Override
+              public void done(AVException e) {
+                mFavorite.setSelected(false);
+                isFavorite = false;
+              }
+            });
+          }catch( Exception e ){
+          }
         }
         else{
-          LeanCloudStorage.updateIQiyFavorite(mVideoInfo, new SaveCallback() {
-            @Override
-            public void done(AVException e) {
-              if ( e == null ){
-                mFavorite.setSelected(true);
-                isFavorite = true;
+          try {
+            LeanCloudStorage.updateIQiyFavorite(mVideoInfo, new SaveCallback() {
+              @Override
+              public void done(AVException e) {
+                if ( e == null ) {
+                  mFavorite.setSelected(true);
+                  isFavorite = true;
+                }
               }
-            }
-          });
+            });
+          }catch (Exception e){
+          }
         }
       }
     });

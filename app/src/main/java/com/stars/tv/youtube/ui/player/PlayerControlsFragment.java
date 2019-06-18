@@ -23,7 +23,6 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.avos.avoscloud.AVException;
-import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.DeleteCallback;
 import com.avos.avoscloud.SaveCallback;
 import com.google.android.youtube.player.YouTubePlayer;
@@ -116,20 +115,24 @@ public class PlayerControlsFragment extends DialogFragment {
     favButton = view.findViewById(R.id.favorite_button);
     favText = view.findViewById(R.id.favorite_text);
 
-    LeanCloudStorage.getYoutubeFavoriteListener(mVideo.getId(),
-      new LeanCloudStorage.cloudCheckVideoListener() {
-        @Override
-        public void succeed(ExtVideoBean bean) {
-          favButton.setImageResource(R.drawable.ic_favorite_24dp);
-          mIsFavorite = true;
-        }
+    try {
+      LeanCloudStorage.getYoutubeFavoriteListener(mVideo.getId(),
+        new LeanCloudStorage.VideoSeeker() {
+          @Override
+          public void succeed(ExtVideoBean bean) {
+            favButton.setImageResource(R.drawable.ic_favorite_24dp);
+            mIsFavorite = true;
+          }
 
-        @Override
-        public void failed() {
-          favButton.setImageResource(R.drawable.ic_favorite_border_24dp);
-          mIsFavorite = false;
-        }
-      });
+          @Override
+          public void failed() {
+            favButton.setImageResource(R.drawable.ic_favorite_border_24dp);
+            mIsFavorite = false;
+          }
+        });
+    }catch(Exception e){
+
+    }
     favButton.setOnFocusChangeListener((v, hasFocus) -> {
       if(hasFocus) {
         CountDown = 5;
@@ -139,26 +142,34 @@ public class PlayerControlsFragment extends DialogFragment {
     });
     favButton.setOnClickListener(v -> {
       if ( mIsFavorite ){
-        LeanCloudStorage.removeYoutubeFavorite(mVideo.getId(), new DeleteCallback() {
-          @Override
-          public void done(AVException e) {
-            if ( e == null ){
-              favButton.setImageResource(R.drawable.ic_favorite_border_24dp);
-              mIsFavorite = false;
+        try {
+          LeanCloudStorage.removeYoutubeFavorite(mVideo.getId(), new DeleteCallback() {
+            @Override
+            public void done(AVException e) {
+              if ( e == null ) {
+                favButton.setImageResource(R.drawable.ic_favorite_border_24dp);
+                mIsFavorite = false;
+              }
             }
-          }
-        });
+          });
+        }catch(Exception e){
+
+        }
       }
       else{
-        LeanCloudStorage.updateYoutubeFavorite(mVideo, new SaveCallback() {
-          @Override
-          public void done(AVException e) {
-            if ( e == null ){
-              favButton.setImageResource(R.drawable.ic_favorite_24dp);
-              mIsFavorite = true;
+        try {
+          LeanCloudStorage.updateYoutubeFavorite(mVideo, new SaveCallback() {
+            @Override
+            public void done(AVException e) {
+              if ( e == null ) {
+                favButton.setImageResource(R.drawable.ic_favorite_24dp);
+                mIsFavorite = true;
+              }
             }
-          }
-        });
+          });
+        }catch(Exception e){
+
+        }
       }
       //favButton.getDrawable()
       //      .setColorFilter(Color.parseColor("#FF1E88E5"), PorterDuff.Mode.SRC_IN);

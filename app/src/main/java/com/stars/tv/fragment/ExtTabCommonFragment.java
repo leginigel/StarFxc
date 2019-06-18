@@ -22,6 +22,7 @@ import com.stars.tv.R;
 import com.stars.tv.bean.ExtTitleBean;
 import com.stars.tv.bean.ExtVideoBean;
 import com.stars.tv.server.LeanCloudStorage;
+import com.stars.tv.utils.Utils;
 import com.stars.tv.utils.ViewUtils;
 
 import java.util.ArrayList;
@@ -31,6 +32,9 @@ import java.util.Objects;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+
+import static com.stars.tv.utils.Constants.CLOUD_HISTORY_CLASS;
+import static com.stars.tv.utils.Constants.CLOUD_YT_HISTORY_CLASS;
 
 public class ExtTabCommonFragment extends ExtBaseFragment{
   public final static String EXT_TITLE_ID="extTitleID";
@@ -162,9 +166,15 @@ public class ExtTabCommonFragment extends ExtBaseFragment{
       }
 
       private void bindViewHolder (ExtVideoBean vb){
+        StringBuffer sb = new StringBuffer();
         Glide.with(Objects.requireNonNull(getActivity()))
           .load(vb.getAlbumImageUrl()).into(mVideoImage);
-        mVideoText.setText(vb.getVideoName());
+        sb.append(vb.getVideoName());
+        if ( mFragID.compareTo(CLOUD_HISTORY_CLASS) == 0 ) {
+          sb.append("/當前撥放至 ");
+          sb.append(Utils.stringForTime(vb.getVideoPlayPosition()));
+        }
+        mVideoText.setText(sb);
       }
     }
   }

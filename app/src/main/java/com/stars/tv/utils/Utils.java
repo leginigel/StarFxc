@@ -4,6 +4,9 @@ package com.stars.tv.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import java.time.format.DateTimeFormatterBuilder;
+import java.util.Formatter;
+
 import static android.content.Context.MODE_PRIVATE;
 
 /**
@@ -46,5 +49,22 @@ public class Utils {
             editor.putInt(key, (int)value);
         }
         editor.apply();
+    }
+    public static String stringForTime(int timeMs) {
+        StringBuilder FormatBuilder = new StringBuilder();
+        Formatter Formatter = new Formatter();
+
+        int totalSeconds = timeMs / 1000;
+
+        int seconds = totalSeconds % 60;
+        int minutes = (totalSeconds / 60) % 60;
+        int hours   = totalSeconds / 3600;
+
+        FormatBuilder.setLength(0);
+        if (hours > 0) {
+            return Formatter.format("%d:%02d:%02d", hours, minutes, seconds).toString();
+        } else {
+            return Formatter.format("%02d:%02d", minutes, seconds).toString();
+        }
     }
 }
