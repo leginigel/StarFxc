@@ -18,9 +18,6 @@ import java.util.Objects;
 import me.jessyan.autosize.AutoSizeConfig;
 import me.jessyan.autosize.utils.AutoSizeUtils;
 
-import static com.stars.tv.utils.Constants.EXT_VIDEO_TYPE;
-import static com.stars.tv.utils.Constants.VIDEO_TYPE_CINEMA;
-
 public class FilmBannerItemPresenter extends Presenter {
     private static final String TAG = "BannerItemPresenter";
     private static final int GRID_VIEW_LEFT_PX = 80;

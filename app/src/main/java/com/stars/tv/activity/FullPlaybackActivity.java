@@ -47,7 +47,6 @@ import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 import static com.stars.tv.utils.Constants.EXT_VIDEO_COUNT;
 import static com.stars.tv.utils.Constants.EXT_VIDEO_IMAGE_URL;
 import static com.stars.tv.utils.Constants.EXT_VIDEO_TYPE;
-import static com.stars.tv.utils.Constants.VIDEO_TYPE_TVSERIES;
 
 public class FullPlaybackActivity extends BaseActivity {
 //    IjkMediaPlayer ijkMediaPlayer;

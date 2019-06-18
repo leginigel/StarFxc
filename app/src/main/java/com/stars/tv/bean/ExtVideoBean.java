@@ -15,6 +15,10 @@ public class ExtVideoBean implements Serializable {
   private int mVideoLatestOrder;
   private int mVideoCount;
   private int mVideoPlayPosition;
+  private String mChannel;
+  private int mNumberViews;
+  private String mTime;
+  private String mDuration;
 
   @NonNull
   @Override
@@ -30,6 +34,10 @@ public class ExtVideoBean implements Serializable {
       "\nLatestOrder=" + mVideoLatestOrder +
       "\nVideoCounter=" + mVideoCount +
       "\nVideoPlayPosition=" + mVideoPlayPosition +
+      "\nChannel=" + mChannel +
+      "\nNumberViews=" + mNumberViews +
+      "\nTime=" + mTime +
+      "\nDuration=" + mDuration +
       "\n}";
   }
   public int getVideoType() {
@@ -110,5 +118,37 @@ public class ExtVideoBean implements Serializable {
 
   public void setVideoPlayPosition(int videoPlayPosition) {
     mVideoPlayPosition = videoPlayPosition;
+  }
+
+  public String getDuration() {
+    return mDuration;
+  }
+
+  public void setDuration(String duration) {
+    mDuration = duration;
+  }
+
+  public String getChannel() {
+    return mChannel;
+  }
+
+  public void setChannel(String channel) {
+    mChannel = channel;
+  }
+
+  public int getNumberViews() {
+    return mNumberViews;
+  }
+
+  public void setNumberViews(int numberViews) {
+    mNumberViews = numberViews;
+  }
+
+  public String getTime() {
+    return mTime;
+  }
+
+  public void setTime(String time) {
+    mTime = time;
   }
 }
