@@ -21,6 +21,7 @@ import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerSupportFragment;
 
+import com.stars.tv.bean.ExtVideoBean;
 import com.stars.tv.server.LeanCloudStorage;
 import com.stars.tv.youtube.api.YoutubeService;
 import com.stars.tv.youtube.data.YouTubeVideo;
@@ -55,6 +56,7 @@ public class YoutubeActivity extends FragmentActivity implements CustomAdapt,
 
     private ImageView searchIcon, homeIcon, subIcon, folderIcon, settingIcon;
     private View playerBox;
+    private ExtVideoBean mExtVideoBean;
 
     @Override
     public boolean isBaseOnWidth() {
@@ -74,6 +76,7 @@ public class YoutubeActivity extends FragmentActivity implements CustomAdapt,
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.youtube_activity);
+        mExtVideoBean = (ExtVideoBean) getIntent().getSerializableExtra("Youtube");
 
         // Create fragment
         viewModel = ViewModelProviders.of(this).get(YoutubeViewModel.class);
@@ -263,6 +266,12 @@ public class YoutubeActivity extends FragmentActivity implements CustomAdapt,
 //            youTubePlayer.cueVideo(video.getId());
 //            youTubePlayer.play();
 //            youTubePlayer.loadVideo(video.getId());
+            if ( mExtVideoBean != null ) {
+                YouTubeVideo video = new YouTubeVideo(mExtVideoBean.getVideoId(),
+                  mExtVideoBean.getVideoName(), mExtVideoBean.getChannel(),
+                  mExtVideoBean.getNumberViews(), mExtVideoBean.getTime(), mExtVideoBean.getDuration());
+                playVideo(video);
+            }
         }
         else{
             Log.d("CheckPoint", "CheckPoint Restored");

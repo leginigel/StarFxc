@@ -23,14 +23,18 @@ import static com.stars.tv.utils.Constants.CLOUD_HISTORY_CLASS;
 import static com.stars.tv.utils.Constants.CLOUD_YT_FAVORITE_CLASS;
 import static com.stars.tv.utils.Constants.CLOUD_YT_HISTORY_CLASS;
 import static com.stars.tv.utils.Constants.EXT_VIDEO_ALBUM;
+import static com.stars.tv.utils.Constants.EXT_VIDEO_CHANNEL;
 import static com.stars.tv.utils.Constants.EXT_VIDEO_COUNT;
 import static com.stars.tv.utils.Constants.EXT_VIDEO_CURRENT_VIEW_ORDER;
+import static com.stars.tv.utils.Constants.EXT_VIDEO_DURATION;
 import static com.stars.tv.utils.Constants.EXT_VIDEO_ID;
 import static com.stars.tv.utils.Constants.EXT_VIDEO_IMAGE_URL;
 import static com.stars.tv.utils.Constants.EXT_VIDEO_LATEST_ORDER;
 import static com.stars.tv.utils.Constants.EXT_VIDEO_NAME;
+import static com.stars.tv.utils.Constants.EXT_VIDEO_NUMBERVIEWS;
 import static com.stars.tv.utils.Constants.EXT_VIDEO_PLAYPOSITION;
 import static com.stars.tv.utils.Constants.EXT_VIDEO_PLAYURL;
+import static com.stars.tv.utils.Constants.EXT_VIDEO_TIME;
 import static com.stars.tv.utils.Constants.EXT_VIDEO_TYPE;
 import static com.stars.tv.utils.Constants.STAR_CLOUD_ID;
 import static com.stars.tv.utils.Constants.STAR_CLOUD_KEY;
@@ -89,12 +93,21 @@ public class LeanCloudStorage {
         item.setAlbumId(obj.getString(EXT_VIDEO_ALBUM));
         item.setVideoId(obj.getString(EXT_VIDEO_ID));
         item.setVideoName(obj.getString(EXT_VIDEO_NAME));
-        item.setVideoPlayUrl(obj.getString(EXT_VIDEO_PLAYURL));
         item.setAlbumImageUrl(obj.getString(EXT_VIDEO_IMAGE_URL));
-        item.setVideoCurrentViewOrder(obj.getInt(EXT_VIDEO_CURRENT_VIEW_ORDER));
-        item.setVideoLatestOrder(obj.getInt(EXT_VIDEO_LATEST_ORDER));
-        item.setVideoCount(obj.getInt(EXT_VIDEO_COUNT));
-        item.setVideoPlayPosition(obj.getInt(EXT_VIDEO_PLAYPOSITION));
+        if ( mClassName.compareTo(CLOUD_YT_HISTORY_CLASS) == 0 ||
+            mClassName.compareTo(CLOUD_YT_FAVORITE_CLASS) == 0) {
+            item.setChannel(obj.getString(EXT_VIDEO_CHANNEL));
+            item.setNumberViews(obj.getInt(EXT_VIDEO_NUMBERVIEWS));
+            item.setTime(obj.getString(EXT_VIDEO_TIME));
+            item.setDuration(obj.getString(EXT_VIDEO_DURATION));
+        }
+        else{
+            item.setVideoPlayUrl(obj.getString(EXT_VIDEO_PLAYURL));
+            item.setVideoCurrentViewOrder(obj.getInt(EXT_VIDEO_CURRENT_VIEW_ORDER));
+            item.setVideoLatestOrder(obj.getInt(EXT_VIDEO_LATEST_ORDER));
+            item.setVideoCount(obj.getInt(EXT_VIDEO_COUNT));
+            item.setVideoPlayPosition(obj.getInt(EXT_VIDEO_PLAYPOSITION));
+        }
         items.add(item);
       }
     }
@@ -117,6 +130,10 @@ public class LeanCloudStorage {
     bean.setVideoLatestOrder(obj.getInt(EXT_VIDEO_LATEST_ORDER));
     bean.setVideoCurrentViewOrder(obj.getInt(EXT_VIDEO_CURRENT_VIEW_ORDER));
     bean.setVideoPlayPosition(obj.getInt(EXT_VIDEO_PLAYPOSITION));
+    bean.setDuration(obj.getString(EXT_VIDEO_DURATION));
+    bean.setTime(obj.getString(EXT_VIDEO_TIME));
+    bean.setChannel(obj.getString(EXT_VIDEO_CHANNEL));
+    bean.setNumberViews(obj.getInt(EXT_VIDEO_NUMBERVIEWS));
     return bean;
   }
 
@@ -227,13 +244,17 @@ public class LeanCloudStorage {
   }
 
   private AVObject assignYoutubeToAVObject(YouTubeVideo yt, AVObject obj){
-    ExtVideoBean bean = new ExtVideoBean();
-    bean.setVideoId(yt.getId());
-    bean.setAlbumId(yt.getId());
-    bean.setVideoName(yt.getTitle());
-    bean.setVideoType(80);
-    bean.setAlbumImageUrl("https://i.ytimg.com/vi/"+ yt.getId() +"/0.jpg");
-    return ( assignBeanToAVObject(bean, obj));
+    obj.put(EXT_VIDEO_TYPE, 80);
+    obj.put(EXT_VIDEO_ALBUM, yt.getId());
+    obj.put(EXT_VIDEO_ID, yt.getId());
+    obj.put(EXT_VIDEO_NAME, yt.getTitle());
+    obj.put(EXT_VIDEO_CHANNEL, yt.getChannel());
+    obj.put(EXT_VIDEO_NUMBERVIEWS, yt.getNumber_views());
+    obj.put(EXT_VIDEO_TIME, yt.getTime());
+    obj.put(EXT_VIDEO_DURATION, yt.getDuration());
+    obj.put(EXT_VIDEO_PLAYPOSITION, 0);
+    obj.put(EXT_VIDEO_IMAGE_URL, "https://i.ytimg.com/vi/"+ yt.getId() +"/0.jpg");
+    return obj;
   }
 
   // IQIY

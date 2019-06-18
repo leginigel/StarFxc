@@ -34,13 +34,9 @@ public class Constants {
     public static final String EXT_VIDEO_LATEST_ORDER = "VideoLatestOrder";
     public static final String EXT_VIDEO_COUNT = "VideoCount";
     public static final String EXT_VIDEO_PLAYPOSITION = "VideoPosition";
-
-    public static final String VIDEO_TYPE_CINEMA = "CINEMA";
-    public static final String VIDEO_TYPE_TVCHANNEL = "TVCHANNEL";
-    public static final String VIDEO_TYPE_TVSERIES = "TVSERIES";
-    public static final String VIDEO_TYPE_ANIMATION = "ANIMATION";
-    public static final String VIDEO_TYPE_VARIETY = "VARIETY";
-    public static final String VIDEO_TYPE_LIVE = "LIVE";
-    public static final String VIDEO_TYPE_YOUTUBE = "YOUTUBE";
+    public static final String EXT_VIDEO_CHANNEL = "VideoChannel";
+    public static final String EXT_VIDEO_NUMBERVIEWS = "VideoNumberViews";
+    public static final String EXT_VIDEO_TIME = "VideoTime";
+    public static final String EXT_VIDEO_DURATION = "VideoDuration";
 }
 

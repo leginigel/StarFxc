@@ -51,7 +51,6 @@ public class Utils {
         editor.apply();
     }
     public static String stringForTime(int timeMs) {
-        StringBuilder FormatBuilder = new StringBuilder();
         Formatter Formatter = new Formatter();
 
         int totalSeconds = timeMs / 1000;
@@ -60,7 +59,6 @@ public class Utils {
         int minutes = (totalSeconds / 60) % 60;
         int hours   = totalSeconds / 3600;
 
-        FormatBuilder.setLength(0);
         if (hours > 0) {
             return Formatter.format("%d:%02d:%02d", hours, minutes, seconds).toString();
         } else {

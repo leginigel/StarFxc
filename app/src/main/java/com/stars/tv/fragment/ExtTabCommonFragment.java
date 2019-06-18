@@ -1,5 +1,6 @@
 package com.stars.tv.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -19,11 +20,13 @@ import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.FindCallback;
 import com.bumptech.glide.Glide;
 import com.stars.tv.R;
+import com.stars.tv.activity.MainActivity;
 import com.stars.tv.bean.ExtTitleBean;
 import com.stars.tv.bean.ExtVideoBean;
 import com.stars.tv.server.LeanCloudStorage;
 import com.stars.tv.utils.Utils;
 import com.stars.tv.utils.ViewUtils;
+import com.stars.tv.youtube.YoutubeActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -163,6 +166,16 @@ public class ExtTabCommonFragment extends ExtBaseFragment{
             return false;
           }
         });
+        itemView.setOnClickListener(new View.OnClickListener() {
+          @Override
+          public void onClick(View v) {
+            int itemIdx = mExtContentsRecycler.getChildAdapterPosition(v);
+            Intent intent = new Intent(getActivity(), YoutubeActivity.class);
+            intent.putExtra("Youtube", mVideoList.get(itemIdx));
+            startActivity(intent);
+          }
+        });
+
       }
 
       private void bindViewHolder (ExtVideoBean vb){
