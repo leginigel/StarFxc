@@ -1,51 +1,53 @@
 package com.stars.tv.activity;
 
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
+import android.accounts.NetworkErrorException;
+import android.content.Context;import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.FrameLayout;
+import android.widget.MediaController;
 import android.widget.PopupWindow;
 import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.view.ViewGroup.LayoutParams;
 
+import com.alibaba.fastjson.util.JavaBeanInfo;
+import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.SaveCallback;
 import com.github.ybq.android.spinkit.style.Circle;
 import com.stars.tv.R;
 import com.stars.tv.adapter.ChildrenAdapter;
 import com.stars.tv.adapter.EpisodeListView;
 import com.stars.tv.adapter.EpisodeListViewAdapter;
+import com.stars.tv.bean.ExtVideoBean;
 import com.stars.tv.bean.IQiYiM3U8Bean;
 import com.stars.tv.bean.IQiYiMovieBean;
+import com.stars.tv.bean.IQiYiVideoBaseInfoBean;
 import com.stars.tv.presenter.IQiYiParseEpisodeListPresenter;
 import com.stars.tv.presenter.IQiYiParseM3U8Presenter;
+import com.stars.tv.server.LeanCloudStorage;
 import com.stars.tv.utils.CallBack;
+import com.stars.tv.utils.NetUtil;
 import com.stars.tv.widget.media.AndroidMediaController;
 import com.stars.tv.widget.media.IjkVideoView;
 
 import android.os.Handler;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import tv.danmaku.ijk.media.player.IMediaPlayer;
 import tv.danmaku.ijk.media.player.IjkMediaPlayer;
+
+import static com.stars.tv.utils.Constants.EXT_VIDEO_COUNT;
+import static com.stars.tv.utils.Constants.EXT_VIDEO_IMAGE_URL;
+import static com.stars.tv.utils.Constants.EXT_VIDEO_TYPE;
+import static com.stars.tv.utils.Constants.VIDEO_TYPE_TVSERIES;
 
 public class FullPlaybackActivity extends BaseActivity {
 //    IjkMediaPlayer ijkMediaPlayer;
@@ -62,9 +64,10 @@ public class FullPlaybackActivity extends BaseActivity {
     private TextView textLoading;
     private Circle mCircleDrawable;
 
+    private EpisodeListViewAdapter<String> adapter;
     private List<IQiYiMovieBean> mEplisodeList = new ArrayList<>();
-    private String tvId, mVideoPath, name, albumId, latestOrder;
-    private int currentPosition, mEpisode;
+    private String tvId, mVideoPath, name, albumId, latestOrder, malbumImagUrl;
+    private int currentPosition, mEpisode, mVideoCount, mVideoType;
 
     private float densityRatio = 1.0f; // 密度比值系数（密度比值：一英寸中像素点除以160）
     // 自动隐藏Episode的时间
@@ -88,10 +91,16 @@ public class FullPlaybackActivity extends BaseActivity {
         latestOrder = getIntent().getStringExtra("latestOrder");
         currentPosition = getIntent().getIntExtra("currentPosition", 0);
         mEpisode = getIntent().getIntExtra("mEpisode", 0);
+        Log.v("FFFmEpisode",mEpisode+"");
 
+        // for history usage
+        mVideoType = getIntent().getIntExtra(EXT_VIDEO_TYPE, 0);
+        mVideoCount = getIntent().getIntExtra(EXT_VIDEO_COUNT, 1);
+        malbumImagUrl = getIntent().getStringExtra(EXT_VIDEO_IMAGE_URL);
+        // -----------------
         densityRatio = getResources().getDisplayMetrics().density; // 表示获取真正的密度
 
-        loading(2);
+        loading(View.VISIBLE);
         initVideoView();
         startPlay();
         parseIQiYiEpisodeList(albumId, Integer.valueOf(latestOrder), 1);
@@ -115,7 +124,16 @@ public class FullPlaybackActivity extends BaseActivity {
         mVideoView.setMediaController(mMediaController);
         mHudView = (TableLayout) findViewById(R.id.mhud_view);
         mVideoView.setHudView(mHudView);
-
+        mVideoView.setOnPreparedListener(iMediaPlayer -> loading(View.INVISIBLE));
+        mVideoView.setOnCompletionListener(new IMediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(IMediaPlayer mp) {
+                loading(View.VISIBLE);
+                mEpisode=mEpisode+1;
+                parseIQiYiRealM3U8WithTvId(mEplisodeList.get(mEpisode).getTvId());
+                adapter.setSelectedPositions(Arrays.asList(mEpisode));
+    }
+        });
     }
 
     private void startPlay() {
@@ -125,7 +143,6 @@ public class FullPlaybackActivity extends BaseActivity {
             mVideoView.setVideoURI(Uri.parse(mVideoPath));
             mVideoView.seekTo(currentPosition);
             mVideoView.start();
-
         }
     }
 
@@ -136,6 +153,12 @@ public class FullPlaybackActivity extends BaseActivity {
         mCircleDrawable.setColor(Color.WHITE);
         textLoading.setCompoundDrawables(null, null, mCircleDrawable, null);
         textLoading.setVisibility(visibility);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mCircleDrawable.start();
     }
 
     @Override
@@ -159,7 +182,8 @@ public class FullPlaybackActivity extends BaseActivity {
                     showOrHideEpisode();
                     if (!mEpisodeListView.isShown()) {
                         mEpisodeListView.setVisibility(View.VISIBLE);
-                        mEpisodeListView.requestFocus();
+//                        mEpisodeListView.requestFocus();
+                        adapter.setSelectedPositions(Arrays.asList(mEpisode));
                         return true;
                     }
                     break;
@@ -167,7 +191,8 @@ public class FullPlaybackActivity extends BaseActivity {
                     showOrHideEpisode();
                     if (!mEpisodeListView.isShown()) {
                         mEpisodeListView.setVisibility(View.VISIBLE);
-                        mEpisodeListView.requestFocus();
+//                        mEpisodeListView.requestFocus();
+                        adapter.setSelectedPositions(Arrays.asList(mEpisode));
                         return true;
                     }
                     break;
@@ -188,7 +213,7 @@ public class FullPlaybackActivity extends BaseActivity {
                         return true;
                     }
                 case KeyEvent.KEYCODE_BACK:
-                    returnPlayData();
+                    returnHistoryUpdate();
                     return true;
 
             }
@@ -196,15 +221,42 @@ public class FullPlaybackActivity extends BaseActivity {
         return super.onKeyDown(keyCode, event);
     }
 
+    private void returnHistoryUpdate(){
+        if ( mVideoCount > 0 ) {
+            ExtVideoBean bean = new ExtVideoBean();
+            bean.setVideoType(mVideoType);
+            bean.setAlbumId(albumId);
+            bean.setVideoId(mEplisodeList.get(mEpisode).getTvId());
+            bean.setVideoName(mEplisodeList.get(mEpisode).getName());
+            bean.setVideoCurrentViewOrder(mEpisode+1);
+            bean.setVideoPlayUrl(mEplisodeList.get(mEpisode).getPlayUrl());
+            bean.setAlbumImageUrl(malbumImagUrl);
+            bean.setVideoCount(mVideoCount);
+            bean.setVideoLatestOrder(Integer.valueOf(latestOrder));
+            bean.setVideoPlayPosition(mVideoView.getCurrentPosition());
+            try {
+                LeanCloudStorage.updateIQiyHistory(bean, new SaveCallback() {
+                    @Override
+                    public void done(AVException e) {
+                        returnPlayData();
+                    }
+                });
+            }catch ( Exception e ){
+                returnPlayData();
+            }
+        }
+        else
+            returnPlayData();
+    }
+
     private void returnPlayData() {
         //数据是使用Intent返回
         Intent intent = new Intent();
         //把返回数据存入Intent
         intent.putExtra("currentPosition", mVideoView.getCurrentPosition());
-        Log.v("FFFcurrentPosition", mVideoView.getCurrentPosition() + "");
         intent.putExtra("currentEpisode", mEpisode);
-        Log.v("FFFcurrentEpisode", mEpisode + "");
         intent.putExtra("currentPath", mVideoPath);
+
         //设置返回数据
         FullPlaybackActivity.this.setResult(RESULT_OK, intent);
         //关闭Activity
@@ -242,7 +294,7 @@ public class FullPlaybackActivity extends BaseActivity {
         final String[] groups = stringArrayList.toArray(new String[stringArrayList.size()]);
         Log.v("VideoPreviewgroups", stringArrayList.toString());
 
-        final EpisodeListViewAdapter<String> adapter = new EpisodeListViewAdapter<String>() {
+        adapter = new EpisodeListViewAdapter<String>() {
             @Override
             public List<String> getChildrenList() {
                 return Arrays.asList(episodes);
@@ -264,15 +316,16 @@ public class FullPlaybackActivity extends BaseActivity {
             }
         };
 
-//        adapter.setSelectedPositions(Arrays.asList(selectedPositions));
+//        adapter.setSelectedPositions(Arrays.asList(3));
         mEpisodeListView.setAdapter(adapter);
         mEpisodeListView.setChildrenItemClickListener(new ChildrenAdapter.OnItemClickListener() {
             @Override
             public void onEpisodesItemClick(View view, int position) {
+                loading(View.VISIBLE);
                 tvId = mEplisodeList.get(position).getTvId();
                 parseIQiYiRealM3U8WithTvId(tvId);
-                adapter.setSelectedPositions(Arrays.asList(position));
                 mEpisode = position;
+                adapter.setSelectedPositions(Arrays.asList(mEpisode));
             }
         });
 
@@ -302,13 +355,10 @@ public class FullPlaybackActivity extends BaseActivity {
             public void success(List<IQiYiM3U8Bean> list) {
                 //TODO 获取成功在此得到真实播放地址的List，可能会有HD,SD,1080P
                 mVideoPath = list.get(0).getM3u();
-                Log.v("vvvVideoPreview3", mVideoPath);
                 for (IQiYiM3U8Bean bean : list) {
-                    Log.v("vvvVideoPreviewM3U8", bean.toString());
+                    Log.v("VideoPreviewM3U8", bean.toString());
                 }
-//                initVideoView();       //Marked for Test
                 startPlay();
-                loading(1);
 
             }
 
@@ -341,7 +391,6 @@ public class FullPlaybackActivity extends BaseActivity {
                 //TODO 获取电视剧剧集列表
                 for (IQiYiMovieBean bean : list) {
                     Log.v("VideoPreviewEpisodeList", bean.toString());
-
                 }
                 initEpisodeList();
             }

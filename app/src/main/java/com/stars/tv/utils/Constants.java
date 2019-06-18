@@ -29,11 +29,11 @@ public class Constants {
     public static final String EXT_VIDEO_ID = "VideoID";
     public static final String EXT_VIDEO_NAME = "VideoName";
     public static final String EXT_VIDEO_PLAYURL = "VideoPlayUrl";
+    public static final String EXT_VIDEO_IMAGE_URL = "VideoImageFile";
     public static final String EXT_VIDEO_CURRENT_VIEW_ORDER = "VideoCurrentViewOrder";
     public static final String EXT_VIDEO_LATEST_ORDER = "VideoLatestOrder";
-    public static final String EXT_VIDEO_COUNTER = "VideoCounter";
-    public static final String EXT_VIDEO_DESCRIPTION = "VideoDescription";
-    public static final String EXT_VIDEO_IMAGE_URL = "VideoImageFile";
+    public static final String EXT_VIDEO_COUNT = "VideoCount";
+    public static final String EXT_VIDEO_PLAYPOSITION = "VideoPosition";
 
     public static final String VIDEO_TYPE_CINEMA = "CINEMA";
     public static final String VIDEO_TYPE_TVCHANNEL = "TVCHANNEL";

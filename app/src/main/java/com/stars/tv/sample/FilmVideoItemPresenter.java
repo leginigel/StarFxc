@@ -78,7 +78,6 @@ public class FilmVideoItemPresenter extends Presenter {
 //                Toast.makeText(mContext,"click the" + nameTv.getText().toString(),Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(mContext, VideoPreviewActivity.class);
                 intent.putExtra("videoBean", videoBean);
-                intent.putExtra(EXT_VIDEO_TYPE, VIDEO_TYPE_CINEMA);
                 mContext.startActivity(intent);
             }
         });

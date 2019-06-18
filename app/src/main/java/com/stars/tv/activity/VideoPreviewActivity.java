@@ -27,8 +27,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.avos.avoscloud.AVException;
-import com.avos.avoscloud.SaveCallback;
 import com.stars.tv.R;
 import com.stars.tv.adapter.ChildrenAdapter;
 import com.stars.tv.adapter.EpisodeListView;
@@ -44,7 +42,6 @@ import com.stars.tv.presenter.IQiYiParseM3U8Presenter;
 import com.stars.tv.presenter.IQiYiParseStarRecommendPresenter;
 import com.stars.tv.presenter.IQiYiParseVideoBaseInfoPresenter;
 import com.stars.tv.presenter.PreVideoItemPresenter;
-import com.stars.tv.server.LeanCloudStorage;
 import com.stars.tv.utils.CallBack;
 import com.stars.tv.utils.ViewUtils;
 import com.stars.tv.view.SpaceItemDecoration;
@@ -55,7 +52,11 @@ import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 
 import com.github.ybq.android.spinkit.style.Circle;
 
-import static com.stars.tv.utils.Constants.VIDEO_TYPE_TVSERIES;
+import static com.stars.tv.utils.Constants.EXT_VIDEO_ALBUM;
+import static com.stars.tv.utils.Constants.EXT_VIDEO_COUNT;
+import static com.stars.tv.utils.Constants.EXT_VIDEO_IMAGE_URL;
+import static com.stars.tv.utils.Constants.EXT_VIDEO_PLAYURL;
+import static com.stars.tv.utils.Constants.EXT_VIDEO_TYPE;
 
 public class VideoPreviewActivity extends BaseActivity {
 
@@ -75,9 +76,10 @@ public class VideoPreviewActivity extends BaseActivity {
     private String description;
     private String videoCount;
     private String latestOrder;
-    private String playUrl;
-    private String image_url;
-    private String video_type;
+    private int mVideoCount;
+    private String mPlayUrl;
+    private String mAlbumImageUrl;
+    private int mVideoType;
 
     private List<IQiYiVideoBaseInfoBean.Director> director;
     private List<IQiYiVideoBaseInfoBean.Director> host;
@@ -151,7 +153,7 @@ public class VideoPreviewActivity extends BaseActivity {
         setContentView(R.layout.activity_video_preview);
         scrollView = (ScrollView) findViewById(R.id.scrollView);
 
-        loading(2);
+        loading(View.VISIBLE);
         initView();
         videoBean = (IQiYiBaseBean) getIntent().getSerializableExtra("videoBean");
         Log.v("videoBean", videoBean.toString());
@@ -187,8 +189,8 @@ public class VideoPreviewActivity extends BaseActivity {
         Log.v("vvvVideoPreview1", mVideoPath);
         // init UI
         mMediaController = new AndroidMediaController(this, false);
-        mMediaController.clearFocus();
-        mMediaController.hide();
+//        mMediaController.clearFocus();
+        mMediaController.setVisibility(View.GONE);
         // init player
         IjkMediaPlayer.loadLibrariesOnce(null);
         IjkMediaPlayer.native_profileBegin("libijkplayer.so");
@@ -197,6 +199,7 @@ public class VideoPreviewActivity extends BaseActivity {
         mVideoView.setMediaController(mMediaController);
         mHudView = (TableLayout) findViewById(R.id.hud_view);
         mVideoView.setHudView(mHudView);
+        mVideoView.setOnPreparedListener(iMediaPlayer ->loading(View.INVISIBLE));
 
         pre_videoLayout = (FrameLayout) findViewById(R.id.pre_video);
         pre_videoLayout.setOnFocusChangeListener((view1, hasFocus) -> {
@@ -208,8 +211,9 @@ public class VideoPreviewActivity extends BaseActivity {
     }
 
     private void startPlay() {
+
         if (mVideoPath == "") {
-            Toast.makeText(this, "No Video Found! Press Back Button To Exit", Toast.LENGTH_LONG).show();
+            parseError();
         } else {
             mVideoView.setVideoURI(Uri.parse(mVideoPath));
             mVideoView.start();
@@ -281,17 +285,13 @@ public class VideoPreviewActivity extends BaseActivity {
 
         shareInfoForFragment();
 
-        if (mVideoPath != "") {
-            initMediaInfo();
-            if (Integer.valueOf(videoCount) > 1) {
-                initEpisodeList();
-            } else {
-                mEpisodeListView.setVisibility(View.GONE);
-            }
-
+        initMediaInfo();
+        if (Integer.valueOf(videoCount) > 1) {
+            initEpisodeList();
         } else {
-            parseError();
+            mEpisodeListView.setVisibility(View.GONE);
         }
+
     }
 
     private void getVideoInfo() {
@@ -302,12 +302,12 @@ public class VideoPreviewActivity extends BaseActivity {
         videoCount = mVideoBase.getVideoCount();
         latestOrder = mVideoBase.getLatestOrder();
 
-        /* for history/favorite usage */
-        albumId = mVideoBase.getAlbumId();
-        playUrl = mVideoBase.getPlayUrl();
-        image_url = mVideoBase.getImageUrl();
-        video_type = VIDEO_TYPE_TVSERIES;
-        /* -------------------------- */
+        // For Favorite Usage
+        mVideoType = mVideoBase.getChannelId();
+        mVideoCount = Integer.valueOf(mVideoBase.getVideoCount());
+        mPlayUrl = mVideoBase.getPlayUrl();
+        mAlbumImageUrl = mVideoBase.getAlbumImageUrl();
+        // ------------------
 
         if (Integer.valueOf(videoCount) > 1) {
             parseIQiYiEpisodeList(albumId, Integer.valueOf(latestOrder), 1);
@@ -329,13 +329,12 @@ public class VideoPreviewActivity extends BaseActivity {
         editor.putString("guestname", guestname);
         editor.putString("description", description);
 
-        /* for History/Favorite usage */
-        editor.putString("albumId", albumId);
-        editor.putString("playurl", playUrl);
-        editor.putString("imageurl", image_url);
-        editor.putString("videotype", video_type);
-        /* -------------------------- */
-
+        // For Favorite Usage
+        editor.putInt(EXT_VIDEO_TYPE, mVideoType);
+        editor.putString(EXT_VIDEO_ALBUM, albumId);
+        editor.putString(EXT_VIDEO_PLAYURL, mPlayUrl);
+        editor.putString(EXT_VIDEO_IMAGE_URL, mAlbumImageUrl);
+        // ------------------
         editor.commit();
     }
 
@@ -402,6 +401,7 @@ public class VideoPreviewActivity extends BaseActivity {
         mEpisodeListView.setChildrenItemClickListener(new ChildrenAdapter.OnItemClickListener() {
             @Override
             public void onEpisodesItemClick(View view, int position) {
+                loading(View.VISIBLE);
                 tvId = mEplisodeList.get(position).getTvId();
                 parseIQiYiRealM3U8WithTvId(tvId);
                 adapter.setSelectedPositions(Arrays.asList(position));
@@ -484,7 +484,7 @@ public class VideoPreviewActivity extends BaseActivity {
                     // TODO Item点击事件
 //                    mVideoView.pause();
                     scrollView.scrollTo(0, 0);
-                    loading(2);
+                    loading(View.VISIBLE);
                     if (null != mVideoList.get(position).getUrl()) {
                         parseIQiYiVideoBaseInfoByURL(mVideoList.get(position).getUrl());
                     }
@@ -521,7 +521,6 @@ public class VideoPreviewActivity extends BaseActivity {
                     mVideoPath = list.get(0).getM3u();
                     Log.v("vvvVideoPreview3", mVideoPath);
                     startPlay();
-                    loading(1);
                 } else {
                     mVideoPath = "";
                     parseError();
@@ -552,7 +551,7 @@ public class VideoPreviewActivity extends BaseActivity {
             @Override
             public void success(List<IQiYiMovieBean> list) {
                 mEplisodeList.clear();
-                textLoading.setVisibility(View.GONE);
+                textLoading.setText("");
                 mEplisodeList.addAll(list);
                 ctvid = mEplisodeList.get(0).getTvId();
                 Log.v("vvvctvid", ctvid);
@@ -585,7 +584,7 @@ public class VideoPreviewActivity extends BaseActivity {
             @Override
             public void success(IQiYiVideoBaseInfoBean bean) {
                 mVideoBase = bean;
-                textLoading.setVisibility(View.GONE);
+                textLoading.setText("");
                 Log.v("parseIQiYiVideoBaseInfo", bean.toString());
                 mHandler.sendEmptyMessage(REFRESH_VideoBaseInfo);
             }
@@ -611,7 +610,7 @@ public class VideoPreviewActivity extends BaseActivity {
             @Override
             public void success(IQiYiVideoBaseInfoBean bean) {
                 mVideoBase = bean;
-                textLoading.setVisibility(View.GONE);
+                textLoading.setText("");
                 Log.v("parseIQiYiVideoBaseInfo", bean.toString());
                 mHandler.sendEmptyMessage(REFRESH_VideoBaseInfo);
             }
@@ -639,7 +638,7 @@ public class VideoPreviewActivity extends BaseActivity {
             @Override
             public void success(List<IQiYiMovieBean> list) {
                 mVideoList.clear();
-                textLoading.setVisibility(View.GONE);
+                textLoading.setText("");
                 mVideoList.addAll(list);
                 Log.v("VVVmVideoList", mVideoList.toString());
                 for (IQiYiMovieBean bean : list) {
@@ -682,14 +681,13 @@ public class VideoPreviewActivity extends BaseActivity {
         intent.putExtra("currentPosition", mVideoView.getCurrentPosition());
         intent.putExtra("mEpisode", mEpisode);
 
-        if ( Integer.valueOf(mVideoBase.getVideoCount()) > 1 ) {
-            LeanCloudStorage.updateIQiyHistory(mVideoBase,
-              mEplisodeList.get(mEpisode), mEpisode + 1, new SaveCallback() {
-                  @Override
-                  public void done(AVException e) {
-                  }
-              });
-        }
+        // for history usage
+        intent.putExtra(EXT_VIDEO_TYPE, mVideoBase.getChannelId());
+        intent.putExtra(EXT_VIDEO_COUNT, mVideoCount);
+        intent.putExtra(EXT_VIDEO_PLAYURL, mPlayUrl);
+        intent.putExtra(EXT_VIDEO_IMAGE_URL, mAlbumImageUrl);
+        // -----------------
+
         mCircleDrawable.stop();
         mVideoView.stopPlayback();
         mVideoView.release(true);

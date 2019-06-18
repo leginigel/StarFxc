@@ -236,11 +236,15 @@ public class YoutubeActivity extends FragmentActivity implements CustomAdapt,
             playerControlsFragment.setVideo(video);
             playerBox.setVisibility(View.VISIBLE);
             playerBox.requestFocus();
-            LeanCloudStorage.updateYoutubeHistory(video, new SaveCallback() {
-                @Override
-                public void done(AVException e) {
-                }
-            });
+            try {
+                LeanCloudStorage.updateYoutubeHistory(video, new SaveCallback() {
+                    @Override
+                    public void done(AVException e) {
+                    }
+                });
+            }catch (Exception e){
+
+            }
             youTubePlayer.loadVideo(video.getId());
         }
     }

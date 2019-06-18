@@ -2,17 +2,16 @@ package com.stars.tv.fragment;
 
 //Alice@20190424
 
+import android.accounts.NetworkErrorException;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,23 +19,18 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.DeleteCallback;
 import com.avos.avoscloud.SaveCallback;
 import com.stars.tv.R;
 import com.stars.tv.bean.ExtVideoBean;
-import com.stars.tv.bean.IQiYiMovieBean;
 import com.stars.tv.server.LeanCloudStorage;
 
-import com.stars.tv.activity.FullPlaybackActivity;
-import com.stars.tv.activity.VideoPreviewActivity;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import static com.stars.tv.utils.Constants.EXT_VIDEO_ALBUM;
+import static com.stars.tv.utils.Constants.EXT_VIDEO_IMAGE_URL;
+import static com.stars.tv.utils.Constants.EXT_VIDEO_PLAYURL;
+import static com.stars.tv.utils.Constants.EXT_VIDEO_TYPE;
 
 public class MediaInfoListFragment extends Fragment {
   private TextView mName,mScore;
@@ -211,56 +205,66 @@ public class MediaInfoListFragment extends Fragment {
 
     /* for Favorite usage */
     mVideoInfo = new ExtVideoBean();
-    mVideoInfo.setAlbumId(videoinfoshare.getString("albumId",""));
-    mVideoInfo.setVideoType(videoinfoshare.getString("videotype",""));
+    mVideoInfo.setAlbumId(videoinfoshare.getString(EXT_VIDEO_ALBUM,""));
+    mVideoInfo.setVideoType(videoinfoshare.getInt(EXT_VIDEO_TYPE,0));
     mVideoInfo.setVideoId(videoinfoshare.getString("tvId",""));
     mVideoInfo.setVideoName(medName);
-    mVideoInfo.setVideoCounter(videoCount);
-    mVideoInfo.setVideoLatestOrder(latestOrder);
-    mVideoInfo.setVideoPlayUrl(videoinfoshare.getString("playurl",""));
-    mVideoInfo.setVideoImageUrl(videoinfoshare.getString("imageurl",""));
-    mVideoInfo.setVideoCurrentViewOrder("");
-    mVideoInfo.setVideoDescription(medplot);
+    mVideoInfo.setVideoPlayUrl(videoinfoshare.getString(EXT_VIDEO_PLAYURL,""));
+    mVideoInfo.setAlbumImageUrl(videoinfoshare.getString(EXT_VIDEO_IMAGE_URL,""));
+    mVideoInfo.setVideoCount(Integer.valueOf(videoCount));
+    mVideoInfo.setVideoLatestOrder(Integer.valueOf(latestOrder));
+    mVideoInfo.setVideoCurrentViewOrder(1);
+    mVideoInfo.setVideoPlayPosition(0);
+    // ----------------------
 
-    LeanCloudStorage.IQiyFavoriteCheckListener(mVideoInfo.getAlbumId(),
-      new LeanCloudStorage.cloudCheckVideoListener() {
-      @Override
-      public void succeed() {
-        mFavorite.setSelected(true);
-        mFavorite.setClickable(true);
-        isFavorite = true;
-      }
+    try {
+      LeanCloudStorage.getIQiyFavoriteListener(mVideoInfo.getAlbumId(),
+        new LeanCloudStorage.VideoSeeker() {
+          @Override
+          public void succeed(ExtVideoBean bean) {
+            mFavorite.setSelected(true);
+            mFavorite.setClickable(true);
+            isFavorite = true;
+          }
 
-      @Override
-      public void failed() {
-        mFavorite.setSelected(false);
-        mFavorite.setClickable(true);
-        isFavorite = false;
-      }
-    });
+          @Override
+          public void failed() {
+            mFavorite.setSelected(false);
+            mFavorite.setClickable(true);
+            isFavorite = false;
+          }
+        });
+    }catch (Exception e){
+    }
 
     mFavorite.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
         if ( isFavorite ){
-          LeanCloudStorage.removeIQiyFavorite(mVideoInfo.getAlbumId(), new DeleteCallback() {
-            @Override
-            public void done(AVException e) {
-              mFavorite.setSelected(false);
-              isFavorite = false;
-            }
-          });
+          try {
+            LeanCloudStorage.removeIQiyFavorite(mVideoInfo.getAlbumId(), new DeleteCallback() {
+              @Override
+              public void done(AVException e) {
+                mFavorite.setSelected(false);
+                isFavorite = false;
+              }
+            });
+          }catch( Exception e ){
+          }
         }
         else{
-          LeanCloudStorage.updateIQiyBeanFavorite(mVideoInfo, new SaveCallback() {
-            @Override
-            public void done(AVException e) {
-              if ( e == null ){
-                mFavorite.setSelected(true);
-                isFavorite = true;
+          try {
+            LeanCloudStorage.updateIQiyFavorite(mVideoInfo, new SaveCallback() {
+              @Override
+              public void done(AVException e) {
+                if ( e == null ) {
+                  mFavorite.setSelected(true);
+                  isFavorite = true;
+                }
               }
-            }
-          });
+            });
+          }catch (Exception e){
+          }
         }
       }
     });

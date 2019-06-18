@@ -2,7 +2,6 @@ package com.stars.tv.youtube.ui.player;
 
 
 import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -33,6 +32,7 @@ import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.stars.tv.R;
+import com.stars.tv.bean.ExtVideoBean;
 import com.stars.tv.server.LeanCloudStorage;
 import com.stars.tv.youtube.YoutubeActivity;
 import com.stars.tv.youtube.data.YouTubeVideo;
@@ -115,20 +115,24 @@ public class PlayerControlsFragment extends DialogFragment {
     favButton = view.findViewById(R.id.favorite_button);
     favText = view.findViewById(R.id.favorite_text);
 
-    LeanCloudStorage.YoutubeFavoriteCheckListener(mVideo.getId(),
-      new LeanCloudStorage.cloudCheckVideoListener() {
-        @Override
-        public void succeed() {
-          favButton.setImageResource(R.drawable.ic_favorite_24dp);
-          mIsFavorite = true;
-        }
+    try {
+      LeanCloudStorage.getYoutubeFavoriteListener(mVideo.getId(),
+        new LeanCloudStorage.VideoSeeker() {
+          @Override
+          public void succeed(ExtVideoBean bean) {
+            favButton.setImageResource(R.drawable.ic_favorite_24dp);
+            mIsFavorite = true;
+          }
 
-        @Override
-        public void failed() {
-          favButton.setImageResource(R.drawable.ic_favorite_border_24dp);
-          mIsFavorite = false;
-        }
-      });
+          @Override
+          public void failed() {
+            favButton.setImageResource(R.drawable.ic_favorite_border_24dp);
+            mIsFavorite = false;
+          }
+        });
+    }catch(Exception e){
+
+    }
     favButton.setOnFocusChangeListener((v, hasFocus) -> {
       if(hasFocus) {
         CountDown = 5;
@@ -138,26 +142,34 @@ public class PlayerControlsFragment extends DialogFragment {
     });
     favButton.setOnClickListener(v -> {
       if ( mIsFavorite ){
-        LeanCloudStorage.removeYoutubeFavorite(mVideo.getId(), new DeleteCallback() {
-          @Override
-          public void done(AVException e) {
-            if ( e == null ){
-              favButton.setImageResource(R.drawable.ic_favorite_border_24dp);
-              mIsFavorite = false;
+        try {
+          LeanCloudStorage.removeYoutubeFavorite(mVideo.getId(), new DeleteCallback() {
+            @Override
+            public void done(AVException e) {
+              if ( e == null ) {
+                favButton.setImageResource(R.drawable.ic_favorite_border_24dp);
+                mIsFavorite = false;
+              }
             }
-          }
-        });
+          });
+        }catch(Exception e){
+
+        }
       }
       else{
-        LeanCloudStorage.updateYoutubeFavorite(mVideo, new SaveCallback() {
-          @Override
-          public void done(AVException e) {
-            if ( e == null ){
-              favButton.setImageResource(R.drawable.ic_favorite_24dp);
-              mIsFavorite = true;
+        try {
+          LeanCloudStorage.updateYoutubeFavorite(mVideo, new SaveCallback() {
+            @Override
+            public void done(AVException e) {
+              if ( e == null ) {
+                favButton.setImageResource(R.drawable.ic_favorite_24dp);
+                mIsFavorite = true;
+              }
             }
-          }
-        });
+          });
+        }catch(Exception e){
+
+        }
       }
       //favButton.getDrawable()
       //      .setColorFilter(Color.parseColor("#FF1E88E5"), PorterDuff.Mode.SRC_IN);
