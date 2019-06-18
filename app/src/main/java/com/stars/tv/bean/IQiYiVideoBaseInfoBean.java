@@ -37,7 +37,7 @@ public class IQiYiVideoBaseInfoBean extends IQiYiBaseBean {
     private String albumName;
     private String baikeUrl;
     private String albumImageUrl;
-    private int userId;
+    private String userId;
     private String period;
     private boolean exclusive;
     private int order;
@@ -408,11 +408,11 @@ public class IQiYiVideoBaseInfoBean extends IQiYiBaseBean {
         return albumImageUrl;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 
-    public int getUserId() {
+    public String getUserId() {
         return userId;
     }
 

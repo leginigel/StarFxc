@@ -2,6 +2,7 @@ package com.stars.tv.fragment;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -27,6 +28,7 @@ import android.widget.TextView;
 
 import com.github.ybq.android.spinkit.style.Circle;
 import com.stars.tv.R;
+import com.stars.tv.activity.LiveTVActivity;
 import com.stars.tv.bean.LiveTvBean;
 import com.stars.tv.bean.LiveTvEpgBean;
 import com.stars.tv.db.TvDao;
@@ -317,7 +319,9 @@ public class LiveTVFragment extends LiveTVBaseFragment {
     private void showFullScreen() {
         isFullScreen = true;
         if (NetUtil.isConnected()) {
-            //TODO ENTER full screen
+            Intent intent = new Intent(mContext, LiveTVActivity.class);
+            intent.putExtra("curTvChannel", curTvChannel);
+            startActivity(intent);
         } else {
             showLoadingError("0");
         }
@@ -347,20 +351,19 @@ public class LiveTVFragment extends LiveTVBaseFragment {
     }
 
     private void playCurrentChannel(@NonNull LiveTvBean liveTvBean) {
-        Log.v(TAG, "play url" + liveTvBean.getUrl().get(0));
-        setWavePosition();
         if (NetUtil.isConnected()) {
             String mVideoPath = liveTvBean.getUrl().get(0);
             playerVideoView.setVideoURI(Uri.parse(mVideoPath));
             playerVideoView.start();
+            setWavePosition();
+        infoBannerNum.setText(String.valueOf(liveTvBean.getChannelNumber()));
+        infoBannerName.setText(liveTvBean.getChannelName());
+            infoBannerEpg.setSelected(false);
+        infoBannerEpg.setText(getString(R.string.str_live_tv_epg_info_loading));
+        parseTvMaoEpgData(curTvChannel);
         } else {
             showLoadingError("0");
         }
-        infoBannerNum.setText(String.valueOf(liveTvBean.getChannelNumber()));
-        infoBannerName.setText(liveTvBean.getChannelName());
-        infoBannerEpg.setText(getString(R.string.str_live_tv_epg_info_loading));
-        parseTvMaoEpgData(curTvChannel);
-
     }
 
     private void initLoading() {
@@ -437,6 +440,7 @@ public class LiveTVFragment extends LiveTVBaseFragment {
         if (text.equals("")) {
             infoBannerEpg.setText(getString(R.string.str_live_tv_epg_empty));
         } else {
+            infoBannerEpg.setSelected(true);
             infoBannerEpg.setText(getString(R.string.str_live_tv_epg_data, text));
         }
     }
@@ -513,6 +517,16 @@ public class LiveTVFragment extends LiveTVBaseFragment {
     public void onResume() {
         super.onResume();
         Log.v(TAG, "onResume");
+        if (isFullScreen) {
+            isFullScreen = false;
+            listPosition = (int) Utils.getSharedValue(mContext, "listPosition", 1);
+            chPosition = (int) Utils.getSharedValue(mContext, "chPosition", 0);
+            setChannelList(listPosition);
+            curTvChannel = channelList.get(chPosition);
+            refreshTitleList();
+            setTimer(PLAY_CURRENT_CHANNEL, PLAY_CURRENT_CHANNEL_TIMER);
+            showLoading();
+        }
     }
 
     @Override

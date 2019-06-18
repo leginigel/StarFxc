@@ -65,17 +65,12 @@ public class ChildrenAdapter extends RecyclerView.Adapter<ChildrenAdapter.MyView
                 }
             });
 
-//            final LongFocusRunnable longFocusRunnable = new LongFocusRunnable(holder.textView, position);
             holder.textView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 @Override
                 public void onFocusChange(final View v, boolean hasFocus) {
                     if (hasFocus) {
                         mFocusListener.onEpisodesItemFocus(v, position, hasFocus);
                         mCurrentPosition = position;
-//                        mHandler.postDelayed(longFocusRunnable, LONG_FOCUS_TIME);
-                    } else {
-//                        mHandler.removeCallbacks(longFocusRunnable);
-//                        mLongFocusListener.onEpisodesItemLongFocus(v,position,hasFocus);
                     }
                 }
             });
