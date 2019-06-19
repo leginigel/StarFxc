@@ -421,7 +421,7 @@ public class VideoPreviewActivity extends BaseActivity {
                 parseIQiYiRealM3U8WithTvId(tvId);
                 adapter.setSelectedPositions(Arrays.asList(position));
                 mEpisode = position;
-           }
+            }
         });
         mHandler.postDelayed(new Runnable() {
             @Override
@@ -689,13 +689,14 @@ public class VideoPreviewActivity extends BaseActivity {
 
     public void turntoFullPlayback() {
         Intent intent = new Intent(getBaseContext(), FullPlaybackActivity.class);
+        intent.putExtra("tvId", tvId);
         intent.putExtra("name", name);
-        intent.putExtra("mVideoPath", mVideoPath);
         intent.putExtra("albumId", albumId);
-        intent.putExtra("latestOrder", latestOrder);
         intent.putExtra("currentPosition", mVideoView.getCurrentPosition());
-        intent.putExtra("mEpisode", mEpisode);
-
+        if (Integer.valueOf(videoCount) > 1) {
+            intent.putExtra("latestOrder", latestOrder);
+            intent.putExtra("mEpisode", mEpisode);
+        }
         // for history usage
         intent.putExtra(EXT_VIDEO_TYPE, mVideoBase.getChannelId());
         intent.putExtra(EXT_VIDEO_COUNT, mVideoCount);
@@ -722,6 +723,4 @@ public class VideoPreviewActivity extends BaseActivity {
         mVideoView.seekTo(mPosition);
         mVideoView.start();
     }
-
-
 }
