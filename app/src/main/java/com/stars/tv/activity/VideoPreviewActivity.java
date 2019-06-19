@@ -684,7 +684,6 @@ public class VideoPreviewActivity extends BaseActivity {
         // for history usage
         intent.putExtra(EXT_VIDEO_TYPE, mVideoBase.getChannelId());
         intent.putExtra(EXT_VIDEO_COUNT, mVideoCount);
-        intent.putExtra(EXT_VIDEO_PLAYURL, mPlayUrl);
         intent.putExtra(EXT_VIDEO_IMAGE_URL, mAlbumImageUrl);
         // -----------------
 
