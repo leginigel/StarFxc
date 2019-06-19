@@ -723,6 +723,4 @@ public class VideoPreviewActivity extends BaseActivity {
         mVideoView.seekTo(mPosition);
         mVideoView.start();
     }
-
-
 }
