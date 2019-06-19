@@ -217,7 +217,7 @@ public class ExtTabCommonFragment extends ExtBaseFragment{
               intent.putExtra("latestOrder", String.valueOf(bean.getVideoLatestOrder()));
               intent.putExtra("currentPosition", bean.getVideoPlayPosition());
               intent.putExtra("mEpisode", bean.getVideoCurrentViewOrder());
-              intent.putExtra(EXT_VIDEO_ID, bean.getVideoId());
+              intent.putExtra("tvId", bean.getVideoId());
               intent.putExtra(EXT_VIDEO_TYPE, bean.getVideoType());
               intent.putExtra(EXT_VIDEO_COUNT, bean.getVideoCount());
               intent.putExtra(EXT_VIDEO_IMAGE_URL, bean.getAlbumImageUrl());
