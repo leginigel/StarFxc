@@ -680,13 +680,14 @@ public class VideoPreviewActivity extends BaseActivity {
 
     public void turntoFullPlayback() {
         Intent intent = new Intent(getBaseContext(), FullPlaybackActivity.class);
+        intent.putExtra("tvId", tvId);
         intent.putExtra("name", name);
-        intent.putExtra("mVideoPath", mVideoPath);
         intent.putExtra("albumId", albumId);
-        intent.putExtra("latestOrder", latestOrder);
         intent.putExtra("currentPosition", mVideoView.getCurrentPosition());
-        intent.putExtra("mEpisode", mEpisode);
-
+        if (Integer.valueOf(videoCount) > 1) {
+            intent.putExtra("latestOrder", latestOrder);
+            intent.putExtra("mEpisode", mEpisode);
+        }
         mCircleDrawable.stop();
         mVideoView.stopPlayback();
         mVideoView.release(true);

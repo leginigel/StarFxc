@@ -71,25 +71,24 @@ public class FullPlaybackActivity extends BaseActivity {
     protected void onCreate(Bundle savedInsatanceState) {
         super.onCreate(savedInsatanceState);
         setContentView(R.layout.activity_video_fullplayback);
+        tvId=getIntent().getStringExtra("tvId");
         name = getIntent().getStringExtra("name");
-        mVideoPath = getIntent().getStringExtra("mVideoPath");
         albumId = getIntent().getStringExtra("albumId");
-        latestOrder = getIntent().getStringExtra("latestOrder");
         currentPosition = getIntent().getIntExtra("currentPosition", 0);
+        latestOrder = getIntent().getStringExtra("latestOrder");
         mEpisode = getIntent().getIntExtra("mEpisode", 0);
-        Log.v("FFFmEpisode",mEpisode+"");
 
         densityRatio = getResources().getDisplayMetrics().density; // 表示获取真正的密度
 
         loading(View.VISIBLE);
         initVideoView();
-        startPlay();
-        parseIQiYiEpisodeList(albumId, Integer.valueOf(latestOrder), 1);
-
+        parseIQiYiRealM3U8WithTvId(tvId);
+        if (null!=latestOrder) {
+            parseIQiYiEpisodeList(albumId, Integer.valueOf(latestOrder), 1);
+        }
     }
 
     public void initVideoView() {
-        Log.v("vvvVideoPreview1", mVideoPath);
         // init UI
         mMediaController = new AndroidMediaController(this, false);
 //        mMediaController = new AndroidMediaController(this, false);
@@ -106,15 +105,17 @@ public class FullPlaybackActivity extends BaseActivity {
         mHudView = (TableLayout) findViewById(R.id.mhud_view);
         mVideoView.setHudView(mHudView);
         mVideoView.setOnPreparedListener(iMediaPlayer -> loading(View.INVISIBLE));
-        mVideoView.setOnCompletionListener(new IMediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(IMediaPlayer mp) {
-                loading(View.VISIBLE);
-                mEpisode=mEpisode+1;
-                parseIQiYiRealM3U8WithTvId(mEplisodeList.get(mEpisode).getTvId());
-                adapter.setSelectedPositions(Arrays.asList(mEpisode));
-            }
-        });
+        if (null!=latestOrder) {
+            mVideoView.setOnCompletionListener(new IMediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(IMediaPlayer mp) {
+                    loading(View.VISIBLE);
+                    mEpisode = mEpisode + 1;
+                    parseIQiYiRealM3U8WithTvId(mEplisodeList.get(mEpisode).getTvId());
+                    adapter.setSelectedPositions(Arrays.asList(mEpisode));
+                }
+            });
+        }
     }
 
     private void startPlay() {
@@ -161,21 +162,25 @@ public class FullPlaybackActivity extends BaseActivity {
         if (event.getAction() == KeyEvent.ACTION_DOWN) {
             switch (keyCode) {
                 case KeyEvent.KEYCODE_DPAD_UP:
-                    showOrHideEpisode();
-                    if (!mEpisodeListView.isShown()) {
-                        mEpisodeListView.setVisibility(View.VISIBLE);
+                    if (null!=latestOrder) {
+                        showOrHideEpisode();
+                        if (!mEpisodeListView.isShown()) {
+                            mEpisodeListView.setVisibility(View.VISIBLE);
 //                        mEpisodeListView.requestFocus();
-                        adapter.setSelectedPositions(Arrays.asList(mEpisode));
-                        return true;
+                            adapter.setSelectedPositions(Arrays.asList(mEpisode));
+                            return true;
+                        }
                     }
                     break;
                 case KeyEvent.KEYCODE_DPAD_DOWN:
-                    showOrHideEpisode();
-                    if (!mEpisodeListView.isShown()) {
-                        mEpisodeListView.setVisibility(View.VISIBLE);
+                    if (null!=latestOrder) {
+                        showOrHideEpisode();
+                        if (!mEpisodeListView.isShown()) {
+                            mEpisodeListView.setVisibility(View.VISIBLE);
 //                        mEpisodeListView.requestFocus();
-                        adapter.setSelectedPositions(Arrays.asList(mEpisode));
-                        return true;
+                            adapter.setSelectedPositions(Arrays.asList(mEpisode));
+                            return true;
+                        }
                     }
                     break;
                 case KeyEvent.KEYCODE_DPAD_RIGHT:
@@ -208,8 +213,10 @@ public class FullPlaybackActivity extends BaseActivity {
         Intent intent = new Intent();
         //把返回数据存入Intent
         intent.putExtra("currentPosition", mVideoView.getCurrentPosition());
-        intent.putExtra("currentEpisode", mEpisode);
         intent.putExtra("currentPath", mVideoPath);
+        if (null!=latestOrder) {
+            intent.putExtra("currentEpisode", mEpisode);
+        }
         //设置返回数据
         FullPlaybackActivity.this.setResult(RESULT_OK, intent);
         //关闭Activity
@@ -309,7 +316,7 @@ public class FullPlaybackActivity extends BaseActivity {
                 //TODO 获取成功在此得到真实播放地址的List，可能会有HD,SD,1080P
                 mVideoPath = list.get(0).getM3u();
                 for (IQiYiM3U8Bean bean : list) {
-                    Log.v("VideoPreviewM3U8", bean.toString());
+                    Log.v("FullPlaybackM3U8", bean.toString());
                 }
                 startPlay();
 
