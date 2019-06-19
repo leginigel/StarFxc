@@ -64,11 +64,17 @@ public class IQiYiParseVideoBaseInfoPresenter {
                 .flatMap((Function<ResponseBody, ObservableSource<ResponseBody>>) responseBody -> {
                     Document doc = Jsoup.parse(responseBody.string());
                     String tvId = "";
+                    if (playUrl.contains("v_")) {
                     if (null != doc) {
                         Elements lis = doc.select("div[id=iqiyi-main]").select("div[is=i71-play]");
                         String pageinfo = lis.attr(":page-info");
                         JSONObject root = new JSONObject(pageinfo);
                         tvId = root.getString("tvId");
+                    }
+                    } else {
+                        Elements zongyi = doc.select("div[id=flashbox]");
+                        tvId = zongyi.attr("data-player-tvid");
+
                     }
                     return getIQiYiPostConsumerUrl(tvId);
                 }).subscribe(new DisposableObserver<ResponseBody>() {

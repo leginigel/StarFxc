@@ -1,6 +1,7 @@
 package com.stars.tv.model;
 
 import com.stars.tv.bean.TvTitle;
+import com.stars.tv.utils.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,17 +9,16 @@ import java.util.List;
 public class TvTitleModel {
     public static List<TvTitle> getTitleList() {
         List<TvTitle> titleList = new ArrayList<>();
-        titleList.add(new TvTitle("精选"));
-        titleList.add(new TvTitle("频道"));
-        titleList.add(new TvTitle("电视剧"));
-        titleList.add(new TvTitle("电影"));
-        titleList.add(new TvTitle("综艺"));
-        titleList.add(new TvTitle("少儿"));
-        titleList.add(new TvTitle("动漫"));
-        titleList.add(new TvTitle("新闻"));
-        titleList.add(new TvTitle("热点"));
-        titleList.add(new TvTitle("体育"));
-        titleList.add(new TvTitle("娱乐"));
+        titleList.add(new TvTitle(Constants.MAIN_TITLE_JINGXUAN));
+        titleList.add(new TvTitle(Constants.MAIN_TITLE_PINDAO));
+        titleList.add(new TvTitle(Constants.MAIN_TITLE_DIANSHIJU));
+        titleList.add(new TvTitle(Constants.MAIN_TITLE_DIANYING));
+        titleList.add(new TvTitle(Constants.MAIN_TITLE_ZONGYI));
+        titleList.add(new TvTitle(Constants.MAIN_TITLE_DONGYI));
+        titleList.add(new TvTitle(Constants.MAIN_TITLE_SHAOER));
+        titleList.add(new TvTitle(Constants.MAIN_TITLE_JIAOYU));
+        titleList.add(new TvTitle(Constants.MAIN_TITLE_XINWEI));
+        titleList.add(new TvTitle(Constants.MAIN_TITLE_YULE));
         return titleList;
     }
 }

@@ -38,5 +38,16 @@ public class Constants {
     public static final String EXT_VIDEO_NUMBERVIEWS = "VideoNumberViews";
     public static final String EXT_VIDEO_TIME = "VideoTime";
     public static final String EXT_VIDEO_DURATION = "VideoDuration";
+
+    public static final String MAIN_TITLE_JINGXUAN = "精选";
+    public static final String MAIN_TITLE_PINDAO = "频道";
+    public static final String MAIN_TITLE_DIANSHIJU = "电视剧";
+    public static final String MAIN_TITLE_DIANYING = "电影";
+    public static final String MAIN_TITLE_ZONGYI = "综艺";
+    public static final String MAIN_TITLE_DONGYI = "动漫";
+    public static final String MAIN_TITLE_SHAOER = "少儿";
+    public static final String MAIN_TITLE_JIAOYU = "教育";
+    public static final String MAIN_TITLE_XINWEI = "新闻";
+    public static final String MAIN_TITLE_YULE = "娱乐";
 }
 

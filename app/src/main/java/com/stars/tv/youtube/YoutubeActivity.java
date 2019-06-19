@@ -198,8 +198,10 @@ public class YoutubeActivity extends FragmentActivity implements CustomAdapt,
                     }
                 }
                 if(KeyEvent.KEYCODE_BACK == keyCode){
-                    if(!homeIcon.isSelected()) homeIcon.requestFocus();
-                    return true;
+                    if(!homeIcon.isFocused()){
+                        homeIcon.requestFocus();
+                        return true;
+                    }
                 }
             }
             return false;
@@ -296,6 +298,10 @@ public class YoutubeActivity extends FragmentActivity implements CustomAdapt,
 //            Log.d(TAG, "onBackPressed");
 //            getSupportFragmentManager().beginTransaction().hide(youtubeFragment);
 //            youTubePlayer.pause();
+            if(mExtVideoBean != null){
+                ViewGroup home  = youtubeFragment.getView().findViewById(R.id.container_row);
+                home.requestFocus();
+            }
             playerBox.setVisibility(View.GONE);
             if(searchIcon.isSelected()) {
                 ViewGroup search  = searchFragment.getView().findViewById(R.id.search_row);
