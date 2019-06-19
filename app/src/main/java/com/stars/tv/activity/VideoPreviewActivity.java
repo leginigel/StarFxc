@@ -16,6 +16,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ScrollView;
@@ -167,6 +168,20 @@ public class VideoPreviewActivity extends BaseActivity {
 
         initVideoView();
 
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (event.getAction() == KeyEvent.ACTION_DOWN) {
+            if ( keyCode == KeyEvent.KEYCODE_BACK ){
+                Intent intent = new Intent();
+                intent.putExtra("exit", true);
+                this.setResult(RESULT_OK, intent);
+                this.finish();
+            }
+        }
+
+        return super.onKeyDown(keyCode, event);
     }
 
     @Override

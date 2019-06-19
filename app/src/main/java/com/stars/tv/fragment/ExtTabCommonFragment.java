@@ -47,8 +47,8 @@ import static com.stars.tv.utils.Constants.CLOUD_HISTORY_CLASS;
 import static com.stars.tv.utils.Constants.CLOUD_YT_FAVORITE_CLASS;
 import static com.stars.tv.utils.Constants.CLOUD_YT_HISTORY_CLASS;
 import static com.stars.tv.utils.Constants.EXT_VIDEO_COUNT;
+import static com.stars.tv.utils.Constants.EXT_VIDEO_ID;
 import static com.stars.tv.utils.Constants.EXT_VIDEO_IMAGE_URL;
-import static com.stars.tv.utils.Constants.EXT_VIDEO_PLAYURL;
 import static com.stars.tv.utils.Constants.EXT_VIDEO_TYPE;
 
 public class ExtTabCommonFragment extends ExtBaseFragment{
@@ -95,28 +95,33 @@ public class ExtTabCommonFragment extends ExtBaseFragment{
   public void onActivityResult(int requestCode, int resultCode, Intent data) {
     if (requestCode == 1){
       if ( resultCode == RESULT_OK ){
-        int itemIdx = data.getIntExtra("itemIndex", -1);
-        if ( itemIdx != -1 ){
-          if ( mStorage == null ){
-            initDataLink();
-          }
-          else{
-            mStorage.storageFetchSingleListener(mVideoList.get(itemIdx).getAlbumId(),
-              new FindCallback<AVObject>() {
-              @Override
-              public void done(List<AVObject> avObjects, AVException e) {
-                if ( e == null && avObjects.size() > 0){
-                  mVideoList.set(itemIdx, mStorage.assignToSingleVideo(avObjects.get(0)));
-                  mAdapter.notifyItemChanged(itemIdx);
-                  mExtContentsRecycler.smoothScrollToPosition(itemIdx);
-                }
-              }
-            });
-          }
+        boolean exit = data.getBooleanExtra("exit", false);
+        if ( exit ){
+          getActivity().finish();
         }
-        else{
-          mExtContentsRecycler.smoothScrollToPosition(0);
-        }
+        /*
+        else {
+          int itemIdx = data.getIntExtra("itemIndex", -1);
+          if ( itemIdx != -1 ) {
+            if ( mStorage == null ) {
+              initDataLink();
+            } else {
+              mStorage.storageFetchSingleListener(mVideoList.get(itemIdx).getAlbumId(),
+                new FindCallback<AVObject>() {
+                  @Override
+                  public void done(List<AVObject> avObjects, AVException e) {
+                    if ( e == null && avObjects.size() > 0 ) {
+                      mVideoList.set(itemIdx, mStorage.assignToSingleVideo(avObjects.get(0)));
+                      mAdapter.notifyItemChanged(itemIdx);
+                      mExtContentsRecycler.requestFocus();
+                    }
+                  }
+                });
+            }
+          } else {
+            mExtContentsRecycler.requestFocus();
+          }
+        }*/
       }
     }
   }
@@ -235,6 +240,7 @@ public class ExtTabCommonFragment extends ExtBaseFragment{
               intent.putExtra("latestOrder", String.valueOf(bean.getVideoLatestOrder()));
               intent.putExtra("currentPosition", bean.getVideoPlayPosition());
               intent.putExtra("mEpisode", bean.getVideoCurrentViewOrder());
+              intent.putExtra(EXT_VIDEO_ID, bean.getVideoId());
               intent.putExtra(EXT_VIDEO_TYPE, bean.getVideoType());
               intent.putExtra(EXT_VIDEO_COUNT, bean.getVideoCount());
               intent.putExtra(EXT_VIDEO_IMAGE_URL, bean.getAlbumImageUrl());
@@ -254,7 +260,7 @@ public class ExtTabCommonFragment extends ExtBaseFragment{
               basebean.setAlbumImageUrl(bean.getAlbumImageUrl());
               intent.putExtra("videoBean", basebean);
               intent.setClass(activity, mclass);
-              startActivity(intent);
+              startActivityForResult(intent, 1);
             }
           }
         });

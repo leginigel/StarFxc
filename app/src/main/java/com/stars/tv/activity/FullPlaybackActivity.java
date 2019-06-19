@@ -106,7 +106,6 @@ public class FullPlaybackActivity extends BaseActivity {
         initVideoView();
         startPlay();
         parseIQiYiEpisodeList(albumId, Integer.valueOf(latestOrder), 1);
-
     }
 
     public void initVideoView() {
@@ -261,6 +260,7 @@ public class FullPlaybackActivity extends BaseActivity {
         if ( mItemIdx != -1 ){
             intent.putExtra("itemIndex", mItemIdx);
         }
+        intent.putExtra("exit", true);
 
         //设置返回数据
         FullPlaybackActivity.this.setResult(RESULT_OK, intent);

@@ -67,27 +67,26 @@ public class LeanCloudStorage {
     }
   }
 
-
   public void storageFetchListener(FindCallback<AVObject> cr){
     AVQuery<AVObject> query = new AVQuery<>(mClassName);
+    query.setCachePolicy(AVQuery.CachePolicy.NETWORK_ELSE_CACHE);
     query.whereExists(EXT_VIDEO_ALBUM);
     query.findInBackground(cr);
   }
 
   public void storageFetchSingleListener(String album, FindCallback<AVObject> cr){
     AVQuery<AVObject> query = new AVQuery<>(mClassName);
+    query.setCachePolicy(AVQuery.CachePolicy.NETWORK_ELSE_CACHE);
     query.whereEqualTo(EXT_VIDEO_ALBUM, album);
     query.findInBackground(cr);
   }
-
 
   public List<ExtVideoBean> getVideoList(){
     return mExtVideoList;
   }
 
   public List<ExtVideoBean> assignToExtVideoList(List<AVObject> objects){
-    mExtVideoList = assignToVideoList(objects);
-    return mExtVideoList;
+    return mExtVideoList = assignToVideoList(objects);
   }
 
   public ExtVideoBean assignToSingleVideo(AVObject obj){
@@ -172,6 +171,7 @@ public class LeanCloudStorage {
   private void VideoSeekerListener(String album,
                                    VideoSeeker ccv){
     AVQuery<AVObject> query = new AVQuery<>(mClassName);
+    query.setCachePolicy(AVQuery.CachePolicy.NETWORK_ELSE_CACHE);
     query.whereEqualTo(EXT_VIDEO_ALBUM, album);
     query.getFirstInBackground(new GetCallback<AVObject>() {
       @Override
@@ -198,6 +198,7 @@ public class LeanCloudStorage {
 
   private void updateVideoByiQiy(ExtVideoBean bean, SaveCallback cb){
     AVQuery<AVObject> query = new AVQuery<>(mClassName);
+    query.setCachePolicy(AVQuery.CachePolicy.NETWORK_ELSE_CACHE);
     query.whereEqualTo(EXT_VIDEO_ALBUM,bean.getAlbumId());
     query.getFirstInBackground(new GetCallback<AVObject>() {
       @Override
@@ -223,6 +224,7 @@ public class LeanCloudStorage {
 
   private void updateVideoByYoutube(YouTubeVideo yt, SaveCallback cb){
     AVQuery<AVObject> query = new AVQuery<>(mClassName);
+    query.setCachePolicy(AVQuery.CachePolicy.NETWORK_ELSE_CACHE);
     query.whereEqualTo(EXT_VIDEO_ALBUM,yt.getId());
     query.getFirstInBackground(new GetCallback<AVObject>() {
       @Override
@@ -248,6 +250,7 @@ public class LeanCloudStorage {
 
   private void removeVideoByAlbum(String album, DeleteCallback dr){
     AVQuery<AVObject> query = new AVQuery<>(mClassName);
+    query.setCachePolicy(AVQuery.CachePolicy.NETWORK_ELSE_CACHE);
     query.whereEqualTo(EXT_VIDEO_ALBUM,album);
     query.getFirstInBackground(new GetCallback<AVObject>() {
       @Override
