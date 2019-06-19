@@ -99,29 +99,6 @@ public class ExtTabCommonFragment extends ExtBaseFragment{
         if ( exit ){
           getActivity().finish();
         }
-        /*
-        else {
-          int itemIdx = data.getIntExtra("itemIndex", -1);
-          if ( itemIdx != -1 ) {
-            if ( mStorage == null ) {
-              initDataLink();
-            } else {
-              mStorage.storageFetchSingleListener(mVideoList.get(itemIdx).getAlbumId(),
-                new FindCallback<AVObject>() {
-                  @Override
-                  public void done(List<AVObject> avObjects, AVException e) {
-                    if ( e == null && avObjects.size() > 0 ) {
-                      mVideoList.set(itemIdx, mStorage.assignToSingleVideo(avObjects.get(0)));
-                      mAdapter.notifyItemChanged(itemIdx);
-                      mExtContentsRecycler.requestFocus();
-                    }
-                  }
-                });
-            }
-          } else {
-            mExtContentsRecycler.requestFocus();
-          }
-        }*/
       }
     }
   }
@@ -244,7 +221,6 @@ public class ExtTabCommonFragment extends ExtBaseFragment{
               intent.putExtra(EXT_VIDEO_TYPE, bean.getVideoType());
               intent.putExtra(EXT_VIDEO_COUNT, bean.getVideoCount());
               intent.putExtra(EXT_VIDEO_IMAGE_URL, bean.getAlbumImageUrl());
-              intent.putExtra("itemIndex", itemIdx);
 
               intent.setClass(activity, mclass);
               startActivityForResult(intent, 1);
