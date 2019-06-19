@@ -1,5 +1,6 @@
 package com.stars.tv.fragment;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -20,13 +21,18 @@ import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.FindCallback;
 import com.bumptech.glide.Glide;
 import com.stars.tv.R;
+import com.stars.tv.activity.FullPlaybackActivity;
 import com.stars.tv.activity.MainActivity;
+import com.stars.tv.activity.VideoPreviewActivity;
 import com.stars.tv.bean.ExtTitleBean;
 import com.stars.tv.bean.ExtVideoBean;
+import com.stars.tv.bean.IQiYiBaseBean;
+import com.stars.tv.bean.IQiYiMovieBean;
 import com.stars.tv.server.LeanCloudStorage;
 import com.stars.tv.utils.Utils;
 import com.stars.tv.utils.ViewUtils;
 import com.stars.tv.youtube.YoutubeActivity;
+import com.stars.tv.youtube.data.YouTubeVideo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,13 +42,20 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
+import static android.app.Activity.RESULT_OK;
 import static com.stars.tv.utils.Constants.CLOUD_HISTORY_CLASS;
+import static com.stars.tv.utils.Constants.CLOUD_YT_FAVORITE_CLASS;
 import static com.stars.tv.utils.Constants.CLOUD_YT_HISTORY_CLASS;
+import static com.stars.tv.utils.Constants.EXT_VIDEO_COUNT;
+import static com.stars.tv.utils.Constants.EXT_VIDEO_IMAGE_URL;
+import static com.stars.tv.utils.Constants.EXT_VIDEO_PLAYURL;
+import static com.stars.tv.utils.Constants.EXT_VIDEO_TYPE;
 
 public class ExtTabCommonFragment extends ExtBaseFragment{
   public final static String EXT_TITLE_ID="extTitleID";
   private int mItemPaddingPixel;
   private LeanCloudStorage mStorage;
+  private ExtContentAdapter mAdapter;
 
   private String mFragID;
   Unbinder unbinder;
@@ -70,13 +83,42 @@ public class ExtTabCommonFragment extends ExtBaseFragment{
   public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     mFragID = getArguments().getString(EXT_TITLE_ID);
-    mStorage = new LeanCloudStorage(mFragID);
   }
 
   @Override
   public void onDestroy() {
     super.onDestroy();
     unbinder.unbind();
+  }
+
+  @Override
+  public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    if (requestCode == 1){
+      if ( resultCode == RESULT_OK ){
+        int itemIdx = data.getIntExtra("itemIndex", -1);
+        if ( itemIdx != -1 ){
+          if ( mStorage == null ){
+            initDataLink();
+          }
+          else{
+            mStorage.storageFetchSingleListener(mVideoList.get(itemIdx).getAlbumId(),
+              new FindCallback<AVObject>() {
+              @Override
+              public void done(List<AVObject> avObjects, AVException e) {
+                if ( e == null && avObjects.size() > 0){
+                  mVideoList.set(itemIdx, mStorage.assignToSingleVideo(avObjects.get(0)));
+                  mAdapter.notifyItemChanged(itemIdx);
+                  mExtContentsRecycler.smoothScrollToPosition(itemIdx);
+                }
+              }
+            });
+          }
+        }
+        else{
+          mExtContentsRecycler.smoothScrollToPosition(0);
+        }
+      }
+    }
   }
 
   @Nullable
@@ -90,20 +132,23 @@ public class ExtTabCommonFragment extends ExtBaseFragment{
       new GridLayoutManager(getContext(), 5,
         GridLayoutManager.VERTICAL, false));
 
-    mVideoList = mStorage.getVideoList();
+    initDataLink();
+    return v;
+  }
 
-    ExtContentAdapter adapter = new ExtContentAdapter();
+  private void initDataLink(){
+    mStorage = new LeanCloudStorage(mFragID);
+    mAdapter = new ExtContentAdapter();
+    mExtContentsRecycler.setAdapter(mAdapter);
     mStorage.storageFetchListener(new FindCallback<AVObject>() {
       @Override
       public void done(List<AVObject> avObjects, AVException e) {
         if ( e == null ) {
           mVideoList = mStorage.assignToExtVideoList(avObjects);
-          adapter.notifyDataSetChanged();
+          mAdapter.notifyDataSetChanged();
         }
       }
     });
-    mExtContentsRecycler.setAdapter(adapter);
-    return v;
   }
 
   private class ExtContentAdapter extends RecyclerView.Adapter<ExtContentAdapter.ViewHolder>{
@@ -170,12 +215,49 @@ public class ExtTabCommonFragment extends ExtBaseFragment{
           @Override
           public void onClick(View v) {
             int itemIdx = mExtContentsRecycler.getChildAdapterPosition(v);
-            Intent intent = new Intent(getActivity(), YoutubeActivity.class);
-            intent.putExtra("Youtube", mVideoList.get(itemIdx));
-            startActivity(intent);
+            Class mclass;
+            Intent intent = new Intent();
+            Activity activity = getActivity();
+            if ( mFragID.compareTo(CLOUD_YT_HISTORY_CLASS) == 0 ||
+                mFragID.compareTo(CLOUD_YT_FAVORITE_CLASS) == 0 ) {
+              mclass = YoutubeActivity.class;
+              String mExtra = "Youtube";
+              intent.putExtra(mExtra, mVideoList.get(itemIdx));
+              intent.setClass(activity, mclass);
+              startActivity(intent);
+            }
+            else if ( mFragID.compareTo(CLOUD_HISTORY_CLASS) == 0 ){
+              mclass = FullPlaybackActivity.class;
+              ExtVideoBean bean = mVideoList.get(itemIdx);
+              intent.putExtra("name", bean.getVideoName());
+              intent.putExtra("mVideoPath", bean.getVideoPlayUrl());
+              intent.putExtra("albumId", bean.getAlbumId());
+              intent.putExtra("latestOrder", String.valueOf(bean.getVideoLatestOrder()));
+              intent.putExtra("currentPosition", bean.getVideoPlayPosition());
+              intent.putExtra("mEpisode", bean.getVideoCurrentViewOrder());
+              intent.putExtra(EXT_VIDEO_TYPE, bean.getVideoType());
+              intent.putExtra(EXT_VIDEO_COUNT, bean.getVideoCount());
+              intent.putExtra(EXT_VIDEO_IMAGE_URL, bean.getAlbumImageUrl());
+              intent.putExtra("itemIndex", itemIdx);
+
+              intent.setClass(activity, mclass);
+              startActivityForResult(intent, 1);
+            }
+            else{
+              mclass = VideoPreviewActivity.class;
+              ExtVideoBean bean = mVideoList.get(itemIdx);
+              IQiYiMovieBean basebean = new IQiYiMovieBean();
+              basebean.setAlbumId(bean.getAlbumId());
+              basebean.setTvId(bean.getVideoId());
+              basebean.setName(bean.getVideoName());
+              basebean.setPlayUrl(bean.getVideoPlayUrl());
+              basebean.setAlbumImageUrl(bean.getAlbumImageUrl());
+              intent.putExtra("videoBean", basebean);
+              intent.setClass(activity, mclass);
+              startActivity(intent);
+            }
           }
         });
-
       }
 
       private void bindViewHolder (ExtVideoBean vb){

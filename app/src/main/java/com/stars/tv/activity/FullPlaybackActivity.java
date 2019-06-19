@@ -67,6 +67,7 @@ public class FullPlaybackActivity extends BaseActivity {
     private List<IQiYiMovieBean> mEplisodeList = new ArrayList<>();
     private String tvId, mVideoPath, name, albumId, latestOrder, malbumImagUrl;
     private int currentPosition, mEpisode, mVideoCount, mVideoType;
+    private int mItemIdx;
 
     private float densityRatio = 1.0f; // 密度比值系数（密度比值：一英寸中像素点除以160）
     // 自动隐藏Episode的时间
@@ -84,18 +85,20 @@ public class FullPlaybackActivity extends BaseActivity {
     protected void onCreate(Bundle savedInsatanceState) {
         super.onCreate(savedInsatanceState);
         setContentView(R.layout.activity_video_fullplayback);
-        name = getIntent().getStringExtra("name");
-        mVideoPath = getIntent().getStringExtra("mVideoPath");
-        albumId = getIntent().getStringExtra("albumId");
-        latestOrder = getIntent().getStringExtra("latestOrder");
-        currentPosition = getIntent().getIntExtra("currentPosition", 0);
-        mEpisode = getIntent().getIntExtra("mEpisode", 0);
+        Intent intent = getIntent();
+        name = intent.getStringExtra("name");
+        mVideoPath = intent.getStringExtra("mVideoPath");
+        albumId = intent.getStringExtra("albumId");
+        latestOrder = intent.getStringExtra("latestOrder");
+        currentPosition = intent.getIntExtra("currentPosition", 0);
+        mEpisode = intent.getIntExtra("mEpisode", 0);
         Log.v("FFFmEpisode",mEpisode+"");
 
         // for history usage
-        mVideoType = getIntent().getIntExtra(EXT_VIDEO_TYPE, 0);
-        mVideoCount = getIntent().getIntExtra(EXT_VIDEO_COUNT, 1);
-        malbumImagUrl = getIntent().getStringExtra(EXT_VIDEO_IMAGE_URL);
+        mVideoType = intent.getIntExtra(EXT_VIDEO_TYPE, 0);
+        mVideoCount = intent.getIntExtra(EXT_VIDEO_COUNT, 1);
+        malbumImagUrl = intent.getStringExtra(EXT_VIDEO_IMAGE_URL);
+        mItemIdx = intent.getIntExtra("itemIndex", -1);
         // -----------------
         densityRatio = getResources().getDisplayMetrics().density; // 表示获取真正的密度
 
@@ -227,8 +230,8 @@ public class FullPlaybackActivity extends BaseActivity {
             bean.setAlbumId(albumId);
             bean.setVideoId(mEplisodeList.get(mEpisode).getTvId());
             bean.setVideoName(mEplisodeList.get(mEpisode).getName());
-            bean.setVideoCurrentViewOrder(mEpisode+1);
-            bean.setVideoPlayUrl(mEplisodeList.get(mEpisode).getPlayUrl());
+            bean.setVideoCurrentViewOrder(mEpisode);
+            bean.setVideoPlayUrl(mVideoPath);
             bean.setAlbumImageUrl(malbumImagUrl);
             bean.setVideoCount(mVideoCount);
             bean.setVideoLatestOrder(Integer.valueOf(latestOrder));
@@ -255,6 +258,9 @@ public class FullPlaybackActivity extends BaseActivity {
         intent.putExtra("currentPosition", mVideoView.getCurrentPosition());
         intent.putExtra("currentEpisode", mEpisode);
         intent.putExtra("currentPath", mVideoPath);
+        if ( mItemIdx != -1 ){
+            intent.putExtra("itemIndex", mItemIdx);
+        }
 
         //设置返回数据
         FullPlaybackActivity.this.setResult(RESULT_OK, intent);

@@ -213,7 +213,7 @@ public class MediaInfoListFragment extends Fragment {
     mVideoInfo.setAlbumImageUrl(videoinfoshare.getString(EXT_VIDEO_IMAGE_URL,""));
     mVideoInfo.setVideoCount(Integer.valueOf(videoCount));
     mVideoInfo.setVideoLatestOrder(Integer.valueOf(latestOrder));
-    mVideoInfo.setVideoCurrentViewOrder(1);
+    mVideoInfo.setVideoCurrentViewOrder(0);
     mVideoInfo.setVideoPlayPosition(0);
     // ----------------------
 
