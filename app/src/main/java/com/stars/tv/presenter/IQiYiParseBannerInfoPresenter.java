@@ -76,7 +76,7 @@ public class IQiYiParseBannerInfoPresenter {
                                     bean.setName(name);
                                     bean.setPlayUrl(playUrl);
                                     bean.setDescription(description);
-                                    if(playUrl.contains("v_19")) {
+                                    if(playUrl.contains("v_")) {
                                         infoList.add(bean);
                                     }
                                 }
@@ -171,9 +171,10 @@ public class IQiYiParseBannerInfoPresenter {
                                 bean.setName(name);
                                 bean.setPlayUrl(playUrl);
                                 bean.setDescription(description);
-                                if(playUrl.contains("v_19")) {
                                     infoList.add(bean);
-                                }
+//                                if(playUrl.contains("v_")) {
+//                                    infoList.add(bean);
+//                                }
                             }
                         }
                         break;

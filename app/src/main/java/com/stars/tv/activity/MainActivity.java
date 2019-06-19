@@ -40,6 +40,7 @@ import com.stars.tv.fragment.VideoVGridSampleMVPFragment;
 import com.stars.tv.server.LeanCloudStorage;
 import com.stars.tv.utils.CallBack;
 import com.stars.tv.db.DBManager;
+import com.stars.tv.utils.Constants;
 import com.stars.tv.utils.ViewUtils;
 import com.stars.tv.view.SpaceItemDecoration;
 import com.stars.tv.youtube.YoutubeActivity;
@@ -734,13 +735,13 @@ public class MainActivity extends BaseActivity {
     mFragmentList.clear();
     AtomicInteger i = new AtomicInteger();
     for (TvTitle titleMode : TvTitleModel.getTitleList()) {
-      if (titleMode.getName().matches("精选")) {
+            if (titleMode.getName().matches(Constants.MAIN_TITLE_JINGXUAN)) {
         mFragmentList.add(RecommandVideoRowFragment.getInstance(titleMode.getName()));
-      } else if (titleMode.getName().equals("频道")) {
+            } else if (titleMode.getName().equals(Constants.MAIN_TITLE_PINDAO)) {
         mFragmentList.add(LiveTVFragment.getInstance(titleMode.getName()));
-      }else if(titleMode.getName().matches("电视剧")){
+            } else if (titleMode.getName().matches(Constants.MAIN_TITLE_DIANSHIJU)) {
         mFragmentList.add(SeriesVideoRowFragment.getInstance(titleMode.getName()));
-      } else if (titleMode.getName().matches("电影")) {
+            } else if (titleMode.getName().matches(Constants.MAIN_TITLE_DIANYING)) {
           mFragmentList.add(FilmVideoRowSampleFragment.getInstance(titleMode.getName()));
       }else {
         if ((i.get() % 2 == 0)) {
