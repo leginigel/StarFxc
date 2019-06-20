@@ -24,7 +24,6 @@ import android.widget.TableLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.github.ybq.android.spinkit.style.Circle;
 import com.stars.tv.R;
@@ -102,9 +101,9 @@ public class LiveTVActivity extends BaseActivity {
     final int HIDE_CHANNEL_LIST = 1;
     final int SET_CHANNEL_TO_HISTORY = 2;
     final int PLAY_CURRENT_CHANNEL = 3;
-    private long PLAY_CURRENT_CHANNEL_TIMER = 1500; //ms
-    private long TIMEOUT_TIMER = 6000; //ms
-    private long ADD_TO_HISTORY_TIMER = 10000; // 播放超过十秒加入到历史记录
+    long PLAY_CURRENT_CHANNEL_TIMER = 1500; //ms
+    long TIMEOUT_TIMER = 6000; //ms
+    long ADD_TO_HISTORY_TIMER = 10000; // 播放超过十秒加入到历史记录
 
     private int chPosition;
     private int listPosition;
@@ -488,10 +487,8 @@ public class LiveTVActivity extends BaseActivity {
                 if (isChListShow) {
                     setCurTvChannel(channelList.get(chPosition));
                     hideChannelList();
-                } else if (isInfoBannerShow) {
-                    showChannelList();
                 } else {
-                    showInfoBanner();
+                    showChannelList();
                 }
                 break;
             case KeyEvent.KEYCODE_MENU:
