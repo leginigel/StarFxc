@@ -62,6 +62,7 @@ public class SeriesBannerItemPresenter extends Presenter {
 //                Toast.makeText(mContext,"click the Video",Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(mContext, VideoPreviewActivity.class);
                 intent.putExtra("videoBean", videoBean);
+                intent.putExtra("titleName","Series");
                 mContext.startActivity(intent);
             }
         });

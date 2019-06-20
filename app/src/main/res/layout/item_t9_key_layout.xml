@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical"
+    android:focusable="true"
+    android:clickable="true"
+    android:background="@drawable/key_statue_bg_selector"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/top_tv"
+        android:text="2"
+        android:textSize="12sp"
+        android:layout_weight="1"
+        android:gravity="bottom|center_horizontal"
+        android:textColor="#FFE2E2E2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <TextView
+        android:id="@+id/bottom_tv"
+        android:text="ABC"
+        android:textSize="12sp"
+        android:layout_weight="1"
+        android:gravity="top|center_horizontal"
+        android:textColor="@color/color_all_white"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</LinearLayout>

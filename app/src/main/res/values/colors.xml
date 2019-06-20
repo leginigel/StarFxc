@@ -43,4 +43,11 @@
     <color name="color_purple">#aa00ff</color>
     <color name="color_pink">#ff08aa</color>
     <color name="color_cyan">#34debe</color>
+
+    <!-- 影视筛选界面 -->
+    <color name="title_select_color">#FF29F006</color>
+    <color name="title_none_color">#FF858484</color>
+
+    <!-- 键盘界面 -->
+    <color name="key_none_color">#FF212426</color>
 </resources>

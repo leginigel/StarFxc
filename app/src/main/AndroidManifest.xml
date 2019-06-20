@@ -55,6 +55,7 @@
             android:parentActivityName=".activity.MainActivity" />
         <activity android:name=".activity.VideoPreviewActivity" />
         <activity android:name=".activity.FullPlaybackActivity" />
+        <activity android:name=".activity.SearchMoviceActivity" />
         <!-- AutoSize 基准分辨率初始化 -->
         <meta-data
             android:name="design_width_in_dp"

@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/t9_popup_flyt"
+    android:visibility="visible"
+    android:layout_width="80dp"
+    android:layout_height="80dp"
+    android:background="#ee445555"
+    android:clickable="true"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="2dp">
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/one_btn"
+            android:background="@drawable/key_statue_bg_selector"
+            android:textSize="12sp"
+            android:text="7"
+            android:focusableInTouchMode="true"
+            android:focusable="true"
+            android:textColor="@color/color_all_white"
+            android:nextFocusDown="@id/three_btn"
+            android:nextFocusUp="@id/one_btn"
+            android:nextFocusLeft="@id/one_btn"
+            android:nextFocusRight="@id/one_btn"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginRight="2dp"
+            android:layout_marginLeft="3dp"/>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:layout_marginTop="3dp"
+        android:layout_marginBottom="2dp">
+
+        <Button
+            android:id="@+id/two_btn"
+            android:background="@drawable/key_statue_bg_selector"
+            android:textSize="12sp"
+            android:text="P"
+            android:nextFocusRight="@id/three_btn"
+            android:nextFocusLeft="@id/two_btn"
+            android:nextFocusDown="@id/two_btn"
+            android:nextFocusUp="@id/two_btn"
+            android:focusableInTouchMode="true"
+            android:focusable="true"
+            android:textColor="@color/color_all_white"
+            android:layout_marginRight="2dp"
+            android:layout_marginLeft="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/three_btn"
+            android:background="@drawable/key_statue_bg_selector"
+            android:textSize="12sp"
+            android:text="Q"
+            android:nextFocusRight="@id/four_btn"
+            android:nextFocusLeft="@id/two_btn"
+            android:nextFocusDown="@id/five_btn"
+            android:nextFocusUp="@id/one_btn"
+            android:focusableInTouchMode="true"
+            android:focusable="true"
+            android:textColor="@color/color_all_white"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginRight="2dp"
+            android:layout_marginLeft="3dp"/>
+
+        <Button
+            android:id="@+id/four_btn"
+            android:background="@drawable/key_statue_bg_selector"
+            android:layout_marginRight="5dp"
+            android:layout_marginLeft="2dp"
+            android:nextFocusLeft="@id/three_btn"
+            android:nextFocusRight="@id/four_btn"
+            android:nextFocusUp="@id/four_btn"
+            android:nextFocusDown="@id/four_btn"
+            android:focusableInTouchMode="true"
+            android:focusable="true"
+            android:textSize="12sp"
+            android:text="R"
+            android:textColor="@color/color_all_white"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:layout_marginTop="3dp"
+        android:layout_marginBottom="5dp">
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/five_btn"
+            android:background="@drawable/key_statue_bg_selector"
+            android:nextFocusUp="@id/three_btn"
+            android:nextFocusDown="@id/five_btn"
+            android:nextFocusLeft="@id/five_btn"
+            android:nextFocusRight="@id/five_btn"
+            android:focusableInTouchMode="true"
+            android:focusable="true"
+            android:textSize="12sp"
+            android:text="S"
+            android:textColor="@color/color_all_white"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginRight="2dp"
+            android:layout_marginLeft="3dp"/>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+    </LinearLayout>
+</LinearLayout>

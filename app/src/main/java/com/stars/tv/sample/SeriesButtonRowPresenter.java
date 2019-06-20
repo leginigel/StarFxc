@@ -62,10 +62,11 @@ public class SeriesButtonRowPresenter extends RowPresenter {
                 @Override
                 public void onClick(View v) {
                     View btn = v;
-                    String buttonName = ((Button) btn).getText().toString();
-                    Log.v(TAG,"buttonName is: " + buttonName);
+                    String typeName = ((Button) btn).getText().toString();
+                    Log.v(TAG,"typeName is: " + typeName);
 //                    Intent intent = new Intent(mContext, DetailActivity.class);
-//                    intent.putExtra("buttonName", buttonName);
+//                    intent.putExtra("typeName", typeName);
+//                    intent.putExtra("titleName", "Series");
 //                    mContext.startActivity(intent);
 
                 }

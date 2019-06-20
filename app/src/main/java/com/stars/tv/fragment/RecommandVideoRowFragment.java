@@ -3,6 +3,7 @@ package com.stars.tv.fragment;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -21,8 +22,10 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.ybq.android.spinkit.style.Circle;
 import com.stars.tv.R;
 import com.stars.tv.bean.IQiYiBannerInfoBean;
 import com.stars.tv.bean.IQiYiMovieBean;
@@ -47,6 +50,7 @@ import com.stars.tv.sample.SeriesAndRecVideoDataList;
 import com.stars.tv.sample.PortraitVideoListRow;
 import com.stars.tv.server.RxManager;
 import com.stars.tv.utils.CallBack;
+import com.stars.tv.utils.NetUtil;
 import com.stars.tv.view.MyVerticalGridView;
 
 import java.util.ArrayList;
@@ -57,7 +61,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class RecommandVideoRowFragment extends Fragment {
+public class RecommandVideoRowFragment extends BaseFragment {
     private static final String TAG = "RecommandVideoFragment";
     private static final int GRID_VIEW_LEFT_PX = 80;
     private static final int GRID_VIEW_RIGHT_PX = 50;
@@ -72,6 +76,8 @@ public class RecommandVideoRowFragment extends Fragment {
 
     @BindView(R.id.video_content_v_grid)
     MyVerticalGridView videoGrid;
+    @BindView(R.id.loading)
+    TextView loadText;
     Unbinder unbinder;
 
     ArrayObjectAdapter mRowsAdapter;
@@ -82,14 +88,20 @@ public class RecommandVideoRowFragment extends Fragment {
     final int REFRESH_BANNER_CONTENT = 0;
     final int REFRESH_MOVIE_CONTENT = 1;
     final int REFRESH_TOP_CONTENT = 2;
+    final int REFRESH_ERROR = -1;
     private int mPageNum = 0;
+    private int totalPage = 7;
     private int count = 0;
-    private int countRow = 0;
+    private int curRow = 0;
     private int category;
     private int loadRows = 4;
+    private Circle mCircleDrawable;
+    private RxManager mRxManager = new RxManager();
     private int[] toplistPos = new int[3];
     private int[] listPos = new int[26];
     private int[] channel = {2,1,6,4,3,8,25,7,24,16,10,5,28,12,17,15,9,13,21,26,22,27,29,30,31,32};
+
+    private boolean isViewCreated = false;
 
     public RecommandVideoRowFragment() {
     }
@@ -113,6 +125,8 @@ public class RecommandVideoRowFragment extends Fragment {
             Log.v("tttt", "msg.what:" + msg.what);
             switch (msg.what) {
                 case REFRESH_BANNER_CONTENT:
+                    mCircleDrawable.stop();
+                    loadText.setVisibility(View.GONE);
                     showBannerData();
                     parseIQiYiMovieTop();
                     Log.v("mmm", "mVideoTopListArray"+mVideoTopList.size());
@@ -129,35 +143,32 @@ public class RecommandVideoRowFragment extends Fragment {
                 case REFRESH_MOVIE_CONTENT:
                     category = msg.arg1;
                     showVideoData();
-                    countRow = countRow +1;
-                    if(countRow == 26){
-                        Toast.makeText(mContext,"没有更多视频加载",Toast.LENGTH_LONG).show();
-                    }
+                    break;
+                case REFRESH_ERROR:
+                    mCircleDrawable.stop();
+                    loadText.setText("加载失败，网络简析错误！");
+                    loadText.setTextColor(Color.WHITE);
+                    loadText.setVisibility(View.VISIBLE);
                     break;
                 default:
                     break;
             }
             mItemBridgeAdapter.notifyDataSetChanged();
-            if (category >= 24) {
-                videoGrid.endRefreshingWithNoMoreData();
-            }
+
         }
     };
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.v(TAG, "onCreate");
         mTvTitle = getArguments() != null ? getArguments().getString("titleName") : null;
-    }
-    public boolean onKeyDown(int keyCode, KeyEvent event){
-
-        return false;
     }
 
     private void showBannerData() {
+        mRowsAdapter.clear();
         RecBannerItemPresenter recBannerItemPresenter = new RecBannerItemPresenter();
         ArrayObjectAdapter listRowAdapter = new ArrayObjectAdapter(recBannerItemPresenter);
-
         if (mBannerInfoList != null) {
             Collections.shuffle(mBannerInfoList);
             if (mBannerInfoList.size() >= 2) {
@@ -175,7 +186,6 @@ public class RecommandVideoRowFragment extends Fragment {
 
         RecBannerItem1Presenter recBannerItem1Presenter = new RecBannerItem1Presenter();
         ArrayObjectAdapter listRowAdapter1 = new ArrayObjectAdapter(recBannerItem1Presenter);
-
         if (mBannerInfoList != null) {
             if (mBannerInfoList.size() >= 6) {
                 for (int i = 2; i < 6; i++) {
@@ -186,7 +196,6 @@ public class RecommandVideoRowFragment extends Fragment {
                     listRowAdapter1.add(mBannerInfoList.get(i));
                 }
             }
-
         }
         HotVideoListRow listRow1 = new HotVideoListRow(listRowAdapter1);
         mRowsAdapter.add(listRow1);
@@ -260,6 +269,7 @@ public class RecommandVideoRowFragment extends Fragment {
             @Override
             public void onLoadMore() {
                 mPageNum += 1;
+                if (mPageNum <= totalPage) {
                 if(mPageNum!=(channel.length/loadRows)+1) {
                     for (int i = 0; i < loadRows; i++) {
                         parseIQiYiMovieSimplifiedList((mPageNum - 1) * loadRows + i, channel[(mPageNum - 1) * loadRows + i], "", "", "",
@@ -272,11 +282,16 @@ public class RecommandVideoRowFragment extends Fragment {
                     }
 
                 }
+                } else {
+                    videoGrid.endRefreshingWithNoMoreData();
+                }
             }
 
             @Override
             public void onLoadEnd() {
-
+                if (curRow == 31) {
+                    Toast.makeText(mContext, "没有更多视频加载", Toast.LENGTH_LONG).show();
+                }
             }
         });
     }
@@ -286,6 +301,7 @@ public class RecommandVideoRowFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable final ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_recommand_video, container, false);
         unbinder = ButterKnife.bind(this, view);
+        isViewCreated = true;
         // 初始化影视垂直布局.
         videoGrid.setPadding(GRID_VIEW_LEFT_PX, GRID_VIEW_TOP_PX, GRID_VIEW_RIGHT_PX, GRID_VIEW_BOTTOM_PX);
         // 处理item放大挡住其他Item.
@@ -320,8 +336,9 @@ public class RecommandVideoRowFragment extends Fragment {
                 }
             }
         });
-
-        parseIQiYiParseBannerInfo("");
+        initLoading();
+//        showLoad();
+//        loadData();
         return view;
     }
 
@@ -359,11 +376,15 @@ public class RecommandVideoRowFragment extends Fragment {
                         msg.arg1 = category;
                         msg.what = REFRESH_MOVIE_CONTENT;
                         mHandler.sendMessage(msg);
-
+                        if (mVideoListArray.size() <= 24) {
                         if(mVideoListArray.size()%loadRows==0) {
                             videoGrid.endMoreRefreshComplete();
                         }
-
+                        } else {
+                            if (mVideoListArray.size() % 2 == 0) {
+                                videoGrid.endMoreRefreshComplete();
+                            }
+                        }
                     }
 
                     @Override
@@ -386,6 +407,7 @@ public class RecommandVideoRowFragment extends Fragment {
                 }
                 mBannerInfoList.clear();
                 mBannerInfoList = list;
+                Log.v("TAG", "mBannerInfoList" + mBannerInfoList.size());
                 mHandler.sendEmptyMessage(REFRESH_BANNER_CONTENT);
 
             }
@@ -393,7 +415,7 @@ public class RecommandVideoRowFragment extends Fragment {
             @Override
             public void error(String msg) {
                 //TODO 获取失败
-
+                mHandler.sendEmptyMessage(REFRESH_ERROR);
             }
         });
     }
@@ -457,13 +479,78 @@ public class RecommandVideoRowFragment extends Fragment {
     @TargetApi(Build.VERSION_CODES.M)
     void setRowSelected(ItemBridgeAdapter.ViewHolder vh, boolean selected) {
 //        vh.itemView.setBackground(new ColorDrawable(selected ? getResources().getColor(R.color.color_focus) : getResources().getColor(R.color.color_transparent)));
+        curRow = videoGrid.getSelectedPosition();
+        Log.v(TAG, "pos" + videoGrid.getSelectedPosition());
+
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.v(TAG, "onResume");
+        showLoad();
+        if(NetUtil.isConnected()){
+            loadData();
+        }
+
+
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        Log.v(TAG, "isVisibleToUser:" + isVisibleToUser);
+        if (isVisibleToUser && isViewCreated) {
+            showLoad();
+            if(NetUtil.isConnected()){
+                loadData();
+            }
+        } else {
+            mRxManager.clear();
+        }
+    }
+
+    private void initLoading() {
+        mCircleDrawable = new Circle();
+        mCircleDrawable.setBounds(0, 0, 100, 100);
+        mCircleDrawable.setColor(Color.WHITE);
+        loadText.setCompoundDrawables(null, null, mCircleDrawable, null);
+    }
+
+    private void showLoad() {
+        Log.v(TAG,"net"+NetUtil.isConnected());
+        if (NetUtil.isConnected()) {
+            loadText.setText("");
+            loadText.setVisibility(View.VISIBLE);
+            mCircleDrawable.start();
+        } else {
+            Log.v(TAG,"net"+NetUtil.isConnected());
+            mCircleDrawable.stop();
+            loadText.setText("网络连接失败，请检查网络！");
+            loadText.setTextColor(Color.WHITE);
+            loadText.setVisibility(View.VISIBLE);
+        }
+    }
+
+    protected void loadData() {
+        Log.v("infolist", "info" + getUserVisibleHint());
+        parseIQiYiParseBannerInfo("");
+    }
+
+    @Override
+    public boolean onKeyDown(KeyEvent event) {
+        videoGrid.setSelectedPosition(0);
+        videoGrid.smoothScrollToPosition(0);
+        return true;
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        unbinder.unbind();
-        RxManager mRxManager = new RxManager();
+        Log.v(TAG, "onDestroyView");
+        isViewCreated = false;
         mRxManager.clear();
+        unbinder.unbind();
     }
 }

@@ -3,7 +3,7 @@ package com.stars.tv.bean;
 
 import java.util.List;
 
-public class IQiYiSearchSuggestBean {
+public class IQiYiSearchSuggestBean  extends IQiYiSearchBaseBean {
 
     private int aid;
     private String name;
@@ -190,5 +190,10 @@ public class IQiYiSearchSuggestBean {
 
     public void setLink_address(List<String> link_address) {
         this.link_address = link_address;
+    }
+
+    @Override
+    public String getQueryName() {
+        return name;
     }
 }

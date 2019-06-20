@@ -61,6 +61,7 @@ public class RecBannerItem1Presenter extends Presenter {
 //                Toast.makeText(mContext,"click the Video",Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(mContext, VideoPreviewActivity.class);
                 intent.putExtra("videoBean", videoBean);
+                intent.putExtra("titleName","Recommand");
                 mContext.startActivity(intent);
             }
         });

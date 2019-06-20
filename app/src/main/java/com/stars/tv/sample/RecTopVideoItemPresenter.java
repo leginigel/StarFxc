@@ -40,7 +40,9 @@ public class RecTopVideoItemPresenter extends Presenter {
         View view = View.inflate(parent.getContext(), R.layout.item_videos_layout, null);
         mContext = parent.getContext();
         CARD_WIDTH = (AutoSizeUtils.dp2px(Objects.requireNonNull(parent.getContext()),AutoSizeConfig.getInstance().getDesignWidthInDp()) - GRID_VIEW_LEFT_PX - GRID_VIEW_RIGHT_PX - (ITEM_RIGHT_PADDING_PX * ITEM_NUM_ROW)) / ITEM_NUM_ROW;
-        CARD_HEIGHT = CARD_WIDTH / 3 * 4;
+//        CARD_HEIGHT = CARD_WIDTH / 3 * 4;
+        CARD_HEIGHT = 410;
+        Log.v("top","height"+CARD_HEIGHT);
         ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(CARD_WIDTH, CARD_HEIGHT);
         view.setLayoutParams(lp);
         view.setFocusable(true);
@@ -87,6 +89,7 @@ public class RecTopVideoItemPresenter extends Presenter {
 //                Toast.makeText(mContext,"click the" + nameTv.getText().toString(),Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(mContext, VideoPreviewActivity.class);
                 intent.putExtra("videoBean", videoBean);
+                intent.putExtra("titleName","Recommand");
                 mContext.startActivity(intent);
             }
         });

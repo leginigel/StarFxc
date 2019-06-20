@@ -65,6 +65,7 @@ public class PortraitVideoItem1Presenter extends Presenter {
 //                Toast.makeText(mContext,"click the" + nameTv.getText().toString(),Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(mContext, VideoPreviewActivity.class);
                 intent.putExtra("videoBean", videoBean);
+                intent.putExtra("titleName","Recommand");
                 mContext.startActivity(intent);
             }
         });

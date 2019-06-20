@@ -1,7 +1,7 @@
 
 package com.stars.tv.bean;
 
-public class IQiYiHotQueryBean {
+public class IQiYiHotQueryBean extends IQiYiSearchBaseBean {
 
     private String query;
     private int impression_count;
@@ -59,5 +59,10 @@ public class IQiYiHotQueryBean {
 
     public void setOrder(int order) {
         this.order = order;
+    }
+
+    @Override
+    public String getQueryName() {
+        return query;
     }
 }
