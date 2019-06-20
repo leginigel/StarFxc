@@ -1,6 +1,8 @@
 package com.stars.tv.fragment;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -22,17 +24,14 @@ import com.avos.avoscloud.FindCallback;
 import com.bumptech.glide.Glide;
 import com.stars.tv.R;
 import com.stars.tv.activity.FullPlaybackActivity;
-import com.stars.tv.activity.MainActivity;
 import com.stars.tv.activity.VideoPreviewActivity;
 import com.stars.tv.bean.ExtTitleBean;
 import com.stars.tv.bean.ExtVideoBean;
-import com.stars.tv.bean.IQiYiBaseBean;
 import com.stars.tv.bean.IQiYiMovieBean;
 import com.stars.tv.server.LeanCloudStorage;
 import com.stars.tv.utils.Utils;
 import com.stars.tv.utils.ViewUtils;
 import com.stars.tv.youtube.YoutubeActivity;
-import com.stars.tv.youtube.data.YouTubeVideo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +46,6 @@ import static com.stars.tv.utils.Constants.CLOUD_HISTORY_CLASS;
 import static com.stars.tv.utils.Constants.CLOUD_YT_FAVORITE_CLASS;
 import static com.stars.tv.utils.Constants.CLOUD_YT_HISTORY_CLASS;
 import static com.stars.tv.utils.Constants.EXT_VIDEO_COUNT;
-import static com.stars.tv.utils.Constants.EXT_VIDEO_ID;
 import static com.stars.tv.utils.Constants.EXT_VIDEO_IMAGE_URL;
 import static com.stars.tv.utils.Constants.EXT_VIDEO_TYPE;
 
@@ -206,13 +204,12 @@ public class ExtTabCommonFragment extends ExtBaseFragment{
               String mExtra = "Youtube";
               intent.putExtra(mExtra, mVideoList.get(itemIdx));
               intent.setClass(activity, mclass);
-              startActivity(intent);
+              startActivityForResult(intent, 1);
             }
             else if ( mFragID.compareTo(CLOUD_HISTORY_CLASS) == 0 ){
               mclass = FullPlaybackActivity.class;
               ExtVideoBean bean = mVideoList.get(itemIdx);
               intent.putExtra("name", bean.getVideoName());
-              intent.putExtra("mVideoPath", bean.getVideoPlayUrl());
               intent.putExtra("albumId", bean.getAlbumId());
               intent.putExtra("latestOrder", String.valueOf(bean.getVideoLatestOrder()));
               intent.putExtra("currentPosition", bean.getVideoPlayPosition());
@@ -238,6 +235,29 @@ public class ExtTabCommonFragment extends ExtBaseFragment{
               intent.setClass(activity, mclass);
               startActivityForResult(intent, 1);
             }
+          }
+        });
+        itemView.setOnLongClickListener(new View.OnLongClickListener() {
+          @Override
+          public boolean onLongClick(View v) {
+            final AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());
+            int itemIdx = mExtContentsRecycler.getChildAdapterPosition(v);
+            dialog.setTitle("刪除視頻");
+            dialog.setMessage("請確認是否從列表中刪除("+mVideoList.get(itemIdx).getVideoName()+")");
+            dialog.setPositiveButton("確認", new DialogInterface.OnClickListener() {
+              @Override
+              public void onClick(DialogInterface dialog, int which) {
+              }
+            });
+            dialog.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+              @Override
+              public void onClick(DialogInterface dialog, int which) {
+              }
+            });
+
+            dialog.setCancelable(false);
+            dialog.show();
+            return true;
           }
         });
       }

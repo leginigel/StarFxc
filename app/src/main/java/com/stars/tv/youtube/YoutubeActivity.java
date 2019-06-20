@@ -1,9 +1,11 @@
 package com.stars.tv.youtube;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
@@ -200,6 +202,13 @@ public class YoutubeActivity extends FragmentActivity implements CustomAdapt,
                 if(KeyEvent.KEYCODE_BACK == keyCode){
                     if(!homeIcon.isFocused()){
                         homeIcon.requestFocus();
+                        return true;
+                    }
+                    else{
+                        Intent intent = new Intent();
+                        intent.putExtra("exit", true);
+                        this.setResult(RESULT_OK, intent);
+                        this.finish();
                         return true;
                     }
                 }
