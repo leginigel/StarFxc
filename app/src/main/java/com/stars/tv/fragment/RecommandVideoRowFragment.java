@@ -144,7 +144,7 @@ public class RecommandVideoRowFragment extends BaseFragment {
                         Log.v(TAG, "count" + count);
                         showButton();
                         videoGrid.endMoreRefreshComplete();
-                        loadMoreVideo();
+//                        loadMoreVideo();
                     }
                     break;
                 case REFRESH_MOVIE_CONTENT:
@@ -278,37 +278,8 @@ public class RecommandVideoRowFragment extends BaseFragment {
     }
 
     private void loadMoreVideo(){
-        videoGrid.setOnLoadMoreListener(new MyVerticalGridView.OnLoadMoreListener() {
-            @Override
-            public void onLoadMore() {
-                Log.v(TAG, "loadMoreVideo");
-                mPageNum += 1;
-                if (mPageNum <= totalPage) {
-                if(mPageNum!=(channel.length/loadRows)+1) {
-                    for (int i = 0; i < loadRows; i++) {
-                        parseIQiYiMovieSimplifiedList((mPageNum - 1) * loadRows + i, channel[(mPageNum - 1) * loadRows + i], "", "", "",
-                                24, 1, 1, "iqiyi", 1, "", 6);
-                    }
-                }else{
-                    for (int i = 0; i < channel.length%loadRows; i++) {
-                        parseIQiYiMovieSimplifiedList((mPageNum - 1) * loadRows + i, channel[(mPageNum - 1) * loadRows + i], "", "", "",
-                                24, 1, 1, "iqiyi", 1, "", 6);
-                    }
 
                 }
-                } else {
-                    videoGrid.endRefreshingWithNoMoreData();
-                }
-            }
-
-            @Override
-            public void onLoadEnd() {
-                if (getUserVisibleHint()&&(curRow == totalRow-1)) {
-                    Toast.makeText(mContext, "没有更多视频加载", Toast.LENGTH_LONG).show();
-                }
-            }
-        });
-    }
 
     @Nullable
     @Override
@@ -351,6 +322,36 @@ public class RecommandVideoRowFragment extends BaseFragment {
             }
         });
         initLoading();
+        videoGrid.setOnLoadMoreListener(new MyVerticalGridView.OnLoadMoreListener() {
+            @Override
+            public void onLoadMore() {
+                Log.v(TAG, "loadMoreVideo");
+                mPageNum += 1;
+                if (mPageNum <= totalPage) {
+                    if(mPageNum!=(channel.length/loadRows)+1) {
+                        for (int i = 0; i < loadRows; i++) {
+                            parseIQiYiMovieSimplifiedList((mPageNum - 1) * loadRows + i, channel[(mPageNum - 1) * loadRows + i], "", "", "",
+                                    24, 1, 1, "iqiyi", 1, "", 6);
+                        }
+                    }else{
+                        for (int i = 0; i < channel.length%loadRows; i++) {
+                            parseIQiYiMovieSimplifiedList((mPageNum - 1) * loadRows + i, channel[(mPageNum - 1) * loadRows + i], "", "", "",
+                                    24, 1, 1, "iqiyi", 1, "", 6);
+                        }
+
+                    }
+                } else {
+                    videoGrid.endRefreshingWithNoMoreData();
+                }
+            }
+
+            @Override
+            public void onLoadEnd() {
+                if (getUserVisibleHint()&&(curRow == totalRow-1)) {
+                    Toast.makeText(mContext, "没有更多视频加载", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
         return view;
     }
 
@@ -500,9 +501,11 @@ public class RecommandVideoRowFragment extends BaseFragment {
     public void onResume() {
         super.onResume();
         Log.v(TAG, "onResume");
+        if(getUserVisibleHint()) {
         showLoad();
         if(NetUtil.isConnected()){
             loadData();
+        }
         }
 
 
