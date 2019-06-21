@@ -21,7 +21,7 @@ import me.jessyan.autosize.AutoSizeConfig;
 import me.jessyan.autosize.utils.AutoSizeUtils;
 
 public class SeriesBannerItemPresenter extends Presenter {
-    private static final String TAG = "BannerItemPresenter";
+
     private static final int GRID_VIEW_LEFT_PX = 80;
     private static final int GRID_VIEW_RIGHT_PX = 50;
     private static final int ITEM_RIGHT_PADDING_PX = 25;
@@ -31,7 +31,7 @@ public class SeriesBannerItemPresenter extends Presenter {
     ImageView bgIv;
     View boardView;
     TextView nameTv;
-    protected static Context mContext;
+    protected Context mContext;
 
     private HotVideoListRowPresenter hotVideoListRowPresenter = new HotVideoListRowPresenter();
     @Override

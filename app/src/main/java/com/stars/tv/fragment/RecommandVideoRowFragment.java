@@ -64,11 +64,11 @@ public class RecommandVideoRowFragment extends BaseFragment {
     private static final int GRID_VIEW_RIGHT_PX = 50;
     private static final int GRID_VIEW_TOP_PX = 30;
     private static final int GRID_VIEW_BOTTOM_PX = 50;
-    protected static Context mContext;
+    protected Context mContext;
     List<IQiYiMovieBean> mVideoList = new ArrayList<>();
     List<IQiYiTopListBean> mVideoTopList = new ArrayList<>();
     List<List<IQiYiTopListBean>> mVideoTopListArray = new ArrayList<>(3);
-    List<List<IQiYiMovieBean>> mVideoListArray = new ArrayList<>(15);
+    List<List<IQiYiMovieBean>> mVideoListArray = new ArrayList<>(26);
     List<IQiYiBannerInfoBean> mBannerInfoList = new ArrayList<>();
 
     @BindView(R.id.video_content_v_grid)
@@ -88,7 +88,6 @@ public class RecommandVideoRowFragment extends BaseFragment {
     final int REFRESH_ERROR = -1;
     private int mPageNum = 0;
     private int totalPage = 7;
-    private int count = 0;
     private int curRow = 0;
     private int category;
     private int loadRows = 4;
@@ -97,6 +96,15 @@ public class RecommandVideoRowFragment extends BaseFragment {
     private int[] listPos = new int[26];
     private int[] channel = {2,1,6,4,3,8,25,7,24,16,10,5,28,12,17,15,9,13,21,26,22,27,29,30,31,32};
 
+    private int bannerItem = 2;
+    private int bannerTotalItem = 6;
+    private int topItem = 10;
+    private int topRow = 3;
+    private int videoItem = 6;
+    private int videoItem1 = 4;
+    private int videoTotalRow = 26;
+    private int totalRow = 32;
+    private int count = 0;
     private boolean isViewCreated = false;
 
     public RecommandVideoRowFragment() {
@@ -118,21 +126,24 @@ public class RecommandVideoRowFragment extends BaseFragment {
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            Log.v("tttt", "msg.what:" + msg.what);
+            Log.v(TAG, "msg.what:" + msg.what);
             switch (msg.what) {
                 case REFRESH_BANNER_CONTENT:
                     mCircleDrawable.stop();
                     loadText.setVisibility(View.GONE);
                     showBannerData();
                     parseIQiYiMovieTop();
-                    Log.v("mmm", "mVideoTopListArray"+mVideoTopList.size());
                     break;
                 case REFRESH_TOP_CONTENT:
                     category=msg.arg1;
                     showVideoTopData();
+                    if (count < topRow) {
                     count = count+1;
-                    if (count == 3) {
+                    }
+                    if (count == topRow) {
+                        Log.v(TAG, "count" + count);
                         showButton();
+                        videoGrid.endMoreRefreshComplete();
                         loadMoreVideo();
                     }
                     break;
@@ -167,8 +178,8 @@ public class RecommandVideoRowFragment extends BaseFragment {
         ArrayObjectAdapter listRowAdapter = new ArrayObjectAdapter(recBannerItemPresenter);
         if (mBannerInfoList != null) {
             Collections.shuffle(mBannerInfoList);
-            if (mBannerInfoList.size() >= 2) {
-                for (int i = 0; i < 2; i++) {
+            if (mBannerInfoList.size() >= bannerItem) {
+                for (int i = 0; i < bannerItem; i++) {
                     listRowAdapter.add(mBannerInfoList.get(i));
                 }
             } else {
@@ -183,12 +194,12 @@ public class RecommandVideoRowFragment extends BaseFragment {
         RecBannerItem1Presenter recBannerItem1Presenter = new RecBannerItem1Presenter();
         ArrayObjectAdapter listRowAdapter1 = new ArrayObjectAdapter(recBannerItem1Presenter);
         if (mBannerInfoList != null) {
-            if (mBannerInfoList.size() >= 6) {
-                for (int i = 2; i < 6; i++) {
+            if (mBannerInfoList.size() >= bannerTotalItem) {
+                for (int i = bannerItem; i < bannerTotalItem; i++) {
                     listRowAdapter1.add(mBannerInfoList.get(i));
                 }
             } else {
-                for (int i = 2; i < mBannerInfoList.size(); i++) {
+                for (int i = bannerItem; i < mBannerInfoList.size(); i++) {
                     listRowAdapter1.add(mBannerInfoList.get(i));
                 }
             }
@@ -201,15 +212,17 @@ public class RecommandVideoRowFragment extends BaseFragment {
         RecTopVideoItemPresenter videoItemPresenter = new RecTopVideoItemPresenter();
         ArrayObjectAdapter listRowAdapter = new ArrayObjectAdapter(videoItemPresenter);
         mVideoTopList.clear();
+        if (mVideoTopListArray != null) {
         mVideoTopList = mVideoTopListArray.get(toplistPos[category]);
-        if(mVideoTopList.size()>=10) {
-            for (int k = 0; k < 10; k++) {
+            if (mVideoTopList.size() >= topItem) {
+                for (int k = 0; k < topItem; k++) {
                 listRowAdapter.add(mVideoTopList.get(k));
             }
         }else{
             for (int k = 0; k < mVideoTopList.size(); k++) {
                 listRowAdapter.add(mVideoTopList.get(k));
             }
+        }
         }
         HeaderItem header = new HeaderItem(category, SeriesAndRecVideoDataList.TOP_CATEGORY[category]);
         PortraitVideoListRow listRow = new PortraitVideoListRow(header, listRowAdapter);
@@ -225,15 +238,17 @@ public class RecommandVideoRowFragment extends BaseFragment {
             PortraitVideoItem1Presenter videoItemPresenter = new PortraitVideoItem1Presenter();
             ArrayObjectAdapter listRowAdapter = new ArrayObjectAdapter(videoItemPresenter);
             mVideoList.clear();
+            if (mVideoListArray != null) {
             mVideoList = mVideoListArray.get(listPos[category]);
-            if (mVideoList.size() >= 6) {
-                for (int k = 0; k < 6; k++) {
+                if (mVideoList.size() >= videoItem) {
+                    for (int k = 0; k < videoItem; k++) {
                     listRowAdapter.add(mVideoList.get(k));
                 }
             } else {
                 for (int k = 0; k < mVideoList.size(); k++) {
                     listRowAdapter.add(mVideoList.get(k));
                 }
+            }
             }
             HeaderItem header = new HeaderItem(category, SeriesAndRecVideoDataList.REC_CATEGORY[category]);
             PortraitVideoListRow1 listRow = new PortraitVideoListRow1(header, listRowAdapter);
@@ -243,15 +258,17 @@ public class RecommandVideoRowFragment extends BaseFragment {
             LandscapeVideoItemPresenter videoItemPresenter = new LandscapeVideoItemPresenter();
             ArrayObjectAdapter listRowAdapter = new ArrayObjectAdapter(videoItemPresenter);
             mVideoList.clear();
+            if (mVideoListArray != null) {
             mVideoList = mVideoListArray.get(listPos[category]);
-            if (mVideoList.size() >= 4) {
-                for (int k = 0; k < 4; k++) {
+                if (mVideoList.size() >= videoItem1) {
+                    for (int k = 0; k < videoItem1; k++) {
                     listRowAdapter.add(mVideoList.get(k));
                 }
             } else {
                 for (int k = 0; k < mVideoList.size(); k++) {
                     listRowAdapter.add(mVideoList.get(k));
                 }
+            }
             }
             HeaderItem header = new HeaderItem(category, SeriesAndRecVideoDataList.REC_CATEGORY[category]);
             LandscapeVideoListRow listRow = new LandscapeVideoListRow(header, listRowAdapter);
@@ -264,6 +281,7 @@ public class RecommandVideoRowFragment extends BaseFragment {
         videoGrid.setOnLoadMoreListener(new MyVerticalGridView.OnLoadMoreListener() {
             @Override
             public void onLoadMore() {
+                Log.v(TAG, "loadMoreVideo");
                 mPageNum += 1;
                 if (mPageNum <= totalPage) {
                 if(mPageNum!=(channel.length/loadRows)+1) {
@@ -285,7 +303,7 @@ public class RecommandVideoRowFragment extends BaseFragment {
 
             @Override
             public void onLoadEnd() {
-                if (curRow == 31) {
+                if (getUserVisibleHint()&&(curRow == totalRow-1)) {
                     Toast.makeText(mContext, "没有更多视频加载", Toast.LENGTH_LONG).show();
                 }
             }
@@ -305,7 +323,7 @@ public class RecommandVideoRowFragment extends BaseFragment {
         videoGrid.setClipToPadding(false);
         // 设置间隔.
         videoGrid.setPadding(30, 30, 30, 30);
-        // 设置垂直item的间隔100.
+        // 设置垂直item的间隔
         videoGrid.setVerticalSpacing(50);
         // 设置缓存.
         videoGrid.getRecycledViewPool().setMaxRecycledViews(0, 100);
@@ -333,8 +351,6 @@ public class RecommandVideoRowFragment extends BaseFragment {
             }
         });
         initLoading();
-//        showLoad();
-//        loadData();
         return view;
     }
 
@@ -362,9 +378,9 @@ public class RecommandVideoRowFragment extends BaseFragment {
                         Log.v(TAG, "result_num =："+ bean.getResult_num());
                         List<IQiYiMovieBean> list = bean.getList();
                         for(int i=0;i<list.size();i++) {
-                            Log.v(TAG, list.get(i).toString());
+//                            Log.v(TAG, list.get(i).toString());
                         }
-                        Log.v("aaa","category"+category+"channel"+channel);
+                        Log.v(TAG,"category"+category+"channel"+channel);
 
                         mVideoListArray.add(list);
                         listPos[category] = mVideoListArray.size()-1;
@@ -372,7 +388,7 @@ public class RecommandVideoRowFragment extends BaseFragment {
                         msg.arg1 = category;
                         msg.what = REFRESH_MOVIE_CONTENT;
                         mHandler.sendMessage(msg);
-                        if (mVideoListArray.size() <= 24) {
+                        if (mVideoListArray.size() <= videoTotalRow-(videoTotalRow%loadRows)) {
                         if(mVideoListArray.size()%loadRows==0) {
                             videoGrid.endMoreRefreshComplete();
                         }
@@ -399,7 +415,7 @@ public class RecommandVideoRowFragment extends BaseFragment {
             @Override
             public void success(List<IQiYiBannerInfoBean> list) {
                 for (IQiYiBannerInfoBean bean : list) {
-                    Log.v(TAG, bean.toString());
+//                    Log.v(TAG, bean.toString());
                 }
                 mBannerInfoList.clear();
                 mBannerInfoList = list;
@@ -429,11 +445,10 @@ public class RecommandVideoRowFragment extends BaseFragment {
             @Override
             public void success(List<IQiYiTopListBean> list) {
                 for(IQiYiTopListBean bean:list) {
-                    Log.v(TAG, bean.toString());
+//                    Log.v(TAG, bean.toString());
                 }
-                Log.v("mmm", "mVideoTopListArray"+mVideoTopListArray.size());
+                Log.v(TAG, "mVideoTopListArray"+mVideoTopListArray.size());
                 mVideoTopListArray.add(list);
-                Log.v("mmm", "mVideoTopListArray"+mVideoTopListArray.size());
                 toplistPos[category] = mVideoTopListArray.size()-1;
                 Message msg = new Message();
                 msg.arg1 = category;
@@ -500,6 +515,7 @@ public class RecommandVideoRowFragment extends BaseFragment {
         if (isVisibleToUser && isViewCreated) {
             showLoad();
             if(NetUtil.isConnected()){
+                count = 0;
                 loadData();
             }
         }
@@ -528,7 +544,7 @@ public class RecommandVideoRowFragment extends BaseFragment {
     }
 
     protected void loadData() {
-        Log.v("infolist", "info" + getUserVisibleHint());
+        Log.v(TAG, "info" + getUserVisibleHint());
         parseIQiYiParseBannerInfo("");
     }
 
@@ -544,6 +560,9 @@ public class RecommandVideoRowFragment extends BaseFragment {
         super.onDestroyView();
         Log.v(TAG, "onDestroyView");
         isViewCreated = false;
+        if (mCircleDrawable != null && mCircleDrawable.isRunning()) {
+            mCircleDrawable.stop();
+        }
         unbinder.unbind();
     }
 }

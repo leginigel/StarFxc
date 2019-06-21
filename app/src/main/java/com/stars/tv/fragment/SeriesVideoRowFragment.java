@@ -58,7 +58,7 @@ public class SeriesVideoRowFragment extends BaseFragment {
     private static final int GRID_VIEW_RIGHT_PX = 50;
     private static final int GRID_VIEW_TOP_PX = 30;
     private static final int GRID_VIEW_BOTTOM_PX = 50;
-    protected static Context mContext;
+    protected Context mContext;
     List<IQiYiMovieBean> mVideoList = new ArrayList<>();
 
     List<List<IQiYiMovieBean>> mVideoListArray = new ArrayList<>(15);
@@ -84,6 +84,8 @@ public class SeriesVideoRowFragment extends BaseFragment {
     private Circle mCircleDrawable;
     private int[] listPos = new  int[15];
     private String[] orderlist = {"15", "15", "15,24", "15,1654", "15,20", "15,11992", "15,24065", "15,30,1653", "15,135", "15,139", "15,32,149", "15,148", "15,1655", "15,27", "18"};
+    private int totalRow = 17;
+
     public SeriesVideoRowFragment() {
     }
 
@@ -103,7 +105,7 @@ public class SeriesVideoRowFragment extends BaseFragment {
     private Handler mHandler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
-            Log.v("tttt","msg.what:"+msg.what);
+            Log.v(TAG,"msg.what:"+msg.what);
             switch (msg.what){
                 case REFRESH_BANNER_CONTENT:
                     mCircleDrawable.stop();
@@ -163,8 +165,8 @@ public class SeriesVideoRowFragment extends BaseFragment {
         PortraitVideoItemPresenter videoItemPresenter0 = new PortraitVideoItemPresenter();
         ArrayObjectAdapter listRowAdapter0 = new ArrayObjectAdapter(videoItemPresenter0);
         mVideoList.clear();
+        if (mVideoListArray != null) {
         mVideoList = mVideoListArray.get(listPos[category]);
-        if (mVideoList != null) {
         for (int k = 0; k < mVideoList.size(); k++) {
             listRowAdapter0.add(mVideoList.get(k));
         }
@@ -220,7 +222,7 @@ public class SeriesVideoRowFragment extends BaseFragment {
                 mPageNum += 1;
                 if (mPageNum <= totalPage) {
                 for(int i=0;i<loadRows; i++) {
-                parseIQiYiMovieSimplifiedList((mPageNum - 1) * 3 + i, 2, orderlist[(mPageNum - 1) * 3 + i], "", "",
+                parseIQiYiMovieSimplifiedList((mPageNum - 1) * loadRows + i, 2, orderlist[(mPageNum - 1) * loadRows + i], "", "",
                         24, 1, 1, "iqiyi", 1, "", 12);
                 }
 
@@ -230,7 +232,7 @@ public class SeriesVideoRowFragment extends BaseFragment {
             }
             @Override
             public void onLoadEnd() {
-                if (curRow == 16) {
+                if (getUserVisibleHint()&&(curRow == totalRow-1)) {
                     Toast.makeText(mContext, "没有更多视频加载", Toast.LENGTH_LONG).show();
                 }
             }
@@ -263,15 +265,13 @@ public class SeriesVideoRowFragment extends BaseFragment {
                         Log.v(TAG, "result_num =："+ bean.getResult_num());
                         List<IQiYiMovieBean> list = bean.getList();
                         for(int i=0;i<list.size();i++) {
-                            Log.v(TAG, list.get(i).toString());
+//                            Log.v(TAG, list.get(i).toString());
                         }
                         Log.v(TAG,"category"+category);
-                        Log.v("tttt", "mVideoListArray =："+ mVideoListArray.size());
                         mVideoListArray.add(list);
-                        Log.v("tttt", "mVideoListArray =："+ mVideoListArray.size());
+                        Log.v(TAG, "mVideoListArray =："+ mVideoListArray.size());
                         listPos[category] = mVideoListArray.size()-1;
-                        Log.v("tttt", "listPos[category] =："+ listPos[category]);
-                        Log.v("tttt", "mVideoListArray =："+ mVideoListArray.size());
+                        Log.v(TAG, "listPos[category] =："+ listPos[category]);
                         Message msg = new Message();
                         msg.arg1 = category;
                         msg.what = REFRESH_MOVIE_CONTENT;
@@ -298,7 +298,7 @@ public class SeriesVideoRowFragment extends BaseFragment {
             @Override
             public void success(List<IQiYiBannerInfoBean> list) {
                 for (IQiYiBannerInfoBean bean : list) {
-                    Log.v(TAG, bean.toString());
+//                    Log.v(TAG, bean.toString());
                 }
                 mBannerInfoList.clear();
                 mBannerInfoList = list;

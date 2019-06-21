@@ -19,8 +19,8 @@ import me.jessyan.autosize.AutoSizeConfig;
 import me.jessyan.autosize.utils.AutoSizeUtils;
 
 public class SeriesButtonRowPresenter extends RowPresenter {
-    protected static Context mContext;
-    String TAG = "SeriesButtonRowPresenter";
+    protected Context mContext;
+    private static final String TAG = "SeriesButtonRowPresente";
     private static final int GRID_VIEW_LEFT_PX = 80;
     private static final int GRID_VIEW_RIGHT_PX = 30;
     private static final int ITEM_NUM_ROW = 1;
@@ -49,7 +49,7 @@ public class SeriesButtonRowPresenter extends RowPresenter {
     protected void onBindRowViewHolder(final ViewHolder holder, Object item) {
         super.onBindRowViewHolder(holder, item);
         ViewGroup vg = (ViewGroup) holder.view;
-        Log.v("tttt","select the Button:" + vg.getChildCount());
+        Log.v(TAG,"select the Button:" + vg.getChildCount());
         for (int i = 0; i < vg.getChildCount(); i++) {
             final View childView = vg.getChildAt(i);
             childView.setOnFocusChangeListener(new View.OnFocusChangeListener() {

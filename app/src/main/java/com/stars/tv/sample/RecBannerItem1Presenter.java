@@ -30,7 +30,7 @@ public class RecBannerItem1Presenter extends Presenter {
     ImageView bgIv;
     TextView nameTv;
     View boardView;
-    protected static Context mContext;
+    protected Context mContext;
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent) {

@@ -20,7 +20,7 @@ import me.jessyan.autosize.AutoSizeConfig;
 import me.jessyan.autosize.utils.AutoSizeUtils;
 
 public class LandscapeVideoItemPresenter extends Presenter {
-
+    private static final String TAG = "LandscapeVideoItemPrese";
     private static final int GRID_VIEW_LEFT_PX = 80;
     private static final int GRID_VIEW_RIGHT_PX = 50;
     private static final int ITEM_RIGHT_PADDING_PX = 25;
@@ -32,7 +32,7 @@ public class LandscapeVideoItemPresenter extends Presenter {
     ImageView bgIv;
     TextView nameTv;
     View boardView;
-    protected static Context mContext;
+    protected Context mContext;
     boolean isValue;
 
     @Override
@@ -51,7 +51,7 @@ public class LandscapeVideoItemPresenter extends Presenter {
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, Object item) {
         IQiYiMovieBean videoBean = (IQiYiMovieBean)item;
-        Log.v("ttt","videoBean"+videoBean.toString());
+//        Log.v(TAG,"videoBean"+videoBean.toString());
         bgIv = viewHolder.view.findViewById(R.id.bg_iv);
         nameTv = viewHolder.view.findViewById(R.id.name_tv);
         boardView = viewHolder.view.findViewById(R.id.board_view);

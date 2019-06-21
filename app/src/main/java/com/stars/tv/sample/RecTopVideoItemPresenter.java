@@ -20,7 +20,7 @@ import me.jessyan.autosize.AutoSizeConfig;
 import me.jessyan.autosize.utils.AutoSizeUtils;
 
 public class RecTopVideoItemPresenter extends Presenter {
-
+    private static final String TAG = "RecTopVideoItemPresente";
     private static final int GRID_VIEW_LEFT_PX = 80;
     private static final int GRID_VIEW_RIGHT_PX = 50;
     private static final int ITEM_RIGHT_PADDING_PX = 25;
@@ -32,7 +32,7 @@ public class RecTopVideoItemPresenter extends Presenter {
     ImageView bgIv, payIv;
     TextView nameTv, infoTv;
     View boardView;
-    protected static Context mContext;
+    protected Context mContext;
     boolean isValue;
 
     @Override
@@ -42,7 +42,7 @@ public class RecTopVideoItemPresenter extends Presenter {
         CARD_WIDTH = (AutoSizeUtils.dp2px(Objects.requireNonNull(parent.getContext()),AutoSizeConfig.getInstance().getDesignWidthInDp()) - GRID_VIEW_LEFT_PX - GRID_VIEW_RIGHT_PX - (ITEM_RIGHT_PADDING_PX * ITEM_NUM_ROW)) / ITEM_NUM_ROW;
 //        CARD_HEIGHT = CARD_WIDTH / 3 * 4;
         CARD_HEIGHT = 410;
-        Log.v("top","height"+CARD_HEIGHT);
+        Log.v(TAG,"height"+CARD_HEIGHT);
         ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(CARD_WIDTH, CARD_HEIGHT);
         view.setLayoutParams(lp);
         view.setFocusable(true);
@@ -53,7 +53,7 @@ public class RecTopVideoItemPresenter extends Presenter {
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, Object item) {
         IQiYiTopListBean videoBean = (IQiYiTopListBean)item;
-        Log.v("ttt","videoBean"+videoBean.toString());
+//        Log.v(TAG,"videoBean"+videoBean.toString());
         bgIv = viewHolder.view.findViewById(R.id.bg_iv);
         nameTv = viewHolder.view.findViewById(R.id.name_tv);
         boardView = viewHolder.view.findViewById(R.id.board_view);
