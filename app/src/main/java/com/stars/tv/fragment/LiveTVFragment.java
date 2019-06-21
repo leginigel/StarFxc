@@ -35,7 +35,6 @@ import com.stars.tv.db.TvDao;
 import com.stars.tv.presenter.ParseLiveTVEpgPresenter;
 import com.stars.tv.presenter.LiveTvItemPresenter;
 import com.stars.tv.presenter.LiveTvTitlePresenter;
-import com.stars.tv.server.RxManager;
 import com.stars.tv.utils.CallBack;
 import com.stars.tv.utils.NetUtil;
 import com.stars.tv.utils.Utils;
@@ -51,7 +50,7 @@ import butterknife.Unbinder;
 import tv.danmaku.ijk.media.player.IMediaPlayer;
 import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 
-public class LiveTVFragment extends LiveTVBaseFragment {
+public class LiveTVFragment extends BaseFragment {
 
     @BindView(R.id.live_tv_root_container)
     RelativeLayout rootLayout;
@@ -107,7 +106,6 @@ public class LiveTVFragment extends LiveTVBaseFragment {
     final int SET_CHANNEL_TO_HISTORY = 1;
     long ADD_TO_HISTORY_TIMER = 10000; // 播放超过十秒加入到历史记录
     long PLAY_CURRENT_CHANNEL_TIMER = 1500; //ms
-    private RxManager mRxManager = new RxManager();
 
     private String TAG = "LiveTVFragment";
 
@@ -365,11 +363,11 @@ public class LiveTVFragment extends LiveTVBaseFragment {
             playerVideoView.start();
             setWavePosition();
             setTimer(SET_CHANNEL_TO_HISTORY, ADD_TO_HISTORY_TIMER);
-        infoBannerNum.setText(String.valueOf(liveTvBean.getChannelNumber()));
-        infoBannerName.setText(liveTvBean.getChannelName());
+            infoBannerNum.setText(String.valueOf(liveTvBean.getChannelNumber()));
+            infoBannerName.setText(liveTvBean.getChannelName());
             infoBannerEpg.setSelected(false);
-        infoBannerEpg.setText(getString(R.string.str_live_tv_epg_info_loading));
-        parseTvMaoEpgData(curTvChannel);
+            infoBannerEpg.setText(getString(R.string.str_live_tv_epg_info_loading));
+            parseTvMaoEpgData(curTvChannel);
         } else {
             showLoadingError("0");
         }
@@ -451,11 +449,13 @@ public class LiveTVFragment extends LiveTVBaseFragment {
     }
 
     private void setEpgInfo(String text) {
-        if (text.equals("")) {
-            infoBannerEpg.setText(getString(R.string.str_live_tv_epg_empty));
-        } else {
-            infoBannerEpg.setSelected(true);
-            infoBannerEpg.setText(getString(R.string.str_live_tv_epg_data, text));
+        if (infoBannerEpg != null) {
+            if (text.equals("")) {
+                infoBannerEpg.setText(getString(R.string.str_live_tv_epg_empty));
+            } else {
+                infoBannerEpg.setSelected(true);
+                infoBannerEpg.setText(getString(R.string.str_live_tv_epg_data, text));
+            }
         }
     }
 
@@ -511,16 +511,15 @@ public class LiveTVFragment extends LiveTVBaseFragment {
     }
 
     private void pauseRequest() {
-            mRxManager.clear();
-            removeTimer(PLAY_CURRENT_CHANNEL);
+        removeTimer(PLAY_CURRENT_CHANNEL);
         removeTimer(SET_CHANNEL_TO_HISTORY);
         if (mCircleDrawable != null && mCircleDrawable.isRunning()) {
             mCircleDrawable.stop();
         }
-            if (playerVideoView != null) {
-                playerVideoView.stopPlayback();
-            }
+        if (playerVideoView != null) {
+            playerVideoView.stopPlayback();
         }
+    }
 
     @Override
     public void onAttach(Context context) {
@@ -621,21 +620,21 @@ public class LiveTVFragment extends LiveTVBaseFragment {
                 break;
             case KeyEvent.KEYCODE_DPAD_DOWN:
                 if (rootLayout != null) {
-                if (!rootLayout.hasFocus()) {
-                    if (channelList.size() != 0) {
-                        contentVg.requestFocus();
+                    if (!rootLayout.hasFocus()) {
+                        if (channelList.size() != 0) {
+                            contentVg.requestFocus();
+                        } else {
+                            titleVg.requestFocus();
+                        }
+                        return true;
                     } else {
-                    titleVg.requestFocus();
-                    }
-                    return true;
-                } else {
-                    if (rootLayout.getFocusedChild().getId() == R.id.live_tv_channel_list_content) {
-                        if (cPreView != null && contentVg.indexOfChild(cPreView) == 0) {
-                            cPreView.findViewById(R.id.item_live_tv_channel_wave).setVisibility(View.GONE);
-                            return false;
+                        if (rootLayout.getFocusedChild().getId() == R.id.live_tv_channel_list_content) {
+                            if (cPreView != null && contentVg.indexOfChild(cPreView) == 0) {
+                                cPreView.findViewById(R.id.item_live_tv_channel_wave).setVisibility(View.GONE);
+                                return false;
+                            }
                         }
                     }
-                }
                 }
                 break;
         }

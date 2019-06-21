@@ -16,9 +16,9 @@ import com.stars.tv.bean.IQiYiStarInfoBean;
 import com.stars.tv.bean.IQiYiTopListBean;
 import com.stars.tv.bean.IQiYiVideoBaseInfoBean;
 import com.stars.tv.bean.TvTitle;
+import com.stars.tv.fragment.BaseFragment;
 import com.stars.tv.fragment.FilmVideoRowSampleFragment;
 import com.stars.tv.fragment.RecommandVideoRowFragment;
-import com.stars.tv.fragment.LiveTVBaseFragment;
 import com.stars.tv.fragment.LiveTVFragment;
 import com.stars.tv.fragment.SeriesVideoRowFragment;
 import com.stars.tv.fragment.VideoRowSampleFragment;
@@ -45,12 +45,9 @@ import com.stars.tv.utils.ViewUtils;
 import com.stars.tv.view.SpaceItemDecoration;
 import com.stars.tv.youtube.YoutubeActivity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.content.Intent;
-import android.os.Bundle;
 import android.support.v17.leanback.widget.ArrayObjectAdapter;
 import android.support.v17.leanback.widget.BaseGridView;
 import android.support.v17.leanback.widget.HorizontalGridView;
@@ -83,7 +80,7 @@ public class MainActivity extends BaseActivity {
   private static final int TITLE_TOP_PADDING_PC = 0;
   private static final int TITLE_RIGHT_PADDING_PC = 20;
 
-  private static LiveTVBaseFragment curFragment;
+  private static BaseFragment curFragment;
   private Handler mStorageHDL;
   private Runnable mStorageRun;
 

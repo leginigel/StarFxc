@@ -32,7 +32,6 @@ import com.stars.tv.bean.LiveTvEpgBean;
 import com.stars.tv.db.TvDao;
 import com.stars.tv.presenter.LiveTvItemPresenter;
 import com.stars.tv.presenter.ParseLiveTVEpgPresenter;
-import com.stars.tv.server.RxManager;
 import com.stars.tv.utils.CallBack;
 import com.stars.tv.utils.NetUtil;
 import com.stars.tv.utils.Utils;
@@ -125,7 +124,6 @@ public class LiveTVActivity extends BaseActivity {
     private boolean shortPress = false;
 
     private Circle mCircleDrawable;
-    private RxManager mRxManager = new RxManager();
 
     private String TAG = "LiveTVActivity";
 
@@ -606,7 +604,6 @@ public class LiveTVActivity extends BaseActivity {
     protected void onPause() {
         super.onPause();
         Log.v(TAG, "onPause");
-        mRxManager.clear();
         if (playerVideoView != null) {
             playerVideoView.stopPlayback();
         }

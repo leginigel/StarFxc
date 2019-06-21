@@ -15,7 +15,6 @@ import android.support.v17.leanback.widget.ArrayObjectAdapter;
 import android.support.v17.leanback.widget.HeaderItem;
 import android.support.v17.leanback.widget.ItemBridgeAdapter;
 import android.support.v17.leanback.widget.OnChildViewHolderSelectedListener;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -39,7 +38,6 @@ import com.stars.tv.sample.LandscapeVideoItemPresenter;
 import com.stars.tv.sample.LandscapeVideoListRow;
 import com.stars.tv.sample.MyPresenterSelector;
 import com.stars.tv.sample.PortraitVideoItem1Presenter;
-import com.stars.tv.sample.PortraitVideoItemPresenter;
 import com.stars.tv.sample.PortraitVideoListRow1;
 import com.stars.tv.sample.RecBannerItem1Presenter;
 import com.stars.tv.sample.RecBannerItemPresenter;
@@ -48,7 +46,6 @@ import com.stars.tv.sample.RecTopVideoItemPresenter;
 import com.stars.tv.sample.SeriesAndRecButtonItemPresenter;
 import com.stars.tv.sample.SeriesAndRecVideoDataList;
 import com.stars.tv.sample.PortraitVideoListRow;
-import com.stars.tv.server.RxManager;
 import com.stars.tv.utils.CallBack;
 import com.stars.tv.utils.NetUtil;
 import com.stars.tv.view.MyVerticalGridView;
@@ -96,7 +93,6 @@ public class RecommandVideoRowFragment extends BaseFragment {
     private int category;
     private int loadRows = 4;
     private Circle mCircleDrawable;
-    private RxManager mRxManager = new RxManager();
     private int[] toplistPos = new int[3];
     private int[] listPos = new int[26];
     private int[] channel = {2,1,6,4,3,8,25,7,24,16,10,5,28,12,17,15,9,13,21,26,22,27,29,30,31,32};
@@ -506,8 +502,6 @@ public class RecommandVideoRowFragment extends BaseFragment {
             if(NetUtil.isConnected()){
                 loadData();
             }
-        } else {
-            mRxManager.clear();
         }
     }
 
@@ -550,7 +544,6 @@ public class RecommandVideoRowFragment extends BaseFragment {
         super.onDestroyView();
         Log.v(TAG, "onDestroyView");
         isViewCreated = false;
-        mRxManager.clear();
         unbinder.unbind();
     }
 }

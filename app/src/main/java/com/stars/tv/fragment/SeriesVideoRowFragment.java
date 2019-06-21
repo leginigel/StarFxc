@@ -39,7 +39,6 @@ import com.stars.tv.sample.SeriesAndRecVideoDataList;
 import com.stars.tv.sample.SeriesBannerItemPresenter;
 import com.stars.tv.sample.PortraitVideoItemPresenter;
 import com.stars.tv.sample.PortraitVideoListRow;
-import com.stars.tv.server.RxManager;
 import com.stars.tv.utils.CallBack;
 import com.stars.tv.utils.NetUtil;
 import com.stars.tv.view.MyVerticalGridView;
@@ -51,6 +50,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import io.reactivex.disposables.CompositeDisposable;
 
 public class SeriesVideoRowFragment extends BaseFragment {
     private static final String TAG = "SeriesVideoRowFragment";
@@ -82,7 +82,6 @@ public class SeriesVideoRowFragment extends BaseFragment {
     private int loadRows = 3;
     private int totalBanner = 3;
     private Circle mCircleDrawable;
-    private RxManager mRxManager = new RxManager();
     private int[] listPos = new  int[15];
     private String[] orderlist = {"15", "15", "15,24", "15,1654", "15,20", "15,11992", "15,24065", "15,30,1653", "15,135", "15,139", "15,32,149", "15,148", "15,1655", "15,27", "18"};
     public SeriesVideoRowFragment() {
@@ -355,8 +354,6 @@ public class SeriesVideoRowFragment extends BaseFragment {
                 loadData();
             }
 
-        }else{
-            mRxManager.clear();
         }
     }
 
@@ -407,7 +404,6 @@ public class SeriesVideoRowFragment extends BaseFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        mRxManager.clear();
         if (mCircleDrawable != null && mCircleDrawable.isRunning()) {
             mCircleDrawable.stop();
         }
