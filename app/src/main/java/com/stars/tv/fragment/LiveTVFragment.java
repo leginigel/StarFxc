@@ -35,7 +35,6 @@ import com.stars.tv.db.TvDao;
 import com.stars.tv.presenter.ParseLiveTVEpgPresenter;
 import com.stars.tv.presenter.LiveTvItemPresenter;
 import com.stars.tv.presenter.LiveTvTitlePresenter;
-import com.stars.tv.server.RxManager;
 import com.stars.tv.utils.CallBack;
 import com.stars.tv.utils.NetUtil;
 import com.stars.tv.utils.Utils;
@@ -51,7 +50,7 @@ import butterknife.Unbinder;
 import tv.danmaku.ijk.media.player.IMediaPlayer;
 import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 
-public class LiveTVFragment extends LiveTVBaseFragment {
+public class LiveTVFragment extends BaseFragment {
 
     @BindView(R.id.live_tv_root_container)
     RelativeLayout rootLayout;
@@ -101,11 +100,12 @@ public class LiveTVFragment extends LiveTVBaseFragment {
 
     private Circle mCircleDrawable;
 
-    private boolean isFullScreen = false;
+    private boolean isNeedResume = false;
 
     final int PLAY_CURRENT_CHANNEL = 0;
-    private long PLAY_CURRENT_CHANNEL_TIMER = 1500; //ms
-    private RxManager mRxManager = new RxManager();
+    final int SET_CHANNEL_TO_HISTORY = 1;
+    long ADD_TO_HISTORY_TIMER = 10000; // 播放超过十秒加入到历史记录
+    long PLAY_CURRENT_CHANNEL_TIMER = 1500; //ms
 
     private String TAG = "LiveTVFragment";
 
@@ -113,6 +113,8 @@ public class LiveTVFragment extends LiveTVBaseFragment {
     private int chPosition; // curTvChannel channel position
     private View cCurView; // curTvChannel channel view
     private View cPreView; // curTvChannel channel last view
+
+    private TvDao tvDao;
 
     public static LiveTVFragment getInstance(String titleMode) {
         return newInstance(titleMode);
@@ -134,6 +136,9 @@ public class LiveTVFragment extends LiveTVBaseFragment {
                 case PLAY_CURRENT_CHANNEL:
                     playCurrentChannel(curTvChannel);
                     break;
+                case SET_CHANNEL_TO_HISTORY:
+                    setHistory(curTvChannel.getChannelNumber());
+                    break;
             }
         }
     };
@@ -143,7 +148,7 @@ public class LiveTVFragment extends LiveTVBaseFragment {
         super.onCreate(savedInstanceState);
         Log.v(TAG, "onCreate");
         mContext = getContext();
-        TvDao tvDao = new TvDao(mContext);
+        tvDao = new TvDao(mContext);
         mTvTitle = getArguments() != null ? getArguments().getString("titleName") : null;
         listType = getResources().getStringArray(R.array.channel_list);
         listType = Arrays.copyOf(listType, listType.length - 1);
@@ -171,16 +176,14 @@ public class LiveTVFragment extends LiveTVBaseFragment {
         Log.v(TAG, "onCreateView");
         View view = inflater.inflate(R.layout.fragment_live_tv, container, false);
         unbinder = ButterKnife.bind(this, view);
-
         refreshTitleList();
-
+        initVideoPlayer();
+        initLoading();
         playerLayout.setOnFocusChangeListener((view1, hasFocus) -> {
             if (playerLayout != null) {
                 playerLayout.findViewById(R.id.live_tv_player_board).setVisibility(hasFocus ? View.VISIBLE : View.INVISIBLE);
             }
         });
-        initVideoPlayer();
-        initLoading();
         return view;
     }
 
@@ -244,9 +247,7 @@ public class LiveTVFragment extends LiveTVBaseFragment {
                             view.setBackgroundColor(getResources().getColor(R.color.color_focus));
                             LiveTvBean focusTvBean = channelList.get((int) view.getTag());
                             if (curTvChannel != focusTvBean) {
-                                curTvChannel = focusTvBean;
-                                setTimer(PLAY_CURRENT_CHANNEL, PLAY_CURRENT_CHANNEL_TIMER);
-                                showLoading();
+                                setCurTvChannel(focusTvBean);
                             }
                         } else {
                             if (isRemaining) {
@@ -317,7 +318,6 @@ public class LiveTVFragment extends LiveTVBaseFragment {
     }
 
     private void showFullScreen() {
-        isFullScreen = true;
         if (NetUtil.isConnected()) {
             Intent intent = new Intent(mContext, LiveTVActivity.class);
             intent.putExtra("curTvChannel", curTvChannel);
@@ -350,20 +350,32 @@ public class LiveTVFragment extends LiveTVBaseFragment {
         cPreView = cCurView;
     }
 
+    private void setCurTvChannel(@NonNull LiveTvBean liveTvBean) {
+        curTvChannel = liveTvBean;
+        setTimer(PLAY_CURRENT_CHANNEL, PLAY_CURRENT_CHANNEL_TIMER);
+        showLoading();
+    }
+
     private void playCurrentChannel(@NonNull LiveTvBean liveTvBean) {
         if (NetUtil.isConnected()) {
             String mVideoPath = liveTvBean.getUrl().get(0);
             playerVideoView.setVideoURI(Uri.parse(mVideoPath));
             playerVideoView.start();
             setWavePosition();
-        infoBannerNum.setText(String.valueOf(liveTvBean.getChannelNumber()));
-        infoBannerName.setText(liveTvBean.getChannelName());
+            setTimer(SET_CHANNEL_TO_HISTORY, ADD_TO_HISTORY_TIMER);
+            infoBannerNum.setText(String.valueOf(liveTvBean.getChannelNumber()));
+            infoBannerName.setText(liveTvBean.getChannelName());
             infoBannerEpg.setSelected(false);
-        infoBannerEpg.setText(getString(R.string.str_live_tv_epg_info_loading));
-        parseTvMaoEpgData(curTvChannel);
+            infoBannerEpg.setText(getString(R.string.str_live_tv_epg_info_loading));
+            parseTvMaoEpgData(curTvChannel);
         } else {
             showLoadingError("0");
         }
+    }
+
+    private void setHistory(int channelNumber) {
+        tvDao.setHistory(channelNumber, true);
+        historyChannelList = tvDao.queryHistoryChannelList();
     }
 
     private void initLoading() {
@@ -437,11 +449,13 @@ public class LiveTVFragment extends LiveTVBaseFragment {
     }
 
     private void setEpgInfo(String text) {
-        if (text.equals("")) {
-            infoBannerEpg.setText(getString(R.string.str_live_tv_epg_empty));
-        } else {
-            infoBannerEpg.setSelected(true);
-            infoBannerEpg.setText(getString(R.string.str_live_tv_epg_data, text));
+        if (infoBannerEpg != null) {
+            if (text.equals("")) {
+                infoBannerEpg.setText(getString(R.string.str_live_tv_epg_empty));
+            } else {
+                infoBannerEpg.setSelected(true);
+                infoBannerEpg.setText(getString(R.string.str_live_tv_epg_data, text));
+            }
         }
     }
 
@@ -490,14 +504,20 @@ public class LiveTVFragment extends LiveTVBaseFragment {
         Log.v(TAG, "isVisibleToUser:" + isVisibleToUser);
 
         if (isVisibleToUser) {
-            setTimer(PLAY_CURRENT_CHANNEL, PLAY_CURRENT_CHANNEL_TIMER);
-            showLoading();
+            setCurTvChannel(curTvChannel);
         } else {
-            mRxManager.clear();
-            removeTimer(PLAY_CURRENT_CHANNEL);
-            if (playerVideoView != null) {
-                playerVideoView.stopPlayback();
-            }
+            pauseRequest();
+        }
+    }
+
+    private void pauseRequest() {
+        removeTimer(PLAY_CURRENT_CHANNEL);
+        removeTimer(SET_CHANNEL_TO_HISTORY);
+        if (mCircleDrawable != null && mCircleDrawable.isRunning()) {
+            mCircleDrawable.stop();
+        }
+        if (playerVideoView != null) {
+            playerVideoView.stopPlayback();
         }
     }
 
@@ -517,15 +537,12 @@ public class LiveTVFragment extends LiveTVBaseFragment {
     public void onResume() {
         super.onResume();
         Log.v(TAG, "onResume");
-        if (isFullScreen) {
-            isFullScreen = false;
+        if (isNeedResume) {
             listPosition = (int) Utils.getSharedValue(mContext, "listPosition", 1);
             chPosition = (int) Utils.getSharedValue(mContext, "chPosition", 0);
             setChannelList(listPosition);
-            curTvChannel = channelList.get(chPosition);
             refreshTitleList();
-            setTimer(PLAY_CURRENT_CHANNEL, PLAY_CURRENT_CHANNEL_TIMER);
-            showLoading();
+            setCurTvChannel(channelList.get(chPosition));
         }
     }
 
@@ -533,21 +550,17 @@ public class LiveTVFragment extends LiveTVBaseFragment {
     public void onPause() {
         super.onPause();
         Log.v(TAG, "onPause");
+        isNeedResume = true;
+        pauseRequest();
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         Log.v(TAG, "onDestroyView");
-        mRxManager.clear();
-        if (mCircleDrawable != null && mCircleDrawable.isRunning()) {
-            mCircleDrawable.stop();
-        }
-        removeTimer(PLAY_CURRENT_CHANNEL);
-        if (playerVideoView != null) {
-            playerVideoView.stopPlayback();
-        }
+        pauseRequest();
         IjkMediaPlayer.native_profileEnd();
+        isNeedResume = false;
         unbinder.unbind();
     }
 
@@ -607,21 +620,21 @@ public class LiveTVFragment extends LiveTVBaseFragment {
                 break;
             case KeyEvent.KEYCODE_DPAD_DOWN:
                 if (rootLayout != null) {
-                if (!rootLayout.hasFocus()) {
-                    if (channelList.size() != 0) {
-                        contentVg.requestFocus();
+                    if (!rootLayout.hasFocus()) {
+                        if (channelList.size() != 0) {
+                            contentVg.requestFocus();
+                        } else {
+                            titleVg.requestFocus();
+                        }
+                        return true;
                     } else {
-                    titleVg.requestFocus();
-                    }
-                    return true;
-                } else {
-                    if (rootLayout.getFocusedChild().getId() == R.id.live_tv_channel_list_content) {
-                        if (cPreView != null && contentVg.indexOfChild(cPreView) == 0) {
-                            cPreView.findViewById(R.id.item_live_tv_channel_wave).setVisibility(View.GONE);
-                            return false;
+                        if (rootLayout.getFocusedChild().getId() == R.id.live_tv_channel_list_content) {
+                            if (cPreView != null && contentVg.indexOfChild(cPreView) == 0) {
+                                cPreView.findViewById(R.id.item_live_tv_channel_wave).setVisibility(View.GONE);
+                                return false;
+                            }
                         }
                     }
-                }
                 }
                 break;
         }

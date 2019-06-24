@@ -24,7 +24,6 @@ import android.widget.TableLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.github.ybq.android.spinkit.style.Circle;
 import com.stars.tv.R;
@@ -33,7 +32,6 @@ import com.stars.tv.bean.LiveTvEpgBean;
 import com.stars.tv.db.TvDao;
 import com.stars.tv.presenter.LiveTvItemPresenter;
 import com.stars.tv.presenter.ParseLiveTVEpgPresenter;
-import com.stars.tv.server.RxManager;
 import com.stars.tv.utils.CallBack;
 import com.stars.tv.utils.NetUtil;
 import com.stars.tv.utils.Utils;
@@ -102,9 +100,9 @@ public class LiveTVActivity extends BaseActivity {
     final int HIDE_CHANNEL_LIST = 1;
     final int SET_CHANNEL_TO_HISTORY = 2;
     final int PLAY_CURRENT_CHANNEL = 3;
-    private long PLAY_CURRENT_CHANNEL_TIMER = 1500; //ms
-    private long TIMEOUT_TIMER = 6000; //ms
-    private long ADD_TO_HISTORY_TIMER = 10000; // 播放超过十秒加入到历史记录
+    long PLAY_CURRENT_CHANNEL_TIMER = 1500; //ms
+    long TIMEOUT_TIMER = 6000; //ms
+    long ADD_TO_HISTORY_TIMER = 10000; // 播放超过十秒加入到历史记录
 
     private int chPosition;
     private int listPosition;
@@ -126,7 +124,6 @@ public class LiveTVActivity extends BaseActivity {
     private boolean shortPress = false;
 
     private Circle mCircleDrawable;
-    private RxManager mRxManager = new RxManager();
 
     private String TAG = "LiveTVActivity";
 
@@ -488,10 +485,8 @@ public class LiveTVActivity extends BaseActivity {
                 if (isChListShow) {
                     setCurTvChannel(channelList.get(chPosition));
                     hideChannelList();
-                } else if (isInfoBannerShow) {
-                    showChannelList();
                 } else {
-                    showInfoBanner();
+                    showChannelList();
                 }
                 break;
             case KeyEvent.KEYCODE_MENU:
@@ -542,8 +537,6 @@ public class LiveTVActivity extends BaseActivity {
 
     private void setFav(boolean fav) {
         tvDao.setFav(channelList.get(chPosition).getChannelNumber(), fav);
-        if (chPosition > 0)
-            chPosition = chPosition - 1;
         refreshChannelList();
         initChannelListAdapter();
     }
@@ -609,7 +602,6 @@ public class LiveTVActivity extends BaseActivity {
     protected void onPause() {
         super.onPause();
         Log.v(TAG, "onPause");
-        mRxManager.clear();
         if (playerVideoView != null) {
             playerVideoView.stopPlayback();
         }

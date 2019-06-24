@@ -14,9 +14,9 @@ import android.support.v17.leanback.widget.ArrayObjectAdapter;
 import android.support.v17.leanback.widget.HeaderItem;
 import android.support.v17.leanback.widget.ItemBridgeAdapter;
 import android.support.v17.leanback.widget.OnChildViewHolderSelectedListener;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,7 +36,6 @@ import com.stars.tv.sample.FilmVideoDataList;
 import com.stars.tv.sample.FilmVideoItemPresenter;
 import com.stars.tv.sample.FilmVideoListRow;
 import com.stars.tv.sample.MyPresenterSelector;
-import com.stars.tv.server.RxManager;
 import com.stars.tv.utils.CallBack;
 import com.stars.tv.view.MyVerticalGridView;
 
@@ -48,7 +47,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class FilmVideoRowSampleFragment extends Fragment {
+public class FilmVideoRowSampleFragment extends BaseFragment {
     private static final String TAG = "FilmVideoRowSampleFragment";
     private static final int GRID_VIEW_LEFT_PX = 80;
     private static final int GRID_VIEW_RIGHT_PX = 50;
@@ -309,7 +308,11 @@ public class FilmVideoRowSampleFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
-        RxManager mRxManager = new RxManager();
-        mRxManager.clear();
+
+    }
+
+    @Override
+    public boolean onKeyDown(KeyEvent event) {
+        return false;
     }
 }

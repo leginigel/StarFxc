@@ -257,6 +257,10 @@ public class IQiYiParseSearchPresenter {
                         bean.setVid(searchBean.getDocinfos().get(i).getAlbumDocInfo().getVideoinfos().get(0).getVid());
                         bean.setSubtitle(searchBean.getDocinfos().get(i).getAlbumDocInfo().getVideoinfos().get(0).getSubTitle());
                         bean.setPlayUrl(searchBean.getDocinfos().get(i).getAlbumDocInfo().getVideoinfos().get(0).getItemLink());
+                        if(bean.getName()==null|| bean.getName().equals(""))
+                        {
+                            bean.setName(searchBean.getDocinfos().get(i).getAlbumDocInfo().getVideoinfos().get(0).getItemTitle());
+                        }
                         if(searchBean.getDocinfos().get(i).getAlbumDocInfo().getVideoinfos().get(0).getLatest_video()!=null)
                         {
                             bean.setLatestVideoUrl(searchBean.getDocinfos().get(i).getAlbumDocInfo().getVideoinfos().get(0).getLatest_video().getPage_url());

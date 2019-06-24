@@ -30,7 +30,7 @@ public class RecBannerItemPresenter extends Presenter {
     ImageView bgIv;
     TextView nameTv;
     View boardView;
-    protected static Context mContext;
+    protected Context mContext;
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent) {
@@ -61,6 +61,7 @@ public class RecBannerItemPresenter extends Presenter {
 //                Toast.makeText(mContext,"click the Video",Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(mContext, VideoPreviewActivity.class);
                 intent.putExtra("videoBean", videoBean);
+                intent.putExtra("titleName","Recommand");
                 mContext.startActivity(intent);
             }
         });

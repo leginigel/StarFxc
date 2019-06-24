@@ -20,7 +20,7 @@ import me.jessyan.autosize.AutoSizeConfig;
 import me.jessyan.autosize.utils.AutoSizeUtils;
 
 public class PortraitVideoItem1Presenter extends Presenter {
-
+    private static final String TAG = "PortraitVideoItem1Prese";
     private static final int GRID_VIEW_LEFT_PX = 80;
     private static final int GRID_VIEW_RIGHT_PX = 50;
     private static final int ITEM_RIGHT_PADDING_PX = 25;
@@ -32,7 +32,7 @@ public class PortraitVideoItem1Presenter extends Presenter {
     ImageView bgIv, payIv;
     TextView nameTv;
     View boardView;
-    protected static Context mContext;
+    protected Context mContext;
     boolean isValue;
 
     @Override
@@ -51,20 +51,21 @@ public class PortraitVideoItem1Presenter extends Presenter {
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, Object item) {
         IQiYiMovieBean videoBean = (IQiYiMovieBean)item;
-        Log.v("ttt","videoBean"+videoBean.toString());
+//        Log.v(TAG,"videoBean"+videoBean.toString());
         bgIv = viewHolder.view.findViewById(R.id.bg_iv);
         nameTv = viewHolder.view.findViewById(R.id.name_tv);
         boardView = viewHolder.view.findViewById(R.id.board_view);
         nameTv.setText(videoBean.getName());
         Glide.with(Objects.requireNonNull(viewHolder.view.getContext()))
                 .load(videoBean.getImageUrl()).into(bgIv);
-        Log.v("test", "url"+videoBean.getPayMarkUrl());
+        Log.v(TAG, "url"+videoBean.getPayMarkUrl());
         viewHolder.view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 //                Toast.makeText(mContext,"click the" + nameTv.getText().toString(),Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(mContext, VideoPreviewActivity.class);
                 intent.putExtra("videoBean", videoBean);
+                intent.putExtra("titleName","Recommand");
                 mContext.startActivity(intent);
             }
         });

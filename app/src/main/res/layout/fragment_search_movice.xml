@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/main_bg">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/left_ll"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <!-- 搜索显示 -->
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="60dp">
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                    <ImageView
+                        android:src="@drawable/ic_search_right"
+                        android:layout_gravity="center_vertical"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp" />
+                    <TextView
+                        android:id="@+id/search_show_tv"
+                        android:textSize="12sp"
+                        android:layout_marginLeft="5dp"
+                        android:singleLine="true"
+                        android:layout_gravity="center_vertical"
+                        android:gravity="center_vertical"
+                        android:textColor="@color/color_all_white"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="请输入片名/人名" />
+                </LinearLayout>
+                <!-- 分割线 -->
+                <View
+                    android:layout_gravity="bottom"
+                    android:background="#FFF8F8F8"
+                    android:layout_width="match_parent"
+                    android:layout_marginBottom="20dp"
+                    android:layout_height="1dp"/>
+
+            </FrameLayout>
+
+            <!-- 删除，清空按钮 -->
+            <LinearLayout
+                android:orientation="horizontal"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="50dp">
+                <Button
+                    android:id="@+id/clear_btn"
+                    android:text="清空"
+                    android:textSize="15sp"
+                    android:layout_weight="1"
+                    android:focusableInTouchMode="true"
+                    android:layout_marginRight="5dp"
+                    android:textColor="@color/color_all_white"
+                    android:background="@drawable/key_statue_bg_selector"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+                <Button
+                    android:id="@+id/del_btn"
+                    android:text="删除"
+                    android:textSize="15sp"
+                    android:layout_weight="1"
+                    android:focusableInTouchMode="true"
+                    android:layout_marginLeft="5dp"
+                    android:textColor="@color/color_all_white"
+                    android:background="@drawable/key_statue_bg_selector"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </LinearLayout>
+
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                >
+                <!-- 全键盘 T9 搜索键盘 -->
+                <com.stars.tv.view.MyVerticalGridView
+                    android:id="@+id/all_key_vgridview"
+                    android:clipToPadding="false"
+                    android:clipChildren="false"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:focusOutFront="true"
+                    app:focusOutEnd="true"
+                    app:focusOutSideStart="true"
+                    app:focusOutSideEnd="true"
+                    android:focusableInTouchMode="true"
+                    android:focusable="true"/>
+
+                <!-- 全键盘 T9 搜索键盘 -->
+                <com.stars.tv.view.MyVerticalGridView
+                    android:id="@+id/t9_key_vgridview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:focusOutFront="true"
+                    app:focusOutEnd="true"
+                    app:focusOutSideStart="true"
+                    app:focusOutSideEnd="true"
+                    android:focusableInTouchMode="true"
+                    android:focusable="true"/>
+
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <!-- 键盘选择 -->
+                <android.support.v17.leanback.widget.HorizontalGridView
+                    android:id="@+id/key_select_vgridview"
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="10dp"
+                    android:layout_height="100dp"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
+                    app:focusOutFront="true"
+                    app:focusOutEnd="true"
+                    app:focusOutSideStart="true"
+                    app:focusOutSideEnd="true" />
+            </FrameLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_weight="0.4"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="15dp">
+            <!-- 搜索提示 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+                <!--搜索历史-->
+                <include layout="@layout/include_history_layout" />
+
+                <TextView
+                    android:id="@+id/suggest_tv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="热门搜索"
+                    android:textColor="@color/color_all_white" />
+                <com.stars.tv.view.MyVerticalGridView
+                    android:id="@+id/suggest_vgridview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:clipChildren="false"
+                    android:clipToPadding="false" />
+            </LinearLayout>
+            <!-- 右边的搜索内容 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_weight="0.4"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="20dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="搜索结果"
+                    android:textColor="@color/color_all_white"
+                    android:id="@+id/search_tv"/>
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <com.stars.tv.view.MyVerticalGridView
+                        android:id="@+id/search_vgridview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:clipChildren="false"
+                        android:clipToPadding="false"
+                        android:layout_marginLeft="5dp"/>
+
+                    <TextView
+                        android:id="@+id/tip_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:drawableTop="@drawable/ic_no_date_tip"
+                        android:gravity="center"
+                        android:text="没有任何数据"
+                        android:textColor="@color/color_all_white"
+                        android:textSize="25px"
+                        android:visibility="gone" />
+                    <!-- 进度条 -->
+                    <ProgressBar
+                        android:id="@+id/loading"
+                        style="?android:attr/progressBarStyleLarge"
+                        android:layout_width="100px"
+                        android:layout_height="100px"
+                        android:layout_gravity="center"
+                        android:visibility="gone" />
+                </FrameLayout>
+            </LinearLayout>
+
+
+        </LinearLayout>
+    </LinearLayout>
+
+</FrameLayout>

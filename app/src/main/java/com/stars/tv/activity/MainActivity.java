@@ -16,9 +16,9 @@ import com.stars.tv.bean.IQiYiStarInfoBean;
 import com.stars.tv.bean.IQiYiTopListBean;
 import com.stars.tv.bean.IQiYiVideoBaseInfoBean;
 import com.stars.tv.bean.TvTitle;
+import com.stars.tv.fragment.BaseFragment;
 import com.stars.tv.fragment.FilmVideoRowSampleFragment;
 import com.stars.tv.fragment.RecommandVideoRowFragment;
-import com.stars.tv.fragment.LiveTVBaseFragment;
 import com.stars.tv.fragment.LiveTVFragment;
 import com.stars.tv.fragment.SeriesVideoRowFragment;
 import com.stars.tv.fragment.VideoRowSampleFragment;
@@ -45,7 +45,6 @@ import com.stars.tv.utils.ViewUtils;
 import com.stars.tv.view.SpaceItemDecoration;
 import com.stars.tv.youtube.YoutubeActivity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -81,7 +80,7 @@ public class MainActivity extends BaseActivity {
   private static final int TITLE_TOP_PADDING_PC = 0;
   private static final int TITLE_RIGHT_PADDING_PC = 20;
 
-  private static LiveTVBaseFragment curFragment;
+  private static BaseFragment curFragment;
   private Handler mStorageHDL;
   private Runnable mStorageRun;
 
@@ -99,7 +98,8 @@ public class MainActivity extends BaseActivity {
   FragAdapter mFragAdapter;
     //    List<VideoRowSampleFragment> mFragmentList = new ArrayList<>();
   List<Fragment> mFragmentList = new ArrayList<>();
-
+    private static SeriesVideoRowFragment mSeriesFragment;
+    private static RecommandVideoRowFragment mRecFragment;
   Unbinder unbinder;
     private long clickTime = 0;
 
@@ -205,7 +205,28 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (mFragmentList.get(pageVp.getCurrentItem()) instanceof LiveTVFragment) {
+        if ((mFragmentList.get(pageVp.getCurrentItem()) instanceof SeriesVideoRowFragment) ||
+                (mFragmentList.get(pageVp.getCurrentItem()) instanceof RecommandVideoRowFragment)) {
+            if (keyCode == KeyEvent.KEYCODE_BACK) {
+                if (pageVp.hasFocus()) {
+                    hgTitle.requestFocus();
+                } else {
+                    if ((System.currentTimeMillis() - clickTime) > 2000) {
+                        Toast.makeText(this, "再按一次退出Start TV", Toast.LENGTH_SHORT).show();
+                        clickTime = System.currentTimeMillis();
+                    } else {
+                        onBackPressed();
+                    }
+                }
+                if (mFragmentList.get(pageVp.getCurrentItem()) instanceof RecommandVideoRowFragment) {
+                    mRecFragment = (RecommandVideoRowFragment) mFragmentList.get(pageVp.getCurrentItem());
+                    return mRecFragment.onKeyDown(event);
+                } else {
+                    mSeriesFragment = (SeriesVideoRowFragment) mFragmentList.get(pageVp.getCurrentItem());
+                    return mSeriesFragment.onKeyDown(event);
+                }
+            }
+        } else if (mFragmentList.get(pageVp.getCurrentItem()) instanceof LiveTVFragment) {
             if (keyCode == KeyEvent.KEYCODE_BACK) {
                 if (pageVp.hasFocus()) {
                     hgTitle.requestFocus();
@@ -274,8 +295,8 @@ public class MainActivity extends BaseActivity {
       @Override
       public void onClick(View view) {
         //TODO
-        Intent intent = new Intent(MainActivity.this, VideoPreviewActivity.class);
-        startActivity(intent);
+                Intent intent = new Intent(MainActivity.this, SearchMoviceActivity.class);
+                startActivity(intent);
       }
     });
         pageVp.setOffscreenPageLimit(2); // 缓存2个页面
@@ -735,11 +756,11 @@ public class MainActivity extends BaseActivity {
     mFragmentList.clear();
     AtomicInteger i = new AtomicInteger();
     for (TvTitle titleMode : TvTitleModel.getTitleList()) {
-            if (titleMode.getName().matches(Constants.MAIN_TITLE_JINGXUAN)) {
+            if (titleMode.getName().equals(Constants.MAIN_TITLE_JINGXUAN)) {
         mFragmentList.add(RecommandVideoRowFragment.getInstance(titleMode.getName()));
             } else if (titleMode.getName().equals(Constants.MAIN_TITLE_PINDAO)) {
         mFragmentList.add(LiveTVFragment.getInstance(titleMode.getName()));
-            } else if (titleMode.getName().matches(Constants.MAIN_TITLE_DIANSHIJU)) {
+            } else if (titleMode.getName().equals(Constants.MAIN_TITLE_DIANSHIJU)) {
         mFragmentList.add(SeriesVideoRowFragment.getInstance(titleMode.getName()));
             } else if (titleMode.getName().matches(Constants.MAIN_TITLE_DIANYING)) {
           mFragmentList.add(FilmVideoRowSampleFragment.getInstance(titleMode.getName()));

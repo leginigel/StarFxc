@@ -23,7 +23,7 @@ public class HotVideoListRowPresenter extends ListRowPresenter {
         setShadowEnabled(false);
         ItemBridgeAdapter itemBridgeAdapter = rowViewHolder.getBridgeAdapter();
         // 焦点事件处理.
-        FocusHighlightHelper.setupBrowseItemFocusHighlight(itemBridgeAdapter, FocusHighlight.ZOOM_FACTOR_MEDIUM,false);
+        FocusHighlightHelper.setupBrowseItemFocusHighlight(itemBridgeAdapter, FocusHighlight.ZOOM_FACTOR_SMALL,false);
 
         // 设置ROW Padding50.
         rowViewHolder.getGridView().setPadding(30,0,30,0);

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:visibility="gone"
+    android:id="@+id/history_ll">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/history_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="18dp"
+            android:text="搜索历史"
+            android:textColor="@color/color_all_white"/>
+        <TextView
+            android:id="@+id/remove_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="15dp"
+            android:text="清除"
+            android:textSize="8sp"
+            android:gravity="center"
+            android:focusableInTouchMode="true"
+            android:layout_alignParentRight="true"
+            android:textColor="@color/color_all_white"
+            android:minWidth="30dp"
+            android:background="@drawable/search_statue_bg_selector"/>
+    </RelativeLayout>
+    <com.stars.tv.view.MyVerticalGridView
+        android:id="@+id/history_vgridview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clipChildren="false"
+        android:clipToPadding="false"/>
+</LinearLayout>
