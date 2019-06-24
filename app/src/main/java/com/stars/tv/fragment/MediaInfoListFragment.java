@@ -162,7 +162,7 @@ public class MediaInfoListFragment extends Fragment {
         });
     mFavorite=(Button) viewGroup.findViewById(R.id.fav_btn);
     /* for Favorite usage */
-    mFavorite.setClickable(false);
+    mFavorite.setClickable(true);
     // ------------------
 
     mMediaListView = (ListView) viewGroup.findViewById(R.id.mediainfo_list);
@@ -216,61 +216,93 @@ public class MediaInfoListFragment extends Fragment {
     mVideoInfo.setVideoCurrentViewOrder(0);
     mVideoInfo.setVideoPlayPosition(0);
     // ----------------------
-
-    try {
-      LeanCloudStorage.getIQiyFavoriteListener(mVideoInfo.getAlbumId(),
-        new LeanCloudStorage.VideoSeeker() {
-          @Override
-          public void succeed(ExtVideoBean bean) {
-            mFavorite.setSelected(true);
-            mFavorite.setClickable(true);
-            isFavorite = true;
-          }
-
-          @Override
-          public void failed() {
-            mFavorite.setSelected(false);
-            mFavorite.setClickable(true);
-            isFavorite = false;
-          }
-        });
-    }catch (Exception e){
-    }
-
+    checkVideo();
     mFavorite.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        if ( isFavorite ){
-          try {
-            LeanCloudStorage.removeIQiyFavorite(mVideoInfo.getAlbumId(), new DeleteCallback() {
-              @Override
-              public void done(AVException e) {
-                mFavorite.setSelected(false);
-                isFavorite = false;
-              }
-            });
-          }catch( Exception e ){
-          }
-        }
-        else{
-          try {
-            LeanCloudStorage.updateIQiyFavorite(mVideoInfo, new SaveCallback() {
-              @Override
-              public void done(AVException e) {
-                if ( e == null ) {
-                  mFavorite.setSelected(true);
-                  isFavorite = true;
+        try {
+          LeanCloudStorage.getIQiyFavoriteListener(mVideoInfo.getAlbumId(), new LeanCloudStorage.VideoSeeker() {
+            @Override
+            public void succeed(ExtVideoBean bean) {
+              if ( bean != null ) {
+                if ( isFavorite ) {
+                  try {
+                    LeanCloudStorage.removeIQiyFavorite(mVideoInfo.getAlbumId(), new DeleteCallback() {
+                      @Override
+                      public void done(AVException e) {
+                        setFavoriteIcon(false);
+                      }
+                    });
+                  } catch ( Exception e ) {
+                  }
+                } else {
+                  try {
+                    LeanCloudStorage.updateIQiyFavorite(mVideoInfo, new SaveCallback() {
+                      @Override
+                      public void done(AVException e) {
+                        if ( e == null ) {
+                          setFavoriteIcon(true);
+                        }
+                      }
+                    });
+                  } catch ( Exception e ) {
+                  }
                 }
               }
-            });
-          }catch (Exception e){
-          }
+              else{
+                setFavoriteIcon(false);
+              }
+            }
+
+            @Override
+            public void failed() {
+              setFavoriteIcon(false);
+            }
+          });
+        }
+        catch(Exception e){
         }
       }
     });
 
     /* ------------------------------- */
   }
+
+  private void setFavoriteIcon(boolean isTrue){
+      if ( isTrue ){
+        mFavorite.setSelected(true);
+        isFavorite = true;
+      }
+      else{
+        mFavorite.setSelected(false);
+        isFavorite = false;
+      }
+  }
+
+
+  private void checkVideo(){
+    try {
+      LeanCloudStorage.getIQiyFavoriteListener(mVideoInfo.getAlbumId(),
+        new LeanCloudStorage.VideoSeeker() {
+          @Override
+          public void succeed(ExtVideoBean bean) {
+            if ( bean != null ) {
+              setFavoriteIcon(true);
+            }
+            else{
+              setFavoriteIcon(false);
+            }
+          }
+
+          @Override
+          public void failed() {
+            setFavoriteIcon(false);
+          }
+        });
+    }catch (Exception e){
+    }
+  }
+
 
   public void setMediaInfo(){
     mName.setText(medName);

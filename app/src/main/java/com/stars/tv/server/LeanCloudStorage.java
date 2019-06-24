@@ -74,13 +74,6 @@ public class LeanCloudStorage {
     query.findInBackground(cr);
   }
 
-  public void storageFetchSingleListener(String album, FindCallback<AVObject> cr){
-    AVQuery<AVObject> query = new AVQuery<>(mClassName);
-    query.setCachePolicy(AVQuery.CachePolicy.NETWORK_ELSE_CACHE);
-    query.whereEqualTo(EXT_VIDEO_ALBUM, album);
-    query.findInBackground(cr);
-  }
-
   public List<ExtVideoBean> getVideoList(){
     return mExtVideoList;
   }
@@ -88,32 +81,6 @@ public class LeanCloudStorage {
   public List<ExtVideoBean> assignToExtVideoList(List<AVObject> objects){
     return mExtVideoList = assignToVideoList(objects);
   }
-
-  public ExtVideoBean assignToSingleVideo(AVObject obj){
-    ExtVideoBean item = new ExtVideoBean();
-
-    item.setVideoType(obj.getInt(EXT_VIDEO_TYPE));
-    item.setAlbumId(obj.getString(EXT_VIDEO_ALBUM));
-    item.setVideoId(obj.getString(EXT_VIDEO_ID));
-    item.setVideoName(obj.getString(EXT_VIDEO_NAME));
-    item.setAlbumImageUrl(obj.getString(EXT_VIDEO_IMAGE_URL));
-    if ( mClassName.compareTo(CLOUD_YT_HISTORY_CLASS) == 0 ||
-      mClassName.compareTo(CLOUD_YT_FAVORITE_CLASS) == 0) {
-      item.setChannel(obj.getString(EXT_VIDEO_CHANNEL));
-      item.setNumberViews(obj.getInt(EXT_VIDEO_NUMBERVIEWS));
-      item.setTime(obj.getString(EXT_VIDEO_TIME));
-      item.setDuration(obj.getString(EXT_VIDEO_DURATION));
-    }
-    else{
-      item.setVideoPlayUrl(obj.getString(EXT_VIDEO_PLAYURL));
-      item.setVideoCurrentViewOrder(obj.getInt(EXT_VIDEO_CURRENT_VIEW_ORDER));
-      item.setVideoLatestOrder(obj.getInt(EXT_VIDEO_LATEST_ORDER));
-      item.setVideoCount(obj.getInt(EXT_VIDEO_COUNT));
-      item.setVideoPlayPosition(obj.getInt(EXT_VIDEO_PLAYPOSITION));
-    }
-    return item;
-  }
-
   private List<ExtVideoBean> assignToVideoList(List<AVObject> objects){
     List<ExtVideoBean> items = new ArrayList<>();
     ExtVideoBean item;
@@ -181,7 +148,7 @@ public class LeanCloudStorage {
             ccv.succeed(assignAVObjectToVideoBean(object));
           }
           else
-            ccv.failed();
+            ccv.succeed(null);
         } else {
           ccv.failed();
         }
