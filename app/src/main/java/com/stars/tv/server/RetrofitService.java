@@ -84,4 +84,7 @@ public interface  RetrofitService {
     @Headers("Cache-Control: public ,max-age= 300")
     @GET
     Observable<ResponseBody> getTvMaoEpg(@Url String url);
+
+    @GET("get_video_info?eurl=https%3A%2F%2Fy")
+    Observable<ResponseBody> getYTVideoInfo(@Query("video_id") String video_id);
 }

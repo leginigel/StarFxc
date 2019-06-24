@@ -51,4 +51,5 @@
         <item name="android:windowAllowReturnTransitionOverlap">true</item>
         <item name="android:windowAllowEnterTransitionOverlap">true</item>
     </style>
+    <style name="CastStream" parent="Theme.AppCompat.NoActionBar" />
 </resources>
