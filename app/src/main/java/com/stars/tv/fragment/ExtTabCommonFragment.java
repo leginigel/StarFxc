@@ -8,11 +8,14 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
+import android.support.v7.view.menu.MenuView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -20,6 +23,7 @@ import android.widget.TextView;
 
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVObject;
+import com.avos.avoscloud.DeleteCallback;
 import com.avos.avoscloud.FindCallback;
 import com.bumptech.glide.Glide;
 import com.stars.tv.R;
@@ -42,6 +46,7 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 import static android.app.Activity.RESULT_OK;
+import static com.stars.tv.utils.Constants.CLOUD_FAVORITE_CLASS;
 import static com.stars.tv.utils.Constants.CLOUD_HISTORY_CLASS;
 import static com.stars.tv.utils.Constants.CLOUD_YT_FAVORITE_CLASS;
 import static com.stars.tv.utils.Constants.CLOUD_YT_HISTORY_CLASS;
@@ -56,6 +61,7 @@ public class ExtTabCommonFragment extends ExtBaseFragment{
   private ExtContentAdapter mAdapter;
 
   private String mFragID;
+  private int mFragSel;
   Unbinder unbinder;
   @BindView(R.id.ext_frame_recycler)
   RecyclerView mExtContentsRecycler;
@@ -81,6 +87,17 @@ public class ExtTabCommonFragment extends ExtBaseFragment{
   public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     mFragID = getArguments().getString(EXT_TITLE_ID);
+    if ( mFragID.compareTo(CLOUD_HISTORY_CLASS) == 0 ){
+      mFragSel = 0;
+    }
+    else if ( mFragID.compareTo(CLOUD_FAVORITE_CLASS) == 0 ){
+      mFragSel = 1;
+    }
+    else if ( mFragID.compareTo(CLOUD_YT_HISTORY_CLASS) == 0 ){
+      mFragSel = 2;
+    }
+    else
+      mFragSel = 3;
   }
 
   @Override
@@ -159,107 +176,26 @@ public class ExtTabCommonFragment extends ExtBaseFragment{
         mVideoImage = itemView.findViewById(R.id.ext_contents_imageview);
         mVideoText = itemView.findViewById(R.id.ext_contents_textview);
         itemView.setFocusable(true);
-        itemView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-          @Override
-          public void onFocusChange(View v, boolean hasFocus) {
-            ConstraintLayout mLayout = v.findViewById(R.id.ext_view_items_container);
-            TextView vi = v.findViewById(R.id.ext_contents_textview);
+        itemView.setFocusableInTouchMode(true);
 
-            if (hasFocus){
-              mLayout.setBackground(getResources().getDrawable(R.drawable.ext_content_bolder_focus));
-              vi.setEllipsize(TextUtils.TruncateAt.MARQUEE);
-              vi.setSelected(true);
-              mLayout.setPadding(mItemPaddingPixel,mItemPaddingPixel,mItemPaddingPixel,mItemPaddingPixel);
-            }else {
-              mLayout.setBackground(getResources().getDrawable(R.drawable.ext_content_bolder_normal));
-              vi.setEllipsize(TextUtils.TruncateAt.END);
-              vi.setSelected(false);
-              mLayout.setPadding(mItemPaddingPixel,mItemPaddingPixel,mItemPaddingPixel,mItemPaddingPixel);
-            }
-          }
-        });
-        itemView.setOnKeyListener(new View.OnKeyListener() {
-          @Override
-          public boolean onKey(View v, int keyCode, KeyEvent event) {
-            int itemIdx = mExtContentsRecycler.getChildAdapterPosition(v);
-            if ( itemIdx < 5 ){
-              if ( keyCode == KeyEvent.KEYCODE_DPAD_UP && event.getAction() == KeyEvent.ACTION_DOWN ){
-                mExtContentsRecycler.clearFocus();
-                return true;
-              }
-            }
-            return false;
-          }
-        });
-        itemView.setOnClickListener(new View.OnClickListener() {
+        mVideoImage.setOnClickListener(new View.OnClickListener() {
           @Override
           public void onClick(View v) {
-            int itemIdx = mExtContentsRecycler.getChildAdapterPosition(v);
-            Class mclass;
-            Intent intent = new Intent();
-            Activity activity = getActivity();
-            if ( mFragID.compareTo(CLOUD_YT_HISTORY_CLASS) == 0 ||
-                mFragID.compareTo(CLOUD_YT_FAVORITE_CLASS) == 0 ) {
-              mclass = YoutubeActivity.class;
-              String mExtra = "Youtube";
-              intent.putExtra(mExtra, mVideoList.get(itemIdx));
-              intent.setClass(activity, mclass);
-              startActivityForResult(intent, 1);
-            }
-            else if ( mFragID.compareTo(CLOUD_HISTORY_CLASS) == 0 ){
-              mclass = FullPlaybackActivity.class;
-              ExtVideoBean bean = mVideoList.get(itemIdx);
-              intent.putExtra("name", bean.getVideoName());
-              intent.putExtra("albumId", bean.getAlbumId());
-              intent.putExtra("latestOrder", String.valueOf(bean.getVideoLatestOrder()));
-              intent.putExtra("currentPosition", bean.getVideoPlayPosition());
-              intent.putExtra("mEpisode", bean.getVideoCurrentViewOrder());
-              intent.putExtra("tvId", bean.getVideoId());
-              intent.putExtra(EXT_VIDEO_TYPE, bean.getVideoType());
-              intent.putExtra(EXT_VIDEO_COUNT, bean.getVideoCount());
-              intent.putExtra(EXT_VIDEO_IMAGE_URL, bean.getAlbumImageUrl());
-
-              intent.setClass(activity, mclass);
-              startActivityForResult(intent, 1);
-            }
-            else{
-              mclass = VideoPreviewActivity.class;
-              ExtVideoBean bean = mVideoList.get(itemIdx);
-              IQiYiMovieBean basebean = new IQiYiMovieBean();
-              basebean.setAlbumId(bean.getAlbumId());
-              basebean.setTvId(bean.getVideoId());
-              basebean.setName(bean.getVideoName());
-              basebean.setPlayUrl(bean.getVideoPlayUrl());
-              basebean.setAlbumImageUrl(bean.getAlbumImageUrl());
-              intent.putExtra("videoBean", basebean);
-              intent.setClass(activity, mclass);
-              startActivityForResult(intent, 1);
-            }
+            //dummy bypass icon onclick for mouse click issue
           }
         });
-        itemView.setOnLongClickListener(new View.OnLongClickListener() {
+        itemView.setOnGenericMotionListener(new View.OnGenericMotionListener() {
           @Override
-          public boolean onLongClick(View v) {
-            final AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());
-            int itemIdx = mExtContentsRecycler.getChildAdapterPosition(v);
-            dialog.setTitle("刪除視頻");
-            dialog.setMessage("請確認是否從列表中刪除("+mVideoList.get(itemIdx).getVideoName()+")");
-            dialog.setPositiveButton("確認", new DialogInterface.OnClickListener() {
-              @Override
-              public void onClick(DialogInterface dialog, int which) {
-              }
-            });
-            dialog.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-              @Override
-              public void onClick(DialogInterface dialog, int which) {
-              }
-            });
-
-            dialog.setCancelable(false);
-            dialog.show();
+          public boolean onGenericMotion(View v, MotionEvent event) {
+            //dummy bypass container mouse event for mouse click issue
             return true;
           }
         });
+
+        itemView.setOnFocusChangeListener(new itemSetFocusChangeListener());
+        itemView.setOnKeyListener(new itemSetKeyEventListener());
+        itemView.setOnClickListener(new itemSetOnClickListener());
+        itemView.setOnLongClickListener(new itemSetLongClickListener());
       }
 
       private void bindViewHolder (ExtVideoBean vb){
@@ -267,12 +203,180 @@ public class ExtTabCommonFragment extends ExtBaseFragment{
         Glide.with(Objects.requireNonNull(getActivity()))
           .load(vb.getAlbumImageUrl()).into(mVideoImage);
         sb.append(vb.getVideoName());
-        if ( mFragID.compareTo(CLOUD_HISTORY_CLASS) == 0 ) {
+        if ( mFragSel == 0 ) {
           sb.append("/當前撥放至 ");
           sb.append(Utils.stringForTime(vb.getVideoPlayPosition()));
         }
         mVideoText.setText(sb);
       }
+    }
+  }
+
+  private class itemSetOnClickListener implements View.OnClickListener{
+    private Class mClass;
+
+    itemSetOnClickListener(){
+      if ( mFragSel == 0 ){
+        mClass = FullPlaybackActivity.class;
+      }
+      else if ( mFragSel == 1 ){
+        mClass = VideoPreviewActivity.class;
+      }
+      else{
+        mClass = YoutubeActivity.class;
+      }
+    }
+
+    @Override
+    public void onClick(View v) {
+      int itemIdx = mExtContentsRecycler.getChildAdapterPosition(v);
+      Intent intent = new Intent();
+      Activity activity = getActivity();
+      ExtVideoBean bean;
+      switch (mFragSel){
+        case 0:
+          bean = mVideoList.get(itemIdx);
+          intent.putExtra("name", bean.getVideoName());
+          intent.putExtra("albumId", bean.getAlbumId());
+          intent.putExtra("latestOrder", String.valueOf(bean.getVideoLatestOrder()));
+          intent.putExtra("currentPosition", bean.getVideoPlayPosition());
+          intent.putExtra("mEpisode", bean.getVideoCurrentViewOrder());
+          intent.putExtra("tvId", bean.getVideoId());
+          intent.putExtra(EXT_VIDEO_TYPE, bean.getVideoType());
+          intent.putExtra(EXT_VIDEO_COUNT, bean.getVideoCount());
+          intent.putExtra(EXT_VIDEO_IMAGE_URL, bean.getAlbumImageUrl());
+
+          intent.setClass(activity, mClass);
+          startActivityForResult(intent, 1);
+          break;
+        case 1:
+          bean = mVideoList.get(itemIdx);
+          IQiYiMovieBean basebean = new IQiYiMovieBean();
+          basebean.setAlbumId(bean.getAlbumId());
+          basebean.setTvId(bean.getVideoId());
+          basebean.setName(bean.getVideoName());
+          basebean.setPlayUrl(bean.getVideoPlayUrl());
+          basebean.setAlbumImageUrl(bean.getAlbumImageUrl());
+          intent.putExtra("videoBean", basebean);
+          intent.setClass(activity, mClass);
+          startActivityForResult(intent, 1);
+          break;
+        default:
+          String mExtra = "Youtube";
+          intent.putExtra(mExtra, mVideoList.get(itemIdx));
+          intent.setClass(activity, mClass);
+          startActivityForResult(intent, 1);
+          break;
+      }
+    }
+  }
+  private class itemSetLongClickListener implements View.OnLongClickListener{
+    @Override
+    public boolean onLongClick(View v) {
+      final AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());
+      int itemIdx = mExtContentsRecycler.getChildAdapterPosition(v);
+      dialog.setTitle("刪除視頻");
+      dialog.setMessage("\n請確認是否從列表中刪除\n\n"+mVideoList.get(itemIdx).getVideoName());
+      dialog.setPositiveButton("確認", new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+           String albumId = mVideoList.get(itemIdx).getAlbumId();
+            List<ExtVideoBean> tmp = new ArrayList<>();
+            tmp.add(mVideoList.get(itemIdx));
+            if ( mAdapter.getItemCount() == 1 ){
+              mExtContentsRecycler.clearFocus();
+            }
+            else if ( itemIdx == mAdapter.getItemCount() - 1){
+              View view = mExtContentsRecycler.getChildAt(itemIdx-1);
+              view.requestFocus();
+            }
+            else{
+              View view = mExtContentsRecycler.getChildAt(itemIdx+1);
+              view.requestFocus();
+            }
+
+            mVideoList.removeAll(tmp);
+            mAdapter.notifyItemRemoved(itemIdx);
+
+            try {
+              if ( mFragSel == 0 ) {
+                LeanCloudStorage.removeIQiyHistory(albumId,
+                  new DeleteCallback() {
+                    @Override
+                    public void done(AVException e) {
+                    }
+                  });
+              }
+              else if ( mFragSel == 1 ){
+                LeanCloudStorage.removeIQiyFavorite(albumId, new DeleteCallback() {
+                  @Override
+                  public void done(AVException e) {
+
+                  }
+                });
+              }
+              else if ( mFragSel == 2 ){
+                LeanCloudStorage.removeYoutubeHistory(albumId, new DeleteCallback() {
+                  @Override
+                  public void done(AVException e) {
+
+                  }
+                });
+              }
+              else {
+                LeanCloudStorage.removeYoutubeFavorite(albumId, new DeleteCallback() {
+                  @Override
+                  public void done(AVException e) {
+
+                  }
+                });
+              }
+            }
+            catch(Exception e){
+            }
+          }
+      });
+      dialog.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+        }
+      });
+
+      dialog.setCancelable(false);
+      dialog.show();
+      return true;
+    }
+  }
+  private class itemSetFocusChangeListener implements View.OnFocusChangeListener{
+    @Override
+    public void onFocusChange(View v, boolean hasFocus) {
+      ConstraintLayout mLayout = v.findViewById(R.id.ext_view_items_container);
+      TextView vi = v.findViewById(R.id.ext_contents_textview);
+
+      if (hasFocus){
+        mLayout.setBackground(getResources().getDrawable(R.drawable.ext_content_bolder_focus));
+        vi.setEllipsize(TextUtils.TruncateAt.MARQUEE);
+        vi.setSelected(true);
+        mLayout.setPadding(mItemPaddingPixel,mItemPaddingPixel,mItemPaddingPixel,mItemPaddingPixel);
+      }else {
+        mLayout.setBackground(getResources().getDrawable(R.drawable.ext_content_bolder_normal));
+        vi.setEllipsize(TextUtils.TruncateAt.END);
+        vi.setSelected(false);
+        mLayout.setPadding(mItemPaddingPixel,mItemPaddingPixel,mItemPaddingPixel,mItemPaddingPixel);
+      }
+    }
+  }
+  private class itemSetKeyEventListener implements View.OnKeyListener{
+    @Override
+    public boolean onKey(View v, int keyCode, KeyEvent event) {
+      int itemIdx = mExtContentsRecycler.getChildAdapterPosition(v);
+      if ( itemIdx < 5 ){
+        if ( keyCode == KeyEvent.KEYCODE_DPAD_UP && event.getAction() == KeyEvent.ACTION_DOWN ){
+          mExtContentsRecycler.clearFocus();
+          return true;
+        }
+      }
+      return false;
     }
   }
 }

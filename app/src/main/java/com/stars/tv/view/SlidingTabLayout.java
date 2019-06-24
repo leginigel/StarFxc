@@ -13,6 +13,7 @@ import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
@@ -173,6 +174,27 @@ public class SlidingTabLayout extends HorizontalScrollView {
 
             //tabTitleView.setTextColor(getResources().getColor(R.color.color_all_white));
             tabTitleView.setText(adapter.getPageTitle(i));
+
+            tabIcon.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //dummy bypass , for mouse click issue
+                }
+            });
+            tabTitleView.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //dummy bypass , for mouse click issue
+                }
+            });
+            tabView.setFocusableInTouchMode(true);
+
+            tabView.setOnGenericMotionListener(new OnGenericMotionListener() {
+                @Override
+                public boolean onGenericMotion(View v, MotionEvent event) {
+                    return true;
+                }
+            });
             tabView.setOnClickListener(tabClickListener);
             tabView.setOnKeyListener(new OnKeyListener() {
                 @Override
@@ -197,6 +219,7 @@ public class SlidingTabLayout extends HorizontalScrollView {
             mTabStrip.addView(tabView);
             if (i == mViewPager.getCurrentItem()) {
                 tabView.setSelected(true);
+                tabView.requestFocus();
             }
         }
     }
