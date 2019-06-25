@@ -154,7 +154,8 @@ public class StreamActivity extends BaseActivity {
 //
 //        address.setText(ytM3U8Bean.getStreamingData().getHlsManifestUrl());
 //        stream.setText("");
-
+        castHuyaStream("377885");
+//        castDouyuStream("1282190");
 
         castStream.setOnClickListener(v -> {
             if(address.getText() != null || stream.getText() != null) {
@@ -181,6 +182,25 @@ public class StreamActivity extends BaseActivity {
                 }
             }
         });
+    }
+
+    private void castDouyuStream(String channel){
+        streamPresenter.getDouyuRealPlayUrl(channel, new CallBack<String>() {
+            @Override
+            public void success(String s) {
+
+            }
+
+            @Override
+            public void error(String msg) {
+
+            }
+        });
+    }
+
+    private void castHuyaStream(String channel){
+        streamPresenter.getHuyaRealPlayUrl(channel);
+
     }
 
     private void castBilibiliStream(String room_id){

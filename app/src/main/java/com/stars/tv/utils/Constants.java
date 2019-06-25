@@ -49,5 +49,7 @@ public class Constants {
     public static final String MAIN_TITLE_JIAOYU = "教育";
     public static final String MAIN_TITLE_XINWEI = "新闻";
     public static final String MAIN_TITLE_YULE = "娱乐";
+
+    public static String CastStream = "iqiyi";
 }
 

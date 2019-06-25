@@ -93,4 +93,12 @@ public interface  RetrofitService {
 
     @GET("playUrl?quality=0&platform=web")
     Observable<ResponseBody> getBilibiliRealPlayUrl(@Query("cid") String cid);
+
+    @Headers("User-Agent: Mozilla/5.0 (iPad; CPU OS 12_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0 Mobile/15E148 Safari/604.1")
+    @GET("{channel}")
+    Observable<ResponseBody> getHuyaChannelIpadPage(@Path("channel") String channel);
+
+    @Headers("User-Agent: Mozilla/5.0 (compatible; MSIE 10.0; Windows Phone 8.0; Trident/6.0; IEMobile/10.0; ARM; Touch; NOKIA; Lumia 920)")
+    @GET("{suffix}")
+    Observable<ResponseBody> getDouyuRealPlayUrl(@Path("suffix") String suffix, @Query("auth") String auth);
 }
