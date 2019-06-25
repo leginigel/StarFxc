@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/main_bg">
+
+    <RelativeLayout
+        android:id="@+id/typelist"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:orientation="vertical">
+        <!-- 搜索-->
+        <Button
+            android:id="@+id/search_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="18dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/ic_search_btn_normal"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:gravity="center"
+            android:minWidth="40dp"
+            android:text="@string/str_search"
+            android:textColor="@color/color_all_white"
+            android:textSize="8sp"
+            tools:ignore="SmallSp" />
+
+        <!-- 分类栏 -->
+        <android.support.v17.leanback.widget.VerticalGridView
+            android:id="@+id/type_vg"
+            android:layout_width="70dp"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/search_btn"
+            android:layout_alignParentStart="true"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:focusable="true" />
+
+    </RelativeLayout>
+
+    <!--<ScrollView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent">-->
+
+        <FrameLayout
+            android:id="@+id/mediacontent_vp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    <!--</ScrollView>-->
+
+</LinearLayout>

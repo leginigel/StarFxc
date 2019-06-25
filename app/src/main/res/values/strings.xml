@@ -96,4 +96,27 @@
     <string name="str_live_tv_channel_list_satellite">卫视</string>
     <string name="str_live_tv_channel_list_favourite">喜爱</string>
 
+    <string name="str_media_list_series_type_list_update">最近更新</string>
+    <string name="str_media_list_series_type_list_hot">本周热播</string>
+    <string name="str_media_list_series_type_list_costum">古装传奇</string>
+    <string name="str_media_list_series_type_list_urban">时尚都市</string>
+    <string name="str_media_list_series_type_list_crux">悬疑惊悚</string>
+    <string name="str_media_list_series_type_list_war">热血抗战</string>
+    <string name="str_media_list_series_type_list_idol">偶像经典</string>
+    <string name="str_media_list_series_type_list_online">精彩网剧</string>
+    <string name="str_media_list_series_type_list_peiod">年代传奇</string>
+    <string name="str_media_list_series_type_list_crime">罪案追击</string>
+    <string name="str_media_list_series_type_list_great">口碑神剧</string>
+    <string name="str_media_list_series_type_list_family">家庭生活</string>
+    <string name="str_media_list_series_type_list_martialarts">武侠传奇</string>
+    <string name="str_media_list_series_type_list_comedy">喜剧乐翻天</string>
+
+    <string name="str_media_list_series_type_list_high">口碑高品质</string>
+    <string name="str_media_list_series_type_list_action">最燃动作片</string>
+    <string name="str_media_list_series_type_list_love">爱情连连看</string>
+    <string name="str_media_list_series_type_list_cartoon">动画大放送</string>
+    <string name="str_media_list_series_type_list_science">科幻巨制</string>
+    <string name="str_media_list_series_type_list_gunfignt">硬汉枪战</string>
+
+
 </resources>

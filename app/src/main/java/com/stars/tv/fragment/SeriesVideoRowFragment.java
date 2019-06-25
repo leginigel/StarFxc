@@ -245,7 +245,7 @@ public class SeriesVideoRowFragment extends BaseFragment {
         parseIQiYiMovieSimplifiedList(0, 2, orderlist[0], "", "", 4, 1, 1, "iqiyi", 1, "", 12);
         parseIQiYiMovieSimplifiedList(1, 2, orderlist[1], "", "", 11, 1, 1, "iqiyi", 1, "", 12);
         parseIQiYiMovieSimplifiedList(2, 2, orderlist[2], "", "", 24, 1, 1, "iqiyi", 1, "", 12);
-    }
+}
 
     /**
      * 获取爱奇艺片库筛选结果List

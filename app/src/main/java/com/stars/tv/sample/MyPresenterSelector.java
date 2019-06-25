@@ -4,6 +4,8 @@ import android.support.v17.leanback.widget.ListRow;
 import android.support.v17.leanback.widget.Presenter;
 import android.support.v17.leanback.widget.PresenterSelector;
 
+import com.stars.tv.presenter.TotalMediaListRowPresenter;
+
 public class MyPresenterSelector extends PresenterSelector {
     private VideoListRowPresenter videoListRowPresenter = new VideoListRowPresenter();
     private ButtonRowPresenter buttonRowPresenter = new ButtonRowPresenter();
@@ -16,6 +18,7 @@ public class MyPresenterSelector extends PresenterSelector {
     private FilmVideoListRowPresenter filmVideoListRowPresenter = new FilmVideoListRowPresenter();
     private FilmButtonRowPresenter filmButtonRowPresenter = new FilmButtonRowPresenter();
     private FilmHotListRowPresenter filmHotListRowPresenter = new FilmHotListRowPresenter();
+    private TotalMediaListRowPresenter totalMediaListRowPresenter = new TotalMediaListRowPresenter();
 
     public MyPresenterSelector() {
 
@@ -34,6 +37,9 @@ public class MyPresenterSelector extends PresenterSelector {
         portraitvideoListRowPresenter.setHeaderPresenter(new HeaderPresenter());
         portraitvideoListRow1Presenter.setHeaderPresenter(new HeaderPresenter());
         landscapevideoListRowPresenter.setHeaderPresenter(new HeaderPresenter());
+
+        totalMediaListRowPresenter.setNumRows(2);
+        totalMediaListRowPresenter.setHeaderPresenter(new HeaderPresenter());
     }
 
     @Override
@@ -65,6 +71,8 @@ public class MyPresenterSelector extends PresenterSelector {
             return filmHotListRowPresenter;
         if((item instanceof FilmButtonListRow))
             return filmButtonRowPresenter;
+        if((item instanceof TotalMediaListVideoListRow))
+            return totalMediaListRowPresenter;
         return videoListRowPresenter;
     }
 
@@ -81,7 +89,8 @@ public class MyPresenterSelector extends PresenterSelector {
                 recbuttonRowPresenter,
                 filmButtonRowPresenter,
                 filmHotListRowPresenter,
-                filmVideoListRowPresenter
+                filmVideoListRowPresenter,
+                totalMediaListRowPresenter
         };
     }
 }
