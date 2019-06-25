@@ -26,6 +26,8 @@ import com.stars.tv.utils.CallBack;
 import com.stars.tv.widget.media.AndroidMediaController;
 import com.stars.tv.widget.media.IjkVideoView;
 
+import org.json.JSONArray;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -153,6 +155,7 @@ public class StreamActivity extends BaseActivity {
 //        address.setText(ytM3U8Bean.getStreamingData().getHlsManifestUrl());
 //        stream.setText("");
 
+
         castStream.setOnClickListener(v -> {
             if(address.getText() != null || stream.getText() != null) {
                 switch (mCate) {
@@ -166,6 +169,7 @@ public class StreamActivity extends BaseActivity {
                     case Douyu:
                         break;
                     case BiliBili:
+                        castBilibiliStream(stream.getText().toString());
                         break;
                     case Address: {
                         mVideoPath = address.getText().toString() + stream.getText().toString();
@@ -179,25 +183,49 @@ public class StreamActivity extends BaseActivity {
         });
     }
 
-    private void castYTStream(String video_id){
-        streamPresenter.getYTVideoInfo(video_id, new CallBack<YTM3U8Bean>() {
+    private void castBilibiliStream(String room_id){
+        streamPresenter.getBilibiliRealPlayUrl(room_id, new CallBack<String>() {
             @Override
-            public void success(YTM3U8Bean ytM3U8Bean) {
-                mVideoPath = ytM3U8Bean.getStreamingData().getHlsManifestUrl();
-                loading(View.VISIBLE);
-                initVideoView();
-                startPlay();
+            public void success(String s) {
+                Log.d("Bilibili URL ", s);
+                cast(s);
             }
 
             @Override
             public void error(String msg) {
-                mVideoPath = "";
-                Log.v("error", "获取失败");
-                textLoading.setText("加载失败！");
-                textLoading.setBackgroundColor(Color.BLACK);
-                textLoading.setTextColor(Color.WHITE);
+                showError();
             }
         });
+    }
+
+    private void castYTStream(String video_id){
+        streamPresenter.getYTVideoInfo(video_id, new CallBack<YTM3U8Bean>() {
+            @Override
+            public void success(YTM3U8Bean ytM3U8Bean) {
+                Log.d("YouTube URL ", ytM3U8Bean.getStreamingData().getHlsManifestUrl());
+                cast(ytM3U8Bean.getStreamingData().getHlsManifestUrl());
+            }
+
+            @Override
+            public void error(String msg) {
+                showError();
+            }
+        });
+    }
+
+    private void cast(String url){
+        mVideoPath = url;
+        loading(View.VISIBLE);
+        initVideoView();
+        startPlay();
+    }
+
+    private void showError(){
+        mVideoPath = "";
+        Log.v("error", "获取失败");
+        textLoading.setText("加载失败！");
+        textLoading.setBackgroundColor(Color.BLACK);
+        textLoading.setTextColor(Color.WHITE);
     }
 
     public void initVideoView() {

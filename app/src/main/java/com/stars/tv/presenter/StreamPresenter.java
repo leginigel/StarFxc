@@ -9,6 +9,10 @@ import com.stars.tv.server.RetrofitService;
 import com.stars.tv.utils.CallBack;
 import com.stars.tv.utils.RxUtils;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -16,7 +20,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Function;
 import io.reactivex.observers.DisposableObserver;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
@@ -25,6 +31,16 @@ public class StreamPresenter {
     private Observable<ResponseBody> getYTVideoInfo(String video_id) {
         return RetrofitFactory.createApi(RetrofitService.class, "https://www.youtube.com/")
                 .getYTVideoInfo(video_id).compose(RxUtils.rxSchedulerHelper());
+    }
+
+    private Observable<ResponseBody> getBilibiliRoom(String id) {
+        return RetrofitFactory.createApi(RetrofitService.class, "https://api.live.bilibili.com/room/v1/Room/")
+                .getBilibiliRoom(id).compose(RxUtils.rxSchedulerHelper());
+    }
+
+    private Observable<ResponseBody> getBilibiliRealPlayUrl(String cid) {
+        return RetrofitFactory.createApi(RetrofitService.class, "https://api.live.bilibili.com/room/v1/Room/")
+                .getBilibiliRealPlayUrl(cid).compose(RxUtils.rxSchedulerHelper());
     }
 
     public void getYTVideoInfo(String video_id, CallBack<YTM3U8Bean> listener){
@@ -46,7 +62,7 @@ public class StreamPresenter {
 
                     @Override
                     public void onError(Throwable e) {
-
+                        listener.error(e.toString());
                     }
 
                     @Override
@@ -72,5 +88,50 @@ public class StreamPresenter {
         }
 //        Log.d("test2", ls);
         return ls;
+    }
+
+    public void getBilibiliRealPlayUrl(String id, CallBack<String> listener){
+        getBilibiliRoom(id)
+                .flatMap((Function<ResponseBody, ObservableSource<ResponseBody>>) responseBody -> {
+                    JSONObject root = new JSONObject(responseBody.string());
+                    String code = root.getString("code");
+                    Log.d("bilibili", code);
+//                            if(!code.equals("A00000")) {
+//                                //error
+//                                listener.error("返回值错误");
+//                            }
+                    JSONObject data = root.getJSONObject("data");
+                    String room_id = data.getString("room_id");
+
+                    Log.d("bilibili", room_id);
+                    return getBilibiliRealPlayUrl(room_id);
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new DisposableObserver<ResponseBody>() {
+                    @Override
+                    public void onNext(ResponseBody responseBody) {
+                        try {
+                            JSONObject root = new JSONObject(responseBody.string());
+                            JSONObject data = root.getJSONObject("data");
+                            JSONArray durl = data.getJSONArray("durl");
+                            listener.success(((JSONObject)durl.get(0)).getString("url"));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        listener.error(e.toString());
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
     }
 }

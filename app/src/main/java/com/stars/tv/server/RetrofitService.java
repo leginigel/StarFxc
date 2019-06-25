@@ -87,4 +87,10 @@ public interface  RetrofitService {
 
     @GET("get_video_info?eurl=https%3A%2F%2Fy")
     Observable<ResponseBody> getYTVideoInfo(@Query("video_id") String video_id);
+
+    @GET("room_init?")
+    Observable<ResponseBody> getBilibiliRoom(@Query("id") String id);
+
+    @GET("playUrl?quality=0&platform=web")
+    Observable<ResponseBody> getBilibiliRealPlayUrl(@Query("cid") String cid);
 }
