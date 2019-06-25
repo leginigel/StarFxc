@@ -242,6 +242,8 @@ public class LiveTVActivity extends BaseActivity {
         }
         if (playerVideoView != null) {
             playerVideoView.stopPlayback();
+            playerVideoView.release(true);
+            playerVideoView.stopBackgroundPlay();
         }
         if (playerLoadingView != null) {
             playerLoadingView.setVisibility(View.VISIBLE);
@@ -604,6 +606,8 @@ public class LiveTVActivity extends BaseActivity {
         Log.v(TAG, "onPause");
         if (playerVideoView != null) {
             playerVideoView.stopPlayback();
+            playerVideoView.release(true);
+            playerVideoView.stopBackgroundPlay();
         }
     }
 

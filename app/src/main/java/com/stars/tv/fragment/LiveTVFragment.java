@@ -319,6 +319,7 @@ public class LiveTVFragment extends BaseFragment {
 
     private void showFullScreen() {
         if (NetUtil.isConnected()) {
+            isNeedResume = true;
             Intent intent = new Intent(mContext, LiveTVActivity.class);
             intent.putExtra("curTvChannel", curTvChannel);
             startActivity(intent);
@@ -419,6 +420,8 @@ public class LiveTVFragment extends BaseFragment {
         }
         if (playerVideoView != null) {
             playerVideoView.stopPlayback();
+            playerVideoView.release(true);
+            playerVideoView.stopBackgroundPlay();
         }
         if (playerLoadingView != null) {
             playerLoadingView.setVisibility(View.VISIBLE);
@@ -518,6 +521,8 @@ public class LiveTVFragment extends BaseFragment {
         }
         if (playerVideoView != null) {
             playerVideoView.stopPlayback();
+            playerVideoView.release(true);
+            playerVideoView.stopBackgroundPlay();
         }
     }
 
@@ -550,7 +555,6 @@ public class LiveTVFragment extends BaseFragment {
     public void onPause() {
         super.onPause();
         Log.v(TAG, "onPause");
-        isNeedResume = true;
         pauseRequest();
     }
 
@@ -612,10 +616,12 @@ public class LiveTVFragment extends BaseFragment {
                 break;
             case KeyEvent.KEYCODE_DPAD_UP:
                 if (rootLayout != null && rootLayout.hasFocus()) {
+                    if (rootLayout.getFocusedChild().getId() == R.id.live_tv_channel_list_content) {
                     if (cPreView != null && contentVg.indexOfChild(cPreView) == contentVg.getChildCount() - 1) {
                         cPreView.findViewById(R.id.item_live_tv_channel_wave).setVisibility(View.GONE);
                         return false;
                     }
+                }
                 }
                 break;
             case KeyEvent.KEYCODE_DPAD_DOWN:

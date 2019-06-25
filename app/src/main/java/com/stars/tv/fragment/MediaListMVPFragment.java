@@ -13,6 +13,7 @@ import android.support.annotation.RequiresApi;
 import android.support.v17.leanback.widget.OnChildViewHolderSelectedListener;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -255,6 +256,11 @@ public class MediaListMVPFragment
 
     public void showError(String msg) {
 
+    }
+
+    @Override
+    public boolean onKeyDown(KeyEvent event) {
+        return false;
     }
 
     public class VideoSampleAdapter extends RecyclerView.Adapter<VideoSampleAdapter.ViewHolder> {

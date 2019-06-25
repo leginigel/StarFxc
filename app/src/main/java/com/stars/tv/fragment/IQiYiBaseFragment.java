@@ -3,7 +3,6 @@ package com.stars.tv.fragment;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +14,7 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 public abstract class IQiYiBaseFragment<T extends IQiYiBasePresenter>
-        extends Fragment implements IQiYiBaseView {
+        extends BaseFragment implements IQiYiBaseView {
 
     public T mPresenter;
 

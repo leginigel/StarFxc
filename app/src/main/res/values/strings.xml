@@ -118,5 +118,6 @@
     <string name="str_media_list_series_type_list_science">科幻巨制</string>
     <string name="str_media_list_series_type_list_gunfignt">硬汉枪战</string>
 
+    <string name="str_exit_application">再按一次退出应用</string>
 
 </resources>

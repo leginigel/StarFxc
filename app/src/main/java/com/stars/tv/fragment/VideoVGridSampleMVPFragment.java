@@ -12,6 +12,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v17.leanback.widget.OnChildViewHolderSelectedListener;
 import android.support.v7.widget.RecyclerView;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -154,6 +155,18 @@ public class VideoVGridSampleMVPFragment
 
     public void showError(String msg) {
 
+    }
+
+    @Override
+    public boolean onKeyDown(KeyEvent event) {
+        if(event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
+            if(videoGrid.getChildCount()>0) {
+                videoGrid.setSelectedPosition(0);
+                videoGrid.smoothScrollToPosition(0);
+            }
+            return true;
+        }
+        return false;
     }
 
     public class VideoSampleAdapter extends RecyclerView.Adapter<VideoSampleAdapter.ViewHolder> {

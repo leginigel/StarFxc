@@ -384,9 +384,14 @@ public class SeriesVideoRowFragment extends BaseFragment {
 
     @Override
     public boolean onKeyDown(KeyEvent event) {
+        if(event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
+            if(videoGrid.getChildCount()>0) {
         videoGrid.setSelectedPosition(0);
         videoGrid.smoothScrollToPosition(0);
+            }
         return true;
+    }
+        return false;
     }
 
     @Override
