@@ -43,6 +43,7 @@ import com.stars.tv.presenter.IQiYiParseM3U8Presenter;
 import com.stars.tv.presenter.IQiYiParseStarRecommendPresenter;
 import com.stars.tv.presenter.IQiYiParseVideoBaseInfoPresenter;
 import com.stars.tv.presenter.PreVideoItemPresenter;
+import com.stars.tv.sample.PortraitVideoItemPresenter;
 import com.stars.tv.utils.CallBack;
 import com.stars.tv.utils.ViewUtils;
 import com.stars.tv.view.SpaceItemDecoration;
@@ -481,7 +482,7 @@ public class VideoPreviewActivity extends BaseActivity {
     }
 
     private void initRecommendGV() {
-        rearrayObjectAdapter = new ArrayObjectAdapter(new PreVideoItemPresenter());
+        rearrayObjectAdapter = new ArrayObjectAdapter(new PortraitVideoItemPresenter());
         reItemBridgeAdapter = new ItemBridgeAdapter(rearrayObjectAdapter);
         rearrayObjectAdapter.clear();
         rearrayObjectAdapter.addAll(0, mVideoList);

@@ -2,6 +2,7 @@
 package com.stars.tv.sample;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v17.leanback.widget.RowPresenter;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.stars.tv.R;
+import com.stars.tv.activity.TotalMediaListActivity;
 import com.stars.tv.utils.ViewUtils;
 
 import java.util.Objects;
@@ -36,8 +38,8 @@ public class RecButtonRowPresenter extends RowPresenter {
     @Override
     protected ViewHolder createRowViewHolder(ViewGroup parent) {
         View root = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_rec_button_row_layout, null, false);
-        root.setPadding(30,30,30,30);
-        LAYOUT_WIDTH = (AutoSizeUtils.dp2px(Objects.requireNonNull(parent.getContext()), AutoSizeConfig.getInstance().getDesignWidthInDp()) - GRID_VIEW_LEFT_PX ) / ITEM_NUM_ROW;
+        root.setPadding(30, 30, 30, 30);
+        LAYOUT_WIDTH = (AutoSizeUtils.dp2px(Objects.requireNonNull(parent.getContext()), AutoSizeConfig.getInstance().getDesignWidthInDp()) - GRID_VIEW_LEFT_PX) / ITEM_NUM_ROW;
         ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(LAYOUT_WIDTH, LAYOUT_HEIGHT);
         root.setLayoutParams(lp);
         mContext = parent.getContext();
@@ -48,7 +50,7 @@ public class RecButtonRowPresenter extends RowPresenter {
     protected void onBindRowViewHolder(final ViewHolder holder, Object item) {
         super.onBindRowViewHolder(holder, item);
         ViewGroup vg = (ViewGroup) holder.view;
-        Log.v(TAG,"select the Button:" + vg.getChildCount());
+        Log.v(TAG, "select the Button:" + vg.getChildCount());
         for (int i = 0; i < vg.getChildCount(); i++) {
             final View childView = vg.getChildAt(i);
             childView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -61,12 +63,19 @@ public class RecButtonRowPresenter extends RowPresenter {
                 @Override
                 public void onClick(View v) {
                     View btn = v;
-                    String typeName = ((Button) btn).getText().toString();
-                    Log.v(TAG,"typeName is: " + typeName);
-//                    Intent intent = new Intent(mContext, DetailActivity.class);
-//                    intent.putExtra("typeName", typeName);
-//                    intent.putExtra("titleName", "Recommand");
-//                    mContext.startActivity(intent);
+                    String buttonName = ((Button) btn).getText().toString();
+                    if (buttonName.contains("电视剧")) {
+                        buttonName=buttonName+"Series全部";
+                    }else if(buttonName.contains("电影")) {
+                        buttonName=buttonName+"Film全部";
+                    }else if(buttonName.contains("综艺")) {
+                        buttonName=buttonName+"Variety全部";
+                    }else if(buttonName.contains("动漫")) {
+                        buttonName=buttonName+"Cartoon全部";
+                    }
+                    Intent intent = new Intent(mContext, TotalMediaListActivity.class);
+                    intent.putExtra("buttonName", buttonName);
+                    mContext.startActivity(intent);
 
                 }
             });
@@ -80,5 +89,7 @@ public class RecButtonRowPresenter extends RowPresenter {
         super.onUnbindRowViewHolder(holder);
     }
 
-    public Context getContext(){return mContext;}
+    public Context getContext() {
+        return mContext;
+    }
 }

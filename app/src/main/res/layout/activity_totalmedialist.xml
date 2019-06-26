@@ -24,8 +24,6 @@
             android:layout_marginTop="5dp"
             android:layout_marginBottom="10dp"
             android:background="@drawable/ic_search_btn_normal"
-            android:focusable="false"
-            android:focusableInTouchMode="false"
             android:gravity="center"
             android:minWidth="40dp"
             android:text="@string/str_search"
@@ -33,27 +31,27 @@
             android:textSize="8sp"
             tools:ignore="SmallSp" />
 
-        <!-- 分类栏 -->
-        <android.support.v17.leanback.widget.VerticalGridView
-            android:id="@+id/type_vg"
-            android:layout_width="70dp"
+        <FrameLayout
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_below="@+id/search_btn"
-            android:layout_alignParentStart="true"
-            android:clipChildren="false"
-            android:clipToPadding="false"
-            android:focusable="true" />
+            android:layout_below="@+id/search_btn">
+            <!-- 分类栏 -->
+            <android.support.v17.leanback.widget.VerticalGridView
+                android:id="@+id/type_vg"
+                android:layout_width="70dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentStart="true"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:focusable="true" />
+        </FrameLayout>
+
 
     </RelativeLayout>
 
-    <!--<ScrollView-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent">-->
-
-        <FrameLayout
-            android:id="@+id/mediacontent_vp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    <!--</ScrollView>-->
+    <FrameLayout
+        android:id="@+id/mediacontent_vp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
 </LinearLayout>

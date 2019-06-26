@@ -60,43 +60,68 @@
         <item>9,W.X.Y.Z</item>
     </string-array>
 
+    <!-- TypeForMediaList -->
     <string-array name="series_type_list">
-        <item>@string/str_media_list_series_type_list_update</item>
-        <item>@string/str_media_list_series_type_list_hot</item>
-        <item>@string/str_media_list_series_type_list_costum</item>
-        <item>@string/str_media_list_series_type_list_urban</item>
-        <item>@string/str_media_list_series_type_list_crux</item>
-        <item>@string/str_media_list_series_type_list_war</item>
-        <item>@string/str_media_list_series_type_list_idol</item>
-        <item>@string/str_media_list_series_type_list_online</item>
-        <item>@string/str_media_list_series_type_list_peiod</item>
-        <item>@string/str_media_list_series_type_list_crime</item>
-        <item>@string/str_media_list_series_type_list_great</item>
-        <item>@string/str_media_list_series_type_list_family</item>
-        <item>@string/str_media_list_series_type_list_martialarts</item>
-        <item>@string/str_media_list_series_type_list_comedy</item>
+        <item>@string/str_media_list_type_list_update</item>
+        <item>@string/str_media_list_type_list_hot</item>
+        <item>@string/str_media_list_type_list_costum</item>
+        <item>@string/str_media_list_type_list_urban</item>
+        <item>@string/str_media_list_type_list_crux</item>
+        <item>@string/str_media_list_type_list_war</item>
+        <item>@string/str_media_list_type_list_idol</item>
+        <item>@string/str_media_list_type_list_online</item>
+        <item>@string/str_media_list_type_list_peiod</item>
+        <item>@string/str_media_list_type_list_crime</item>
+        <item>@string/str_media_list_type_list_great</item>
+        <item>@string/str_media_list_type_list_family</item>
+        <item>@string/str_media_list_type_list_martialarts</item>
+        <item>@string/str_media_list_type_list_comedy</item>
     </string-array>
 
     <string-array name="film_type_list">
-        <item>@string/str_media_list_series_type_list_update</item>
-        <item>@string/str_media_list_series_type_list_hot</item>
-        <item>@string/str_media_list_series_type_list_high</item>
-        <item>@string/str_media_list_series_type_list_action</item>
-        <item>@string/str_media_list_series_type_list_cartoon</item>
-        <item>@string/str_media_list_series_type_list_science</item>
-        <item>@string/str_media_list_series_type_list_crux</item>
-        <item>@string/str_media_list_series_type_list_gunfignt</item>
-        <item>@string/str_media_list_series_type_list_family</item>
-        <item>@string/str_media_list_series_type_list_idol</item>
+        <item>@string/str_media_list_type_list_update</item>
+        <item>@string/str_media_list_type_list_hot</item>
+        <item>@string/str_media_list_type_list_high</item>
+        <item>@string/str_media_list_type_list_action</item>
+        <item>@string/str_media_list_type_list_cartoon</item>
+        <item>@string/str_media_list_type_list_science</item>
+        <item>@string/str_media_list_type_list_crux</item>
+        <item>@string/str_media_list_type_list_gunfignt</item>
+        <item>@string/str_media_list_type_list_family</item>
+        <item>@string/str_media_list_type_list_idol</item>
     </string-array>
 
     <string-array name="cartoon_type_list">
-
+        <item>@string/str_media_list_type_list_update</item>
+        <item>@string/str_media_list_type_list_hot</item>
+        <item>@string/str_media_list_type_list_hotcombat</item>
+        <item>@string/str_media_list_type_list_funny</item>
+        <item>@string/str_media_list_type_list_chcartoon</item>
+        <item>@string/str_media_list_type_list_cure</item>
+        <item>@string/str_media_list_type_list_warmlove</item>
+        <item>@string/str_media_list_type_list_classics</item>
+        <item>@string/str_media_list_type_list_magic</item>
+        <item>@string/str_media_list_type_list_youth</item>
+        <item>@string/str_media_list_type_list_sciencefiction</item>
+        <item>@string/str_media_list_type_list_musicidol</item>
+        <item>@string/str_media_list_type_list_sports</item>
+        <item>@string/str_media_list_type_list_familycartoon</item>
     </string-array>
 
     <string-array name="variety_type_list">
-
-
+        <item>@string/str_media_list_type_list_update</item>
+        <item>@string/str_media_list_type_list_hot</item>
+        <item>@string/str_media_list_type_list_realityshow</item>
+        <item>@string/str_media_list_type_list_quyi</item>
+        <item>@string/str_media_list_type_list_music</item>
+        <item>@string/str_media_list_type_list_competitive</item>
+        <item>@string/str_media_list_type_list_talkshow</item>
+        <item>@string/str_media_list_type_list_sensibility</item>
+        <item>@string/str_media_list_type_list_social</item>
+        <item>@string/str_media_list_type_list_interview</item>
+        <item>@string/str_media_list_type_list_cate</item>
+        <item>@string/str_media_list_type_list_fashion</item>
+        <item>@string/str_media_list_type_list_news</item>
     </string-array>
 
 </resources>

@@ -96,27 +96,53 @@
     <string name="str_live_tv_channel_list_satellite">卫视</string>
     <string name="str_live_tv_channel_list_favourite">喜爱</string>
 
-    <string name="str_media_list_series_type_list_update">最近更新</string>
-    <string name="str_media_list_series_type_list_hot">本周热播</string>
-    <string name="str_media_list_series_type_list_costum">古装传奇</string>
-    <string name="str_media_list_series_type_list_urban">时尚都市</string>
-    <string name="str_media_list_series_type_list_crux">悬疑惊悚</string>
-    <string name="str_media_list_series_type_list_war">热血抗战</string>
-    <string name="str_media_list_series_type_list_idol">偶像经典</string>
-    <string name="str_media_list_series_type_list_online">精彩网剧</string>
-    <string name="str_media_list_series_type_list_peiod">年代传奇</string>
-    <string name="str_media_list_series_type_list_crime">罪案追击</string>
-    <string name="str_media_list_series_type_list_great">口碑神剧</string>
-    <string name="str_media_list_series_type_list_family">家庭生活</string>
-    <string name="str_media_list_series_type_list_martialarts">武侠传奇</string>
-    <string name="str_media_list_series_type_list_comedy">喜剧乐翻天</string>
+    <string name="str_media_list_type_list_update">最近更新</string>
+    <string name="str_media_list_type_list_hot">本周热播</string>
+    <string name="str_media_list_type_list_costum">古装传奇</string>
+    <string name="str_media_list_type_list_urban">时尚都市</string>
+    <string name="str_media_list_type_list_crux">悬疑惊悚</string>
+    <string name="str_media_list_type_list_war">热血抗战</string>
+    <string name="str_media_list_type_list_idol">偶像经典</string>
+    <string name="str_media_list_type_list_online">精彩网剧</string>
+    <string name="str_media_list_type_list_peiod">年代传奇</string>
+    <string name="str_media_list_type_list_crime">罪案追击</string>
+    <string name="str_media_list_type_list_great">口碑神剧</string>
+    <string name="str_media_list_type_list_family">家庭生活</string>
+    <string name="str_media_list_type_list_martialarts">武侠传奇</string>
+    <string name="str_media_list_type_list_comedy">喜剧乐翻天</string>
 
-    <string name="str_media_list_series_type_list_high">口碑高品质</string>
-    <string name="str_media_list_series_type_list_action">最燃动作片</string>
-    <string name="str_media_list_series_type_list_love">爱情连连看</string>
-    <string name="str_media_list_series_type_list_cartoon">动画大放送</string>
-    <string name="str_media_list_series_type_list_science">科幻巨制</string>
-    <string name="str_media_list_series_type_list_gunfignt">硬汉枪战</string>
+    <string name="str_media_list_type_list_high">口碑高品质</string>
+    <string name="str_media_list_type_list_action">最燃动作片</string>
+    <string name="str_media_list_type_list_love">爱情连连看</string>
+    <string name="str_media_list_type_list_cartoon">动画大放送</string>
+    <string name="str_media_list_type_list_science">科幻巨制</string>
+    <string name="str_media_list_type_list_gunfignt">硬汉枪战</string>
+
+    <string name="str_media_list_type_list_realityshow">真人秀</string>
+    <string name="str_media_list_type_list_quyi">戏剧相声</string>
+    <string name="str_media_list_type_list_music">音乐天籁</string>
+    <string name="str_media_list_type_list_competitive">竞技益智</string>
+    <string name="str_media_list_type_list_talkshow">脱口秀</string>
+    <string name="str_media_list_type_list_sensibility">情感调解</string>
+    <string name="str_media_list_type_list_social">晚会盛宴</string>
+    <string name="str_media_list_type_list_interview">名人访谈</string>
+    <string name="str_media_list_type_list_cate">美食日记</string>
+    <string name="str_media_list_type_list_fashion">时尚生活</string>
+    <string name="str_media_list_type_list_news">新闻报导</string>
+
+    <string name="str_media_list_type_list_hotcombat">热血战斗</string>
+    <string name="str_media_list_type_list_funny">搞笑日常</string>
+    <string name="str_media_list_type_list_chcartoon">优秀国漫</string>
+    <string name="str_media_list_type_list_cure">暖心治愈</string>
+    <string name="str_media_list_type_list_warmlove">甜蜜爱恋</string>
+    <string name="str_media_list_type_list_classics">不朽经典</string>
+    <string name="str_media_list_type_list_magic">奇幻魔法</string>
+    <string name="str_media_list_type_list_youth">青春校园</string>
+    <string name="str_media_list_type_list_sciencefiction">科幻机战</string>
+    <string name="str_media_list_type_list_musicidol">音乐偶像</string>
+    <string name="str_media_list_type_list_sports">运动竞技</string>
+    <string name="str_media_list_type_list_familycartoon">合家欢</string>
+
 
     <string name="str_exit_application">再按一次退出应用</string>
 

@@ -3,6 +3,7 @@ package com.stars.tv.fragment;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -20,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.github.ybq.android.spinkit.style.Circle;
 import com.stars.tv.R;
 import com.stars.tv.activity.TotalMediaListActivity;
 import com.stars.tv.activity.VideoPreviewActivity;
@@ -53,6 +55,8 @@ public class MediaListMVPFragment
     private static final int ITEM_TOP_PADDING_PX = 25;       //15->25
     private static final int ITEM_RIGHT_PADDING_PX = 25;
 
+    private Circle mCircleDrawable;
+
     List<IQiYiMovieBean> mVideoList = new ArrayList<>();
     String mTvTitle;
     int postition = 0;
@@ -63,6 +67,8 @@ public class MediaListMVPFragment
     TextView typename_txt;
     @BindView(R.id.typecount_txt)
     TextView typecount_txt;
+    @BindView(R.id.loading_txt)
+    TextView loading_txt;
 
     MediaListMVPFragment.VideoSampleAdapter mVideoSampleAdapter;
 
@@ -96,6 +102,10 @@ public class MediaListMVPFragment
                     if (mVideoList.size() > 900) {
                         videoGrid.endRefreshingWithNoMoreData();
                     }
+                    loading(View.INVISIBLE);
+                    typename_txt.setVisibility(View.VISIBLE);
+                    typecount_txt.setVisibility(View.VISIBLE);
+                    videoGrid.setVisibility(View.VISIBLE);
                     break;
                 default:
                     postition = msg.what;
@@ -113,83 +123,314 @@ public class MediaListMVPFragment
     }
 
     private void refreshRequest(int postition) {
+        loading(View.VISIBLE);
         typename_txt.setVisibility(View.INVISIBLE);
         typecount_txt.setVisibility(View.INVISIBLE);
-        // orderList必须用逗号分隔id，否则会出错
-        if (mTvTitle.contains("Series") && mTvTitle.contains("全部剧集")) {
+        videoGrid.setVisibility(View.INVISIBLE);
+
+        if (mTvTitle.contains("Series")) {
+            refreshSeries(postition);
+        } else if (mTvTitle.contains("Film")) {
+            refreshFilm(postition);
+        } else if (mTvTitle.contains("Cartoon")) {
+            refreshCartoon(postition);
+        } else if (mTvTitle.contains("Variety")) {
+            refreshVariety(postition);
+        }
+    }
+
+    //刷新电视剧清单
+    private void refreshSeries(int postition) {
+        if (mTvTitle.contains("全部")) {
             switch (postition) {
                 case 0:    //最近更新
-                    typename_txt.setText("分类-"+"最近更新(");
+                    typename_txt.setText("分类 - " + "最近更新(");
                     mPresenter.requestIQiYiMovie(2, "15", "", "", 4, 1, 1, "iqiyi", 1, "", 900);
                     break;
                 case 1:    //本周热播
-                    typename_txt.setText("分类-"+"本周热播(");
+                    typename_txt.setText("分类 - " + "本周热播(");
                     mPresenter.requestIQiYiMovie(2, "15", "", "", 11, 1, 1, "iqiyi", 1, "", 900);
                     break;
                 case 2:    //古装传奇
-                    typename_txt.setText("分类-"+"古装传奇(");
+                    typename_txt.setText("分类 - " + "古装传奇(");
                     mPresenter.requestIQiYiMovie(2, "15,24", "", "", 24, 1, 1, "iqiyi", 1, "", 900);
                     break;
                 case 3:    //时尚都市
-                    typename_txt.setText("分类-"+"时尚都市(");
+                    typename_txt.setText("分类 - " + "时尚都市(");
                     mPresenter.requestIQiYiMovie(2, "15,24064", "", "", 24, 1, 1, "iqiyi", 1, "", 900);
                     break;
                 case 4:    //悬疑惊悚
-                    typename_txt.setText("分类-"+"悬疑惊悚(");
+                    typename_txt.setText("分类 - " + "悬疑惊悚(");
                     mPresenter.requestIQiYiMovie(2, "15,32", "", "", 24, 1, 1, "iqiyi", 1, "", 900);
                     break;
                 case 5:    //热血抗战
-                    typename_txt.setText("分类-"+"热血抗战(");
+                    typename_txt.setText("分类 - " + "热血抗战(");
                     mPresenter.requestIQiYiMovie(2, "15,27916", "", "", 24, 1, 1, "iqiyi", 1, "", 900);
                     break;
                 case 6:    //偶像经典
-                    typename_txt.setText("分类-"+"偶像经典(");
+                    typename_txt.setText("分类 - " + "偶像经典(");
                     mPresenter.requestIQiYiMovie(2, "15,30", "", "", 24, 1, 1, "iqiyi", 1, "", 900);
                     break;
                 case 7:    //精彩网剧
-                    typename_txt.setText("分类-"+"精彩网剧(");
+                    typename_txt.setText("分类 - " + "精彩网剧(");
                     mPresenter.requestIQiYiMovie(2, "15,24065", "", "", 24, 1, 1, "iqiyi", 1, "", 900);
                     break;
                 case 8:    //年代传奇
-                    typename_txt.setText("分类-"+"年代传奇(");
+                    typename_txt.setText("分类 - " + "年代传奇(");
                     mPresenter.requestIQiYiMovie(2, "15,27", "", "", 24, 1, 1, "iqiyi", 1, "", 900);
                     break;
                 case 9:    //罪案追击
-                    typename_txt.setText("分类-"+"罪案追击(");
+                    typename_txt.setText("分类 - " + "罪案追击(");
                     mPresenter.requestIQiYiMovie(2, "15,149", "", "", 24, 1, 1, "iqiyi", 1, "", 900);
                     break;
                 case 10:    //口碑神剧
-                    typename_txt.setText("分类-"+"口碑神剧(");
+                    typename_txt.setText("分类 - " + "口碑神剧(");
                     mPresenter.requestIQiYiMovie(2, "15,145", "", "", 24, 1, 1, "iqiyi", 1, "", 900);
                     break;
                 case 11:    //家庭生活
-                    typename_txt.setText("分类-"+"家庭生活(");
+                    typename_txt.setText("分类 - " + "家庭生活(");
                     mPresenter.requestIQiYiMovie(2, "15,1654", "", "", 24, 1, 1, "iqiyi", 1, "", 900);
                     break;
                 case 12:    //武侠传奇
-                    typename_txt.setText("分类-"+"武侠传奇(");
+                    typename_txt.setText("分类 - " + "武侠传奇(");
                     mPresenter.requestIQiYiMovie(2, "15,23", "", "", 24, 1, 1, "iqiyi", 1, "", 900);
                     break;
             }
         } else if (mTvTitle.contains("古装大剧")) {
-            typename_txt.setText("分类-"+"武侠传奇(");
+            typename_txt.setText("分类 - " + "古装大剧(");
             mPresenter.requestIQiYiMovie(2, "15,24", "", "", 24, 1, 1, "iqiyi", 1, "", 900);
-        }
-        else if (mTvTitle.contains("家庭")) {
-            typename_txt.setText("分类-"+"武侠传奇(");
+        } else if (mTvTitle.contains("家庭")) {
+            typename_txt.setText("分类 - " + "家庭生活(");
             mPresenter.requestIQiYiMovie(2, "15,24,1654", "", "", 24, 1, 1, "iqiyi", 1, "", 900);
-        }
-        else if (mTvTitle.contains("言情")) {
-            typename_txt.setText("分类-"+"武侠传奇(");
+        } else if (mTvTitle.contains("言情")) {
+            typename_txt.setText("分类 - " + "甜虐言情(");
             mPresenter.requestIQiYiMovie(2, "15,24,20", "", "", 24, 1, 1, "iqiyi", 1, "", 900);
-        }
-        else if (mTvTitle.contains("军旅")) {
-            typename_txt.setText("分类-"+"武侠传奇(");
+        } else if (mTvTitle.contains("军旅")) {
+            typename_txt.setText("分类 - " + "热血军旅(");
             mPresenter.requestIQiYiMovie(2, "15,1655,27916", "", "", 24, 1, 1, "iqiyi", 1, "", 900);
-        }
-        else if (mTvTitle.contains("青春偶像")) {
-            typename_txt.setText("分类-"+"武侠传奇(");
+        } else if (mTvTitle.contains("青春偶像")) {
+            typename_txt.setText("分类 - " + "青春偶像(");
             mPresenter.requestIQiYiMovie(2, "15,24,30,1653", "", "", 24, 1, 1, "iqiyi", 1, "", 900);
+        }
+    }
+
+    //刷新电影清单
+    private void refreshFilm(int postition) {
+        if (mTvTitle.contains("全部")) {
+            switch (postition) {
+                case 0:    //最近更新
+                    typename_txt.setText("分类 - " + "最近更新(");
+                    mPresenter.requestIQiYiMovie(1, "", "", "", 4, 1, 1, "iqiyi", 1, "", 900);
+                    break;
+                case 1:    //本周热播
+                    typename_txt.setText("分类 - " + "本周热播(");
+                    mPresenter.requestIQiYiMovie(1, "", "", "", 11, 1, 1, "iqiyi", 1, "", 900);
+                    break;
+                case 2:    //口碑高品质
+                    typename_txt.setText("分类 - " + "口碑高品质(");
+                    mPresenter.requestIQiYiMovie(1, "", "", "", 8, 1, 1, "iqiyi", 1, "", 900);
+                    break;
+                case 3:    //最燃动作片
+                    typename_txt.setText("分类 - " + "最燃动作片(");
+                    mPresenter.requestIQiYiMovie(1, "11", "", "", 24, 1, 1, "iqiyi", 1, "", 900);
+                    break;
+                case 4:    //动画大放送
+                    typename_txt.setText("分类 - " + "动画大放送(");
+                    mPresenter.requestIQiYiMovie(1, "12", "", "", 24, 1, 1, "iqiyi", 1, "", 900);
+                    break;
+                case 5:    //科幻巨制
+                    typename_txt.setText("分类 - " + "科幻巨制(");
+                    mPresenter.requestIQiYiMovie(1, "9", "", "", 24, 1, 1, "iqiyi", 1, "", 900);
+                    break;
+                case 6:    //悬疑惊悚
+                    typename_txt.setText("分类 - " + "悬疑惊悚(");
+                    mPresenter.requestIQiYiMovie(1, "289,128", "", "", 24, 1, 1, "iqiyi", 1, "", 900);
+                    break;
+                case 7:    //硬汉枪战
+                    typename_txt.setText("分类 - " + "硬汉枪战(");
+                    mPresenter.requestIQiYiMovie(1, "131,", "", "", 24, 1, 1, "iqiyi", 1, "", 900);
+                    break;
+                case 8:    //家庭生活
+                    typename_txt.setText("分类 - " + "家庭生活(");
+                    mPresenter.requestIQiYiMovie(1, "27356", "", "", 24, 1, 1, "iqiyi", 1, "", 900);
+                    break;
+                case 9:    //偶像经典
+                    typename_txt.setText("分类 - " + "偶像经典(");
+                    mPresenter.requestIQiYiMovie(1, "130", "", "", 24, 1, 1, "iqiyi", 1, "", 900);
+                    break;
+            }
+        } else if (mTvTitle.contains("华语")) {
+            typename_txt.setText("分类 - " + "华语(");
+            mPresenter.requestIQiYiMovie(1, "1", "", "", 24, 1, 1, "iqiyi", 1, "", 900);
+        } else if (mTvTitle.contains("香港")) {
+            typename_txt.setText("分类 - " + "香港(");
+            mPresenter.requestIQiYiMovie(1, "28997", "", "", 24, 1, 1, "iqiyi", 1, "", 900);
+        } else if (mTvTitle.contains("美国")) {
+            typename_txt.setText("分类 - " + "美国(");
+            mPresenter.requestIQiYiMovie(1, "2", "", "", 24, 1, 1, "iqiyi", 1, "", 900);
+        } else if (mTvTitle.contains("欧洲")) {
+            typename_txt.setText("分类 - " + "欧洲(");
+            mPresenter.requestIQiYiMovie(1, "3", "", "", 24, 1, 1, "iqiyi", 1, "", 900);
+        } else if (mTvTitle.contains("日本")) {
+            typename_txt.setText("分类 - " + "日本(");
+            mPresenter.requestIQiYiMovie(1, "308", "", "", 24, 1, 1, "iqiyi", 1, "", 900);
+        } else if (mTvTitle.contains("韩国")) {
+            typename_txt.setText("分类 - " + "韩国(");
+            mPresenter.requestIQiYiMovie(1, "4", "", "", 24, 1, 1, "iqiyi", 1, "", 900);
+        }
+    }
+
+    //刷新动漫清单
+    private void refreshCartoon(int postition) {
+        if (mTvTitle.contains("全部")) {
+            switch (postition) {
+                case 0:    //最近更新
+                    typename_txt.setText("分类 - " + "最近更新(");
+                    mPresenter.requestIQiYiMovie(4, "", "", "", 4, 1, 1, "iqiyi", 1, "", 900);
+                    break;
+                case 1:    //本周热播
+                    typename_txt.setText("分类 - " + "本周热播(");
+                    mPresenter.requestIQiYiMovie(4, "", "", "", 11, 1, 1, "iqiyi", 1, "", 900);
+                    break;
+                case 2:    //热血战斗
+                    typename_txt.setText("分类 - " + "热血战斗(");
+                    mPresenter.requestIQiYiMovie(4, "30232,30239", "", "", 24, 1, 1, "iqiyi", 1, "", 900);
+                    break;
+                case 3:    //搞笑日常
+                    typename_txt.setText("分类 - " + "搞笑日常(");
+                    mPresenter.requestIQiYiMovie(4, "30230,30252", "", "", 24, 1, 1, "iqiyi", 1, "", 900);
+                    break;
+                case 4:    //优秀国漫
+                    typename_txt.setText("分类 - " + "优秀国漫(");
+                    mPresenter.requestIQiYiMovie(4, "37", "", "", 8, 1, 1, "iqiyi", 1, "", 900);
+                    break;
+                case 5:    //暖心治愈
+                    typename_txt.setText("分类 - " + "暖心治愈(");
+                    mPresenter.requestIQiYiMovie(4, "30234", "", "", 24, 1, 1, "iqiyi", 1, "", 900);
+                    break;
+                case 6:    //甜蜜爱恋
+                    typename_txt.setText("分类 - " + "甜蜜爱恋(");
+                    mPresenter.requestIQiYiMovie(4, "30243", "", "", 24, 1, 1, "iqiyi", 1, "", 900);
+                    break;
+                case 7:    //不朽经典
+                    typename_txt.setText("分类 - " + "不朽经典(");
+                    mPresenter.requestIQiYiMovie(4, "30231", "", "", 24, 1, 1, "iqiyi", 1, "", 900);
+                    break;
+                case 8:    //奇幻魔法
+                    typename_txt.setText("分类 - " + "奇幻魔法(");
+                    mPresenter.requestIQiYiMovie(4, "30247,30253", "", "", 24, 1, 1, "iqiyi", 1, "", 900);
+                    break;
+                case 9:    //青春校园
+                    typename_txt.setText("分类 - " + "青春校园(");
+                    mPresenter.requestIQiYiMovie(4, "30266,30249", "", "", 24, 1, 1, "iqiyi", 1, "", 900);
+                    break;
+                case 10:    //科幻机战
+                    typename_txt.setText("分类 - " + "科幻机战(");
+                    mPresenter.requestIQiYiMovie(4, "30245,30241", "", "", 24, 1, 1, "iqiyi", 1, "", 900);
+                    break;
+                case 11:    //音乐偶像
+                    typename_txt.setText("分类 - " + "音乐偶像(");
+                    mPresenter.requestIQiYiMovie(4, "30269,30258", "", "", 24, 1, 1, "iqiyi", 1, "", 900);
+                    break;
+                case 12:    //运动竞技
+                    typename_txt.setText("分类 - " + "运动竞技(");
+                    mPresenter.requestIQiYiMovie(4, "30250,30268", "", "", 24, 1, 1, "iqiyi", 1, "", 900);
+                    break;
+                case 13:    //合家欢
+                    typename_txt.setText("分类 - " + "合家欢(");
+                    mPresenter.requestIQiYiMovie(4, "30270", "", "", 24, 1, 1, "iqiyi", 1, "", 900);
+                    break;
+            }
+        } else if (mTvTitle.contains("科幻")) {
+            typename_txt.setText("分类 - " + "科幻(");
+            mPresenter.requestIQiYiMovie(4, "30245", "", "", 24, 1, 1, "iqiyi", 1, "", 900);
+        } else if (mTvTitle.contains("搞笑")) {
+            typename_txt.setText("分类 - " + "搞笑(");
+            mPresenter.requestIQiYiMovie(4, "30230", "", "", 24, 1, 1, "iqiyi", 1, "", 900);
+        } else if (mTvTitle.contains("战斗")) {
+            typename_txt.setText("分类 - " + "战斗(");
+            mPresenter.requestIQiYiMovie(4, "30239", "", "", 24, 1, 1, "iqiyi", 1, "", 900);
+        } else if (mTvTitle.contains("热血")) {
+            typename_txt.setText("分类 - " + "热血(");
+            mPresenter.requestIQiYiMovie(4, "30232", "", "", 24, 1, 1, "iqiyi", 1, "", 900);
+        } else if (mTvTitle.contains("剧场")) {
+            typename_txt.setText("分类 - " + "剧场(");
+            mPresenter.requestIQiYiMovie(4, "67", "", "", 24, 1, 1, "iqiyi", 1, "", 900);
+        }
+    }
+
+    //刷新综艺清单
+    private void refreshVariety(int postition) {
+        if (mTvTitle.contains("全部")) {
+            switch (postition) {
+                case 0:    //最近更新
+                    typename_txt.setText("分类 - " + "最近更新(");
+                    mPresenter.requestIQiYiMovie(6, "", "", "", 4, 1, 1, "iqiyi", 1, "", 900);
+                    break;
+                case 1:    //本周热播
+                    typename_txt.setText("分类 - " + "本周热播(");
+                    mPresenter.requestIQiYiMovie(6, "", "", "", 11, 1, 1, "iqiyi", 1, "", 900);
+                    break;
+                case 2:    //真人秀
+                    typename_txt.setText("分类 - " + "真人秀(");
+                    mPresenter.requestIQiYiMovie(6, "2224", "", "", 24, 1, 1, "iqiyi", 1, "", 900);
+                    break;
+                case 3:    //戏剧相声
+                    typename_txt.setText("分类 - " + "戏剧相声(");
+                    mPresenter.requestIQiYiMovie(6, "293", "", "", 24, 1, 1, "iqiyi", 1, "", 900);
+                    break;
+                case 4:    //音乐天籁
+                    typename_txt.setText("分类 - " + "音乐天籁(");
+                    mPresenter.requestIQiYiMovie(6, "2121", "", "", 24, 1, 1, "iqiyi", 1, "", 900);
+                    break;
+                case 5:    //竞技益智
+                    typename_txt.setText("分类 - " + "竞技益智(");
+                    mPresenter.requestIQiYiMovie(6, "30278,30277", "", "", 24, 1, 1, "iqiyi", 1, "", 900);
+                    break;
+                case 6:    //脱口秀
+                    typename_txt.setText("分类 - " + "脱口秀(");
+                    mPresenter.requestIQiYiMovie(6, "2118", "", "", 24, 1, 1, "iqiyi", 1, "", 900);
+                    break;
+                case 7:    //情感调解
+                    typename_txt.setText("分类 - " + "情感调解(");
+                    mPresenter.requestIQiYiMovie(6, "163", "", "", 24, 1, 1, "iqiyi", 1, "", 900);
+                    break;
+                case 8:    //晚会盛宴
+                    typename_txt.setText("分类 - " + "晚会盛宴(");
+                    mPresenter.requestIQiYiMovie(6, "292", "", "", 24, 1, 1, "iqiyi", 1, "", 900);
+                    break;
+                case 9:    //名人访谈
+                    typename_txt.setText("分类 - " + "名人访谈(");
+                    mPresenter.requestIQiYiMovie(6, "156", "", "", 24, 1, 1, "iqiyi", 1, "", 900);
+                    break;
+                case 10:    //美食日记
+                    typename_txt.setText("分类 - " + "美食日记(");
+                    mPresenter.requestIQiYiMovie(6, "1003", "", "", 24, 1, 1, "iqiyi", 1, "", 900);
+                    break;
+                case 11:    //时尚生活
+                    typename_txt.setText("分类 - " + "时尚生活(");
+                    mPresenter.requestIQiYiMovie(6, "160", "", "", 24, 1, 1, "iqiyi", 1, "", 900);
+                    break;
+                case 12:    //新闻报导
+                    typename_txt.setText("分类 - " + "新闻报导(");
+                    mPresenter.requestIQiYiMovie(6, "155", "", "", 24, 1, 1, "iqiyi", 1, "", 900);
+                    break;
+            }
+        } else if (mTvTitle.contains("真人秀")) {
+            typename_txt.setText("分类 - " + "真人秀(");
+            mPresenter.requestIQiYiMovie(6, "2224", "", "", 24, 1, 1, "iqiyi", 1, "", 900);
+        } else if (mTvTitle.contains("搞笑")) {
+            typename_txt.setText("分类 - " + "搞笑(");
+            mPresenter.requestIQiYiMovie(6, "157", "", "", 24, 1, 1, "iqiyi", 1, "", 900);
+        } else if (mTvTitle.contains("音乐")) {
+            typename_txt.setText("分类 - " + "音乐(");
+            mPresenter.requestIQiYiMovie(6, "2121", "", "", 24, 1, 1, "iqiyi", 1, "", 900);
+        } else if (mTvTitle.contains("脱口秀")) {
+            typename_txt.setText("分类 - " + "脱口秀(");
+            mPresenter.requestIQiYiMovie(6, "2118", "", "", 24, 1, 1, "iqiyi", 1, "", 900);
+        } else if (mTvTitle.contains("情感")) {
+            typename_txt.setText("分类 - " + "情感(");
+            mPresenter.requestIQiYiMovie(6, "163", "", "", 24, 1, 1, "iqiyi", 1, "", 900);
         }
     }
 
@@ -205,7 +446,7 @@ public class MediaListMVPFragment
             public void onChildViewHolderSelected(RecyclerView parent, RecyclerView.ViewHolder child, int position, int subposition) {
                 super.onChildViewHolderSelected(parent, child, position, subposition);
                 //TODO 设置为focus行为
-                typecount_txt.setText(position+1+"/"+mVideoList.size()+"部)");
+                typecount_txt.setText(position + 1 + "/" + mVideoList.size() + "部)");
             }
         });
         videoGrid.setOnLoadMoreListener(new MyVerticalGridView.OnLoadMoreListener() {
@@ -226,9 +467,9 @@ public class MediaListMVPFragment
     protected void initView() {
         // 初始化影视垂直布局.
         videoGrid.setPadding(GRID_VIEW_LEFT_PX, GRID_VIEW_TOP_PX, GRID_VIEW_RIGHT_PX, GRID_VIEW_BOTTOM_PX);
-        if (mTvTitle.contains("全部")){
-            videoGrid.setNumColumns(ITEM_NUM_ROW-1);
-        }else {
+        if (mTvTitle.contains("全部")) {
+            videoGrid.setNumColumns(ITEM_NUM_ROW - 1);
+        } else {
             videoGrid.setNumColumns(ITEM_NUM_ROW);
         }
 
@@ -242,9 +483,7 @@ public class MediaListMVPFragment
     public void returnIQiYiMovieList(List<IQiYiMovieBean> beans) {
         mVideoList.clear();
         mVideoList.addAll(beans);
-        typecount_txt.setText(mVideoList.size()+"部)");
-        typename_txt.setVisibility(View.VISIBLE);
-        typecount_txt.setVisibility(View.VISIBLE);
+        typecount_txt.setText(mVideoList.size() + "部)");
         videoGrid.endMoreRefreshComplete();
         mHandler.sendEmptyMessage(REFRESH_MOVIE_CONTENT);
     }
@@ -295,15 +534,14 @@ public class MediaListMVPFragment
                 holder.payIv.setVisibility(View.VISIBLE);
                 String latestOrder = videoBean.getLatestOrder();
                 String videoCount = videoBean.getVideoCount();
-                if(latestOrder!=null &&videoCount!=null)
-                {
+                if (latestOrder != null && videoCount != null) {
                     if (Objects.requireNonNull(videoCount).equals(Objects.requireNonNull(latestOrder))) {
                         holder.infoTv.setText(videoBean.getLatestOrder() + "集全");
                     } else {
                         holder.infoTv.setText("更新至" + videoBean.getLatestOrder() + "集");
                     }
                 }
-                if(videoBean.getPayMarkUrl()!=null) {
+                if (videoBean.getPayMarkUrl() != null) {
                     holder.payIv.setImageResource(R.drawable.vip_icon2);
                 }
 
@@ -327,8 +565,8 @@ public class MediaListMVPFragment
         }
 
         class ViewHolder extends RecyclerView.ViewHolder {
-            ImageView bgIv,payIv;
-            TextView nameTv,infoTv;
+            ImageView bgIv, payIv;
+            TextView nameTv, infoTv;
             View boardView;
 
             ViewHolder(View view) {
@@ -344,12 +582,31 @@ public class MediaListMVPFragment
 
     }
 
+    private void loading(Integer visibility) {
+        mCircleDrawable = new Circle();
+        mCircleDrawable.setBounds(0, 0, 100, 100);
+        mCircleDrawable.setColor(Color.WHITE);
+        loading_txt.setCompoundDrawables(null, null, mCircleDrawable, null);
+        loading_txt.setVisibility(visibility);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mCircleDrawable.start();
+    }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         TotalMediaListActivity totalMediaListActivity = (TotalMediaListActivity) context;
         totalMediaListActivity.setHandler(mHandler);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        mCircleDrawable.stop();
     }
 }
 

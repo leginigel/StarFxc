@@ -65,9 +65,9 @@ public class SeriesButtonRowPresenter extends RowPresenter {
                     View btn = v;
 
                     String buttonName = ((Button) btn).getText().toString();
+                    buttonName=TAG+buttonName;
                     Log.v(TAG,"buttonName is: " + buttonName);
                     Intent intent = new Intent(mContext, TotalMediaListActivity.class);
-                    intent.putExtra("className", TAG);
                     intent.putExtra("buttonName", buttonName);
                     mContext.startActivity(intent);
 
