@@ -12,8 +12,8 @@ import android.support.v17.leanback.widget.HeaderItem;
 import android.support.v17.leanback.widget.ItemBridgeAdapter;
 import android.support.v17.leanback.widget.ListRow;
 import android.support.v17.leanback.widget.OnChildViewHolderSelectedListener;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,7 +39,7 @@ import butterknife.Unbinder;
  * @Author: Dicks.yang
  * @Date: 2019.04.15
  */
-public class VideoRowSampleFragment extends Fragment {
+public class VideoRowSampleFragment extends BaseFragment {
 
     private static final int GRID_VIEW_LEFT_PX = 80;
     private static final int GRID_VIEW_RIGHT_PX = 50;
@@ -179,4 +179,15 @@ public class VideoRowSampleFragment extends Fragment {
         unbinder.unbind();
     }
 
+    @Override
+    public boolean onKeyDown(KeyEvent event) {
+        if(event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
+            if(videoGrid.getChildCount()>0) {
+                videoGrid.setSelectedPosition(0);
+                videoGrid.smoothScrollToPosition(0);
+            }
+            return true;
+        }
+        return false;
+    }
 }

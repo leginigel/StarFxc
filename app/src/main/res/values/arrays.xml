@@ -60,4 +60,43 @@
         <item>9,W.X.Y.Z</item>
     </string-array>
 
+    <string-array name="series_type_list">
+        <item>@string/str_media_list_series_type_list_update</item>
+        <item>@string/str_media_list_series_type_list_hot</item>
+        <item>@string/str_media_list_series_type_list_costum</item>
+        <item>@string/str_media_list_series_type_list_urban</item>
+        <item>@string/str_media_list_series_type_list_crux</item>
+        <item>@string/str_media_list_series_type_list_war</item>
+        <item>@string/str_media_list_series_type_list_idol</item>
+        <item>@string/str_media_list_series_type_list_online</item>
+        <item>@string/str_media_list_series_type_list_peiod</item>
+        <item>@string/str_media_list_series_type_list_crime</item>
+        <item>@string/str_media_list_series_type_list_great</item>
+        <item>@string/str_media_list_series_type_list_family</item>
+        <item>@string/str_media_list_series_type_list_martialarts</item>
+        <item>@string/str_media_list_series_type_list_comedy</item>
+    </string-array>
+
+    <string-array name="film_type_list">
+        <item>@string/str_media_list_series_type_list_update</item>
+        <item>@string/str_media_list_series_type_list_hot</item>
+        <item>@string/str_media_list_series_type_list_high</item>
+        <item>@string/str_media_list_series_type_list_action</item>
+        <item>@string/str_media_list_series_type_list_cartoon</item>
+        <item>@string/str_media_list_series_type_list_science</item>
+        <item>@string/str_media_list_series_type_list_crux</item>
+        <item>@string/str_media_list_series_type_list_gunfignt</item>
+        <item>@string/str_media_list_series_type_list_family</item>
+        <item>@string/str_media_list_series_type_list_idol</item>
+    </string-array>
+
+    <string-array name="cartoon_type_list">
+
+    </string-array>
+
+    <string-array name="variety_type_list">
+
+
+    </string-array>
+
 </resources>

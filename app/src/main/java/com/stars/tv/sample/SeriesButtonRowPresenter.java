@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.stars.tv.R;
+import com.stars.tv.activity.TotalMediaListActivity;
 import com.stars.tv.utils.ViewUtils;
 
 import java.util.Objects;
@@ -62,12 +63,13 @@ public class SeriesButtonRowPresenter extends RowPresenter {
                 @Override
                 public void onClick(View v) {
                     View btn = v;
-                    String typeName = ((Button) btn).getText().toString();
-                    Log.v(TAG,"typeName is: " + typeName);
-//                    Intent intent = new Intent(mContext, DetailActivity.class);
-//                    intent.putExtra("typeName", typeName);
-//                    intent.putExtra("titleName", "Series");
-//                    mContext.startActivity(intent);
+
+                    String buttonName = ((Button) btn).getText().toString();
+                    Log.v(TAG,"buttonName is: " + buttonName);
+                    Intent intent = new Intent(mContext, TotalMediaListActivity.class);
+                    intent.putExtra("className", TAG);
+                    intent.putExtra("buttonName", buttonName);
+                    mContext.startActivity(intent);
 
                 }
             });
