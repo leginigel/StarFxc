@@ -17,8 +17,11 @@ public class Constants {
     public static final String BASE_IQIYI_POST_CONSUMER_URL ="http://pcw-api.iqiyi.com/";
     public static final String LIVE_TV_TVMAO_EPG_URL ="http://www.tvmao.com/";
 
-    public static final String STAR_CLOUD_ID = "BzBYpOslngYEvh0Nz7zAUgd3-gzGzoHsz";
-    public static final String STAR_CLOUD_KEY = "V2B1Wuo3YPQYDHU8iCjDQHtt";
+    // public static final String STAR_CLOUD_ID = "BzBYpOslngYEvh0Nz7zAUgd3-gzGzoHsz";
+    // public static final String STAR_CLOUD_KEY = "V2B1Wuo3YPQYDHU8iCjDQHtt";
+    // Change Leancloud account to international node
+    public static final String STAR_CLOUD_ID = "DYCfxXXRVViDkSfdE5lhbr1b-MdYXbMMI";
+    public static final String STAR_CLOUD_KEY = "VvgwvHVXteVWJyKmvnlsbfnr";
     public static final String CLOUD_HISTORY_CLASS = "History";
     public static final String CLOUD_FAVORITE_CLASS = "Favorite";
     public static final String CLOUD_YT_HISTORY_CLASS = "History_YT";
