@@ -37,7 +37,7 @@
 
     <!--button color-->
     <color name="color_blue">#4285f4</color>
-    <color name="color_yellow">#ffff44</color>
+    <color name="color_yellow">#FFC107</color>
     <color name="color_green">#29Fa66</color>
     <color name="color_orange">#ff7633</color>
     <color name="color_purple">#aa00ff</color>

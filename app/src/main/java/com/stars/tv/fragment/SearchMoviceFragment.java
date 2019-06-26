@@ -24,14 +24,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.stars.tv.R;
+import com.stars.tv.activity.FullPlaybackActivity;
 import com.stars.tv.activity.VideoPreviewActivity;
 import com.stars.tv.bean.IQiYiHotQueryBean;
 import com.stars.tv.bean.IQiYiMovieBean;
@@ -58,7 +61,7 @@ import me.jessyan.autosize.utils.AutoSizeUtils;
 
 public class SearchMoviceFragment extends BaseFragment {
     private static final String TAG = "SearchMoviceFragment";
-    private static final int ITEM_NUM_ROW = 6; // 一行多少个row item.
+    private static final int ITEM_NUM_ROW = 4; // 一行多少个row item.
 
     private static final int GRIDVIEW_LEFT_P = 40;
     private static final int GRIDVIEW_RIGHT_P = 50;
@@ -80,10 +83,12 @@ public class SearchMoviceFragment extends BaseFragment {
     private int sugPosition = 0;
     private int maxNum;
     private boolean isRightKey = false;
-    private boolean isDownKey = false;
-    private boolean isUpKey = false;
     private boolean isRemaining = false;
+    private boolean isVisible = false;
     private int typeSuggest;
+    boolean isFirst = false;
+    private int mSaveT9Postion = -1;
+    boolean isFirstLoad = true;
     @BindView(R.id.all_key_vgridview)
     MyVerticalGridView allKeyVgridview; // 全键盘布局.
     @BindView(R.id.t9_key_vgridview)
@@ -110,6 +115,12 @@ public class SearchMoviceFragment extends BaseFragment {
     TextView historyTextView;
     @BindView(R.id.history_ll)
     LinearLayout historyLy;
+    @BindView(R.id.keyboard_fl)
+    FrameLayout keyBoardFl;
+    @BindView(R.id.middle_ll)
+    LinearLayout middleLy;
+    @BindView(R.id.left_ll)
+    LinearLayout leftLy;
 
     @BindView(R.id.search_show_tv)
     TextView searchShowTv;
@@ -134,11 +145,14 @@ public class SearchMoviceFragment extends BaseFragment {
     final int REFRESH_HOT_CONTENT = 0;
     final int REFRESH_SUGGEST_CONTENT = 1;
     final int REFRESH_MOIVE_CONTENT = 2;
+    final int REFRESH_REQUEST = 3;
     final int REFRESH_ERROR = -1;
     SearchMoviceFragment.SuggestItemAdapter mSuggestItemAdapter;
     SearchMoviceFragment.MoviceAdapter mMoviceAdapter;
     SearchMoviceFragment.HistoryItemAdapter mHistoryItemAdapter;
     String word;
+
+    private  boolean isNeedtToSetPos = false;
 
     public static SearchMoviceFragment newInstance() {
         return new SearchMoviceFragment();
@@ -148,22 +162,44 @@ public class SearchMoviceFragment extends BaseFragment {
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            Log.v("tttt", "msg.what:" + msg.what);
+            Log.v(TAG, "msg.what:" + msg.what);
             switch (msg.what) {
                 case REFRESH_HOT_CONTENT:
+                    if (lists.size()>0) {
+                        Log.v(TAG, "msg.what:" + msg.what);
+                        if(mHistoryItemAdapter.getItemCount()>0){
+                            historyVgridview.setSelectedPosition(0);
+                            historyVgridview.smoothScrollToPosition(0);
+                        }
+                        historyLy.setVisibility(View.VISIBLE);
+                        isVisible = true;
+                        mHistoryItemAdapter.notifyDataSetChanged();
+
+                    }
                     suggestTextView.setText("热门搜索");
                     mSuggestItemAdapter.notifyDataSetChanged();
                     break;
                 case REFRESH_SUGGEST_CONTENT:
+                    if (isVisible) {
+                        historyLy.setVisibility(View.GONE);
+                        isVisible = false;
+                    }
                     suggestTextView.setText("猜你想搜");
                     mSuggestItemAdapter.notifyDataSetChanged();
                     break;
                 case REFRESH_MOIVE_CONTENT:
-                    Log.v("tttt", "msg.what:" + msg.what);
+                    Log.v(TAG, "msg.what:" + msg.what);
+                    if(isNeedtToSetPos && searchVgridview.getChildCount()>0){
+                        searchVgridview.setSelectedPosition(0);
+                        searchVgridview.smoothScrollToPosition(0);
+                    }
                     mMoviceAdapter.notifyDataSetChanged();
                     if (mMoviceList.size() > 99 || mMoviceList.size() >= maxNum) {
                         searchVgridview.endRefreshingWithNoMoreData();
                     }
+                    break;
+                case REFRESH_REQUEST:
+                    refreshRequest(typeSuggest, sugPosition);
                     break;
                 default:
                     break;
@@ -172,22 +208,34 @@ public class SearchMoviceFragment extends BaseFragment {
         }
     };
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Log.v(TAG, "onCreate");
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        Log.v(TAG, "onCreateView");
         View view = inflater.inflate(R.layout.fragment_search_movice, container, false);
         unbinder = ButterKnife.bind(this, view);
         mContext = container.getContext();
 //        pref = PreferenceManager.getDefaultSharedPreferences(mContext);
         initAllDatas();
-        initSearchGridView();
         lists = getSearchHistory();
         Log.v(TAG, "lists" + lists.size());
         if (lists.size() > 0) {
-            Log.v(TAG, "lists" + lists.toString());
+//            Log.v(TAG, "lists" + lists.toString());
             initHistoryGridView();
             historyLy.setVisibility(View.VISIBLE);
+            isVisible = true;
+        }else{
+            Log.v(TAG, "isVisible" + isVisible);
+            historyLy.setVisibility(View.GONE);
+            isVisible = false;
         }
+        initSearchGridView();
         initSuggestGridView();
         initAllKeysGridView();
         initT9KeysGridView();
@@ -204,13 +252,13 @@ public class SearchMoviceFragment extends BaseFragment {
         Log.v(TAG,"type:  "+type);
         switch (type){
             case 0:
-                if (lists!=null) {
+                if (lists.size()>0) {
                     Log.v(TAG,"position:  "+lists.get(position));
                     parseIQiYiSearchMovieList(lists.get(position), mPageNum, 20);
                 }
                 break;
             case 1:
-                if (mWordList!=null) {
+                if (mWordList.size()>0) {
                     Log.v(TAG,"position:  "+((IQiYiSearchBaseBean)mWordList.get(position)).getQueryName());
                     parseIQiYiSearchMovieList(((IQiYiSearchBaseBean) mWordList.get(position)).getQueryName(), mPageNum, 20);
                 }
@@ -237,6 +285,8 @@ public class SearchMoviceFragment extends BaseFragment {
                     mPageNum = 1;
                     typeSuggest = 0;
                     refreshRequest(typeSuggest, sugPosition);
+                    // 设置默认.
+                    ((Button) child.itemView).setTextColor(getResources().getColor(R.color.title_select_color));
                 }
                 child.itemView.setTag(position);
                 child.itemView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -246,15 +296,12 @@ public class SearchMoviceFragment extends BaseFragment {
                         if (hasFocus) {
                             mPageNum = 1;
                             mMoviceList.clear();
+                            Log.v(TAG,"mMoviceList"+mMoviceList.size());
                             sugPosition = (int) v.getTag();
                             Log.v(TAG,"historyVgridview:  "+typeSuggest);
                             typeSuggest = 0;
-                            refreshRequest(typeSuggest, sugPosition);
-                            if ((int) v.getTag() == lists.size() - 1) {
-                                isDownKey = true;
-                            }else if((int) v.getTag()==0){
-                                isUpKey = true;
-                            }
+                            setTimer(REFRESH_REQUEST,1500);
+//                            refreshRequest(typeSuggest, sugPosition);
                             ((Button) child.itemView).setTextColor(getResources().getColor(R.color.color_white));
                         } else {
                             if (isRemaining) {
@@ -271,32 +318,15 @@ public class SearchMoviceFragment extends BaseFragment {
             }
 
         });
-        historyVgridview.setOnKeyInterceptListener(new BaseGridView.OnKeyInterceptListener() {
-            @Override
-            public boolean onInterceptKeyEvent(KeyEvent event) {
-                if (event.getAction() == KeyEvent.ACTION_DOWN && event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT) {
-                    isRemaining = true;
-                } else if(event.getAction() == KeyEvent.ACTION_DOWN && event.getKeyCode() == KeyEvent.KEYCODE_DPAD_DOWN) {
-                    if (isDownKey) {
-                        suggestVgridview.requestFocusFromTouch();
-                        return true;
-                    }
-                }else if (event.getAction() == KeyEvent.ACTION_DOWN && event.getKeyCode() == KeyEvent.KEYCODE_DPAD_UP) {
-                    if (isUpKey) {
-                        removeTextView.requestFocusFromTouch();
-                        return true;
-                    }
-                }
-                return false;
-            }
-        });
     }
 
     private void initSearchGridView() {
         searchVgridview.setPadding(GRIDVIEW_LEFT_P, GRIDVIEW_TOP_P, GRIDVIEW_RIGHT_P, GRIDVIEW_BOTTOM_P);
-        searchVgridview.setNumColumns(2);
+        searchVgridview.setNumColumns(ITEM_NUM_ROW);
         int top = ViewUtils.getPercentHeightSize(ITEM_TOP_PADDING);
         int right = ViewUtils.getPercentWidthSize(ITEM_PADDING);
+        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams((300*ITEM_NUM_ROW)+(ITEM_PADDING*ITEM_NUM_ROW)+GRIDVIEW_LEFT_P+GRIDVIEW_RIGHT_P+50, FrameLayout.LayoutParams.MATCH_PARENT);
+        searchVgridview.setLayoutParams(lp);
         searchVgridview.addItemDecoration(new SpaceItemDecoration(right, top));
         mMoviceAdapter = new MoviceAdapter();
         searchVgridview.setAdapter(mMoviceAdapter);
@@ -323,12 +353,16 @@ public class SearchMoviceFragment extends BaseFragment {
         suggestVgridview.setOnChildViewHolderSelectedListener(new OnChildViewHolderSelectedListener() {
             @Override
             public void onChildViewHolderSelected(RecyclerView parent, RecyclerView.ViewHolder child, int position, int subposition) {
-                if(!suggestVgridview.hasFocus()&&position==0&&lists.isEmpty()){
+                if (!suggestVgridview.hasFocus() && position == 0 && (!isVisible)) {
+                    Log.v(TAG, "suggestVgridview: " + position);
                     mMoviceList.clear();
                     sugPosition = position;
                     mPageNum = 1;
                     typeSuggest =1;
                     refreshRequest(typeSuggest, sugPosition);
+                    // 设置默认.
+                    ((Button) child.itemView).setTextColor(getResources().getColor(R.color.title_select_color));
+
                 }
                 child.itemView.setTag(position);
                 Log.v(TAG,"suggestVgridview position: "+position);
@@ -341,12 +375,8 @@ public class SearchMoviceFragment extends BaseFragment {
                             sugPosition = (int)v.getTag();
                             mMoviceList.clear();
                             typeSuggest =1;
-                            refreshRequest(typeSuggest, sugPosition);
-                            if ((int)v.getTag() == 0) {
-                                isUpKey = true;
-                            } else {
-                                isUpKey = false;
-                            }
+//                            refreshRequest(typeSuggest, sugPosition);
+                            setTimer(REFRESH_REQUEST,1500);
                             ((Button) child.itemView).setTextColor(getResources().getColor(R.color.color_white));
                         } else {
                             if (isRemaining) {
@@ -356,6 +386,7 @@ public class SearchMoviceFragment extends BaseFragment {
                                 ((Button) child.itemView).setTextColor(getResources().getColor(R.color.color_white));
                             }
                         }
+                        Log.v(TAG, "hasFocus" + hasFocus);
 
                     }
                 });
@@ -363,28 +394,12 @@ public class SearchMoviceFragment extends BaseFragment {
             }
 
         });
-        suggestVgridview.setOnKeyInterceptListener(new BaseGridView.OnKeyInterceptListener() {
-            @Override
-            public boolean onInterceptKeyEvent(KeyEvent event) {
-                if (event.getAction() == KeyEvent.ACTION_DOWN && event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT) {
-                    isRemaining = true;
-                } else if (event.getAction() == KeyEvent.ACTION_DOWN && event.getKeyCode() == KeyEvent.KEYCODE_DPAD_UP) {
-                    if (isUpKey) {
-
-                        historyVgridview.requestFocusFromTouch();
-                        return true;
-                    }
-                }
-                return false;
-            }
-        });
-
     }
 
     private void initAllKeysGridView() {
         int topSpace = ViewUtils.getPercentHeightSize(5);
         allKeyVgridview.addItemDecoration(new SpaceItemDecoration(2, topSpace));
-        allKeyVgridview.setNumColumns(ITEM_NUM_ROW);
+        allKeyVgridview.setNumColumns(6);
         allKeyVgridview.setAdapter(new KeyItemAdapter());
         allKeyVgridview.setOnChildViewHolderSelectedListener(new OnChildViewHolderSelectedListener() {
             @Override
@@ -404,21 +419,6 @@ public class SearchMoviceFragment extends BaseFragment {
                     });
             }
         });
-        allKeyVgridview.setOnKeyInterceptListener(new BaseGridView.OnKeyInterceptListener() {
-            @Override
-            public boolean onInterceptKeyEvent(KeyEvent event) {
-                if (event.getAction() == KeyEvent.ACTION_DOWN && event.getKeyCode() == KeyEvent.KEYCODE_DPAD_RIGHT) {
-                    if (isRightKey&&!lists.isEmpty()){
-                        historyVgridview.requestFocusFromTouch();
-                        return true;
-                    }else if(isRightKey&&lists.isEmpty()){
-                        suggestVgridview.requestFocusFromTouch();
-                        return true;
-                    }
-                }
-                return false;
-            }
-        });
     }
 
     private void initT9KeysGridView() {
@@ -429,23 +429,18 @@ public class SearchMoviceFragment extends BaseFragment {
         t9KeyVgridview.setOnChildViewHolderSelectedListener(new OnChildViewHolderSelectedListener() {
             @Override
             public void onChildViewHolderSelected(RecyclerView parent, RecyclerView.ViewHolder child, int position, int subposition) {
+                child.itemView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                    @Override
+                    public void onFocusChange(View v, boolean hasFocus) {
+                        if (hasFocus) {
                 if (position == 2 || position == 5 || position == 8) {
                     isRightKey = true;
                 } else {
                     isRightKey = false;
                 }
             }
-        });
-        t9KeyVgridview.setOnKeyInterceptListener(new BaseGridView.OnKeyInterceptListener() {
-            @Override
-            public boolean onInterceptKeyEvent(KeyEvent event) {
-                if (event.getAction() == KeyEvent.ACTION_DOWN && event.getKeyCode() == KeyEvent.KEYCODE_DPAD_RIGHT) {
-                    if (isRightKey) {
-                        suggestVgridview.requestFocusFromTouch();
-                        return true;
                     }
-                }
-                return false;
+        });
             }
         });
     }
@@ -474,6 +469,12 @@ public class SearchMoviceFragment extends BaseFragment {
                     if (view != null) {
                         view.setTextColor(getResources().getColor(R.color.title_select_color));
                     }
+                    if (!isAllKey) {
+                        t9KeyVgridview.requestFocusFromTouch();
+                    }else{
+                        allKeyVgridview.requestFocusFromTouch();
+                    }
+                    return true;
                 } else if (event.getAction() == KeyEvent.ACTION_DOWN && event.getKeyCode() == KeyEvent.KEYCODE_DPAD_RIGHT) {
                     Button view = (Button) keySelectHgridview.getFocusedChild();
                     if (!isAllKey) {
@@ -507,8 +508,6 @@ public class SearchMoviceFragment extends BaseFragment {
         }
     }
 
-    private int mSaveT9Postion = -1;
-    boolean isFirstLoad = true;
 
     /* 上部工具条点击事件 */
     @OnClick({R.id.clear_btn, R.id.del_btn, R.id.remove_tv})
@@ -526,11 +525,17 @@ public class SearchMoviceFragment extends BaseFragment {
                 }
                 break;
                 case R.id.remove_tv:
+                    lists.clear();
+                    historyLy.setVisibility(View.GONE);
+                    isVisible = false;
+                    mSuggestItemAdapter.notifyDataSetChanged();
                     SharedPreferences sp = mContext.getSharedPreferences(PREFERENCE_NAME, mContext.MODE_PRIVATE);
                     SharedPreferences.Editor editor = sp.edit();
                     editor.clear();
-                    editor.commit();
-                    historyLy.setVisibility(View.GONE);
+                    editor.apply();
+                    break;
+
+
         }
     }
 
@@ -565,28 +570,79 @@ public class SearchMoviceFragment extends BaseFragment {
                 if (window != null && window.isShowing()) {
                     hideT9Menu();
                     return true;
-                } else if (searchVgridview != null && searchVgridview.hasFocus() && searchVgridview.getSelectedPosition() > 1) {
-                    searchVgridview.setSelectedPosition(0);
-                    searchVgridview.smoothScrollToPosition(0);
-                    return true;
                 }
                 break;
             case KeyEvent.KEYCODE_DPAD_RIGHT:
-                if (suggestVgridview.hasFocus()||historyVgridview.hasFocus()) {
+                if ((suggestVgridview != null && suggestVgridview.hasFocus()) || (historyVgridview != null && historyVgridview.hasFocus())) {
+                    if (historyVgridview.hasFocus()) {
+                        typeSuggest = 0;
+                    } else {
+                        typeSuggest = 1;
+                    }
                     isRemaining = true;
+                    searchVgridview.requestFocusFromTouch();
+                    return true;
                 }
+
+                if(((allKeyVgridview.hasFocus()||t9KeyVgridview.hasFocus())&&isRightKey)||delBtn.hasFocus()){
+                    if(typeSuggest ==0){
+                        removeTextView.setFocusable(false);
+                        historyVgridview.requestFocusFromTouch();
+                    }else{
+                        suggestVgridview.requestFocusFromTouch();
+                }
+//                    middleLy.requestFocusFromTouch();
+                    leftLy.setVisibility(View.GONE);
+                    return true;
+                }
+
                 break;
-            case KeyEvent.KEYCODE_DPAD_UP_LEFT:
-//                if (searchVgridview.hasFocus()) {
-//                    suggestVgridview.setFocusable(true);
-//                    suggestVgridview.setFocusableInTouchMode(true);
-//                    suggestVgridview.requestFocusFromTouch();
-//                    return true;
-//                }
+            case KeyEvent.KEYCODE_DPAD_LEFT:
+                if ((suggestVgridview!=null&&suggestVgridview.hasFocus())||(historyVgridview!=null&&historyVgridview.hasFocus())) {
+                    if (historyVgridview.hasFocus()) {
+                        typeSuggest = 0;
+                    }else{
+                        typeSuggest =1;
+                    }
+                    isRemaining = true;
+                    leftLy.setVisibility(View.VISIBLE);
+                    keyBoardFl.requestFocusFromTouch();
+                    return true;
+                }
+                if(searchVgridview!=null&&searchVgridview.hasFocus()&&(searchVgridview.getSelectedPosition()%ITEM_NUM_ROW==0)){
+                    Log.v(TAG,"count:"+searchVgridview.getSelectedPosition());
+                    if(typeSuggest ==0){
+                        removeTextView.setFocusable(false);
+                        historyVgridview.requestFocusFromTouch();
+                    }else{
+                        suggestVgridview.requestFocusFromTouch();
+                    }
+//                    middleLy.requestFocusFromTouch();
+                    return true;
+                }
                 break;
             case KeyEvent.KEYCODE_DPAD_DOWN:
                 if(removeTextView.hasFocus()){
                     historyVgridview.requestFocusFromTouch();
+                    return true;
+                }
+                if(historyVgridview.hasFocus()&&historyVgridview.getSelectedPosition()==lists.size()-1){
+                    suggestVgridview.requestFocusFromTouch();
+                    return true;
+                }
+                break;
+            case KeyEvent.KEYCODE_DPAD_UP:
+                if (clearBtn.hasFocus() || delBtn.hasFocus()) {
+                    return true;
+                }
+                if(historyVgridview.hasFocus()&&historyVgridview.getSelectedPosition()==0){
+                    removeTextView.setFocusable(true);
+                    removeTextView.requestFocusFromTouch();
+                    return true;
+                }
+                if(isVisible&&suggestVgridview.hasFocus()&&suggestVgridview.getSelectedPosition()==0){
+                    historyVgridview.requestFocusFromTouch();
+                    return true;
                 }
                 break;
         }
@@ -631,9 +687,56 @@ public class SearchMoviceFragment extends BaseFragment {
     }
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        Log.v(TAG, "onAttach");
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.v(TAG, "onStart");
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.v(TAG, "onResume");
+
+
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.v(TAG, "onPause");
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.v(TAG, "onStop");
+    }
+
+    private void setTimer(int what, long timerMillis) {
+        if (mHandler.hasMessages(what)) {
+            mHandler.removeMessages(what);
+        }
+        Message msg = mHandler.obtainMessage(what);
+        mHandler.sendMessageDelayed(msg, timerMillis);
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
+        Log.v(TAG, "onDestroyView");
         unbinder.unbind();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.v(TAG, "onDestroy");
     }
 
     /**
@@ -650,6 +753,10 @@ public class SearchMoviceFragment extends BaseFragment {
                 mWordList.clear();
                 mWordList.addAll(list);
                 Log.v(TAG,"mWordList"+mWordList.size());
+                if (suggestVgridview.getChildCount() > 0) {
+                    suggestVgridview.setSelectedPosition(0);
+                    suggestVgridview.smoothScrollToPosition(0);
+                }
                 mHandler.sendEmptyMessage(REFRESH_HOT_CONTENT);
             }
 
@@ -675,9 +782,17 @@ public class SearchMoviceFragment extends BaseFragment {
 //                    Log.v(TAG, bean.toString());
                 }
                 mWordList.clear();
+                if(!list.isEmpty()) {
                 mWordList.addAll(list);
                 Log.v(TAG,"mWordList"+mWordList.size());
+                    if (suggestVgridview.getChildCount() > 0) {
+                        suggestVgridview.setSelectedPosition(0);
+                        suggestVgridview.smoothScrollToPosition(0);
+                    }
                 mHandler.sendEmptyMessage(REFRESH_SUGGEST_CONTENT);
+                }else{
+                    Toast.makeText(mContext, "没有找到相关内容", Toast.LENGTH_LONG).show();
+                }
             }
 
             @Override
@@ -704,13 +819,23 @@ public class SearchMoviceFragment extends BaseFragment {
                 for (int i = 0; i < list.size(); i++) {
 //                    Log.v(TAG, list.get(i).toString());
                 }
-//                mMoviceList.clear();
+                if(!list.isEmpty()) {
                 word = keyWord;
                 maxNum = bean.getMax_result_number();
+                    if(mMoviceList.isEmpty())
+                    {
+                        isNeedtToSetPos = true;
+                    }else
+                    {
+                        isNeedtToSetPos = false;
+                    }
                 mMoviceList.addAll(list);
-                Log.v(TAG, mMoviceList.toString());
+//                Log.v(TAG, mMoviceList.toString());
                 mHandler.sendEmptyMessage(REFRESH_MOIVE_CONTENT);
                 searchVgridview.endMoreRefreshComplete();
+                }else{
+                    Toast.makeText(mContext, "没有找到相关内容", Toast.LENGTH_LONG).show();
+                }
             }
 
             @Override
@@ -784,7 +909,7 @@ public class SearchMoviceFragment extends BaseFragment {
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View view = View.inflate(parent.getContext(), R.layout.item_videos_layout, null);
             // 保持影视比例.
-            mItemWidth = (AutoSizeUtils.dp2px(Objects.requireNonNull(getContext()), AutoSizeConfig.getInstance().getDesignWidthInDp()) - GRIDVIEW_LEFT_P - GRIDVIEW_RIGHT_P - (ITEM_PADDING * ITEM_NUM_ROW)) / ITEM_NUM_ROW;
+            mItemWidth = 300;
             mItemHeight = mItemWidth / 3 * 4;
             ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(mItemWidth, mItemHeight);
             view.setLayoutParams(lp);
@@ -803,6 +928,7 @@ public class SearchMoviceFragment extends BaseFragment {
                         .load(videoBean.getImageUrl()).into(holder.bgIv);
                 ((TextView) holder.nameTv).setAlpha(0.80f);
                 ((TextView) holder.nameTv).setText(mMoviceList.get(position).getName());
+                holder.nameTv.setSelected(true);
                 String latestOrder = videoBean.getLatestOrder();
                 String videoCount = videoBean.getVideoCount();
                 holder.infoTv.setVisibility(View.VISIBLE);
@@ -829,17 +955,20 @@ public class SearchMoviceFragment extends BaseFragment {
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-//                        if (videoBean.getVideoInfoType().equals("1") && videoBean.getTvId() != null) {
                         saveSearchHistory(word);
                         Log.v(TAG, "word" + word);
+                        if (videoBean.getVideoInfoType().equals("1") && videoBean.getTvId() != null) {
                         Intent intent = new Intent(getContext(), VideoPreviewActivity.class);
                         intent.putExtra("videoBean", videoBean);
                         startActivity(intent);
-//                        } else {
-//                            Intent intent = new Intent(getContext(), FullPlaybackActivity.class);
-//                            intent.putExtra("videoBean", videoBean);
-//                            startActivity(intent);
-//                        }
+                        } else {
+                            Intent intent = new Intent(getContext(), FullPlaybackActivity.class);
+                            intent.putExtra("tvId", videoBean.getTvId());
+                            intent.putExtra("name", videoBean.getName());
+                            intent.putExtra("albumId", videoBean.getAlbumId());
+                            intent.putExtra("latestOrder", videoBean.getLatestOrder());
+                            startActivity(intent);
+                        }
 
                     }
                 });
@@ -849,6 +978,7 @@ public class SearchMoviceFragment extends BaseFragment {
 
         @Override
         public int getItemCount() {
+            Log.v("TTTTT","size:"+mMoviceList.size());
             return null != mMoviceList ? mMoviceList.size() : 0;
         }
 
@@ -906,10 +1036,6 @@ public class SearchMoviceFragment extends BaseFragment {
 
                     }
                 });
-                // 设置默认.
-                if (firstPos == position || isRemaining) {
-                    ((Button) holder.itemView).setTextColor(getResources().getColor(R.color.title_select_color));
-                }
 
             }
 
@@ -974,12 +1100,7 @@ public class SearchMoviceFragment extends BaseFragment {
 
                     }
                 });
-                // 设置默认.
-                if (lists.isEmpty()) {
-                    if (firstPos == position || isRemaining) {
-                        ((Button) holder.itemView).setTextColor(getResources().getColor(R.color.title_select_color));
-                    }
-                }
+
 
             }
 

@@ -90,7 +90,7 @@
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
-                >
+                android:id="@+id/keyboard_fl">
                 <!-- 全键盘 T9 搜索键盘 -->
                 <com.stars.tv.view.MyVerticalGridView
                     android:id="@+id/all_key_vgridview"
@@ -150,7 +150,8 @@
                 android:layout_width="match_parent"
                 android:layout_weight="1"
                 android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:id="@+id/middle_ll">
                 <!--搜索历史-->
                 <include layout="@layout/include_history_layout" />
 
@@ -170,7 +171,7 @@
             <!-- 右边的搜索内容 -->
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_weight="0.4"
+                android:layout_weight="0.33"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="20dp"
                 android:orientation="vertical">
