@@ -18,6 +18,8 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -28,6 +30,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Function;
 import io.reactivex.observers.DisposableObserver;
 import io.reactivex.schedulers.Schedulers;
+import okhttp3.Response;
 import okhttp3.ResponseBody;
 
 public class StreamPresenter {
@@ -55,7 +58,7 @@ public class StreamPresenter {
     private Observable<ResponseBody> getDouyuRealPlayUrl(String suffix, String auth){
         Constants.CastStream = "douyu";
         return RetrofitFactory.createApi(RetrofitService.class, "https://capi.douyucdn.cn/api/v1/")
-                .getDouyuRealPlayUrl(suffix, auth).compose(RxUtils.rxSchedulerHelper());
+                .getDouyuRealPlayUrl(suffix, auth);
     }
 
     public void getYTVideoInfo(String video_id, CallBack<YTM3U8Bean> listener){
@@ -150,7 +153,7 @@ public class StreamPresenter {
                 });
     }
 
-    public void getHuyaRealPlayUrl(String channel){
+    public void getHuyaRealPlayUrl(String channel, CallBack<String> listener){
         getHuyaChannelIpadPage(channel)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -158,8 +161,11 @@ public class StreamPresenter {
                     @Override
                     public void onNext(ResponseBody responseBody) {
                         try {
-                            Log.d("huya", responseBody.string());
-                            String url = parseHuyaM3U8(responseBody.string());
+                            String s = responseBody.string();
+                            String url = parseHuyaM3U8(s);
+                            url = "http:" + url;
+//                            Log.d("Huya", url);
+                            listener.success(url);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -179,30 +185,33 @@ public class StreamPresenter {
 
     private String parseHuyaM3U8(String s){
         Pattern pattern = Pattern
-                .compile("\\s*<video\\s+id=\"html5player-video\"\\s+src=\"([^\"]+)\"");
+                            .compile("\\s*<video\\s+id=\"html5player-video\"\\s+src=\"([^\"]+)\"");
         Matcher dataMatcher = pattern.matcher(s);
-
-        Log.d("test2", String.valueOf(dataMatcher.matches()));
         String ls = null;
         while (dataMatcher.find()){
             ls = dataMatcher.group(1);
         }
-        Log.d("test2", ls);
         return ls;
     }
 
-    private  String getVMSUrl(String channel, String suffix) {
+    private  String getVMSUrl(String suffix){
         String secret = "zNzMV1y4EMxOHS6I5WKm";
+        String encode = null;
+        encode = new String((suffix + secret).getBytes(StandardCharsets.UTF_8), StandardCharsets.UTF_8);
+
+        Log.d("encode before", suffix+secret);
+        Log.d("encode", encode);
         String sign = MD5.getMD5CodeStr(suffix + secret);
         return sign;
     }
 
     public void getDouyuRealPlayUrl(String channel, CallBack<String> listener){
         long t = (new Date()).getTime();
+        int ts = (int) (t / 1000);
         String [] cdns = {"ws", "tct", "ws2", "dl"};
-        String suffix = "room/"+ channel +"?aid=wp&cdn="+ cdns[0] +"&client_sys=wp&time=" + t;
+        String suffix = "room/"+ channel +"?aid=wp&cdn="+ cdns[0] +"&client_sys=wp&time=" + ts;
         Log.d("suffix", suffix);
-        String sign = getVMSUrl(channel, suffix);
+        String sign = getVMSUrl(suffix);
         Log.d("sign", sign);
         getDouyuRealPlayUrl(suffix, sign)
                 .subscribeOn(Schedulers.io())

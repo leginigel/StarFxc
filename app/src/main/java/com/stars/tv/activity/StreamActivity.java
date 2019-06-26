@@ -23,6 +23,7 @@ import com.stars.tv.R;
 import com.stars.tv.bean.YTM3U8Bean;
 import com.stars.tv.presenter.StreamPresenter;
 import com.stars.tv.utils.CallBack;
+import com.stars.tv.utils.ViewUtils;
 import com.stars.tv.widget.media.AndroidMediaController;
 import com.stars.tv.widget.media.IjkVideoView;
 
@@ -77,7 +78,7 @@ public class StreamActivity extends BaseActivity {
 
     private StreamCate mCate;
     enum StreamCate{
-        YT, Twitch, FB, BiliBili, Douyu, Address
+        YT, Twitch, FB, Douyu, Huya, BiliBili, Address
     }
 //    private Runnable r = new Runnable() {
 //        @Override
@@ -98,6 +99,7 @@ public class StreamActivity extends BaseActivity {
 
         streamPresenter = new StreamPresenter();
         mCate = StreamCate.YT;
+        // Setup Top Nav Focus Scheme
         for (int i = 0;i < linearLayout.getChildCount();i++){
             int drawable = 0;
             StreamCate cate = null;
@@ -119,10 +121,14 @@ public class StreamActivity extends BaseActivity {
                     cate = StreamCate.Douyu;
                     break;
                 case 4:
+                    drawable = R.drawable.huya_ico;
+                    cate = StreamCate.Huya;
+                    break;
+                case 5:
                     drawable = R.drawable.bilibili;
                     cate = StreamCate.BiliBili;
                     break;
-                case 5:
+                case 6:
                     drawable = R.drawable.temp_tv_icon;
                     cate = StreamCate.Address;
                     break;
@@ -132,9 +138,10 @@ public class StreamActivity extends BaseActivity {
             StreamCate finalCate = cate;
             linearLayout.getChildAt(i).setOnFocusChangeListener((v, hasFocus)->{
                 if(hasFocus) {
+                    ((TextView) v).setTextColor(getResources().getColor(R.color.color_focus));
                     serverImg.setImageDrawable(getResources().getDrawable(finalDrawable));
                     mCate = finalCate;
-                    if(finalI >= 3){
+                    if(finalI == 6){
                         address.setVisibility(View.VISIBLE);
                         addressText.setVisibility(View.VISIBLE);
                     }
@@ -143,10 +150,57 @@ public class StreamActivity extends BaseActivity {
                         addressText.setVisibility(View.GONE);
                     }
                 }
+                else{
+                    ((TextView) v).setTextColor(getResources().getColor(R.color.text_white));
+                    if(address.isFocused() || stream.isFocused()){
+                        ((TextView) v).setTextColor(getResources().getColor(R.color.color_focus));
+                    }
+                }
+                ViewUtils.scaleAnimator(v, hasFocus, 1.2f, 150);
             });
         }
         linearLayout.getChildAt(0).requestFocus();
 
+        // Setup EditText Up Key Navigation
+        address.setOnKeyListener((v, keyCode, event) -> {
+            if(event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_DPAD_UP){
+                linearLayout.getChildAt(6).requestFocus();
+                return true;
+            }
+            else if(keyCode == KeyEvent.KEYCODE_DPAD_LEFT || keyCode == KeyEvent.KEYCODE_DPAD_RIGHT){
+                return true;
+            }
+            return false;
+        });
+        stream.setOnKeyListener((v, keyCode, event) -> {
+            if(event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_DPAD_UP){
+                switch (mCate) {
+                    case YT:
+                        linearLayout.getChildAt(0).requestFocus();
+                        break;
+                    case Twitch:
+                        linearLayout.getChildAt(1).requestFocus();
+                        break;
+                    case FB:
+                        linearLayout.getChildAt(2).requestFocus();
+                        break;
+                    case Douyu:
+                        linearLayout.getChildAt(3).requestFocus();
+                        break;
+                    case Huya:
+                        linearLayout.getChildAt(4).requestFocus();
+                        break;
+                    case BiliBili:
+                        linearLayout.getChildAt(5).requestFocus();
+                        break;
+                }
+                return true;
+            }
+            else if(keyCode == KeyEvent.KEYCODE_DPAD_LEFT || keyCode == KeyEvent.KEYCODE_DPAD_RIGHT){
+                return true;
+            }
+            return false;
+        });
 //        castYTStream("ibz7k3DjIeA");
 //        String test1 = null;
 //        test1 = parseYTM3U8(test1);
@@ -154,8 +208,7 @@ public class StreamActivity extends BaseActivity {
 //
 //        address.setText(ytM3U8Bean.getStreamingData().getHlsManifestUrl());
 //        stream.setText("");
-        castHuyaStream("377885");
-//        castDouyuStream("1282190");
+
 
         castStream.setOnClickListener(v -> {
             if(address.getText() != null || stream.getText() != null) {
@@ -168,6 +221,10 @@ public class StreamActivity extends BaseActivity {
                     case FB:
                         break;
                     case Douyu:
+                        castDouyuStream("160504");
+                        break;
+                    case Huya:
+                        castHuyaStream(stream.getText().toString());
                         break;
                     case BiliBili:
                         castBilibiliStream(stream.getText().toString());
@@ -182,6 +239,8 @@ public class StreamActivity extends BaseActivity {
                 }
             }
         });
+        castStream.setNextFocusLeftId(castStream.getId());
+        castStream.setNextFocusRightId(castStream.getId());
     }
 
     private void castDouyuStream(String channel){
@@ -199,7 +258,18 @@ public class StreamActivity extends BaseActivity {
     }
 
     private void castHuyaStream(String channel){
-        streamPresenter.getHuyaRealPlayUrl(channel);
+        streamPresenter.getHuyaRealPlayUrl(channel, new CallBack<String>() {
+            @Override
+            public void success(String s) {
+                Log.d("Huya URL ", s);
+                cast(s);
+            }
+
+            @Override
+            public void error(String msg) {
+                showError();
+            }
+        });
 
     }
 
