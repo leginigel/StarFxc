@@ -59,6 +59,60 @@ public final class SeriesAndRecVideoDataList {
             "健康"
     };
 
+    public static final String FILM_CATEGORY[] = {
+            "院线热映",
+            "独播剧场",
+            "网络大电影",
+            "华语经典电影",
+            "华语奇幻电影",
+            "美国惊悚电影",
+            "美国动作电影",
+            "经典喜剧电影",
+            "暴力惊悚电影",
+            "烧脑犯罪电影",
+            "关于青春的喜剧电影",
+            "关于警匪的动作电影",
+            "美国冒险电影",
+            "爱情喜剧电影",
+            "巨制大电影"
+    };
+
+    public static final String VARIETY_CATEGORY[] = {
+            "重磅推荐",
+            "明星真人秀",
+            "情感专区",
+            "音乐畅想",
+            "搞笑综艺",
+            "脱口秀",
+            "唯美食与爱不可辜负",
+            "职场求职",
+            "明星谈话",
+            "明星带娃",
+            "爱奇艺专区",
+            "旅游冒险",
+            "音乐选秀",
+            "脑力比拼",
+            "经典曲艺"
+    };
+
+    public static final String CARTOON_CATEGORY[] = {
+            "C位动漫",
+            "日本动漫",
+            "国产动画",
+            "欧美动画",
+            "动画电影",
+            "真人特摄",
+            "吐槽搞笑",
+            "热血冒险",
+            "恋爱青春",
+            "运动竞技",
+            "科幻未来",
+            "机甲",
+            "儿童剧场",
+            "玩游戏打BOSS",
+            "短视频精选"
+    };
+
     public static List<IQiYiMovieBean> seriesContent() {
         List<IQiYiMovieBean> list = new ArrayList<>();
         String title[] = {

@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.avos.avoscloud.LogUtil;
 import com.bumptech.glide.Glide;
 import com.stars.tv.R;
 import com.stars.tv.activity.VideoPreviewActivity;
@@ -20,7 +21,7 @@ import me.jessyan.autosize.AutoSizeConfig;
 import me.jessyan.autosize.utils.AutoSizeUtils;
 
 public class FilmVideoItemPresenter extends Presenter {
-
+    private static final String TAG = "FilmVideoItemPresenter";
     private static final int GRID_VIEW_LEFT_PX = 80;
     private static final int GRID_VIEW_RIGHT_PX = 50;
     private static final int ITEM_RIGHT_PADDING_PX = 25;
@@ -30,14 +31,14 @@ public class FilmVideoItemPresenter extends Presenter {
     //    private static final int CARD_WIDTH = 250;
 //    private static final int CARD_HEIGHT = 200;
     ImageView bgIv, payIv;
-    TextView nameTv, episodeTv;
+    TextView nameTv, infoTv;
     View boardView;
-    protected static Context mContext;
+    protected Context mContext;
     boolean isValue;
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent) {
-        View view = View.inflate(parent.getContext(), R.layout.item_film_video_layout, null);
+        View view = View.inflate(parent.getContext(), R.layout.item_videos_layout, null);
         mContext = parent.getContext();
         CARD_WIDTH = (AutoSizeUtils.dp2px(Objects.requireNonNull(parent.getContext()),AutoSizeConfig.getInstance().getDesignWidthInDp()) - GRID_VIEW_LEFT_PX - GRID_VIEW_RIGHT_PX - (ITEM_RIGHT_PADDING_PX * ITEM_NUM_ROW)) / ITEM_NUM_ROW;
         CARD_HEIGHT = CARD_WIDTH / 3 * 4;
@@ -51,23 +52,24 @@ public class FilmVideoItemPresenter extends Presenter {
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, Object item) {
         IQiYiMovieBean videoBean = (IQiYiMovieBean)item;
-        Log.v("ttt","videoBean"+videoBean.toString());
+//        Log.v(TAG,"videoBean"+videoBean.toString());
         bgIv = viewHolder.view.findViewById(R.id.bg_iv);
         nameTv = viewHolder.view.findViewById(R.id.name_tv);
         boardView = viewHolder.view.findViewById(R.id.board_view);
         payIv = viewHolder.view.findViewById(R.id.pay_iv);
+        infoTv = viewHolder.view.findViewById(R.id.info_tv);
+        infoTv.setVisibility(View.VISIBLE);
+        payIv.setVisibility(View.VISIBLE);
         nameTv.setAlpha(0.80f);
         String latestOrder = videoBean.getLatestOrder();
         String videoCount = videoBean.getVideoCount();
-        Log.v("ttt","latestOrder"+latestOrder+"videoCount"+videoCount);
+        Log.v(TAG,"latestOrder"+latestOrder+"videoCount"+videoCount);
         nameTv.setText(videoBean.getName());
         Glide.with(Objects.requireNonNull(viewHolder.view.getContext()))
                 .load(videoBean.getImageUrl()).into(bgIv);
-        Log.v("test", "url"+videoBean.getPayMarkUrl());
+        Log.v(TAG, "url"+videoBean.getPayMarkUrl());
         if(videoBean.getPayMarkUrl()!=null) {
             payIv.setImageResource(R.drawable.vip_icon2);
-            Log.v("tttt","width and height"+payIv.getHeight()+payIv.getHeight());
-            Log.v("test", "url" + videoBean.getPayMarkUrl());
         }
         viewHolder.view.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,6 +77,7 @@ public class FilmVideoItemPresenter extends Presenter {
 //                Toast.makeText(mContext,"click the" + nameTv.getText().toString(),Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(mContext, VideoPreviewActivity.class);
                 intent.putExtra("videoBean", videoBean);
+                intent.putExtra("titleName","Film");
                 mContext.startActivity(intent);
             }
         });

@@ -7,6 +7,8 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.stars.tv.R;
@@ -19,7 +21,7 @@ import me.jessyan.autosize.AutoSizeConfig;
 import me.jessyan.autosize.utils.AutoSizeUtils;
 
 public class FilmBannerItemPresenter extends Presenter {
-    private static final String TAG = "BannerItemPresenter";
+
     private static final int GRID_VIEW_LEFT_PX = 80;
     private static final int GRID_VIEW_RIGHT_PX = 50;
     private static final int ITEM_RIGHT_PADDING_PX = 25;
@@ -28,28 +30,30 @@ public class FilmBannerItemPresenter extends Presenter {
     int CARD_HEIGHT =0;
     ImageView bgIv;
     View boardView;
-    protected static Context mContext;
+    TextView nameTv;
+    protected Context mContext;
 
-    private FilmHotListRowPresenter filmHotListRowPresenter = new FilmHotListRowPresenter();
+    private HotVideoListRowPresenter hotVideoListRowPresenter = new HotVideoListRowPresenter();
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent) {
-        View view = View.inflate(parent.getContext(), R.layout.item_film_banner_layout, null);
+    public Presenter.ViewHolder onCreateViewHolder(ViewGroup parent) {
+        View view = View.inflate(parent.getContext(), R.layout.item_series_banner_layout, null);
         mContext = parent.getContext();
         CARD_WIDTH = (AutoSizeUtils.dp2px(Objects.requireNonNull(parent.getContext()),AutoSizeConfig.getInstance().getDesignWidthInDp()) - GRID_VIEW_LEFT_PX - GRID_VIEW_RIGHT_PX - (ITEM_RIGHT_PADDING_PX * ITEM_NUM_ROW)) / ITEM_NUM_ROW;
-        CARD_HEIGHT = CARD_WIDTH/4*3;
-        Log.v(TAG,"width"+CARD_WIDTH+"height:"+CARD_HEIGHT);
+        CARD_HEIGHT = CARD_WIDTH*3/4;
         ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(CARD_WIDTH, CARD_HEIGHT);
         view.setLayoutParams(lp);
         view.setFocusable(true);
         view.setFocusableInTouchMode(true);
-        return new ViewHolder(view);
+        return new Presenter.ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder viewHolder, Object item) {
+    public void onBindViewHolder(final Presenter.ViewHolder viewHolder, Object item) {
         IQiYiBannerInfoBean videoBean = (IQiYiBannerInfoBean)item;
         bgIv = viewHolder.view.findViewById(R.id.bg_iv);
         boardView = viewHolder.view.findViewById(R.id.board_view);
+        nameTv = viewHolder.view.findViewById(R.id.name_tv);
+        nameTv.setText(videoBean.getName()+": "+videoBean.getDescription());
         Glide.with(Objects.requireNonNull(viewHolder.view.getContext()))
                 .load(videoBean.getImageUrl()).into(bgIv);
         viewHolder.view.setOnClickListener(new View.OnClickListener() {
@@ -58,6 +62,7 @@ public class FilmBannerItemPresenter extends Presenter {
 //                Toast.makeText(mContext,"click the Video",Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(mContext, VideoPreviewActivity.class);
                 intent.putExtra("videoBean", videoBean);
+                intent.putExtra("titleName","Film");
                 mContext.startActivity(intent);
             }
         });
@@ -65,7 +70,7 @@ public class FilmBannerItemPresenter extends Presenter {
     }
 
     @Override
-    public void onUnbindViewHolder(ViewHolder viewHolder) {
+    public void onUnbindViewHolder(Presenter.ViewHolder viewHolder) {
 
     }
 

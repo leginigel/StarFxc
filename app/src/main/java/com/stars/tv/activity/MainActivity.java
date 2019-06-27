@@ -17,11 +17,13 @@ import com.stars.tv.bean.IQiYiTopListBean;
 import com.stars.tv.bean.IQiYiVideoBaseInfoBean;
 import com.stars.tv.bean.TvTitle;
 import com.stars.tv.fragment.BaseFragment;
+import com.stars.tv.fragment.CartoonVideoRowSampleFragment;
 import com.stars.tv.fragment.EmptyFragment;
 import com.stars.tv.fragment.FilmVideoRowSampleFragment;
 import com.stars.tv.fragment.RecommandVideoRowFragment;
 import com.stars.tv.fragment.LiveTVFragment;
 import com.stars.tv.fragment.SeriesVideoRowFragment;
+import com.stars.tv.fragment.VarietyVideoRowSampleFragment;
 import com.stars.tv.model.TvTitleModel;
 import com.stars.tv.presenter.IQiYiMovieSimplifiedListPresenter;
 import com.stars.tv.presenter.IQiYiParseBannerInfoPresenter;
@@ -733,8 +735,12 @@ public class MainActivity extends BaseActivity {
         mFragmentList.add(LiveTVFragment.getInstance(titleMode.getName()));
             } else if (titleMode.getName().equals(Constants.MAIN_TITLE_DIANSHIJU)) {
         mFragmentList.add(SeriesVideoRowFragment.getInstance(titleMode.getName()));
-            } else if (titleMode.getName().matches(Constants.MAIN_TITLE_DIANYING)) {
+            } else if (titleMode.getName().equals(Constants.MAIN_TITLE_DIANYING)) {
           mFragmentList.add(FilmVideoRowSampleFragment.getInstance(titleMode.getName()));
+            } else if (titleMode.getName().equals(Constants.MAIN_TITLE_ZONGYI)) {
+                mFragmentList.add(VarietyVideoRowSampleFragment.getInstance(titleMode.getName()));
+            } else if (titleMode.getName().equals(Constants.MAIN_TITLE_DONGYI)) {
+                mFragmentList.add(CartoonVideoRowSampleFragment.getInstance(titleMode.getName()));
       }else {
                 mFragmentList.add(EmptyFragment.getInstance(titleMode.getName()));
       }

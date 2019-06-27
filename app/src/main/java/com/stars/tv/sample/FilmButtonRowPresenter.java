@@ -2,6 +2,7 @@
 package com.stars.tv.sample;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v17.leanback.widget.RowPresenter;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.stars.tv.R;
+import com.stars.tv.activity.TotalMediaListActivity;
 import com.stars.tv.utils.ViewUtils;
 
 import java.util.Objects;
@@ -18,13 +20,13 @@ import me.jessyan.autosize.AutoSizeConfig;
 import me.jessyan.autosize.utils.AutoSizeUtils;
 
 public class FilmButtonRowPresenter extends RowPresenter {
-    protected static Context mContext;
-    String TAG = "FilmButtonRowPresenter";
+    protected Context mContext;
+    private static final String TAG = "FilmButtonRowPresenter";
     private static final int GRID_VIEW_LEFT_PX = 80;
     private static final int GRID_VIEW_RIGHT_PX = 30;
-    private static final int ITEM_TOL_ROW = 2;
+    private static final int ITEM_NUM_ROW = 1;
     int LAYOUT_WIDTH = 0;
-    int LAYOUT_HEIGHT = 100;
+    int LAYOUT_HEIGHT = 300;
 
     public FilmButtonRowPresenter() {
 
@@ -36,8 +38,8 @@ public class FilmButtonRowPresenter extends RowPresenter {
     @Override
     protected ViewHolder createRowViewHolder(ViewGroup parent) {
         View root = LayoutInflater.from(parent.getContext()).inflate(R.layout.film_item_button_row_layout, null, false);
-        root.setPadding(30,30,30,30);
-        LAYOUT_WIDTH = (AutoSizeUtils.dp2px(Objects.requireNonNull(parent.getContext()), AutoSizeConfig.getInstance().getDesignWidthInDp()) - GRID_VIEW_LEFT_PX ) / ITEM_TOL_ROW;
+        root.setPadding(30,60,30,30);
+        LAYOUT_WIDTH = (AutoSizeUtils.dp2px(Objects.requireNonNull(parent.getContext()), AutoSizeConfig.getInstance().getDesignWidthInDp()) - GRID_VIEW_LEFT_PX ) / ITEM_NUM_ROW;
         ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(LAYOUT_WIDTH, LAYOUT_HEIGHT);
         root.setLayoutParams(lp);
         mContext = parent.getContext();
@@ -48,7 +50,7 @@ public class FilmButtonRowPresenter extends RowPresenter {
     protected void onBindRowViewHolder(final ViewHolder holder, Object item) {
         super.onBindRowViewHolder(holder, item);
         ViewGroup vg = (ViewGroup) holder.view;
-        Log.v("ttttt","select the Button:" + vg.getChildCount());
+        Log.v(TAG,"select the Button:" + vg.getChildCount());
         for (int i = 0; i < vg.getChildCount(); i++) {
             final View childView = vg.getChildAt(i);
             childView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -61,11 +63,13 @@ public class FilmButtonRowPresenter extends RowPresenter {
                 @Override
                 public void onClick(View v) {
                     View btn = v;
+
                     String buttonName = ((Button) btn).getText().toString();
+                    buttonName=TAG+buttonName;
                     Log.v(TAG,"buttonName is: " + buttonName);
-//                    Intent intent = new Intent(mContext, DetailActivity.class);
-//                    intent.putExtra("buttonName", buttonName);
-//                    mContext.startActivity(intent);
+                    Intent intent = new Intent(mContext, TotalMediaListActivity.class);
+                    intent.putExtra("buttonName", buttonName);
+                    mContext.startActivity(intent);
 
                 }
             });

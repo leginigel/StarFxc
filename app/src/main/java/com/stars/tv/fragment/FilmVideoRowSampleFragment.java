@@ -3,6 +3,7 @@ package com.stars.tv.fragment;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -20,8 +21,10 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.ybq.android.spinkit.style.Circle;
 import com.stars.tv.R;
 import com.stars.tv.bean.IQiYiBannerInfoBean;
 import com.stars.tv.bean.IQiYiMovieBean;
@@ -29,14 +32,15 @@ import com.stars.tv.bean.IQiYiMovieSimplifiedBean;
 import com.stars.tv.presenter.IQiYiMovieSimplifiedListPresenter;
 import com.stars.tv.presenter.IQiYiParseBannerInfoPresenter;
 import com.stars.tv.sample.FilmBannerItemPresenter;
-import com.stars.tv.sample.FilmButtonItemPresenter;
+import com.stars.tv.sample.SeriesAndRecButtonItemPresenter;
 import com.stars.tv.sample.FilmButtonListRow;
-import com.stars.tv.sample.FilmHotListRow;
-import com.stars.tv.sample.FilmVideoDataList;
+import com.stars.tv.sample.HotVideoListRow;
+import com.stars.tv.sample.SeriesAndRecVideoDataList;
 import com.stars.tv.sample.FilmVideoItemPresenter;
-import com.stars.tv.sample.FilmVideoListRow;
+import com.stars.tv.sample.PortraitVideoListRow;
 import com.stars.tv.sample.MyPresenterSelector;
 import com.stars.tv.utils.CallBack;
+import com.stars.tv.utils.NetUtil;
 import com.stars.tv.view.MyVerticalGridView;
 
 import java.util.ArrayList;
@@ -46,6 +50,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import io.reactivex.disposables.CompositeDisposable;
 
 public class FilmVideoRowSampleFragment extends BaseFragment {
     private static final String TAG = "FilmVideoRowSampleFragment";
@@ -53,13 +58,13 @@ public class FilmVideoRowSampleFragment extends BaseFragment {
     private static final int GRID_VIEW_RIGHT_PX = 50;
     private static final int GRID_VIEW_TOP_PX = 30;
     private static final int GRID_VIEW_BOTTOM_PX = 50;
-    protected static Context mContext;
+    protected Context mContext;
     List<IQiYiMovieBean> mVideoList = new ArrayList<>();
 
     List<List<IQiYiMovieBean>> mVideoListArray = new ArrayList<>(15);
     List<IQiYiBannerInfoBean> mBannerInfoList = new ArrayList<>();
-    @BindView(R.id.video_content_v_grid)
-    MyVerticalGridView videoGrid;
+    @BindView(R.id.video_content_v_grid) MyVerticalGridView videoGrid;
+    @BindView(R.id.loading) TextView loadText;
     Unbinder unbinder;
 
     ArrayObjectAdapter mRowsAdapter;
@@ -69,14 +74,17 @@ public class FilmVideoRowSampleFragment extends BaseFragment {
     String mTvTitle;
     final int REFRESH_BANNER_CONTENT = 0;
     final int REFRESH_MOVIE_CONTENT = 1;
+    final int REFRESH_ERROR = -1;
     private int mPageNum = 1;
+    private int totalPage = 5;
     private int category;
-    private int countRow = 0;
+    private int curRow =0;
     private int loadRows = 3;
     private int totalBanner = 3;
-
+    private Circle mCircleDrawable;
     private int[] listPos = new  int[15];
-    private String[] orderlist = {"27815", "30149", "27401", "1,27976", "1,1284", "2,128", "2,11", "8,27976", "128,27976", "291,289", "8,130", "11,131", "2,9",  "6,8,130"};
+    private String[] orderlist = {"27815", "30149", "27401", "1,27976", "1,1284", "2,128", "2,11", "8,27976", "128,27976", "291,289", "8,130", "11,131", "2,9",  "6,8,130","27397"};
+    private int totalRow = 17;
 
     public FilmVideoRowSampleFragment() {
     }
@@ -97,27 +105,29 @@ public class FilmVideoRowSampleFragment extends BaseFragment {
     private Handler mHandler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
-            Log.v("tttt","msg.what:"+msg.what);
+            Log.v(TAG,"msg.what:"+msg.what);
             switch (msg.what){
                 case REFRESH_BANNER_CONTENT:
+                    mCircleDrawable.stop();
+                    loadText.setVisibility(View.GONE);
                     showBannerData();
                     parseIQiYiMovie();
                     break;
                 case REFRESH_MOVIE_CONTENT:
                     category = msg.arg1;
                     showVideoData();
-                    countRow = countRow +1;
-                    if(countRow == 15){
-                        Toast.makeText(mContext,"没有更多视频加载",Toast.LENGTH_LONG).show();
-                    }
+                    break;
+                case REFRESH_ERROR:
+                    mCircleDrawable.stop();
+                    loadText.setText("加载失败，网络简析错误！");
+                    loadText.setTextColor(Color.WHITE);
+                    loadText.setVisibility(View.VISIBLE);
                     break;
                 default:
                     break;
             }
             mItemBridgeAdapter.notifyDataSetChanged();
-            if(category>=14){
-                videoGrid.endRefreshingWithNoMoreData();
-            }
+
         }
     };
 
@@ -128,6 +138,7 @@ public class FilmVideoRowSampleFragment extends BaseFragment {
     }
 
     private void showBannerData(){
+        mRowsAdapter.clear();
         FilmBannerItemPresenter filmBannerItemPresenter = new FilmBannerItemPresenter();
         ArrayObjectAdapter listRowAdapter = new ArrayObjectAdapter(filmBannerItemPresenter);
         if(mBannerInfoList!=null) {
@@ -142,10 +153,10 @@ public class FilmVideoRowSampleFragment extends BaseFragment {
                 }
             }
         }
-        FilmHotListRow listRow = new FilmHotListRow(listRowAdapter);
+        HotVideoListRow listRow = new HotVideoListRow(listRowAdapter);
         mRowsAdapter.add(listRow);
 
-        FilmButtonItemPresenter mGridPresenter = new FilmButtonItemPresenter();
+        SeriesAndRecButtonItemPresenter mGridPresenter = new SeriesAndRecButtonItemPresenter();
         ArrayObjectAdapter gridRowAdapter = new ArrayObjectAdapter(mGridPresenter);
         mRowsAdapter.add(new FilmButtonListRow(gridRowAdapter));
     }
@@ -154,19 +165,21 @@ public class FilmVideoRowSampleFragment extends BaseFragment {
         FilmVideoItemPresenter videoItemPresenter0 = new FilmVideoItemPresenter();
         ArrayObjectAdapter listRowAdapter0 = new ArrayObjectAdapter(videoItemPresenter0);
         mVideoList.clear();
+        if (mVideoListArray != null) {
         mVideoList = mVideoListArray.get(listPos[category]);
         for (int k = 0; k < mVideoList.size(); k++) {
             listRowAdapter0.add(mVideoList.get(k));
         }
-        HeaderItem header0 = new HeaderItem(category, FilmVideoDataList.FILM_CATEGORY[category]);
-        FilmVideoListRow listRow0 = new FilmVideoListRow(header0, listRowAdapter0);
+        }
+        HeaderItem header0 = new HeaderItem(category, SeriesAndRecVideoDataList.FILM_CATEGORY[category]);
+        PortraitVideoListRow listRow0 = new PortraitVideoListRow(header0, listRowAdapter0);
         mRowsAdapter.add(listRow0);
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable final ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_film_video, container, false);
+        View view = inflater.inflate(R.layout.fragment_series_video, container, false);
         unbinder = ButterKnife.bind(this, view);
         // 初始化影视垂直布局.
         videoGrid.setPadding(GRID_VIEW_LEFT_PX, GRID_VIEW_TOP_PX, GRID_VIEW_RIGHT_PX, GRID_VIEW_BOTTOM_PX);
@@ -202,25 +215,31 @@ public class FilmVideoRowSampleFragment extends BaseFragment {
                 }
             }
         });
-
-        parseIQiYiParseBannerInfo("dianying");
+        initLoading();
         videoGrid.setOnLoadMoreListener(new MyVerticalGridView.OnLoadMoreListener() {
             @Override
             public void onLoadMore() {
                 mPageNum += 1;
+                if (mPageNum <= totalPage) {
                 for(int i=0;i<loadRows; i++) {
-                    parseIQiYiMovieSimplifiedList((mPageNum - 1) * 3 + i, 2, orderlist[(mPageNum - 1) * 3 + i], "", "",
+                        parseIQiYiMovieSimplifiedList((mPageNum - 1) * loadRows + i, 2, orderlist[(mPageNum - 1) * loadRows + i], "", "",
                             24, 1, 1, "iqiyi", 1, "", 12);
                 }
-            }
 
+                }else{
+                    videoGrid.endRefreshingWithNoMoreData();
+                }
+            }
             @Override
             public void onLoadEnd() {
-
+                if (getUserVisibleHint()&&(curRow == totalRow-1)) {
+                    Toast.makeText(mContext, "没有更多视频加载", Toast.LENGTH_LONG).show();
+                }
             }
         });
         return view;
     }
+
 
     private void parseIQiYiMovie(){
         parseIQiYiMovieSimplifiedList(0, 1, orderlist[0], "", "", 4, 1, 1, "iqiyi", 1, "", 12);
@@ -228,6 +247,12 @@ public class FilmVideoRowSampleFragment extends BaseFragment {
         parseIQiYiMovieSimplifiedList(2, 1, orderlist[2], "", "", 24, 1, 1, "iqiyi", 1, "", 12);
     }
 
+    /**
+     * 获取爱奇艺片库筛选结果List
+     * 参数请参看iqiyidata.json
+     * @param orderList 筛选组合，请参看iqiyidata.json中order-list部分,  "15,24"; 为内地，古装筛选组合
+     * @param pageSize 每页个数
+     */
     private void parseIQiYiMovieSimplifiedList(int category,int channel, String orderList, String payStatus, String myYear,
                                                int sortType, int pageNum, int dataType, String siteType,
                                                int sourceType, String comicsStatus, int pageSize){
@@ -236,18 +261,24 @@ public class FilmVideoRowSampleFragment extends BaseFragment {
                 dataType,siteType,sourceType,comicsStatus,pageSize, new CallBack<IQiYiMovieSimplifiedBean>() {
                     @Override
                     public void success(IQiYiMovieSimplifiedBean bean) {
+
+                        Log.v(TAG, "result_num =："+ bean.getResult_num());
                         List<IQiYiMovieBean> list = bean.getList();
+                        for(int i=0;i<list.size();i++) {
+//                            Log.v(TAG, list.get(i).toString());
+                        }
+                        Log.v(TAG,"category"+category);
                         mVideoListArray.add(list);
+                        Log.v(TAG, "mVideoListArray =："+ mVideoListArray.size());
                         listPos[category] = mVideoListArray.size()-1;
+                        Log.v(TAG, "listPos[category] =："+ listPos[category]);
                         Message msg = new Message();
                         msg.arg1 = category;
                         msg.what = REFRESH_MOVIE_CONTENT;
                         mHandler.sendMessage(msg);
-
                         if(mVideoListArray.size()%loadRows==0) {
                             videoGrid.endMoreRefreshComplete();
                         }
-
                     }
 
                     @Override
@@ -257,11 +288,18 @@ public class FilmVideoRowSampleFragment extends BaseFragment {
                 });
     }
 
+    /**
+     * 获取推荐栏位基本信息
+     * @param channel  电视剧：dianshiju    电影：dianying  综艺：zongyi   动漫：dongman     微电影：weidianying     推荐：""
+     */
     private void parseIQiYiParseBannerInfo(String channel){
         IQiYiParseBannerInfoPresenter ps = new IQiYiParseBannerInfoPresenter();
         ps.requestIQiYiBannerInfo( channel, new CallBack<List<IQiYiBannerInfoBean>>() {
             @Override
             public void success(List<IQiYiBannerInfoBean> list) {
+                for (IQiYiBannerInfoBean bean : list) {
+//                    Log.v(TAG, bean.toString());
+                }
                 mBannerInfoList.clear();
                 mBannerInfoList = list;
                 mHandler.sendEmptyMessage(REFRESH_BANNER_CONTENT);
@@ -270,7 +308,7 @@ public class FilmVideoRowSampleFragment extends BaseFragment {
             @Override
             public void error(String msg) {
                 //TODO 获取失败
-
+                mHandler.sendEmptyMessage(REFRESH_ERROR);
             }
         });
     }
@@ -302,13 +340,46 @@ public class FilmVideoRowSampleFragment extends BaseFragment {
     @TargetApi(Build.VERSION_CODES.M)
     void setRowSelected(ItemBridgeAdapter.ViewHolder vh, boolean selected) {
 //        vh.itemView.setBackground(new ColorDrawable(selected ? getResources().getColor(R.color.color_focus) : getResources().getColor(R.color.color_transparent)));
+        curRow =videoGrid.getSelectedPosition();
+        Log.v(TAG,"pos"+videoGrid.getSelectedPosition());
     }
 
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        unbinder.unbind();
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        Log.v(TAG, "isVisibleToUser:" + isVisibleToUser);
+        if (isVisibleToUser) {
+            showLoad();
+            if(NetUtil.isConnected()){
+                loadData();
+            }
 
+        }
+    }
+
+    private void initLoading() {
+        mCircleDrawable = new Circle();
+        mCircleDrawable.setBounds(0, 0, 100, 100);
+        mCircleDrawable.setColor(Color.WHITE);
+        loadText.setCompoundDrawables(null, null, mCircleDrawable, null);
+    }
+
+    private void showLoad(){
+        if(NetUtil.isConnected()){
+            loadText.setText("");
+            loadText.setVisibility(View.VISIBLE);
+            mCircleDrawable.start();
+        }else{
+            mCircleDrawable.stop();
+            loadText.setText("网络连接失败，请检查网络！");
+            loadText.setTextColor(Color.WHITE);
+            loadText.setVisibility(View.VISIBLE);
+        }
+    }
+
+    protected void loadData() {
+        Log.v(TAG,"info"+getUserVisibleHint());
+        parseIQiYiParseBannerInfo("dianying");
     }
 
     @Override
@@ -321,5 +392,26 @@ public class FilmVideoRowSampleFragment extends BaseFragment {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+    }
+
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (mCircleDrawable != null && mCircleDrawable.isRunning()) {
+            mCircleDrawable.stop();
+        }
+        unbinder.unbind();
     }
 }
