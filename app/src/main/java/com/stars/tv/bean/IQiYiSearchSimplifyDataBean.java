@@ -151,7 +151,7 @@ public class IQiYiSearchSimplifyDataBean {
         private String albumImg;
         private int contentType;
         private int isPurchase;
-        private int playCount;
+        private String playCount;
         private String score;
         private boolean series;
         private String threeCategory;
@@ -351,11 +351,11 @@ public class IQiYiSearchSimplifyDataBean {
             this.isPurchase = isPurchase;
         }
 
-        public int getPlayCount() {
+        public String getPlayCount() {
             return playCount;
         }
 
-        public void setPlayCount(int playCount) {
+        public void setPlayCount(String playCount) {
             this.playCount = playCount;
         }
 
