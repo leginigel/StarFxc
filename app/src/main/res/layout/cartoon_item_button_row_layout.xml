@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <Button
+        android:text="全部"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:textColor="#FFF8F8F8"
+        android:id="@+id/button_car"
+        android:background="@color/color_pink"
+        android:layout_marginRight="10dp" />
+
+    <Button
+        android:text="TV版"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:textColor="#FFF8F8F8"
+        android:id="@+id/button_tv"
+        android:background="@color/color_blue"
+        android:layout_marginRight="10dp" />
+
+    <Button
+        android:text="OVA版"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:textColor="#FFF8F8F8"
+        android:id="@+id/button_house"
+        android:background="@color/color_yellow"
+        android:layout_marginRight="10dp" />
+
+    <Button
+        android:text="剧场"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:textColor="#FFF8F8F8"
+        android:id="@+id/button_juc"
+        android:background="@color/color_orange"
+        android:layout_marginRight="10dp" />
+
+    <Button
+        android:text="短片"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:textColor="#FFF8F8F8"
+        android:id="@+id/button_dua"
+        android:background="@color/color_green"
+        android:layout_marginRight="10dp" />
+
+    <Button
+        android:text="电影"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:textColor="#FFF8F8F8"
+        android:id="@+id/button_dia"
+        android:background="@color/color_purple" />
+</LinearLayout>
