@@ -86,7 +86,6 @@ public class SearchMoviceFragment extends BaseFragment {
     private boolean isRemaining = false;
     private boolean isVisible = false;
     private int typeSuggest;
-    boolean isFirst = false;
     private int mSaveT9Postion = -1;
     boolean isFirstLoad = true;
     @BindView(R.id.all_key_vgridview)
@@ -147,16 +146,12 @@ public class SearchMoviceFragment extends BaseFragment {
     final int REFRESH_MOIVE_CONTENT = 2;
     final int REFRESH_REQUEST = 3;
     final int REFRESH_ERROR = -1;
-    SearchMoviceFragment.SuggestItemAdapter mSuggestItemAdapter;
-    SearchMoviceFragment.MoviceAdapter mMoviceAdapter;
-    SearchMoviceFragment.HistoryItemAdapter mHistoryItemAdapter;
+    SuggestItemAdapter mSuggestItemAdapter;
+    MoviceAdapter mMoviceAdapter;
+    HistoryItemAdapter mHistoryItemAdapter;
     String word;
 
     private  boolean isNeedtToSetPos = false;
-
-    public static SearchMoviceFragment newInstance() {
-        return new SearchMoviceFragment();
-    }
 
     @SuppressLint("HandlerLeak")
     private Handler mHandler = new Handler() {
@@ -193,7 +188,7 @@ public class SearchMoviceFragment extends BaseFragment {
                         searchVgridview.setSelectedPosition(0);
                         searchVgridview.smoothScrollToPosition(0);
                     }
-                    mMoviceAdapter.notifyDataSetChanged();
+                    mMoviceAdapter.setList(mMoviceList);
                     if (mMoviceList.size() > 99 || mMoviceList.size() >= maxNum) {
                         searchVgridview.endRefreshingWithNoMoreData();
                     }
@@ -223,6 +218,7 @@ public class SearchMoviceFragment extends BaseFragment {
         mContext = container.getContext();
 //        pref = PreferenceManager.getDefaultSharedPreferences(mContext);
         initAllDatas();
+        initSearchGridView();
         lists = getSearchHistory();
         Log.v(TAG, "lists" + lists.size());
         if (lists.size() > 0) {
@@ -235,7 +231,6 @@ public class SearchMoviceFragment extends BaseFragment {
             historyLy.setVisibility(View.GONE);
             isVisible = false;
         }
-        initSearchGridView();
         initSuggestGridView();
         initAllKeysGridView();
         initT9KeysGridView();
@@ -280,11 +275,11 @@ public class SearchMoviceFragment extends BaseFragment {
             public void onChildViewHolderSelected(RecyclerView parent, RecyclerView.ViewHolder child, int position, int subposition) {
                 if(!historyVgridview.hasFocus()&&position==0){
                     Log.v(TAG,"historyVgridview position: "+position);
-                    mMoviceList.clear();
                     sugPosition = position;
                     mPageNum = 1;
                     typeSuggest = 0;
-                    refreshRequest(typeSuggest, sugPosition);
+//                    refreshRequest(typeSuggest, sugPosition);
+                    setTimer(REFRESH_REQUEST,500);
                     // 设置默认.
                     ((Button) child.itemView).setTextColor(getResources().getColor(R.color.title_select_color));
                 }
@@ -295,7 +290,6 @@ public class SearchMoviceFragment extends BaseFragment {
                         Log.v(TAG,"hasFocus"+hasFocus);
                         if (hasFocus) {
                             mPageNum = 1;
-                            mMoviceList.clear();
                             Log.v(TAG,"mMoviceList"+mMoviceList.size());
                             sugPosition = (int) v.getTag();
                             Log.v(TAG,"historyVgridview:  "+typeSuggest);
@@ -355,11 +349,11 @@ public class SearchMoviceFragment extends BaseFragment {
             public void onChildViewHolderSelected(RecyclerView parent, RecyclerView.ViewHolder child, int position, int subposition) {
                 if (!suggestVgridview.hasFocus() && position == 0 && (!isVisible)) {
                     Log.v(TAG, "suggestVgridview: " + position);
-                    mMoviceList.clear();
                     sugPosition = position;
                     mPageNum = 1;
                     typeSuggest =1;
-                    refreshRequest(typeSuggest, sugPosition);
+//                    refreshRequest(typeSuggest, sugPosition);
+                    setTimer(REFRESH_REQUEST,500);
                     // 设置默认.
                     ((Button) child.itemView).setTextColor(getResources().getColor(R.color.title_select_color));
 
@@ -373,7 +367,6 @@ public class SearchMoviceFragment extends BaseFragment {
                         if(hasFocus) {
                             mPageNum = 1;
                             sugPosition = (int)v.getTag();
-                            mMoviceList.clear();
                             typeSuggest =1;
 //                            refreshRequest(typeSuggest, sugPosition);
                             setTimer(REFRESH_REQUEST,1500);
@@ -408,11 +401,7 @@ public class SearchMoviceFragment extends BaseFragment {
                     @Override
                     public void onFocusChange(View v, boolean hasFocus) {
                         if(hasFocus){
-                            if (position == 5 || position == 11 || position == 17 || position == 23 || position == 29 || position == 35) {
-                                isRightKey = true;
-                            }else {
-                                isRightKey = false;
-                            }
+                            isRightKey = position == 5 || position == 11 || position == 17 || position == 23 || position == 29 || position == 35;
                         }
 
                     }
@@ -433,11 +422,7 @@ public class SearchMoviceFragment extends BaseFragment {
                     @Override
                     public void onFocusChange(View v, boolean hasFocus) {
                         if (hasFocus) {
-                if (position == 2 || position == 5 || position == 8) {
-                    isRightKey = true;
-                } else {
-                    isRightKey = false;
-                }
+                            isRightKey = position == 2 || position == 5 || position == 8;
             }
                     }
         });
@@ -452,11 +437,7 @@ public class SearchMoviceFragment extends BaseFragment {
         keySelectHgridview.setOnChildViewHolderSelectedListener(new OnChildViewHolderSelectedListener() {
             @Override
             public void onChildViewHolderSelected(RecyclerView parent, RecyclerView.ViewHolder child, int position, int subposition) {
-                if (position == 0) {
-                    isAllKey = true;
-                } else {
-                    isAllKey = false;
-                }
+                isAllKey = position == 0;
                 allKeyVgridview.setVisibility(isAllKey ? View.VISIBLE : View.GONE);
                 t9KeyVgridview.setVisibility(isAllKey ? View.GONE : View.VISIBLE);
             }
@@ -822,14 +803,14 @@ public class SearchMoviceFragment extends BaseFragment {
                 if(!list.isEmpty()) {
                 word = keyWord;
                 maxNum = bean.getMax_result_number();
-                    if(mMoviceList.isEmpty())
-                    {
+                     if(mPageNum==1) {
+                        mMoviceList = list;
                         isNeedtToSetPos = true;
                     }else
                     {
                         isNeedtToSetPos = false;
+                        mMoviceList.addAll(list);
                     }
-                mMoviceList.addAll(list);
 //                Log.v(TAG, mMoviceList.toString());
                 mHandler.sendEmptyMessage(REFRESH_MOIVE_CONTENT);
                 searchVgridview.endMoreRefreshComplete();
@@ -878,7 +859,7 @@ public class SearchMoviceFragment extends BaseFragment {
             }
             /* 保存到sp */
             editor.putString(SEARCH_HISTORY, sb.toString());
-            editor.commit();
+            editor.apply();
         } else {
             /* 之前未添加过 */
             editor.putString(SEARCH_HISTORY, name + ",");
@@ -904,6 +885,14 @@ public class SearchMoviceFragment extends BaseFragment {
 
     public class MoviceAdapter extends RecyclerView.Adapter<MoviceAdapter.ViewHolder> {
 
+        private List<IQiYiMovieBean> mList;
+
+        public void setList(List<IQiYiMovieBean> list)
+        {
+            this.mList = list;
+            notifyDataSetChanged();
+        }
+
         @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -922,12 +911,12 @@ public class SearchMoviceFragment extends BaseFragment {
         @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
         @Override
         public void onBindViewHolder(final ViewHolder holder, final int position) {
-            if (null != mMoviceList) {
-                final IQiYiMovieBean videoBean = mMoviceList.get(position);
+            if (null != mList) {
+                final IQiYiMovieBean videoBean = mList.get(position);
                 Glide.with(Objects.requireNonNull(getActivity()))
                         .load(videoBean.getImageUrl()).into(holder.bgIv);
                 ((TextView) holder.nameTv).setAlpha(0.80f);
-                ((TextView) holder.nameTv).setText(mMoviceList.get(position).getName());
+                ((TextView) holder.nameTv).setText(mList.get(position).getName());
                 holder.nameTv.setSelected(true);
                 String latestOrder = videoBean.getLatestOrder();
                 String videoCount = videoBean.getVideoCount();
@@ -978,8 +967,7 @@ public class SearchMoviceFragment extends BaseFragment {
 
         @Override
         public int getItemCount() {
-            Log.v("TTTTT","size:"+mMoviceList.size());
-            return null != mMoviceList ? mMoviceList.size() : 0;
+            return null != mList ? mList.size() : 0;
         }
 
         class ViewHolder extends RecyclerView.ViewHolder {
