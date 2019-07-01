@@ -968,7 +968,7 @@ public class SearchMoviceFragment extends BaseFragment {
                     @Override
                     public void onFocusChange(View view, boolean hasFocus) {
 //                        holder.boardView.setVisibility(hasFocus ? View.VISIBLE : View.INVISIBLE);
-                        ViewUtils.scaleAnimator(view, hasFocus, 1.1f, 150);
+                        ViewUtils.scaleAnimator(view, hasFocus, 1.15f, 150);
                     }
                 });
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
