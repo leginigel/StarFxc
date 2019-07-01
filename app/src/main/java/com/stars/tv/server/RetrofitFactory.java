@@ -1,6 +1,9 @@
 package com.stars.tv.server;
 
+import android.util.Log;
+
 import com.stars.tv.MyApplication;
+import com.stars.tv.utils.Constants;
 import com.stars.tv.utils.NetUtil;
 
 import java.io.File;
@@ -16,6 +19,7 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 
 /**
@@ -72,12 +76,47 @@ public class RetrofitFactory {
             .build();
 
     public static <T> T createApi(Class<T> clazz, String url) {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(url)
-                .client(okHttpClient)
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+        Retrofit retrofit = null;
+        if(Constants.CastStream.equals("iqiyi"))
+            retrofit = new Retrofit.Builder()
+                    .baseUrl(url)
+                    .client(okHttpClient)
+                    .addConverterFactory(ScalarsConverterFactory.create())
+                    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+        else if(Constants.CastStream.equals("huya")) {
+            OkHttpClient okHttpClient2 = new OkHttpClient.Builder()
+                    .addInterceptor(chain -> {
+                        Request newRequest  = chain.request().newBuilder()
+                                .addHeader("User-Agent", "Mozilla/5.0 (iPad; CPU OS 12_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0 Mobile/15E148 Safari/604.1")
+                                .build();
+                        return chain.proceed(newRequest);
+                    })
+                    .build();
+            retrofit = new Retrofit.Builder()
+                    .baseUrl(url)
+                    .client(okHttpClient2)
+                    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+        }
+        else if(Constants.CastStream.equals("douyu")) {
+            OkHttpClient okHttpClient3 = new OkHttpClient.Builder()
+                    .addInterceptor(chain -> {
+                        Request newRequest  = chain.request().newBuilder()
+                                .addHeader("User-Agent", "Mozilla/5.0 (compatible; MSIE 10.0; Windows Phone 8.0; Trident/6.0; IEMobile/10.0; ARM; Touch; NOKIA; Lumia 920)")
+                                .build();
+                        return chain.proceed(newRequest);
+                    })
+                    .build();
+            retrofit = new Retrofit.Builder()
+                    .baseUrl(url)
+                    .client(okHttpClient3)
+                    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+        }
         return retrofit.create(clazz);
     }
 

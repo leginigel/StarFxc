@@ -2,6 +2,7 @@ package com.stars.tv.server;
 
 import io.reactivex.Observable;
 import okhttp3.ResponseBody;
+import retrofit2.Response;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
 import retrofit2.http.Path;
@@ -84,4 +85,42 @@ public interface  RetrofitService {
     @Headers("Cache-Control: public ,max-age= 300")
     @GET
     Observable<ResponseBody> getTvMaoEpg(@Url String url);
+
+    @GET("get_video_info?eurl=https%3A%2F%2Fy")
+    Observable<ResponseBody> getYTVideoInfo(@Query("video_id") String video_id);
+
+    @GET("room_init?")
+    Observable<ResponseBody> getBilibiliRoom(@Query("id") String id);
+
+    @GET("playUrl?quality=0&platform=web")
+    Observable<ResponseBody> getBilibiliRealPlayUrl(@Query("cid") String cid);
+
+    @Headers("User-Agent: Mozilla/5.0 (iPad; CPU OS 12_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0 Mobile/15E148 Safari/604.1")
+    @GET("{channel}")
+    Observable<ResponseBody> getHuyaChannelIpadPage(@Path("channel") String channel);
+
+    @Headers("User-Agent: Mozilla/5.0 (compatible; MSIE 10.0; Windows Phone 8.0; Trident/6.0; IEMobile/10.0; ARM; Touch; NOKIA; Lumia 920)")
+    @GET("{suffix}")
+    Observable<ResponseBody> getDouyuRealPlayUrl(@Path("suffix") String suffix, @Query("auth") String auth);
+
+    @Headers({
+            "Client-Id: jzkbprff40iqj646a697cyrvl0zt2m6",
+            "X-Device-Id: db67059f4262aaa0"
+    })
+    @GET("{channel}")
+    Observable<ResponseBody> getTwitchCheckLive(@Path("channel") String channel);
+
+    @Headers({
+            "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:67.0) Gecko/20100101 Firefox/67.0",
+            "Client-ID: jzkbprff40iqj646a697cyrvl0zt2m6",
+            "X-Device-Id: db67059f4262aaa0"
+    })
+    @GET("{channel}/access_token?need_https=true&oauth_token&platform=web&player_backend=mediaplayer&player_type=site")
+    Observable<ResponseBody> getTwitchAccessToken(@Path("channel") String channel);
+
+    @GET("{channel}.m3u8?type=any&allow_source=true&baking_bread=false&baking_brownies=false&baking_brownies_timeout=1050&fast_bread=true&allow_spectre=false&reassignments_supported=true")
+    Observable<Response<String>> getTwitchRealPlayUrl(@Path("channel") String channel,
+                                              @Query("p") int p,
+                                              @Query("sig") String sig,
+                                              @Query("token") String token);
 }
