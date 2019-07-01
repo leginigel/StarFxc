@@ -27,8 +27,6 @@ import com.stars.tv.utils.ViewUtils;
 import com.stars.tv.widget.media.AndroidMediaController;
 import com.stars.tv.widget.media.IjkVideoView;
 
-import org.json.JSONArray;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -55,7 +53,7 @@ public class StreamActivity extends BaseActivity {
     @BindView(R.id.editText_stream)
     EditText stream;
     @BindView(R.id.btn_cast)
-    Button castStream;
+    Button startStreamBtn;
     @BindView(R.id.mloading)
     TextView textLoading;
     private StreamPresenter streamPresenter;
@@ -141,20 +139,35 @@ public class StreamActivity extends BaseActivity {
                     ((TextView) v).setTextColor(getResources().getColor(R.color.color_focus));
                     serverImg.setImageDrawable(getResources().getDrawable(finalDrawable));
                     mCate = finalCate;
-                    if(finalI == 6){
-                        address.setVisibility(View.VISIBLE);
-                        addressText.setVisibility(View.VISIBLE);
+                    switch (finalI){
+                        case 0:
+                        case 1:
+                            streamText.setText("直播网址");
+                            break;
+                        case 2:
+                        case 3:
+                            streamText.setText("服务不支援");
+                            break;
+                        case 6:
+                            streamText.setText("串流名称 / 串流金钥");
+                            break;
+                        case 4:
+                        case 5:
+                            streamText.setText("直播房间号码");
+                            break;
                     }
-                    else {
-                        address.setVisibility(View.GONE);
-                        addressText.setVisibility(View.GONE);
-                    }
+                    stream.setVisibility((finalI == 2 || finalI == 3) ? View.GONE : View.VISIBLE);
+                    addressText.setVisibility((finalI == 6) ? View.VISIBLE : View.GONE);
+                    address.setVisibility((finalI == 6) ? View.VISIBLE : View.GONE);
+                    startStreamBtn.setVisibility((finalI == 2 || finalI == 3) ? View.GONE : View.VISIBLE);
                 }
                 else{
                     ((TextView) v).setTextColor(getResources().getColor(R.color.text_white));
                     if(address.isFocused() || stream.isFocused()){
                         ((TextView) v).setTextColor(getResources().getColor(R.color.color_focus));
                     }
+                    if(!stream.isFocused() && !address.isFocused())
+                        stream.setText("");
                 }
                 ViewUtils.scaleAnimator(v, hasFocus, 1.2f, 150);
             });
@@ -193,6 +206,9 @@ public class StreamActivity extends BaseActivity {
                     case BiliBili:
                         linearLayout.getChildAt(5).requestFocus();
                         break;
+                    case Address:
+                        address.requestFocus();
+                        break;
                 }
                 return true;
             }
@@ -201,33 +217,28 @@ public class StreamActivity extends BaseActivity {
             }
             return false;
         });
-//        castYTStream("ibz7k3DjIeA");
-//        String test1 = null;
-//        test1 = parseYTM3U8(test1);
-//        YTM3U8Bean ytM3U8Bean = new Gson().fromJson(test1, YTM3U8Bean.class);
-//
-//        address.setText(ytM3U8Bean.getStreamingData().getHlsManifestUrl());
-//        stream.setText("");
 
 
-        castStream.setOnClickListener(v -> {
+
+        startStreamBtn.setOnClickListener(v -> {
             if(address.getText() != null || stream.getText() != null) {
                 switch (mCate) {
                     case YT:
-                        castYTStream(stream.getText().toString());
+                        streamYTHLS(stream.getText().toString());
                         break;
                     case Twitch:
+                        streamTwitchHLS(stream.getText().toString()/*"tfblade"*/);
                         break;
                     case FB:
                         break;
                     case Douyu:
-                        castDouyuStream("160504");
+//                        streamDouyuHLS("160504");
                         break;
                     case Huya:
-                        castHuyaStream(stream.getText().toString());
+                        streamHuyaHLS(stream.getText().toString());
                         break;
                     case BiliBili:
-                        castBilibiliStream(stream.getText().toString());
+                        streamBilibiliHLS(stream.getText().toString());
                         break;
                     case Address: {
                         mVideoPath = address.getText().toString() + stream.getText().toString();
@@ -239,11 +250,30 @@ public class StreamActivity extends BaseActivity {
                 }
             }
         });
-        castStream.setNextFocusLeftId(castStream.getId());
-        castStream.setNextFocusRightId(castStream.getId());
+        startStreamBtn.setNextFocusLeftId(startStreamBtn.getId());
+        startStreamBtn.setNextFocusRightId(startStreamBtn.getId());
     }
 
-    private void castDouyuStream(String channel){
+    private void streamFBDash(String channel){
+        // IjkPlayer not support DASH video format
+    }
+
+    private void streamTwitchHLS(String channel){
+        streamPresenter.getTwitchRealPlayUrl(channel, new CallBack<String>() {
+            @Override
+            public void success(String s) {
+                Log.d("Twitch URL ", s);
+                stream(s);
+            }
+
+            @Override
+            public void error(String msg) {
+                showError();
+            }
+        });
+    }
+
+    private void streamDouyuHLS(String channel){
         streamPresenter.getDouyuRealPlayUrl(channel, new CallBack<String>() {
             @Override
             public void success(String s) {
@@ -257,12 +287,12 @@ public class StreamActivity extends BaseActivity {
         });
     }
 
-    private void castHuyaStream(String channel){
+    private void streamHuyaHLS(String channel){
         streamPresenter.getHuyaRealPlayUrl(channel, new CallBack<String>() {
             @Override
             public void success(String s) {
                 Log.d("Huya URL ", s);
-                cast(s);
+                stream(s);
             }
 
             @Override
@@ -273,12 +303,12 @@ public class StreamActivity extends BaseActivity {
 
     }
 
-    private void castBilibiliStream(String room_id){
+    private void streamBilibiliHLS(String room_id){
         streamPresenter.getBilibiliRealPlayUrl(room_id, new CallBack<String>() {
             @Override
             public void success(String s) {
                 Log.d("Bilibili URL ", s);
-                cast(s);
+                stream(s);
             }
 
             @Override
@@ -288,12 +318,12 @@ public class StreamActivity extends BaseActivity {
         });
     }
 
-    private void castYTStream(String video_id){
+    private void streamYTHLS(String video_id){
         streamPresenter.getYTVideoInfo(video_id, new CallBack<YTM3U8Bean>() {
             @Override
             public void success(YTM3U8Bean ytM3U8Bean) {
                 Log.d("YouTube URL ", ytM3U8Bean.getStreamingData().getHlsManifestUrl());
-                cast(ytM3U8Bean.getStreamingData().getHlsManifestUrl());
+                stream(ytM3U8Bean.getStreamingData().getHlsManifestUrl());
             }
 
             @Override
@@ -303,7 +333,7 @@ public class StreamActivity extends BaseActivity {
         });
     }
 
-    private void cast(String url){
+    private void stream(String url){
         mVideoPath = url;
         loading(View.VISIBLE);
         initVideoView();
@@ -356,7 +386,7 @@ public class StreamActivity extends BaseActivity {
     private void loading(Integer visibility) {
         linearLayout.setVisibility(View.GONE);
         constraintLayout.setVisibility(View.GONE);
-        castStream.setVisibility(View.GONE);
+        startStreamBtn.setVisibility(View.GONE);
         frameLayout.setVisibility(View.VISIBLE);
         textLoading = (TextView) findViewById(R.id.mloading);
         mCircleDrawable = new Circle();
@@ -366,19 +396,33 @@ public class StreamActivity extends BaseActivity {
         textLoading.setVisibility(visibility);
     }
 
-//    @Override
-//    public void onResume() {
-//        super.onResume();
+    @Override
+    public void onResume() {
+        super.onResume();
 //        mCircleDrawable.start();
-//    }
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        if(frameLayout.getVisibility() == View.VISIBLE){
+            linearLayout.setVisibility(View.VISIBLE);
+            constraintLayout.setVisibility(View.VISIBLE);
+            startStreamBtn.setVisibility(View.VISIBLE);
+            startStreamBtn.requestFocus();
+            frameLayout.setVisibility(View.GONE);
+//            mCircleDrawable.stop();
+            mVideoView.stopPlayback();
+            mVideoView.release(true);
+            mVideoView.stopBackgroundPlay();
+            IjkMediaPlayer.native_profileEnd();
+        }
+        else
+            super.onBackPressed();
+    }
 
     @Override
     public void onStop() {
         super.onStop();
-//        mCircleDrawable.stop();
-        mVideoView.stopPlayback();
-        mVideoView.release(true);
-        mVideoView.stopBackgroundPlay();
-        IjkMediaPlayer.native_profileEnd();
     }
 }

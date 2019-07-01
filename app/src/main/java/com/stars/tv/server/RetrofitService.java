@@ -1,8 +1,8 @@
 package com.stars.tv.server;
 
 import io.reactivex.Observable;
-import okhttp3.Response;
 import okhttp3.ResponseBody;
+import retrofit2.Response;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
 import retrofit2.http.Path;
@@ -102,4 +102,25 @@ public interface  RetrofitService {
     @Headers("User-Agent: Mozilla/5.0 (compatible; MSIE 10.0; Windows Phone 8.0; Trident/6.0; IEMobile/10.0; ARM; Touch; NOKIA; Lumia 920)")
     @GET("{suffix}")
     Observable<ResponseBody> getDouyuRealPlayUrl(@Path("suffix") String suffix, @Query("auth") String auth);
+
+    @Headers({
+            "Client-Id: jzkbprff40iqj646a697cyrvl0zt2m6",
+            "X-Device-Id: db67059f4262aaa0"
+    })
+    @GET("{channel}")
+    Observable<ResponseBody> getTwitchCheckLive(@Path("channel") String channel);
+
+    @Headers({
+            "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:67.0) Gecko/20100101 Firefox/67.0",
+            "Client-ID: jzkbprff40iqj646a697cyrvl0zt2m6",
+            "X-Device-Id: db67059f4262aaa0"
+    })
+    @GET("{channel}/access_token?need_https=true&oauth_token&platform=web&player_backend=mediaplayer&player_type=site")
+    Observable<ResponseBody> getTwitchAccessToken(@Path("channel") String channel);
+
+    @GET("{channel}.m3u8?type=any&allow_source=true&baking_bread=false&baking_brownies=false&baking_brownies_timeout=1050&fast_bread=true&allow_spectre=false&reassignments_supported=true")
+    Observable<Response<String>> getTwitchRealPlayUrl(@Path("channel") String channel,
+                                              @Query("p") int p,
+                                              @Query("sig") String sig,
+                                              @Query("token") String token);
 }

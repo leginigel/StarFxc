@@ -30,10 +30,13 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Function;
 import io.reactivex.observers.DisposableObserver;
 import io.reactivex.schedulers.Schedulers;
-import okhttp3.Response;
 import okhttp3.ResponseBody;
+import retrofit2.Response;
 
 public class StreamPresenter {
+
+    private int p;
+
     private Observable<ResponseBody> getYTVideoInfo(String video_id) {
         return RetrofitFactory.createApi(RetrofitService.class, "https://www.youtube.com/")
                 .getYTVideoInfo(video_id).compose(RxUtils.rxSchedulerHelper());
@@ -59,6 +62,24 @@ public class StreamPresenter {
         Constants.CastStream = "douyu";
         return RetrofitFactory.createApi(RetrofitService.class, "https://capi.douyucdn.cn/api/v1/")
                 .getDouyuRealPlayUrl(suffix, auth);
+    }
+
+    private Observable<ResponseBody> getTwitchCheckLive(String channel){
+//        Constants.CastStream = "twitch";
+        return RetrofitFactory.createApi(RetrofitService.class, "https://api.twitch.tv/kraken/streams/")
+                .getTwitchCheckLive(channel);
+    }
+
+    private Observable<ResponseBody> getTwitchAccessToken(String channel){
+//        Constants.CastStream = "twitch";
+        return RetrofitFactory.createApi(RetrofitService.class, "https://api.twitch.tv/api/channels/")
+            .getTwitchAccessToken(channel);
+    }
+
+    private Observable<Response<String>> getTwitchRealPlayUrl(String channel, String sig, String token){
+        p = (int)(Math.random()*999999+1);
+        return RetrofitFactory.createApi(RetrofitService.class, "https://usher.ttvnw.net/api/channel/hls/")
+        .getTwitchRealPlayUrl(channel, p, sig, token);
     }
 
     public void getYTVideoInfo(String video_id, CallBack<YTM3U8Bean> listener){
@@ -205,6 +226,7 @@ public class StreamPresenter {
         return sign;
     }
 
+    // API Fail
     public void getDouyuRealPlayUrl(String channel, CallBack<String> listener){
         long t = (new Date()).getTime();
         int ts = (int) (t / 1000);
@@ -234,6 +256,72 @@ public class StreamPresenter {
                     @Override
                     public void onComplete() {
                         Constants.CastStream = "iqiyi";
+                    }
+                });
+    }
+
+    public void getTwitchRealPlayUrl(String channel, CallBack<String> listener){
+        getTwitchCheckLive(channel)
+                .flatMap(new Function<ResponseBody, ObservableSource<ResponseBody>>() {
+                    @Override
+                    public ObservableSource<ResponseBody> apply(ResponseBody responseBody) throws Exception {
+                        String s = responseBody.string();
+//                        Log.d("response123", s);
+                        return getTwitchAccessToken(channel);
+                    }
+                })
+                .flatMap(new Function<ResponseBody, ObservableSource<Response<String>>>() {
+                    @Override
+                    public ObservableSource<Response<String>> apply(ResponseBody responseBody) throws Exception {
+                        String s = responseBody.string();
+
+//                        Log.d("response", s);
+                        JSONObject jsonResponse = new JSONObject(s);
+                        String sig = jsonResponse.getString("sig");
+                        String token = jsonResponse.getString("token");
+//                        Log.d("Token", token);
+//                        Log.d("sig", sig);
+                        String encode = URLEncoder.encode(token, "UTF-8")
+                                .replaceAll("\\+", "%20")
+                                .replaceAll("\\%21", "!")
+                                .replaceAll("\\%27", "'")
+                                .replaceAll("\\%28", "(")
+                                .replaceAll("\\%29", ")")
+                                .replaceAll("\\%7E", "~");
+                        String playUrl = "https://usher.ttvnw.net/api/channel/hls/" + channel + ".m3u8?" +
+                                "type=any&allow_source=true&baking_bread=false&baking_brownies=false" +
+                                "&baking_brownies_timeout=1050&fast_bread=true&allow_spectre=false" +
+                                "&reassignments_supported=true" +
+                                "&p=" + p +
+                                "&sig=" + sig +
+                                "&token=" + encode;
+//                        Log.d("playUrl", playUrl);
+//                        listener.success(playUrl);
+                        return getTwitchRealPlayUrl(channel, sig, token);
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new DisposableObserver<Response<String>>() {
+                    @Override
+                    public void onNext(Response<String> response) {
+                        String playUrl = response.raw().request().url().toString();
+                        Log.d("response", response.raw().request().url().toString());
+                        Log.d("response", response.code() +response.message());
+                        if(response.code() == 200)
+                            listener.success(playUrl);
+//                        Log.d("response321", response.toString());
+//                        Log.d("response321", response.body());
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
                     }
                 });
     }

@@ -4,19 +4,6 @@ import java.util.List;
 
 public class YTM3U8Bean {
 
-    /**
-     * playabilityStatus : {"status":"OK","playableInEmbed":true,"liveStreamability":{"liveStreamabilityRenderer":{"videoId":"ibz7k3DjIeA","pollDelayMs":"7500"}}}
-     * streamingData : {"expiresInSeconds":"21540","dashManifestUrl":"https://manifest.googlevideo.com/api/manifest/dash/expire/1561109372/ei/HE8MXZTYLbmXs8IPztmx2Aw/ip/59.124.136.10/id/ibz7k3DjIeA.0/source/yt_live_broadcast/requiressl/yes/as/fmp4_audio_clear%2Cwebm_audio_clear%2Cwebm2_audio_clear%2Cfmp4_sd_hd_clear%2Cwebm2_sd_hd_clear/pacing/0/itag/0/playlist_type/LIVE/sparams/expire%2Cei%2Cip%2Cid%2Csource%2Crequiressl%2Cas%2Citag%2Cplaylist_type/sig/ALgxI2wwRgIhAPWoDAcpYdpG1vdW_LHbrMA9d2ok_RKIUTuJdn7CVTExAiEA-MqxmT8xgL2-nRNS1wUqBhdvLvMPs4moAp1vLLw82XQ%3D","hlsManifestUrl":"https://manifest.googlevideo.com/api/manifest/hls_variant/expire/1561109372/ei/HE8MXZTYLbmXs8IPztmx2Aw/ip/59.124.136.10/id/ibz7k3DjIeA.0/source/yt_live_broadcast/requiressl/yes/hfr/1/playlist_duration/30/manifest_duration/30/maudio/1/go/1/keepalive/yes/dover/11/itag/0/playlist_type/DVR/sparams/expire%2Cei%2Cip%2Cid%2Csource%2Crequiressl%2Chfr%2Cplaylist_duration%2Cmanifest_duration%2Cmaudio%2Cgo%2Citag%2Cplaylist_type/sig/ALgxI2wwRgIhAN3c11rRAQtH5jY442cmfQPoMyHMg9WLIDVpG7us0Ws6AiEA1xABT4-CL4N9qlZ_cqIjMd96SesHWu2H3WInLZPrPQQ%3D/file/index.m3u8","probeUrl":"https://r5---sn-n4v7sn7s.googlevideo.com/videogoodput?id=o-AG4Z-ED702kq-j3_OjhSDwKEp7CpckRfyIUGVAAWLIlH&source=goodput&range=0-4999&expire=1561091372&ip=59.124.136.10&ms=pm&mm=35&pl=24&nh=IgpwcjAyLnBhbzAzKgkxMjcuMC4wLjE&sparams=id,source,range,expire,ip,ms,mm,pl,nh&signature=2E595D3F1EFFB24731E7EA537612E601A54B738B.0A2B6A6FCE1BAEE81E36CF6F27B173E825B9CCD0&key=cms1"}
-     * playbackTracking : {"videostatsPlaybackUrl":{"baseUrl":"https://s.youtube.com/api/stats/playback?cl=253883325&docid=ibz7k3DjIeA&ei=HE8MXZTYLbmXs8IPztmx2Aw&fexp=23811378%2C23822435%2C23820266%2C23736684%2C23818213%2C23822161%2C23805410%2C23814135%2C23804281%2C23817543%2C23811453%2C23811427%2C23818122%2C23817114%2C23819595%2C1714243%2C23818585%2C23757411%2C23817149%2C23804908%2C9488571%2C23780337&live=live&ns=yt&plid=AAWLzRIrtioe5DMS&delay=5&el=embedded&len=0&of=1elpPrSFyAjPnmLc4xeyWw&vm=CAEQARgE"},"videostatsDelayplayUrl":{"baseUrl":"https://s.youtube.com/api/stats/delayplay?cl=253883325&docid=ibz7k3DjIeA&ei=HE8MXZTYLbmXs8IPztmx2Aw&fexp=23811378%2C23822435%2C23820266%2C23736684%2C23818213%2C23822161%2C23805410%2C23814135%2C23804281%2C23817543%2C23811453%2C23811427%2C23818122%2C23817114%2C23819595%2C1714243%2C23818585%2C23757411%2C23817149%2C23804908%2C9488571%2C23780337&live=live&ns=yt&plid=AAWLzRIrtioe5DMS&delay=5&el=embedded&len=0&of=1elpPrSFyAjPnmLc4xeyWw&vm=CAEQARgE","elapsedMediaTimeSeconds":5},"videostatsWatchtimeUrl":{"baseUrl":"https://s.youtube.com/api/stats/watchtime?cl=253883325&docid=ibz7k3DjIeA&ei=HE8MXZTYLbmXs8IPztmx2Aw&fexp=23811378%2C23822435%2C23820266%2C23736684%2C23818213%2C23822161%2C23805410%2C23814135%2C23804281%2C23817543%2C23811453%2C23811427%2C23818122%2C23817114%2C23819595%2C1714243%2C23818585%2C23757411%2C23817149%2C23804908%2C9488571%2C23780337&live=live&ns=yt&plid=AAWLzRIrtioe5DMS&el=embedded&len=0&of=1elpPrSFyAjPnmLc4xeyWw&vm=CAEQARgE"},"ptrackingUrl":{"baseUrl":"https://www.youtube.com/ptracking?ei=HE8MXZTYLbmXs8IPztmx2Aw&oid=9BqkSXQzn-DvCnA2lS07Rw&plid=AAWLzRIrtioe5DMS&pltype=contentlive&ptchn=uzqko_GKcj9922M1gUo__w&ptk=youtube_single&video_id=ibz7k3DjIeA"},"qoeUrl":{"baseUrl":"https://s.youtube.com/api/stats/qoe?cl=253883325&docid=ibz7k3DjIeA&ei=HE8MXZTYLbmXs8IPztmx2Aw&event=streamingstats&fexp=23811378%2C23822435%2C23820266%2C23736684%2C23818213%2C23822161%2C23805410%2C23814135%2C23804281%2C23817543%2C23811453%2C23811427%2C23818122%2C23817114%2C23819595%2C1714243%2C23818585%2C23757411%2C23817149%2C23804908%2C9488571%2C23780337&live=live&ns=yt&plid=AAWLzRIrtioe5DMS"},"setAwesomeUrl":{"baseUrl":"https://www.youtube.com/set_awesome?ei=HE8MXZTYLbmXs8IPztmx2Aw&plid=AAWLzRIrtioe5DMS&video_id=ibz7k3DjIeA","elapsedMediaTimeSeconds":0},"atrUrl":{"baseUrl":"https://s.youtube.com/api/stats/atr?docid=ibz7k3DjIeA&ei=HE8MXZTYLbmXs8IPztmx2Aw&len=0&ns=yt&plid=AAWLzRIrtioe5DMS&ver=2","elapsedMediaTimeSeconds":5},"youtubeRemarketingUrl":{"baseUrl":"https://www.youtube.com/pagead/viewthroughconversion/962985656/?backend=innertube&cname=1&cver=2_20190619&foc_id=uzqko_GKcj9922M1gUo__w&label=followon_view&ptype=no_rmkt&random=754623177","elapsedMediaTimeSeconds":0}}
-     * videoDetails : {"videoId":"ibz7k3DjIeA","title":"EBC 東森財經新聞 24小時線上直播｜Taiwan EBC Financial News 24h live｜台湾 EBC 金融ニュース24 時間オンライン放送｜대만 뉴스 생방송","lengthSeconds":"0","isLive":true,"keywords":["賺大錢","金價","股價","台股","A股","房市","基金","看盤","外匯","金融","銀行","投資","理財","小資","黃金","紅盤","金管會","證交所","證交稅","房市大跌","稅金","美元","人民幣","新台幣","石油","原油","房貸","信貸","定存","利率","央行"],"channelId":"UCuzqko_GKcj9922M1gUo__w","isOwnerViewing":false,"shortDescription":"鎖定財經新聞直播，請上東森財經官網 https://fnc.ebc.net.tw/\n\n【57金錢爆 - 播出完整版】 https://goo.gl/D7fK9T\n【57爆新聞 - 播出完整版】https://goo.gl/UGAWB2\n【57夢想街之全能事務所 - 播出完整版】http://pse.ee/5S9TP\n【夢想街57號 - 播出完整版】https://goo.gl/V51C3c\n\n【東森財經新聞YouTube】 https://www.youtube.com/user/57ETFN\n【東森財經新聞粉絲團】https://www.facebook.com/ebcmoney\n\n備註：您收看的畫面會比電視播出延遲30秒。","isCrawlable":true,"isLiveDvrEnabled":false,"thumbnail":{"thumbnails":[{"url":"https://i.ytimg.com/vi/ibz7k3DjIeA/hqdefault_live.jpg?sqp=CIycsegF-oaymwEYCKgBEF5IVfKriqkDCwgBFQAAiEIYAXAB&rs=AOn4CLCuogGgd3-hu1Cwh47byBVXDtIcWA","width":168,"height":94},{"url":"https://i.ytimg.com/vi/ibz7k3DjIeA/hqdefault_live.jpg?sqp=CIycsegF-oaymwEYCMQBEG5IVfKriqkDCwgBFQAAiEIYAXAB&rs=AOn4CLAXUIiMDoJs_ISFIsrukSJOuaLT_g","width":196,"height":110},{"url":"https://i.ytimg.com/vi/ibz7k3DjIeA/hqdefault_live.jpg?sqp=CIycsegF-oaymwEZCPYBEIoBSFXyq4qpAwsIARUAAIhCGAFwAQ==&rs=AOn4CLCRCdtLJXb0MJ0uaeUXen8LmuU-Kw","width":246,"height":138},{"url":"https://i.ytimg.com/vi/ibz7k3DjIeA/hqdefault_live.jpg?sqp=CIycsegF-oaymwEZCNACELwBSFXyq4qpAwsIARUAAIhCGAFwAQ==&rs=AOn4CLCgzI-ylUih-3sOhaiJRTTE4ozDiA","width":336,"height":188}]},"useCipher":false,"liveChunkReadahead":3,"averageRating":4.0174756,"allowRatings":true,"viewCount":"631381","author":"５７東森財經新聞台","isLiveDefaultBroadcast":true,"isLowLatencyLiveStream":true,"isPrivate":false,"isUnpluggedCorpus":false,"latencyClass":"MDE_STREAM_OPTIMIZATIONS_RENDERER_LATENCY_LOW","isLiveContent":true}
-     * annotations : [{"playerAnnotationsUrlsRenderer":{"invideoUrl":"//www.youtube.com/annotations_invideo?cap_hist=1&video_id=ibz7k3DjIeA&client=1","loadPolicy":"ALWAYS","allowInPlaceSwitch":true}}]
-     * playerConfig : {"streamSelectionConfig":{"maxBitrate":"7730000"},"livePlayerConfig":{"liveReadaheadSeconds":4.800000000000001,"hasSubfragmentedFmp4":true},"mediaCommonConfig":{"dynamicReadaheadConfig":{"maxReadAheadMediaTimeMs":120000,"minReadAheadMediaTimeMs":15000,"readAheadGrowthRateMs":1000}}}
-     * storyboards : {"playerLiveStoryboardSpecRenderer":{"spec":"https://i.ytimg.com/sb/ibz7k3DjIeA/storyboard_live_60_3x3_b0/M$M.jpg?rs=AOn4CLDdMJhV6LVUM2Mw_ya-Fxaj-Ob9_w#106#60#3#3"}}
-     * trackingParams : CAEQu2kiEwiU1qGR0fniAhW5y0wCHc5sDMso6NQB
-     * attestation : {"playerAttestationRenderer":{"challenge":"a=4&b=_osbWMosr-XpbJSn3e29dXRSQ8w&c=1561087772&d=1&e=ibz7k3DjIeA&c3a=15&c1a=1&c6a=1&hh=W1ZlYaGaK7XPhnIB5vhcgdY3qpIGiHXyhpH59DvZS5s"}}
-     * adSafetyReason : {"apmUserPreference":{},"isEmbed":true,"isRemarketingEnabled":true,"isFocEnabled":true}
-     */
-
     private PlayabilityStatusBean playabilityStatus;
     private StreamingDataBean streamingData;
     private PlaybackTrackingBean playbackTracking;
@@ -109,11 +96,6 @@ public class YTM3U8Bean {
     }
 
     public static class PlayabilityStatusBean {
-        /**
-         * status : OK
-         * playableInEmbed : true
-         * liveStreamability : {"liveStreamabilityRenderer":{"videoId":"ibz7k3DjIeA","pollDelayMs":"7500"}}
-         */
 
         private String status;
         private boolean playableInEmbed;
@@ -144,9 +126,6 @@ public class YTM3U8Bean {
         }
 
         public static class LiveStreamabilityBean {
-            /**
-             * liveStreamabilityRenderer : {"videoId":"ibz7k3DjIeA","pollDelayMs":"7500"}
-             */
 
             private LiveStreamabilityRendererBean liveStreamabilityRenderer;
 
@@ -159,10 +138,6 @@ public class YTM3U8Bean {
             }
 
             public static class LiveStreamabilityRendererBean {
-                /**
-                 * videoId : ibz7k3DjIeA
-                 * pollDelayMs : 7500
-                 */
 
                 private String videoId;
                 private String pollDelayMs;
@@ -187,12 +162,6 @@ public class YTM3U8Bean {
     }
 
     public static class StreamingDataBean {
-        /**
-         * expiresInSeconds : 21540
-         * dashManifestUrl : https://manifest.googlevideo.com/api/manifest/dash/expire/1561109372/ei/HE8MXZTYLbmXs8IPztmx2Aw/ip/59.124.136.10/id/ibz7k3DjIeA.0/source/yt_live_broadcast/requiressl/yes/as/fmp4_audio_clear%2Cwebm_audio_clear%2Cwebm2_audio_clear%2Cfmp4_sd_hd_clear%2Cwebm2_sd_hd_clear/pacing/0/itag/0/playlist_type/LIVE/sparams/expire%2Cei%2Cip%2Cid%2Csource%2Crequiressl%2Cas%2Citag%2Cplaylist_type/sig/ALgxI2wwRgIhAPWoDAcpYdpG1vdW_LHbrMA9d2ok_RKIUTuJdn7CVTExAiEA-MqxmT8xgL2-nRNS1wUqBhdvLvMPs4moAp1vLLw82XQ%3D
-         * hlsManifestUrl : https://manifest.googlevideo.com/api/manifest/hls_variant/expire/1561109372/ei/HE8MXZTYLbmXs8IPztmx2Aw/ip/59.124.136.10/id/ibz7k3DjIeA.0/source/yt_live_broadcast/requiressl/yes/hfr/1/playlist_duration/30/manifest_duration/30/maudio/1/go/1/keepalive/yes/dover/11/itag/0/playlist_type/DVR/sparams/expire%2Cei%2Cip%2Cid%2Csource%2Crequiressl%2Chfr%2Cplaylist_duration%2Cmanifest_duration%2Cmaudio%2Cgo%2Citag%2Cplaylist_type/sig/ALgxI2wwRgIhAN3c11rRAQtH5jY442cmfQPoMyHMg9WLIDVpG7us0Ws6AiEA1xABT4-CL4N9qlZ_cqIjMd96SesHWu2H3WInLZPrPQQ%3D/file/index.m3u8
-         * probeUrl : https://r5---sn-n4v7sn7s.googlevideo.com/videogoodput?id=o-AG4Z-ED702kq-j3_OjhSDwKEp7CpckRfyIUGVAAWLIlH&source=goodput&range=0-4999&expire=1561091372&ip=59.124.136.10&ms=pm&mm=35&pl=24&nh=IgpwcjAyLnBhbzAzKgkxMjcuMC4wLjE&sparams=id,source,range,expire,ip,ms,mm,pl,nh&signature=2E595D3F1EFFB24731E7EA537612E601A54B738B.0A2B6A6FCE1BAEE81E36CF6F27B173E825B9CCD0&key=cms1
-         */
 
         private String expiresInSeconds;
         private String dashManifestUrl;
@@ -233,16 +202,6 @@ public class YTM3U8Bean {
     }
 
     public static class PlaybackTrackingBean {
-        /**
-         * videostatsPlaybackUrl : {"baseUrl":"https://s.youtube.com/api/stats/playback?cl=253883325&docid=ibz7k3DjIeA&ei=HE8MXZTYLbmXs8IPztmx2Aw&fexp=23811378%2C23822435%2C23820266%2C23736684%2C23818213%2C23822161%2C23805410%2C23814135%2C23804281%2C23817543%2C23811453%2C23811427%2C23818122%2C23817114%2C23819595%2C1714243%2C23818585%2C23757411%2C23817149%2C23804908%2C9488571%2C23780337&live=live&ns=yt&plid=AAWLzRIrtioe5DMS&delay=5&el=embedded&len=0&of=1elpPrSFyAjPnmLc4xeyWw&vm=CAEQARgE"}
-         * videostatsDelayplayUrl : {"baseUrl":"https://s.youtube.com/api/stats/delayplay?cl=253883325&docid=ibz7k3DjIeA&ei=HE8MXZTYLbmXs8IPztmx2Aw&fexp=23811378%2C23822435%2C23820266%2C23736684%2C23818213%2C23822161%2C23805410%2C23814135%2C23804281%2C23817543%2C23811453%2C23811427%2C23818122%2C23817114%2C23819595%2C1714243%2C23818585%2C23757411%2C23817149%2C23804908%2C9488571%2C23780337&live=live&ns=yt&plid=AAWLzRIrtioe5DMS&delay=5&el=embedded&len=0&of=1elpPrSFyAjPnmLc4xeyWw&vm=CAEQARgE","elapsedMediaTimeSeconds":5}
-         * videostatsWatchtimeUrl : {"baseUrl":"https://s.youtube.com/api/stats/watchtime?cl=253883325&docid=ibz7k3DjIeA&ei=HE8MXZTYLbmXs8IPztmx2Aw&fexp=23811378%2C23822435%2C23820266%2C23736684%2C23818213%2C23822161%2C23805410%2C23814135%2C23804281%2C23817543%2C23811453%2C23811427%2C23818122%2C23817114%2C23819595%2C1714243%2C23818585%2C23757411%2C23817149%2C23804908%2C9488571%2C23780337&live=live&ns=yt&plid=AAWLzRIrtioe5DMS&el=embedded&len=0&of=1elpPrSFyAjPnmLc4xeyWw&vm=CAEQARgE"}
-         * ptrackingUrl : {"baseUrl":"https://www.youtube.com/ptracking?ei=HE8MXZTYLbmXs8IPztmx2Aw&oid=9BqkSXQzn-DvCnA2lS07Rw&plid=AAWLzRIrtioe5DMS&pltype=contentlive&ptchn=uzqko_GKcj9922M1gUo__w&ptk=youtube_single&video_id=ibz7k3DjIeA"}
-         * qoeUrl : {"baseUrl":"https://s.youtube.com/api/stats/qoe?cl=253883325&docid=ibz7k3DjIeA&ei=HE8MXZTYLbmXs8IPztmx2Aw&event=streamingstats&fexp=23811378%2C23822435%2C23820266%2C23736684%2C23818213%2C23822161%2C23805410%2C23814135%2C23804281%2C23817543%2C23811453%2C23811427%2C23818122%2C23817114%2C23819595%2C1714243%2C23818585%2C23757411%2C23817149%2C23804908%2C9488571%2C23780337&live=live&ns=yt&plid=AAWLzRIrtioe5DMS"}
-         * setAwesomeUrl : {"baseUrl":"https://www.youtube.com/set_awesome?ei=HE8MXZTYLbmXs8IPztmx2Aw&plid=AAWLzRIrtioe5DMS&video_id=ibz7k3DjIeA","elapsedMediaTimeSeconds":0}
-         * atrUrl : {"baseUrl":"https://s.youtube.com/api/stats/atr?docid=ibz7k3DjIeA&ei=HE8MXZTYLbmXs8IPztmx2Aw&len=0&ns=yt&plid=AAWLzRIrtioe5DMS&ver=2","elapsedMediaTimeSeconds":5}
-         * youtubeRemarketingUrl : {"baseUrl":"https://www.youtube.com/pagead/viewthroughconversion/962985656/?backend=innertube&cname=1&cver=2_20190619&foc_id=uzqko_GKcj9922M1gUo__w&label=followon_view&ptype=no_rmkt&random=754623177","elapsedMediaTimeSeconds":0}
-         */
 
         private VideostatsPlaybackUrlBean videostatsPlaybackUrl;
         private VideostatsDelayplayUrlBean videostatsDelayplayUrl;
@@ -318,9 +277,6 @@ public class YTM3U8Bean {
         }
 
         public static class VideostatsPlaybackUrlBean {
-            /**
-             * baseUrl : https://s.youtube.com/api/stats/playback?cl=253883325&docid=ibz7k3DjIeA&ei=HE8MXZTYLbmXs8IPztmx2Aw&fexp=23811378%2C23822435%2C23820266%2C23736684%2C23818213%2C23822161%2C23805410%2C23814135%2C23804281%2C23817543%2C23811453%2C23811427%2C23818122%2C23817114%2C23819595%2C1714243%2C23818585%2C23757411%2C23817149%2C23804908%2C9488571%2C23780337&live=live&ns=yt&plid=AAWLzRIrtioe5DMS&delay=5&el=embedded&len=0&of=1elpPrSFyAjPnmLc4xeyWw&vm=CAEQARgE
-             */
 
             private String baseUrl;
 
@@ -334,10 +290,6 @@ public class YTM3U8Bean {
         }
 
         public static class VideostatsDelayplayUrlBean {
-            /**
-             * baseUrl : https://s.youtube.com/api/stats/delayplay?cl=253883325&docid=ibz7k3DjIeA&ei=HE8MXZTYLbmXs8IPztmx2Aw&fexp=23811378%2C23822435%2C23820266%2C23736684%2C23818213%2C23822161%2C23805410%2C23814135%2C23804281%2C23817543%2C23811453%2C23811427%2C23818122%2C23817114%2C23819595%2C1714243%2C23818585%2C23757411%2C23817149%2C23804908%2C9488571%2C23780337&live=live&ns=yt&plid=AAWLzRIrtioe5DMS&delay=5&el=embedded&len=0&of=1elpPrSFyAjPnmLc4xeyWw&vm=CAEQARgE
-             * elapsedMediaTimeSeconds : 5
-             */
 
             private String baseUrl;
             private int elapsedMediaTimeSeconds;
@@ -360,9 +312,6 @@ public class YTM3U8Bean {
         }
 
         public static class VideostatsWatchtimeUrlBean {
-            /**
-             * baseUrl : https://s.youtube.com/api/stats/watchtime?cl=253883325&docid=ibz7k3DjIeA&ei=HE8MXZTYLbmXs8IPztmx2Aw&fexp=23811378%2C23822435%2C23820266%2C23736684%2C23818213%2C23822161%2C23805410%2C23814135%2C23804281%2C23817543%2C23811453%2C23811427%2C23818122%2C23817114%2C23819595%2C1714243%2C23818585%2C23757411%2C23817149%2C23804908%2C9488571%2C23780337&live=live&ns=yt&plid=AAWLzRIrtioe5DMS&el=embedded&len=0&of=1elpPrSFyAjPnmLc4xeyWw&vm=CAEQARgE
-             */
 
             private String baseUrl;
 
@@ -376,9 +325,6 @@ public class YTM3U8Bean {
         }
 
         public static class PtrackingUrlBean {
-            /**
-             * baseUrl : https://www.youtube.com/ptracking?ei=HE8MXZTYLbmXs8IPztmx2Aw&oid=9BqkSXQzn-DvCnA2lS07Rw&plid=AAWLzRIrtioe5DMS&pltype=contentlive&ptchn=uzqko_GKcj9922M1gUo__w&ptk=youtube_single&video_id=ibz7k3DjIeA
-             */
 
             private String baseUrl;
 
@@ -392,9 +338,6 @@ public class YTM3U8Bean {
         }
 
         public static class QoeUrlBean {
-            /**
-             * baseUrl : https://s.youtube.com/api/stats/qoe?cl=253883325&docid=ibz7k3DjIeA&ei=HE8MXZTYLbmXs8IPztmx2Aw&event=streamingstats&fexp=23811378%2C23822435%2C23820266%2C23736684%2C23818213%2C23822161%2C23805410%2C23814135%2C23804281%2C23817543%2C23811453%2C23811427%2C23818122%2C23817114%2C23819595%2C1714243%2C23818585%2C23757411%2C23817149%2C23804908%2C9488571%2C23780337&live=live&ns=yt&plid=AAWLzRIrtioe5DMS
-             */
 
             private String baseUrl;
 
@@ -408,10 +351,6 @@ public class YTM3U8Bean {
         }
 
         public static class SetAwesomeUrlBean {
-            /**
-             * baseUrl : https://www.youtube.com/set_awesome?ei=HE8MXZTYLbmXs8IPztmx2Aw&plid=AAWLzRIrtioe5DMS&video_id=ibz7k3DjIeA
-             * elapsedMediaTimeSeconds : 0
-             */
 
             private String baseUrl;
             private int elapsedMediaTimeSeconds;
@@ -434,10 +373,6 @@ public class YTM3U8Bean {
         }
 
         public static class AtrUrlBean {
-            /**
-             * baseUrl : https://s.youtube.com/api/stats/atr?docid=ibz7k3DjIeA&ei=HE8MXZTYLbmXs8IPztmx2Aw&len=0&ns=yt&plid=AAWLzRIrtioe5DMS&ver=2
-             * elapsedMediaTimeSeconds : 5
-             */
 
             private String baseUrl;
             private int elapsedMediaTimeSeconds;
@@ -460,10 +395,6 @@ public class YTM3U8Bean {
         }
 
         public static class YoutubeRemarketingUrlBean {
-            /**
-             * baseUrl : https://www.youtube.com/pagead/viewthroughconversion/962985656/?backend=innertube&cname=1&cver=2_20190619&foc_id=uzqko_GKcj9922M1gUo__w&label=followon_view&ptype=no_rmkt&random=754623177
-             * elapsedMediaTimeSeconds : 0
-             */
 
             private String baseUrl;
             private int elapsedMediaTimeSeconds;
@@ -487,41 +418,6 @@ public class YTM3U8Bean {
     }
 
     public static class VideoDetailsBean {
-        /**
-         * videoId : ibz7k3DjIeA
-         * title : EBC 東森財經新聞 24小時線上直播｜Taiwan EBC Financial News 24h live｜台湾 EBC 金融ニュース24 時間オンライン放送｜대만 뉴스 생방송
-         * lengthSeconds : 0
-         * isLive : true
-         * keywords : ["賺大錢","金價","股價","台股","A股","房市","基金","看盤","外匯","金融","銀行","投資","理財","小資","黃金","紅盤","金管會","證交所","證交稅","房市大跌","稅金","美元","人民幣","新台幣","石油","原油","房貸","信貸","定存","利率","央行"]
-         * channelId : UCuzqko_GKcj9922M1gUo__w
-         * isOwnerViewing : false
-         * shortDescription : 鎖定財經新聞直播，請上東森財經官網 https://fnc.ebc.net.tw/
-
-         【57金錢爆 - 播出完整版】 https://goo.gl/D7fK9T
-         【57爆新聞 - 播出完整版】https://goo.gl/UGAWB2
-         【57夢想街之全能事務所 - 播出完整版】http://pse.ee/5S9TP
-         【夢想街57號 - 播出完整版】https://goo.gl/V51C3c
-
-         【東森財經新聞YouTube】 https://www.youtube.com/user/57ETFN
-         【東森財經新聞粉絲團】https://www.facebook.com/ebcmoney
-
-         備註：您收看的畫面會比電視播出延遲30秒。
-         * isCrawlable : true
-         * isLiveDvrEnabled : false
-         * thumbnail : {"thumbnails":[{"url":"https://i.ytimg.com/vi/ibz7k3DjIeA/hqdefault_live.jpg?sqp=CIycsegF-oaymwEYCKgBEF5IVfKriqkDCwgBFQAAiEIYAXAB&rs=AOn4CLCuogGgd3-hu1Cwh47byBVXDtIcWA","width":168,"height":94},{"url":"https://i.ytimg.com/vi/ibz7k3DjIeA/hqdefault_live.jpg?sqp=CIycsegF-oaymwEYCMQBEG5IVfKriqkDCwgBFQAAiEIYAXAB&rs=AOn4CLAXUIiMDoJs_ISFIsrukSJOuaLT_g","width":196,"height":110},{"url":"https://i.ytimg.com/vi/ibz7k3DjIeA/hqdefault_live.jpg?sqp=CIycsegF-oaymwEZCPYBEIoBSFXyq4qpAwsIARUAAIhCGAFwAQ==&rs=AOn4CLCRCdtLJXb0MJ0uaeUXen8LmuU-Kw","width":246,"height":138},{"url":"https://i.ytimg.com/vi/ibz7k3DjIeA/hqdefault_live.jpg?sqp=CIycsegF-oaymwEZCNACELwBSFXyq4qpAwsIARUAAIhCGAFwAQ==&rs=AOn4CLCgzI-ylUih-3sOhaiJRTTE4ozDiA","width":336,"height":188}]}
-         * useCipher : false
-         * liveChunkReadahead : 3
-         * averageRating : 4.0174756
-         * allowRatings : true
-         * viewCount : 631381
-         * author : ５７東森財經新聞台
-         * isLiveDefaultBroadcast : true
-         * isLowLatencyLiveStream : true
-         * isPrivate : false
-         * isUnpluggedCorpus : false
-         * latencyClass : MDE_STREAM_OPTIMIZATIONS_RENDERER_LATENCY_LOW
-         * isLiveContent : true
-         */
 
         private String videoId;
         private String title;
@@ -743,11 +639,6 @@ public class YTM3U8Bean {
             }
 
             public static class ThumbnailsBean {
-                /**
-                 * url : https://i.ytimg.com/vi/ibz7k3DjIeA/hqdefault_live.jpg?sqp=CIycsegF-oaymwEYCKgBEF5IVfKriqkDCwgBFQAAiEIYAXAB&rs=AOn4CLCuogGgd3-hu1Cwh47byBVXDtIcWA
-                 * width : 168
-                 * height : 94
-                 */
 
                 private String url;
                 private int width;
@@ -781,11 +672,6 @@ public class YTM3U8Bean {
     }
 
     public static class PlayerConfigBean {
-        /**
-         * streamSelectionConfig : {"maxBitrate":"7730000"}
-         * livePlayerConfig : {"liveReadaheadSeconds":4.800000000000001,"hasSubfragmentedFmp4":true}
-         * mediaCommonConfig : {"dynamicReadaheadConfig":{"maxReadAheadMediaTimeMs":120000,"minReadAheadMediaTimeMs":15000,"readAheadGrowthRateMs":1000}}
-         */
 
         private StreamSelectionConfigBean streamSelectionConfig;
         private LivePlayerConfigBean livePlayerConfig;
@@ -816,9 +702,6 @@ public class YTM3U8Bean {
         }
 
         public static class StreamSelectionConfigBean {
-            /**
-             * maxBitrate : 7730000
-             */
 
             private String maxBitrate;
 
@@ -832,10 +715,6 @@ public class YTM3U8Bean {
         }
 
         public static class LivePlayerConfigBean {
-            /**
-             * liveReadaheadSeconds : 4.800000000000001
-             * hasSubfragmentedFmp4 : true
-             */
 
             private double liveReadaheadSeconds;
             private boolean hasSubfragmentedFmp4;
@@ -858,9 +737,6 @@ public class YTM3U8Bean {
         }
 
         public static class MediaCommonConfigBean {
-            /**
-             * dynamicReadaheadConfig : {"maxReadAheadMediaTimeMs":120000,"minReadAheadMediaTimeMs":15000,"readAheadGrowthRateMs":1000}
-             */
 
             private DynamicReadaheadConfigBean dynamicReadaheadConfig;
 
@@ -873,11 +749,6 @@ public class YTM3U8Bean {
             }
 
             public static class DynamicReadaheadConfigBean {
-                /**
-                 * maxReadAheadMediaTimeMs : 120000
-                 * minReadAheadMediaTimeMs : 15000
-                 * readAheadGrowthRateMs : 1000
-                 */
 
                 private int maxReadAheadMediaTimeMs;
                 private int minReadAheadMediaTimeMs;
@@ -911,9 +782,6 @@ public class YTM3U8Bean {
     }
 
     public static class StoryboardsBean {
-        /**
-         * playerLiveStoryboardSpecRenderer : {"spec":"https://i.ytimg.com/sb/ibz7k3DjIeA/storyboard_live_60_3x3_b0/M$M.jpg?rs=AOn4CLDdMJhV6LVUM2Mw_ya-Fxaj-Ob9_w#106#60#3#3"}
-         */
 
         private PlayerLiveStoryboardSpecRendererBean playerLiveStoryboardSpecRenderer;
 
@@ -926,9 +794,6 @@ public class YTM3U8Bean {
         }
 
         public static class PlayerLiveStoryboardSpecRendererBean {
-            /**
-             * spec : https://i.ytimg.com/sb/ibz7k3DjIeA/storyboard_live_60_3x3_b0/M$M.jpg?rs=AOn4CLDdMJhV6LVUM2Mw_ya-Fxaj-Ob9_w#106#60#3#3
-             */
 
             private String spec;
 
@@ -943,9 +808,6 @@ public class YTM3U8Bean {
     }
 
     public static class AttestationBean {
-        /**
-         * playerAttestationRenderer : {"challenge":"a=4&b=_osbWMosr-XpbJSn3e29dXRSQ8w&c=1561087772&d=1&e=ibz7k3DjIeA&c3a=15&c1a=1&c6a=1&hh=W1ZlYaGaK7XPhnIB5vhcgdY3qpIGiHXyhpH59DvZS5s"}
-         */
 
         private PlayerAttestationRendererBean playerAttestationRenderer;
 
@@ -958,9 +820,6 @@ public class YTM3U8Bean {
         }
 
         public static class PlayerAttestationRendererBean {
-            /**
-             * challenge : a=4&b=_osbWMosr-XpbJSn3e29dXRSQ8w&c=1561087772&d=1&e=ibz7k3DjIeA&c3a=15&c1a=1&c6a=1&hh=W1ZlYaGaK7XPhnIB5vhcgdY3qpIGiHXyhpH59DvZS5s
-             */
 
             private String challenge;
 
@@ -975,12 +834,6 @@ public class YTM3U8Bean {
     }
 
     public static class AdSafetyReasonBean {
-        /**
-         * apmUserPreference : {}
-         * isEmbed : true
-         * isRemarketingEnabled : true
-         * isFocEnabled : true
-         */
 
         private ApmUserPreferenceBean apmUserPreference;
         private boolean isEmbed;
@@ -1024,9 +877,6 @@ public class YTM3U8Bean {
     }
 
     public static class AnnotationsBean {
-        /**
-         * playerAnnotationsUrlsRenderer : {"invideoUrl":"//www.youtube.com/annotations_invideo?cap_hist=1&video_id=ibz7k3DjIeA&client=1","loadPolicy":"ALWAYS","allowInPlaceSwitch":true}
-         */
 
         private PlayerAnnotationsUrlsRendererBean playerAnnotationsUrlsRenderer;
 
@@ -1039,11 +889,6 @@ public class YTM3U8Bean {
         }
 
         public static class PlayerAnnotationsUrlsRendererBean {
-            /**
-             * invideoUrl : //www.youtube.com/annotations_invideo?cap_hist=1&video_id=ibz7k3DjIeA&client=1
-             * loadPolicy : ALWAYS
-             * allowInPlaceSwitch : true
-             */
 
             private String invideoUrl;
             private String loadPolicy;
