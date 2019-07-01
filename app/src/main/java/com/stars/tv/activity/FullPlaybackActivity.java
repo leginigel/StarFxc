@@ -222,7 +222,7 @@ public class FullPlaybackActivity extends BaseActivity {
     }
 
     private void returnHistoryUpdate(){
-        if ( mVideoCount > 0 ) {
+        if ( mVideoCount > 0 && malbumImagUrl != null  ) {
             ExtVideoBean bean = new ExtVideoBean();
             bean.setVideoType(mVideoType);
             bean.setAlbumId(albumId);

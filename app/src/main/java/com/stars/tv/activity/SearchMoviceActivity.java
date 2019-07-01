@@ -24,7 +24,7 @@ public class SearchMoviceActivity extends BaseActivity{
     }
 
     private void initSearchFrame(){
-        mSearchMoviceFragment = new SearchMoviceFragment();
+        mSearchMoviceFragment = SearchMoviceFragment.newInstance();
         getSupportFragmentManager()
                 .beginTransaction()
                 .add(R.id.contentlay, mSearchMoviceFragment)

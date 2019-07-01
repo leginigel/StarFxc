@@ -504,6 +504,7 @@ public class RecommandVideoRowFragment extends BaseFragment {
         if(getUserVisibleHint()) {
         showLoad();
         if(NetUtil.isConnected()){
+            count = 0;
             loadData();
         }
         }

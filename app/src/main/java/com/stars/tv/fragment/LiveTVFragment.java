@@ -405,7 +405,9 @@ public class LiveTVFragment extends BaseFragment {
                 playerLoadingView.setVisibility(View.VISIBLE);
                 playerLoadingView.setText("");
             }
+            if(mCircleDrawable != null) {
             mCircleDrawable.start();
+            }
         } else {
             showLoadingError("0");
         }
