@@ -5,6 +5,7 @@ import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -33,6 +34,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.github.ybq.android.spinkit.style.Circle;
 import com.stars.tv.R;
 import com.stars.tv.activity.FullPlaybackActivity;
 import com.stars.tv.activity.VideoPreviewActivity;
@@ -61,10 +63,10 @@ import me.jessyan.autosize.utils.AutoSizeUtils;
 
 public class SearchMoviceFragment extends BaseFragment {
     private static final String TAG = "SearchMoviceFragment";
-    private static final int ITEM_NUM_ROW = 4; // 一行多少个row item.
+    private static final int ITEM_NUM_ROW = 2; // 一行多少个row item.
 
-    private static final int GRIDVIEW_LEFT_P = 40;
-    private static final int GRIDVIEW_RIGHT_P = 50;
+    private static final int GRIDVIEW_LEFT_P = 20;
+    private static final int GRIDVIEW_RIGHT_P = 20;
     private static final int GRIDVIEW_TOP_P = 10;
     private static final int GRIDVIEW_BOTTOM_P = 50;
 
@@ -101,9 +103,7 @@ public class SearchMoviceFragment extends BaseFragment {
     Unbinder unbinder;
 
     @BindView(R.id.loading)
-    ProgressBar loadingProgBar;
-    @BindView(R.id.tip_tv)
-    TextView tipTextView;
+    TextView loadTex;
     @BindView(R.id.suggest_tv)
     TextView suggestTextView;
     @BindView(R.id.search_tv)
@@ -150,9 +150,13 @@ public class SearchMoviceFragment extends BaseFragment {
     MoviceAdapter mMoviceAdapter;
     HistoryItemAdapter mHistoryItemAdapter;
     String word;
+    private Circle mCircleDrawable;
 
     private  boolean isNeedtToSetPos = false;
 
+    public static SearchMoviceFragment newInstance() {
+        return new SearchMoviceFragment();
+    }
     @SuppressLint("HandlerLeak")
     private Handler mHandler = new Handler() {
         @Override
@@ -235,11 +239,19 @@ public class SearchMoviceFragment extends BaseFragment {
         initAllKeysGridView();
         initT9KeysGridView();
         initKeySelectGridView();
+        initLoading();
         return view;
     }
 
     private void initAllDatas() {
         parseIQiYiSearchHotQueryWord();
+    }
+
+    private void initLoading() {
+        mCircleDrawable = new Circle();
+        mCircleDrawable.setBounds(0, 0, 100, 100);
+        mCircleDrawable.setColor(Color.WHITE);
+        loadTex.setCompoundDrawables(null, null, mCircleDrawable, null);
     }
 
     private void refreshRequest(int type, int position) {
@@ -279,6 +291,8 @@ public class SearchMoviceFragment extends BaseFragment {
                     mPageNum = 1;
                     typeSuggest = 0;
 //                    refreshRequest(typeSuggest, sugPosition);
+                    loadTex.setVisibility(View.VISIBLE);
+                    mCircleDrawable.start();
                     setTimer(REFRESH_REQUEST,500);
                     // 设置默认.
                     ((Button) child.itemView).setTextColor(getResources().getColor(R.color.title_select_color));
@@ -294,6 +308,8 @@ public class SearchMoviceFragment extends BaseFragment {
                             sugPosition = (int) v.getTag();
                             Log.v(TAG,"historyVgridview:  "+typeSuggest);
                             typeSuggest = 0;
+                            loadTex.setVisibility(View.VISIBLE);
+                            mCircleDrawable.start();
                             setTimer(REFRESH_REQUEST,1500);
 //                            refreshRequest(typeSuggest, sugPosition);
                             ((Button) child.itemView).setTextColor(getResources().getColor(R.color.color_white));
@@ -319,8 +335,8 @@ public class SearchMoviceFragment extends BaseFragment {
         searchVgridview.setNumColumns(ITEM_NUM_ROW);
         int top = ViewUtils.getPercentHeightSize(ITEM_TOP_PADDING);
         int right = ViewUtils.getPercentWidthSize(ITEM_PADDING);
-        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams((300*ITEM_NUM_ROW)+(ITEM_PADDING*ITEM_NUM_ROW)+GRIDVIEW_LEFT_P+GRIDVIEW_RIGHT_P+50, FrameLayout.LayoutParams.MATCH_PARENT);
-        searchVgridview.setLayoutParams(lp);
+//        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams((300*ITEM_NUM_ROW)+(ITEM_PADDING*ITEM_NUM_ROW)+GRIDVIEW_LEFT_P+GRIDVIEW_RIGHT_P+50, FrameLayout.LayoutParams.MATCH_PARENT);
+//        searchVgridview.setLayoutParams(lp);
         searchVgridview.addItemDecoration(new SpaceItemDecoration(right, top));
         mMoviceAdapter = new MoviceAdapter();
         searchVgridview.setAdapter(mMoviceAdapter);
@@ -353,6 +369,8 @@ public class SearchMoviceFragment extends BaseFragment {
                     mPageNum = 1;
                     typeSuggest =1;
 //                    refreshRequest(typeSuggest, sugPosition);
+                    loadTex.setVisibility(View.VISIBLE);
+                    mCircleDrawable.start();
                     setTimer(REFRESH_REQUEST,500);
                     // 设置默认.
                     ((Button) child.itemView).setTextColor(getResources().getColor(R.color.title_select_color));
@@ -369,6 +387,8 @@ public class SearchMoviceFragment extends BaseFragment {
                             sugPosition = (int)v.getTag();
                             typeSuggest =1;
 //                            refreshRequest(typeSuggest, sugPosition);
+                            loadTex.setVisibility(View.VISIBLE);
+                            mCircleDrawable.start();
                             setTimer(REFRESH_REQUEST,1500);
                             ((Button) child.itemView).setTextColor(getResources().getColor(R.color.color_white));
                         } else {
@@ -573,7 +593,7 @@ public class SearchMoviceFragment extends BaseFragment {
                         suggestVgridview.requestFocusFromTouch();
                 }
 //                    middleLy.requestFocusFromTouch();
-                    leftLy.setVisibility(View.GONE);
+//                    leftLy.setVisibility(View.GONE);
                     return true;
                 }
 
@@ -586,7 +606,7 @@ public class SearchMoviceFragment extends BaseFragment {
                         typeSuggest =1;
                     }
                     isRemaining = true;
-                    leftLy.setVisibility(View.VISIBLE);
+//                    leftLy.setVisibility(View.VISIBLE);
                     keyBoardFl.requestFocusFromTouch();
                     return true;
                 }
@@ -800,6 +820,8 @@ public class SearchMoviceFragment extends BaseFragment {
                 for (int i = 0; i < list.size(); i++) {
 //                    Log.v(TAG, list.get(i).toString());
                 }
+                loadTex.setVisibility(View.GONE);
+                mCircleDrawable.stop();
                 if(!list.isEmpty()) {
                 word = keyWord;
                 maxNum = bean.getMax_result_number();
@@ -822,6 +844,9 @@ public class SearchMoviceFragment extends BaseFragment {
             @Override
             public void error(String msg) {
                 //TODO 获取失败
+                loadTex.setVisibility(View.GONE);
+                mCircleDrawable.stop();
+                Toast.makeText(mContext, "加载失败，网络简析错误！", Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -886,7 +911,7 @@ public class SearchMoviceFragment extends BaseFragment {
     public class MoviceAdapter extends RecyclerView.Adapter<MoviceAdapter.ViewHolder> {
 
         private List<IQiYiMovieBean> mList;
-
+        String newUrl;
         public void setList(List<IQiYiMovieBean> list)
         {
             this.mList = list;
@@ -898,8 +923,8 @@ public class SearchMoviceFragment extends BaseFragment {
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View view = View.inflate(parent.getContext(), R.layout.item_videos_layout, null);
             // 保持影视比例.
-            mItemWidth = 300;
-            mItemHeight = mItemWidth / 3 * 4;
+            mItemWidth = 390;
+            mItemHeight = 300;
             ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(mItemWidth, mItemHeight);
             view.setLayoutParams(lp);
             view.setFocusable(true);
@@ -913,8 +938,13 @@ public class SearchMoviceFragment extends BaseFragment {
         public void onBindViewHolder(final ViewHolder holder, final int position) {
             if (null != mList) {
                 final IQiYiMovieBean videoBean = mList.get(position);
+                String imageUrl = videoBean.getImageUrl();
+                if (imageUrl!=null) {
+                    String size = "_480_270.jpg";
+                    newUrl = imageUrl.replace(".jpg", size);
+                }
                 Glide.with(Objects.requireNonNull(getActivity()))
-                        .load(videoBean.getImageUrl()).into(holder.bgIv);
+                        .load(newUrl).into(holder.bgIv);
                 ((TextView) holder.nameTv).setAlpha(0.80f);
                 ((TextView) holder.nameTv).setText(mList.get(position).getName());
                 holder.nameTv.setSelected(true);
@@ -938,7 +968,7 @@ public class SearchMoviceFragment extends BaseFragment {
                     @Override
                     public void onFocusChange(View view, boolean hasFocus) {
 //                        holder.boardView.setVisibility(hasFocus ? View.VISIBLE : View.INVISIBLE);
-                        ViewUtils.scaleAnimator(view, hasFocus, 1.2f, 150);
+                        ViewUtils.scaleAnimator(view, hasFocus, 1.1f, 150);
                     }
                 });
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
