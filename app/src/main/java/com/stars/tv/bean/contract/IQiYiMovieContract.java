@@ -9,7 +9,7 @@ import java.util.List;
 public interface IQiYiMovieContract {
 
     interface IQiYiMovieView extends IQiYiBaseView {
-        void returnIQiYiMovieList(List<IQiYiMovieBean> beans);
+        void returnIQiYiMovieList(List<IQiYiMovieBean> beans,int number);
     }
 
     abstract class IQiYiMoviePresenter extends IQiYiBasePresenter<IQiYiMovieView> {

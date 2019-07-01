@@ -54,7 +54,7 @@ public class IQiYiMoviePresenter extends IQiYiMovieContract.IQiYiMoviePresenter 
                 Type type = new TypeToken<IQiYiMovieSimplifiedBean>() {
                 }.getType();
                 movieListBean = new Gson().fromJson(data, type);
-                mView.returnIQiYiMovieList(movieListBean.getList());
+                mView.returnIQiYiMovieList(movieListBean.getList(),movieListBean.getTotal());
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }

@@ -142,7 +142,7 @@ public class VideoVGridSampleMVPFragment
 
 
     @Override
-    public void returnIQiYiMovieList(List<IQiYiMovieBean> beans) {
+    public void returnIQiYiMovieList(List<IQiYiMovieBean> beans, int total) {
         mVideoList.addAll(beans);
         videoGrid.endMoreRefreshComplete();
         mHandler.sendEmptyMessage(REFRESH_MOVIE_CONTENT);

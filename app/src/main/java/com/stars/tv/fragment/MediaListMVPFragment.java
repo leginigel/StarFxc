@@ -60,6 +60,7 @@ public class MediaListMVPFragment
     List<IQiYiMovieBean> mVideoList = new ArrayList<>();
     String mTvTitle;
     int postition = 0;
+    private int mTotal = 0;
 
     @BindView(R.id.video_content_v_grid)
     MyVerticalGridView videoGrid;
@@ -446,7 +447,7 @@ public class MediaListMVPFragment
             public void onChildViewHolderSelected(RecyclerView parent, RecyclerView.ViewHolder child, int position, int subposition) {
                 super.onChildViewHolderSelected(parent, child, position, subposition);
                 //TODO 设置为focus行为
-                typecount_txt.setText(position + 1 + "/" + mVideoList.size() + "部)");
+                typecount_txt.setText(position + 1 + "/" + mTotal + "部)");
             }
         });
         videoGrid.setOnLoadMoreListener(new MyVerticalGridView.OnLoadMoreListener() {
@@ -480,10 +481,11 @@ public class MediaListMVPFragment
 
 
     @Override
-    public void returnIQiYiMovieList(List<IQiYiMovieBean> beans) {
-        mVideoList.clear();
+    public void returnIQiYiMovieList(List<IQiYiMovieBean> beans,int total) {
+//        mVideoList.clear();
         mVideoList.addAll(beans);
-        typecount_txt.setText(mVideoList.size() + "部)");
+        typecount_txt.setText(total + "部)");
+        mTotal = total;
         videoGrid.endMoreRefreshComplete();
         mHandler.sendEmptyMessage(REFRESH_MOVIE_CONTENT);
     }
