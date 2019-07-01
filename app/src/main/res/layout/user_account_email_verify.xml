@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:id="@+id/account_email_login_container"
+  android:layout_width="wrap_content"
+  android:layout_height="wrap_content"
+  >
+  <TextView
+    android:id="@+id/account_email_login_verify"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="10dp"
+    android:layout_marginStart="10dp"
+    android:textSize="20sp"
+    android:text="@string/str_account_info_email_verifying"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    />
+
+  <TextView
+    android:id="@+id/account_email_login_email_text"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="@string/str_account_info_email"
+    android:layout_marginTop="30dp"
+    android:layout_marginStart="20dp"
+    android:textSize="16sp"
+    android:labelFor="@id/account_email_login_email_number"
+    app:layout_constraintTop_toBottomOf="@id/account_email_login_verify"
+    app:layout_constraintLeft_toLeftOf="@id/account_email_login_verify"
+    />
+
+  <EditText
+    android:id="@+id/account_email_login_email_number"
+    android:layout_width="145dp"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="5dp"
+    android:singleLine="true"
+    android:enabled="false"
+    android:inputType="textEmailAddress"
+    android:textSize="12sp"
+    android:importantForAutofill="no"
+    app:layout_constraintTop_toTopOf="@id/account_email_login_email_text"
+    app:layout_constraintBottom_toBottomOf="@id/account_email_login_email_text"
+    app:layout_constraintLeft_toRightOf="@id/account_email_login_email_text"
+    tools:targetApi="O"
+    />
+
+  <Button
+    android:id="@+id/account_email_login_send_code_button"
+    android:minHeight="0dp"
+    android:minWidth="0dp"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="10dp"
+    android:text="@string/str_account_info_send_verify_code"
+    android:textSize="14sp"
+    app:layout_constraintTop_toTopOf="@+id/account_email_login_email_number"
+    app:layout_constraintBottom_toBottomOf="@+id/account_email_login_email_number"
+    app:layout_constraintLeft_toRightOf="@+id/account_email_login_email_number"
+    />
+
+  <TextView
+    android:id="@+id/account_email_login_verify_code_text"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="@string/str_account_info_verify_code"
+    android:layout_marginTop="10dp"
+    android:textSize="16sp"
+    android:labelFor="@id/account_email_login_verify_code_editor"
+    app:layout_constraintTop_toBottomOf="@id/account_email_login_email_number"
+    app:layout_constraintLeft_toLeftOf="@id/account_email_login_email_number"
+    />
+
+  <EditText
+    android:id="@+id/account_email_login_verify_code_editor"
+    android:layout_width="80dp"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="5dp"
+    android:singleLine="true"
+    android:textSize="12sp"
+    android:inputType="number"
+    android:importantForAutofill="no"
+    app:layout_constraintTop_toTopOf="@+id/account_email_login_verify_code_text"
+    app:layout_constraintBottom_toBottomOf="@+id/account_email_login_verify_code_text"
+    app:layout_constraintLeft_toRightOf="@id/account_email_login_verify_code_text"
+    tools:targetApi="O"
+    />
+
+  <Button
+    android:id="@+id/account_email_login_verify_code_button"
+    android:minHeight="0dp"
+    android:minWidth="0dp"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="5dp"
+    android:text="@string/str_account_info_confirm_verify_code"
+    android:textSize="14sp"
+    app:layout_constraintTop_toTopOf="@+id/account_email_login_verify_code_text"
+    app:layout_constraintBottom_toBottomOf="@+id/account_email_login_verify_code_text"
+    app:layout_constraintLeft_toRightOf="@+id/account_email_login_verify_code_editor"
+    />
+</android.support.constraint.ConstraintLayout>

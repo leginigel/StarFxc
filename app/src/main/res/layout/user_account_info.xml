@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:id="@+id/account_info_layout"
+  android:layout_width="wrap_content"
+  android:layout_height="wrap_content"
+  >
+
+  <TextView
+    android:id="@+id/account_info_title"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="10dp"
+    android:layout_marginStart="10dp"
+    android:textSize="20sp"
+    android:text="@string/str_account_info_manager"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    />
+
+  <TextView
+    android:id="@+id/account_info_account"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="@string/str_account_info_account"
+    android:layout_marginTop="30dp"
+    android:layout_marginStart="20dp"
+    android:textSize="16sp"
+    android:labelFor="@id/account_info_account_display"
+    app:layout_constraintTop_toBottomOf="@id/account_info_title"
+    app:layout_constraintLeft_toLeftOf="@id/account_info_title"
+    />
+
+  <EditText
+    android:id="@+id/account_info_account_display"
+    style="@style/AccountEditorStyle"
+    android:inputType="text"
+    android:importantForAutofill="no"
+    app:layout_constraintTop_toTopOf="@id/account_info_account"
+    app:layout_constraintBottom_toBottomOf="@id/account_info_account"
+    app:layout_constraintLeft_toRightOf="@id/account_info_account"
+    tools:targetApi="O"
+    />
+
+  <TextView
+    android:id="@+id/account_info_password"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="@string/str_account_info_password"
+    android:layout_marginTop="10dp"
+    android:layout_marginStart="20dp"
+    android:textSize="16sp"
+    android:labelFor="@id/account_info_password_display"
+    app:layout_constraintTop_toBottomOf="@id/account_info_account"
+    app:layout_constraintLeft_toLeftOf="@id/account_info_title"
+    />
+
+  <EditText
+    android:id="@+id/account_info_password_display"
+    style="@style/AccountEditorStyle"
+    android:inputType="textPassword"
+    android:importantForAutofill="no"
+    app:layout_constraintTop_toTopOf="@id/account_info_password"
+    app:layout_constraintBottom_toBottomOf="@id/account_info_password"
+    app:layout_constraintLeft_toRightOf="@id/account_info_password"
+    tools:targetApi="O"
+    />
+
+  <TextView
+    android:id="@+id/account_info_name"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="@string/str_account_info_name"
+    android:layout_marginTop="10dp"
+    android:layout_marginStart="20dp"
+    android:textSize="16sp"
+    android:labelFor="@id/account_info_name_display"
+    app:layout_constraintTop_toBottomOf="@id/account_info_password"
+    app:layout_constraintLeft_toLeftOf="@id/account_info_title"
+    />
+
+  <EditText
+    android:id="@+id/account_info_name_display"
+    style="@style/AccountEditorStyle"
+    android:inputType="text"
+    android:importantForAutofill="no"
+    app:layout_constraintTop_toTopOf="@id/account_info_name"
+    app:layout_constraintBottom_toBottomOf="@id/account_info_name"
+    app:layout_constraintLeft_toRightOf="@id/account_info_name"
+    tools:targetApi="O"
+    />
+
+  <TextView
+    android:id="@+id/account_info_mobile"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="@string/str_account_info_phone"
+    android:layout_marginTop="10dp"
+    android:layout_marginStart="20dp"
+    android:textSize="16sp"
+    android:labelFor="@id/account_info_mobile_display"
+    app:layout_constraintTop_toBottomOf="@id/account_info_name"
+    app:layout_constraintLeft_toLeftOf="@id/account_info_title"
+    />
+
+  <EditText
+    android:id="@+id/account_info_mobile_country"
+    android:layout_width="50dp"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="5dp"
+    android:singleLine="true"
+    android:enabled="false"
+    android:inputType="text"
+    android:importantForAutofill="no"
+    android:hint="@string/str_account_info_china_code"
+    android:textSize="12sp"
+    app:layout_constraintTop_toTopOf="@id/account_info_mobile"
+    app:layout_constraintBottom_toBottomOf="@id/account_info_mobile"
+    app:layout_constraintLeft_toRightOf="@id/account_info_mobile"
+    tools:targetApi="O"
+    />
+
+  <EditText
+    android:id="@+id/account_info_mobile_display"
+    android:layout_width="145dp"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="5dp"
+    android:singleLine="true"
+    android:enabled="false"
+    android:inputType="number"
+    android:textSize="12sp"
+    android:importantForAutofill="no"
+    app:layout_constraintTop_toTopOf="@id/account_info_mobile"
+    app:layout_constraintBottom_toBottomOf="@id/account_info_mobile"
+    app:layout_constraintLeft_toRightOf="@id/account_info_mobile_country"
+    tools:targetApi="O"
+    />
+
+  <TextView
+    android:id="@+id/account_info_email"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="@string/str_account_info_email"
+    android:layout_marginTop="10dp"
+    android:layout_marginStart="20dp"
+    android:textSize="16sp"
+    android:labelFor="@id/account_info_email_display"
+    app:layout_constraintTop_toBottomOf="@id/account_info_mobile"
+    app:layout_constraintLeft_toLeftOf="@id/account_info_title"
+    />
+
+  <EditText
+    android:id="@+id/account_info_email_display"
+    style="@style/AccountEditorStyle"
+    android:inputType="textEmailAddress"
+    android:importantForAutofill="no"
+    app:layout_constraintTop_toTopOf="@id/account_info_email"
+    app:layout_constraintBottom_toBottomOf="@id/account_info_email"
+    app:layout_constraintLeft_toRightOf="@id/account_info_email"
+    tools:targetApi="O"
+    />
+
+  <Button
+    android:id="@+id/account_info_editor_button"
+    android:minHeight="0dp"
+    android:minWidth="0dp"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="@string/str_account_info_edit"
+    android:layout_marginStart="100dp"
+    android:textSize="14sp"
+    app:layout_constraintTop_toTopOf="@id/account_info_account"
+    app:layout_constraintLeft_toRightOf="@id/account_info_account_display"
+    app:layout_constraintBottom_toBottomOf="@id/account_info_account"
+    />
+
+  <Button
+    android:id="@+id/account_info_mobile_verify_button"
+    android:minHeight="0dp"
+    android:minWidth="0dp"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="@string/str_account_info_phone_no_verify"
+    android:layout_marginStart="30dp"
+    android:textSize="14sp"
+    app:layout_constraintTop_toTopOf="@id/account_info_mobile"
+    app:layout_constraintLeft_toRightOf="@id/account_info_mobile_display"
+    app:layout_constraintBottom_toBottomOf="@id/account_info_mobile"
+    />
+
+  <Button
+    android:id="@+id/account_info_email_verify_button"
+    android:minHeight="0dp"
+    android:minWidth="0dp"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="@string/str_account_info_email_no_verify"
+    android:layout_marginStart="30dp"
+    android:textSize="14sp"
+    app:layout_constraintTop_toTopOf="@id/account_info_email"
+    app:layout_constraintLeft_toRightOf="@id/account_info_email_display"
+    app:layout_constraintBottom_toBottomOf="@id/account_info_email"
+    />
+
+</android.support.constraint.ConstraintLayout>
