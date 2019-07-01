@@ -28,8 +28,8 @@
         <activity
             android:name=".activity.StreamActivity"
             android:screenOrientation="landscape"
-            android:theme="@style/CastStream">
-        </activity>
+            android:theme="@style/CastStream"
+            android:parentActivityName=".activity.MainActivity" />
         <activity android:name=".activity.LiveTVActivity" />
         <activity
             android:name=".activity.MainActivity"

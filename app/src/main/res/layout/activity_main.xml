@@ -34,13 +34,34 @@
             android:textSize="8sp"
             tools:ignore="SmallSp" />
 
+        <Button
+            android:id="@+id/stream_btn"
+            android:layout_width="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_toStartOf="@id/yt_imageButton"
+            android:layout_marginTop="5dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="5dp"
+            android:layout_height="18dp"
+            android:minWidth="40dp"
+            android:background="@drawable/ic_search_btn_normal"
+            android:textColor="@color/color_all_white"
+            android:gravity="center"
+            android:text="@string/str_stream"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:textSize="8sp"
+            tools:ignore="SmallSp" />
+
         <ImageButton
             android:id="@+id/yt_imageButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="20dp"
             android:layout_marginTop="3dp"
-            android:layout_toEndOf="@+id/search_btn"
+            android:layout_alignParentEnd="true"
             android:focusable="true"
             android:focusableInTouchMode="true"
             android:background="@color/color_transparent"

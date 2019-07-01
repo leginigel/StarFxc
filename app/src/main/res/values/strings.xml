@@ -143,6 +143,7 @@
     <string name="str_media_list_type_list_sports">运动竞技</string>
     <string name="str_media_list_type_list_familycartoon">合家欢</string>
 
+    <string name="str_stream">直播</string>
 
     <string name="str_exit_application">再按一次退出应用</string>
 

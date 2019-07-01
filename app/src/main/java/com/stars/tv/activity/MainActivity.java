@@ -93,6 +93,8 @@ public class MainActivity extends BaseActivity {
     Button searchBtn;
     @BindView(R.id.yt_imageButton)
     ImageButton ytBtn;
+    @BindView(R.id.stream_btn)
+    Button streamBtn;
 
   FragAdapter mFragAdapter;
     //    List<VideoRowSampleFragment> mFragmentList = new ArrayList<>();
@@ -167,7 +169,8 @@ public class MainActivity extends BaseActivity {
         if (event.getAction() == KeyEvent.ACTION_DOWN && event.getKeyCode() == KeyEvent.KEYCODE_DPAD_DOWN) {
           // hide search button
           searchBtn.setVisibility(View.GONE);
-                    ytBtn.setVisibility(View.GONE);
+            ytBtn.setVisibility(View.GONE);
+            streamBtn.setVisibility(View.GONE);
         }
         return false;
       }
@@ -181,11 +184,12 @@ public class MainActivity extends BaseActivity {
         child.itemView.setTag(position);
         child.itemView.setOnFocusChangeListener((view, hasFocus) -> {
           // show search button
-                    if (hasFocus) {
-            searchBtn.setVisibility(View.VISIBLE);
-                        ytBtn.setVisibility(View.VISIBLE);
-          }
-                    ViewUtils.scaleAnimator(view, hasFocus, 1.2f, 150);
+            if (hasFocus) {
+                searchBtn.setVisibility(View.VISIBLE);
+                ytBtn.setVisibility(View.VISIBLE);
+                streamBtn.setVisibility(View.VISIBLE);
+            }
+            ViewUtils.scaleAnimator(view, hasFocus, 1.2f, 150);
           TextView tv = view.findViewById(R.id.tv_title);
           View lineView = view.findViewById(R.id.title_under_line);
           lineView.setBackgroundColor(getResources().getColor(hasFocus ? R.color.color_focus : R.color.color_transparent));
@@ -222,26 +226,48 @@ public class MainActivity extends BaseActivity {
     }
 
   private void initContentViews() {
-    mFragAdapter = new FragAdapter(getSupportFragmentManager());
-        ytBtn.setOnFocusChangeListener((view, b) ->
-                ytBtn.setImageDrawable(b ? getDrawable(R.drawable.ic_youtube_color_icon) : getDrawable(R.drawable.ic_youtube_dark_icon)));
-        ytBtn.setOnKeyListener((view, i, keyEvent) -> {
-            if (keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
-                if (keyEvent.getKeyCode() == KeyEvent.KEYCODE_DPAD_DOWN) {
-                    hgTitle.requestFocusFromTouch();
-                    return true;
-                } else if (keyEvent.getKeyCode() == KeyEvent.KEYCODE_DPAD_UP) {
-                    Intent intent = new Intent(MainActivity.this, ExtMainActivity.class);
-                    startActivity(intent);
-                    return true;
-                }
-            }
-            return false;
-        });
-        ytBtn.setOnClickListener(view -> {
-            Intent intent = new Intent(MainActivity.this, YoutubeActivity.class);
-            startActivity(intent);
-        });
+      mFragAdapter = new FragAdapter(getSupportFragmentManager());
+      ytBtn.setOnFocusChangeListener((view, b) ->
+              ytBtn.setImageDrawable(b ? getDrawable(R.drawable.ic_youtube_color_icon) : getDrawable(R.drawable.ic_youtube_dark_icon)));
+      ytBtn.setOnKeyListener((view, i, keyEvent) -> {
+          if (keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
+              if (keyEvent.getKeyCode() == KeyEvent.KEYCODE_DPAD_DOWN) {
+                  hgTitle.requestFocusFromTouch();
+                  return true;
+              } else if (keyEvent.getKeyCode() == KeyEvent.KEYCODE_DPAD_UP) {
+                  Intent intent = new Intent(MainActivity.this, ExtMainActivity.class);
+                  startActivity(intent);
+                  return true;
+              }
+          }
+          return false;
+      });
+      ytBtn.setOnClickListener(view -> {
+          Intent intent = new Intent(MainActivity.this, YoutubeActivity.class);
+          startActivity(intent);
+      });
+      streamBtn.setOnFocusChangeListener((view, b) -> {
+          streamBtn.setBackgroundResource(b ? R.drawable.ic_search_btn_focus : R.drawable.ic_search_btn_normal);
+          streamBtn.setTextColor(getResources().getColor(b ? R.color.primary : R.color.color_all_white));
+          ViewUtils.scaleAnimator(streamBtn, b, 1.2f, 150);
+      });
+      streamBtn.setOnClickListener(view -> {
+          Intent intent = new Intent(MainActivity.this, StreamActivity.class);
+          startActivity(intent);
+      });
+      streamBtn.setOnKeyListener((view, i, keyEvent) -> {
+          if (keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
+              if (keyEvent.getKeyCode() == KeyEvent.KEYCODE_DPAD_DOWN) {
+                  hgTitle.requestFocusFromTouch();
+                  return true;
+              } else if (keyEvent.getKeyCode() == KeyEvent.KEYCODE_DPAD_UP) {
+                  Intent intent = new Intent(MainActivity.this, ExtMainActivity.class);
+                  startActivity(intent);
+                  return true;
+              }
+          }
+          return false;
+      });
     searchBtn.setOnFocusChangeListener(new View.OnFocusChangeListener() {
       @Override
       public void onFocusChange(View view, boolean b) {
