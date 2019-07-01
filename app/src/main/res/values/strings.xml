@@ -146,4 +146,28 @@
 
     <string name="str_exit_application">再按一次退出应用</string>
 
+    <!-- User account String-->
+    <string name="str_account_info_manager">帐号管理</string>
+    <string name="str_account_info_account">帐号</string>
+    <string name="str_account_info_password">密码</string>
+    <string name="str_account_info_name">姓名</string>
+    <string name="str_account_info_phone">手机</string>
+    <string name="str_account_info_email">邮箱</string>
+    <string name="str_account_info_mobile_verifying">手机认证</string>
+    <string name="str_account_info_email_verifying">邮箱认证</string>
+    <string name="str_account_info_phone_no_verify">手机未认证</string>
+    <string name="str_account_info_email_no_verify">邮箱未认证</string>
+    <string name="str_account_info_phone_verify">手机已认证</string>
+    <string name="str_account_info_email_verify">邮箱已认证</string>
+    <string name="str_account_info_login_info">帐号或手机号登入</string>
+    <string name="str_account_info_login_code_info">手机验证码登入</string>
+    <string name="str_account_info_edit">编辑</string>
+    <string name="str_account_info_register">注册</string>
+    <string name="str_account_info_login">登入</string>
+    <string name="str_account_info_forget">忘记密码?</string>
+    <string name="str_account_info_china_code">+86</string>
+    <string name="str_account_info_send_verify_code">发送验证码</string>
+    <string name="str_account_info_verify_code">验证码</string>
+    <string name="str_account_info_confirm_verify_code">验证</string>
+
 </resources>

@@ -52,4 +52,12 @@
         <item name="android:windowAllowEnterTransitionOverlap">true</item>
     </style>
     <style name="CastStream" parent="Theme.AppCompat.NoActionBar" />
+    <style name="AccountEditorStyle">
+        <item name="android:layout_width">200dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">5dp</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:enabled">false</item>
+        <item name="android:textSize">12sp</item>
+    </style>
 </resources>
