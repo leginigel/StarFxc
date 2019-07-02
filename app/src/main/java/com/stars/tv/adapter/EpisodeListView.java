@@ -102,14 +102,18 @@ public class EpisodeListView extends RelativeLayout implements View.OnFocusChang
                 if (hasFocus) {
                     for (int i = 0; i < (mParentAdapter.getDatas().size()); i++) {
                         View parent = mParentView.getLayoutManager().findViewByPosition(i);
-                        parent.setSelected(false);
+                        if(null!=parent) {
+                            parent.setSelected(false);
+                        }
                     }
 
                     groupPosition = adapter.getParentPosition(position);
                     mParentAdapter.setCurrentPosition(adapter.getParentPosition(groupPosition));
                     mGroupLayoutManager.scrollToPositionWithOffset(groupPosition, 0);
                     View parent = mParentView.getLayoutManager().findViewByPosition(groupPosition);
-                    parent.setSelected(true);
+                    if(null!=parent) {
+                        parent.setSelected(true);
+                    }
                     mEpisodesLayoutManager.scrollToPositionWithOffset(adapter.getChildrenPosition(groupPosition), 0);
                 }
             }
@@ -141,10 +145,14 @@ public class EpisodeListView extends RelativeLayout implements View.OnFocusChang
                         View parent;
                         for (int i = 0; i < (mParentAdapter.getDatas().size()); i++) {
                             parent = mParentView.getLayoutManager().findViewByPosition(i);
-                            parent.setSelected(false);
+                            if(null!=parent) {
+                                parent.setSelected(false);
+                            }
                         }
                         parent = mParentView.getLayoutManager().findViewByPosition(groupPosition);
-                        parent.requestFocus();
+                        if(null!=parent) {
+                            parent.requestFocus();
+                        }
                         return true;
                     }
                     break;

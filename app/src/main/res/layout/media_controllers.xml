@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    android:id="@+id/bottom_layout"
+    android:orientation="vertical"
+    android:background="@color/background">
+    <SeekBar
+        android:id="@+id/seekBar"
+        style="@style/Widget.AppCompat.SeekBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="true"
+        android:progress="0"
+        android:max="100"
+        android:thumbOffset="0dp"
+        android:progressTint="@color/color_yellow"
+        android:thumbTint="@color/text_white"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/seekBar"
+        android:layout_marginTop="5dp"
+        android:gravity="center_vertical">
+        <ImageButton
+            android:id="@+id/play_button"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/btn_player_bg"
+            android:clickable="true"
+            android:contentDescription="play"
+            android:focusable="true"
+            android:src="@drawable/lb_ic_play" />
+        <TextView
+            android:id="@+id/play_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Play"
+            android:textColor="@color/text_white"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/play_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0:00:00/"
+            android:layout_marginStart="15dp"
+            android:textColor="@color/text_white"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/play_duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0:00:00"
+            android:textColor="@color/text_white"
+            android:textSize="12sp"/>
+
+        <TextView
+            android:id="@+id/play_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="marquee"
+            android:maxLines="2"
+            android:layout_marginStart="15dp"
+            android:text="凉生我们可不可以不忧伤DVD版 第30集"
+            android:textColor="@color/text_white"
+            android:textSize="12sp" />
+
+        <ImageButton
+            android:id="@+id/episode_button"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="15dp"
+            android:background="@drawable/btn_player_bg"
+            android:clickable="true"
+            android:contentDescription="favorite"
+            android:focusable="true"
+            android:src="@drawable/ic_favorite_border_24dp"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/episode_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="选集"
+            android:textColor="@color/text_white"
+            android:textSize="12sp"
+            android:visibility="gone"/>
+
+        <ImageButton
+            android:id="@+id/favorite_button"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="15dp"
+            android:background="@drawable/btn_player_bg"
+            android:clickable="true"
+            android:contentDescription="favorite"
+            android:focusable="true"
+            android:src="@drawable/ic_favorite_border_24dp"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/favorite_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="收藏"
+            android:textColor="@color/text_white"
+            android:textSize="12sp"
+            android:visibility="gone"/>
+
+        <ImageButton
+            android:id="@+id/quality_button"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="15dp"
+            android:background="@drawable/btn_player_bg"
+            android:clickable="true"
+            android:contentDescription="quality"
+            android:focusable="true"
+            android:src="@drawable/lb_ic_hq"/>
+
+        <TextView
+            android:id="@+id/quality_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="画质"
+            android:textColor="@color/text_white"
+            android:textSize="12sp"
+            android:visibility="gone"/>
+    </LinearLayout>
+
+</RelativeLayout>

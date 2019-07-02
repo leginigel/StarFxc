@@ -174,7 +174,7 @@ public class VideoPreviewActivity extends BaseActivity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (event.getAction() == KeyEvent.ACTION_DOWN) {
-            if ( keyCode == KeyEvent.KEYCODE_BACK ){
+            if (keyCode == KeyEvent.KEYCODE_BACK) {
                 Intent intent = new Intent();
                 intent.putExtra("exit", true);
                 this.setResult(RESULT_OK, intent);
@@ -215,7 +215,7 @@ public class VideoPreviewActivity extends BaseActivity {
         mVideoView.setMediaController(mMediaController);
         mHudView = (TableLayout) findViewById(R.id.hud_view);
         mVideoView.setHudView(mHudView);
-        mVideoView.setOnPreparedListener(iMediaPlayer ->loading(View.INVISIBLE));
+        mVideoView.setOnPreparedListener(iMediaPlayer -> loading(View.INVISIBLE));
 
         pre_videoLayout = (FrameLayout) findViewById(R.id.pre_video);
         pre_videoLayout.setOnFocusChangeListener((view1, hasFocus) -> {
@@ -422,7 +422,7 @@ public class VideoPreviewActivity extends BaseActivity {
                 parseIQiYiRealM3U8WithTvId(tvId);
                 adapter.setSelectedPositions(Arrays.asList(position));
                 mEpisode = position;
-           }
+            }
         });
         mHandler.postDelayed(new Runnable() {
             @Override
@@ -673,7 +673,7 @@ public class VideoPreviewActivity extends BaseActivity {
 
     }
 
-    private void parseError(){
+    private void parseError() {
         textLoading.setText("加载失败！");
         textLoading.setBackgroundColor(Color.BLACK);
         textLoading.setTextColor(Color.WHITE);
@@ -695,8 +695,8 @@ public class VideoPreviewActivity extends BaseActivity {
         intent.putExtra("albumId", albumId);
         intent.putExtra("currentPosition", mVideoView.getCurrentPosition());
         if (Integer.valueOf(videoCount) > 1) {
-        intent.putExtra("latestOrder", latestOrder);
-        intent.putExtra("mEpisode", mEpisode);
+            intent.putExtra("latestOrder", latestOrder);
+            intent.putExtra("mEpisode", mEpisode);
         }
         // for history usage
         intent.putExtra(EXT_VIDEO_TYPE, mVideoBase.getChannelId());
@@ -709,9 +709,7 @@ public class VideoPreviewActivity extends BaseActivity {
         mVideoView.release(true);
         mVideoView.stopBackgroundPlay();
         IjkMediaPlayer.native_profileEnd();
-//        startActivity(intent);
         startActivityForResult(intent, 1);
-//        finish();
     }
 
     @Override
@@ -720,8 +718,10 @@ public class VideoPreviewActivity extends BaseActivity {
         mPosition = data.getIntExtra("currentPosition", 0);
         mEpisode = data.getIntExtra("currentEpisode", 0);
         mVideoPath = data.getStringExtra("currentPath");
-        mVideoView.setVideoURI(Uri.parse(mVideoPath));
-        mVideoView.seekTo(mPosition);
-        mVideoView.start();
+        if (null != mVideoPath) {
+            mVideoView.setVideoURI(Uri.parse(mVideoPath));
+            mVideoView.seekTo(mPosition);
+            mVideoView.start();
+        }
     }
 }
