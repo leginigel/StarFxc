@@ -12,7 +12,8 @@
     <color name="color_white_50a">#E1E1E1</color>
 
     <!-- focus color -->
-    <color name="color_focus">#29F006</color>
+    <color name="color_focus">#FF29F006</color>
+    <color name="color_checked">#FF05B000</color>
     <color name="color_white">#FFF8F8F8</color>
 
     <color name="primary">#f00</color>

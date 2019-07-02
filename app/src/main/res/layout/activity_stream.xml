@@ -102,9 +102,13 @@
             android:id="@+id/editText_address"
             android:layout_width="400dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="10dp"
             android:layout_marginStart="50dp"
+            android:paddingStart="5dp"
             android:inputType="textUri"
             android:singleLine="true"
+            android:background="@drawable/edittext_bg"
             app:layout_constraintStart_toEndOf="@+id/image_server"
             app:layout_constraintTop_toBottomOf="@id/name_address" />
 
@@ -112,9 +116,12 @@
             android:id="@+id/editText_stream"
             android:layout_width="400dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
             android:layout_marginStart="50dp"
+            android:paddingStart="5dp"
             android:inputType="text"
             android:singleLine="true"
+            android:background="@drawable/edittext_bg"
             app:layout_constraintStart_toEndOf="@+id/image_server"
             app:layout_constraintTop_toBottomOf="@id/name_stream"/>
 
@@ -154,6 +161,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="50dp"
         android:text="播放 / 串流"
+        android:background="#005594"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />

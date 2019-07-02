@@ -164,7 +164,7 @@ public class StreamActivity extends BaseActivity {
                 else{
                     ((TextView) v).setTextColor(getResources().getColor(R.color.text_white));
                     if(address.isFocused() || stream.isFocused()){
-                        ((TextView) v).setTextColor(getResources().getColor(R.color.color_focus));
+                        ((TextView) v).setTextColor(getResources().getColor(R.color.color_checked));
                     }
                     if(!stream.isFocused() && !address.isFocused())
                         stream.setText("");
@@ -250,6 +250,32 @@ public class StreamActivity extends BaseActivity {
                 }
             }
         });
+        startStreamBtn.setOnFocusChangeListener((v, hasFocus) -> {
+            if(hasFocus){
+                switch (mCate) {
+                    case YT:
+                        startStreamBtn.setTextColor(Color.RED);
+                        break;
+                    case Twitch:
+                        startStreamBtn.setTextColor(Color.parseColor("#6441A4"));
+                        break;
+                    case Huya:
+                        startStreamBtn.setTextColor(Color.parseColor("#934908"));
+                        break;
+                    case BiliBili:
+                        startStreamBtn.setTextColor(Color.parseColor("#CC4A72"));
+                        break;
+                    case Address:
+                        startStreamBtn.setTextColor(Color.parseColor("#001442"));
+                        break;
+                }
+                startStreamBtn.setBackgroundColor(getResources().getColor(R.color.color_focus));
+            }
+            else {
+                startStreamBtn.setTextColor(Color.WHITE);
+                startStreamBtn.setBackgroundColor(Color.parseColor("#005594"));
+            }
+        });
         startStreamBtn.setNextFocusLeftId(startStreamBtn.getId());
         startStreamBtn.setNextFocusRightId(startStreamBtn.getId());
     }
@@ -268,7 +294,7 @@ public class StreamActivity extends BaseActivity {
 
             @Override
             public void error(String msg) {
-                showError();
+                showError(msg);
             }
         });
     }
@@ -297,7 +323,7 @@ public class StreamActivity extends BaseActivity {
 
             @Override
             public void error(String msg) {
-                showError();
+                showError(msg);
             }
         });
 
@@ -313,7 +339,7 @@ public class StreamActivity extends BaseActivity {
 
             @Override
             public void error(String msg) {
-                showError();
+                showError(msg);
             }
         });
     }
@@ -322,13 +348,16 @@ public class StreamActivity extends BaseActivity {
         streamPresenter.getYTVideoInfo(video_id, new CallBack<YTM3U8Bean>() {
             @Override
             public void success(YTM3U8Bean ytM3U8Bean) {
-                Log.d("YouTube URL ", ytM3U8Bean.getStreamingData().getHlsManifestUrl());
-                stream(ytM3U8Bean.getStreamingData().getHlsManifestUrl());
+                if(ytM3U8Bean.getStreamingData().getHlsManifestUrl() != null) {
+                    Log.d("YouTube URL ", ytM3U8Bean.getStreamingData().getHlsManifestUrl());
+                    stream(ytM3U8Bean.getStreamingData().getHlsManifestUrl());
+                }
+                else showError("Cannot Play YouTube Video, Please Enter Live Stream URL");
             }
 
             @Override
             public void error(String msg) {
-                showError();
+                showError(msg);
             }
         });
     }
@@ -340,7 +369,9 @@ public class StreamActivity extends BaseActivity {
         startPlay();
     }
 
-    private void showError(){
+    private void showError(String msg){
+        Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+        stream.setText("");
         mVideoPath = "";
         Log.v("error", "获取失败");
         textLoading.setText("加载失败！");
@@ -375,7 +406,7 @@ public class StreamActivity extends BaseActivity {
 
     private void startPlay() {
         if (mVideoPath == "") {
-            Toast.makeText(this, "No Video Found! Press Back Button To Exit", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "No Video Found!", Toast.LENGTH_LONG).show();
         } else {
             mVideoView.setVideoURI(Uri.parse(mVideoPath));
             mVideoView.seekTo(0);

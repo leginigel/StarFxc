@@ -248,7 +248,7 @@ public class MainActivity extends BaseActivity {
       });
       streamBtn.setOnFocusChangeListener((view, b) -> {
           streamBtn.setBackgroundResource(b ? R.drawable.ic_search_btn_focus : R.drawable.ic_search_btn_normal);
-          streamBtn.setTextColor(getResources().getColor(b ? R.color.primary : R.color.color_all_white));
+          streamBtn.setTextColor(getResources().getColor(b ? R.color.colorPrimaryDark : R.color.color_all_white));
           ViewUtils.scaleAnimator(streamBtn, b, 1.2f, 150);
       });
       streamBtn.setOnClickListener(view -> {
@@ -272,6 +272,8 @@ public class MainActivity extends BaseActivity {
       @Override
       public void onFocusChange(View view, boolean b) {
         searchBtn.setBackgroundResource(b ? R.drawable.ic_search_btn_focus : R.drawable.ic_search_btn_normal);
+        searchBtn.setTextColor(getResources().getColor(b ? R.color.colorPrimaryDark : R.color.color_all_white));
+        ViewUtils.scaleAnimator(searchBtn, b, 1.2f, 150);
       }
     });
     searchBtn.setOnKeyListener(new View.OnKeyListener() {

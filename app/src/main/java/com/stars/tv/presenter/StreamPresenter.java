@@ -90,10 +90,14 @@ public class StreamPresenter {
                     @Override
                     public void onNext(ResponseBody responseBody) {
                         try {
-//                            Log.d("onNext", s);
-                            String json = parseYTJSON(responseBody.string());
+                            String s = responseBody.string();
+                            Log.d("onNext", s);
+                            String json = parseYTJSON(s);
                             YTM3U8Bean ytM3U8Bean = new Gson().fromJson(json, YTM3U8Bean.class);
-                            listener.success(ytM3U8Bean);
+                            if(ytM3U8Bean != null)
+                                listener.success(ytM3U8Bean);
+                            else
+                                listener.error("URL not Available, Please Check and Try Again!");
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -164,7 +168,7 @@ public class StreamPresenter {
 
                     @Override
                     public void onError(Throwable e) {
-                        listener.error(e.toString());
+                        listener.error("肥肠抱歉 ! 你要找的台不见了");
                     }
 
                     @Override
@@ -185,7 +189,6 @@ public class StreamPresenter {
                             String s = responseBody.string();
                             String url = parseHuyaM3U8(s);
                             url = "http:" + url;
-//                            Log.d("Huya", url);
                             listener.success(url);
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -194,7 +197,7 @@ public class StreamPresenter {
 
                     @Override
                     public void onError(Throwable e) {
-
+                        listener.error("哎呀，虎牙君找不到这个主播，要不换台看看？");
                     }
 
                     @Override
@@ -274,7 +277,6 @@ public class StreamPresenter {
                     @Override
                     public ObservableSource<Response<String>> apply(ResponseBody responseBody) throws Exception {
                         String s = responseBody.string();
-
 //                        Log.d("response", s);
                         JSONObject jsonResponse = new JSONObject(s);
                         String sig = jsonResponse.getString("sig");
@@ -310,13 +312,16 @@ public class StreamPresenter {
                         Log.d("response", response.code() +response.message());
                         if(response.code() == 200)
                             listener.success(playUrl);
+                        else{
+                            listener.error("关台啦!现在没开台^Q^");
+                        }
 //                        Log.d("response321", response.toString());
 //                        Log.d("response321", response.body());
                     }
 
                     @Override
                     public void onError(Throwable e) {
-
+                        listener.error("搜不到台QQ");
                     }
 
                     @Override
