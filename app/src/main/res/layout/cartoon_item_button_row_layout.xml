@@ -18,23 +18,43 @@
         android:layout_marginRight="10dp" />
 
     <Button
-        android:text="TV版"
+        android:text="科幻"
         android:layout_weight="1"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:textColor="#FFF8F8F8"
-        android:id="@+id/button_tv"
+        android:id="@+id/button_keh"
         android:background="@color/color_blue"
         android:layout_marginRight="10dp" />
 
     <Button
-        android:text="OVA版"
+        android:text="搞笑"
         android:layout_weight="1"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:textColor="#FFF8F8F8"
-        android:id="@+id/button_house"
+        android:id="@+id/button_gaox"
         android:background="@color/color_yellow"
+        android:layout_marginRight="10dp" />
+
+    <Button
+        android:text="战斗"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:textColor="#FFF8F8F8"
+        android:id="@+id/button_zha"
+        android:background="@color/color_orange"
+        android:layout_marginRight="10dp" />
+
+    <Button
+        android:text="热血"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:textColor="#FFF8F8F8"
+        android:id="@+id/button_rex"
+        android:background="@color/color_green"
         android:layout_marginRight="10dp" />
 
     <Button
@@ -44,25 +64,5 @@
         android:layout_height="match_parent"
         android:textColor="#FFF8F8F8"
         android:id="@+id/button_juc"
-        android:background="@color/color_orange"
-        android:layout_marginRight="10dp" />
-
-    <Button
-        android:text="短片"
-        android:layout_weight="1"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:textColor="#FFF8F8F8"
-        android:id="@+id/button_dua"
-        android:background="@color/color_green"
-        android:layout_marginRight="10dp" />
-
-    <Button
-        android:text="电影"
-        android:layout_weight="1"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:textColor="#FFF8F8F8"
-        android:id="@+id/button_dia"
         android:background="@color/color_purple" />
 </LinearLayout>

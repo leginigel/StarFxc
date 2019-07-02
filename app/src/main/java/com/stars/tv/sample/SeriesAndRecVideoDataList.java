@@ -101,16 +101,16 @@ public final class SeriesAndRecVideoDataList {
             "国产动画",
             "欧美动画",
             "动画电影",
-            "真人特摄",
             "吐槽搞笑",
             "热血冒险",
             "恋爱青春",
             "运动竞技",
             "科幻未来",
-            "机甲",
+            "布袋戏",
             "儿童剧场",
             "玩游戏打BOSS",
-            "短视频精选"
+            "历史故事",
+            "竖屏也好看"
     };
 
     public static List<IQiYiMovieBean> seriesContent() {

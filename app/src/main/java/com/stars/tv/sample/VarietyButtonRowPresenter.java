@@ -21,7 +21,7 @@ import me.jessyan.autosize.utils.AutoSizeUtils;
 
 public class VarietyButtonRowPresenter extends RowPresenter {
     protected Context mContext;
-    private static final String TAG = "VarietyButtonRowPresenter";
+    private static final String TAG = "VarietyButtonRow";
     private static final int GRID_VIEW_LEFT_PX = 80;
     private static final int GRID_VIEW_RIGHT_PX = 30;
     private static final int ITEM_NUM_ROW = 1;

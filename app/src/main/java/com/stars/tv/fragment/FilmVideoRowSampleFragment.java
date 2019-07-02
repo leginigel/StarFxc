@@ -53,7 +53,7 @@ import butterknife.Unbinder;
 import io.reactivex.disposables.CompositeDisposable;
 
 public class FilmVideoRowSampleFragment extends BaseFragment {
-    private static final String TAG = "FilmVideoRowSampleFragment";
+    private static final String TAG = "FilmVideoRow";
     private static final int GRID_VIEW_LEFT_PX = 80;
     private static final int GRID_VIEW_RIGHT_PX = 50;
     private static final int GRID_VIEW_TOP_PX = 30;
@@ -63,8 +63,10 @@ public class FilmVideoRowSampleFragment extends BaseFragment {
 
     List<List<IQiYiMovieBean>> mVideoListArray = new ArrayList<>(15);
     List<IQiYiBannerInfoBean> mBannerInfoList = new ArrayList<>();
-    @BindView(R.id.video_content_v_grid) MyVerticalGridView videoGrid;
-    @BindView(R.id.loading) TextView loadText;
+    @BindView(R.id.video_content_v_grid)
+    MyVerticalGridView videoGrid;
+    @BindView(R.id.loading)
+    TextView loadText;
     Unbinder unbinder;
 
     ArrayObjectAdapter mRowsAdapter;
@@ -108,8 +110,12 @@ public class FilmVideoRowSampleFragment extends BaseFragment {
             Log.v(TAG,"msg.what:"+msg.what);
             switch (msg.what){
                 case REFRESH_BANNER_CONTENT:
+                    if (mCircleDrawable != null && mCircleDrawable.isRunning()) {
                     mCircleDrawable.stop();
+                    }
+                    if (loadText != null && loadText.getVisibility() == View.VISIBLE) {
                     loadText.setVisibility(View.GONE);
+                    }
                     showBannerData();
                     parseIQiYiMovie();
                     break;
@@ -118,10 +124,14 @@ public class FilmVideoRowSampleFragment extends BaseFragment {
                     showVideoData();
                     break;
                 case REFRESH_ERROR:
+                    if (mCircleDrawable != null && mCircleDrawable.isRunning()) {
                     mCircleDrawable.stop();
+                    }
+                    if (loadText != null) {
                     loadText.setText("加载失败，网络简析错误！");
                     loadText.setTextColor(Color.WHITE);
                     loadText.setVisibility(View.VISIBLE);
+                    }
                     break;
                 default:
                     break;
@@ -222,7 +232,7 @@ public class FilmVideoRowSampleFragment extends BaseFragment {
                 mPageNum += 1;
                 if (mPageNum <= totalPage) {
                 for(int i=0;i<loadRows; i++) {
-                        parseIQiYiMovieSimplifiedList((mPageNum - 1) * loadRows + i, 2, orderlist[(mPageNum - 1) * loadRows + i], "", "",
+                        parseIQiYiMovieSimplifiedList((mPageNum - 1) * loadRows + i, 1, orderlist[(mPageNum - 1) * loadRows + i], "", "",
                             24, 1, 1, "iqiyi", 1, "", 12);
                 }
 
@@ -230,6 +240,7 @@ public class FilmVideoRowSampleFragment extends BaseFragment {
                     videoGrid.endRefreshingWithNoMoreData();
                 }
             }
+
             @Override
             public void onLoadEnd() {
                 if (getUserVisibleHint()&&(curRow == totalRow-1)) {
@@ -250,6 +261,7 @@ public class FilmVideoRowSampleFragment extends BaseFragment {
     /**
      * 获取爱奇艺片库筛选结果List
      * 参数请参看iqiyidata.json
+     *
      * @param orderList 筛选组合，请参看iqiyidata.json中order-list部分,  "15,24"; 为内地，古装筛选组合
      * @param pageSize 每页个数
      */
@@ -264,9 +276,9 @@ public class FilmVideoRowSampleFragment extends BaseFragment {
 
                         Log.v(TAG, "result_num =："+ bean.getResult_num());
                         List<IQiYiMovieBean> list = bean.getList();
-                        for(int i=0;i<list.size();i++) {
+//                        for(int i=0;i<list.size();i++) {
 //                            Log.v(TAG, list.get(i).toString());
-                        }
+//                        }
                         Log.v(TAG,"category"+category);
                         mVideoListArray.add(list);
                         Log.v(TAG, "mVideoListArray =："+ mVideoListArray.size());
@@ -290,6 +302,7 @@ public class FilmVideoRowSampleFragment extends BaseFragment {
 
     /**
      * 获取推荐栏位基本信息
+     *
      * @param channel  电视剧：dianshiju    电影：dianying  综艺：zongyi   动漫：dongman     微电影：weidianying     推荐：""
      */
     private void parseIQiYiParseBannerInfo(String channel){
@@ -297,9 +310,9 @@ public class FilmVideoRowSampleFragment extends BaseFragment {
         ps.requestIQiYiBannerInfo( channel, new CallBack<List<IQiYiBannerInfoBean>>() {
             @Override
             public void success(List<IQiYiBannerInfoBean> list) {
-                for (IQiYiBannerInfoBean bean : list) {
+//                for (IQiYiBannerInfoBean bean : list) {
 //                    Log.v(TAG, bean.toString());
-                }
+//                }
                 mBannerInfoList.clear();
                 mBannerInfoList = list;
                 mHandler.sendEmptyMessage(REFRESH_BANNER_CONTENT);
@@ -366,15 +379,23 @@ public class FilmVideoRowSampleFragment extends BaseFragment {
 
     private void showLoad(){
         if(NetUtil.isConnected()){
+            if (loadText != null) {
             loadText.setText("");
             loadText.setVisibility(View.VISIBLE);
+            }
+            if (mCircleDrawable != null) {
             mCircleDrawable.start();
+            }
         }else{
+            if (mCircleDrawable != null && mCircleDrawable.isRunning()) {
             mCircleDrawable.stop();
+            }
+            if (loadText != null) {
             loadText.setText("网络连接失败，请检查网络！");
             loadText.setTextColor(Color.WHITE);
             loadText.setVisibility(View.VISIBLE);
         }
+    }
     }
 
     protected void loadData() {

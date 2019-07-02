@@ -21,7 +21,7 @@ import me.jessyan.autosize.utils.AutoSizeUtils;
 
 public class FilmButtonRowPresenter extends RowPresenter {
     protected Context mContext;
-    private static final String TAG = "FilmButtonRowPresenter";
+    private static final String TAG = "FilmButtonRow";
     private static final int GRID_VIEW_LEFT_PX = 80;
     private static final int GRID_VIEW_RIGHT_PX = 30;
     private static final int ITEM_NUM_ROW = 1;

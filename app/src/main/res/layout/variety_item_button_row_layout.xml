@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     android:clipChildren="false"
     android:clipToPadding="false"
     xmlns:android="http://schemas.android.com/apk/res/android">
@@ -9,8 +9,8 @@
     <Button
         android:id="@+id/button_hot"
         android:layout_weight="1"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
         android:layout_marginRight="10dp"
         android:background="@color/color_green"
         android:text="热门综艺"
@@ -19,21 +19,51 @@
     <Button
         android:id="@+id/button_tuo"
         android:layout_weight="1"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
         android:layout_marginRight="10dp"
         android:background="@color/color_blue"
-        android:text="全部脱口秀"
+        android:text="脱口秀"
         android:textColor="#FFF8F8F8" />
 
     <Button
-        android:id="@+id/button_rih"
+        android:id="@+id/button_zhe"
         android:layout_weight="1"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
         android:layout_marginRight="10dp"
         android:background="@color/color_purple"
-        android:text="日韩综艺"
+        android:text="真人秀"
+        android:textColor="#FFF8F8F8" />
+
+    <Button
+        android:id="@+id/button_qin"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_marginRight="10dp"
+        android:background="@color/color_cyan"
+        android:text="情感"
+        android:textColor="#FFF8F8F8" />
+
+    <Button
+        android:id="@+id/button_gao"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_marginRight="10dp"
+        android:background="@color/color_yellow"
+        android:text="搞笑"
+        android:textColor="#FFF8F8F8" />
+
+    <Button
+        android:id="@+id/button_yin"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_marginRight="10dp"
+        android:background="@color/color_orange"
+        android:text="音乐"
         android:textColor="#FFF8F8F8" />
 
 </LinearLayout>

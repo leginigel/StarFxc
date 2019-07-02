@@ -21,7 +21,7 @@ import me.jessyan.autosize.AutoSizeConfig;
 import me.jessyan.autosize.utils.AutoSizeUtils;
 
 public class CartoonVideoItemPresenter extends Presenter {
-    private static final String TAG = "CartoonVideoItemPresen";
+    private static final String TAG = "CartoonVideoItem";
     private static final int GRID_VIEW_LEFT_PX = 80;
     private static final int GRID_VIEW_RIGHT_PX = 50;
     private static final int ITEM_RIGHT_PADDING_PX = 25;

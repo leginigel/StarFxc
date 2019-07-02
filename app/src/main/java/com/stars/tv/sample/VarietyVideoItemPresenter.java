@@ -21,7 +21,7 @@ import me.jessyan.autosize.AutoSizeConfig;
 import me.jessyan.autosize.utils.AutoSizeUtils;
 
 public class VarietyVideoItemPresenter extends Presenter {
-    private static final String TAG = "VarietyVideoItemPresenter";
+    private static final String TAG = "VarietyVideoItem";
     private static final int GRID_VIEW_LEFT_PX = 80;
     private static final int GRID_VIEW_RIGHT_PX = 50;
     private static final int ITEM_RIGHT_PADDING_PX = 25;
@@ -64,12 +64,6 @@ public class VarietyVideoItemPresenter extends Presenter {
         String latestOrder = videoBean.getLatestOrder();
         String videoCount = videoBean.getVideoCount();
         Log.v(TAG,"latestOrder"+latestOrder+"videoCount"+videoCount);
-        if(latestOrder!=null &&videoCount!=null)
-        {
-            if(videoBean.getFormatPeriod()!=null){
-                infoTv.setText(videoBean.getFormatPeriod() + "期");
-            }
-        }
         nameTv.setText(videoBean.getName());
         Glide.with(Objects.requireNonNull(viewHolder.view.getContext()))
                 .load(videoBean.getImageUrl()).into(bgIv);
