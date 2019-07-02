@@ -129,8 +129,12 @@ public class RecommandVideoRowFragment extends BaseFragment {
             Log.v(TAG, "msg.what:" + msg.what);
             switch (msg.what) {
                 case REFRESH_BANNER_CONTENT:
-                    mCircleDrawable.stop();
-                    loadText.setVisibility(View.GONE);
+                    if (mCircleDrawable != null && mCircleDrawable.isRunning()) {
+                        mCircleDrawable.stop();
+                    }
+                    if (loadText != null && loadText.getVisibility() == View.VISIBLE) {
+                        loadText.setVisibility(View.GONE);
+                    }
                     showBannerData();
                     parseIQiYiMovieTop();
                     break;
@@ -152,10 +156,14 @@ public class RecommandVideoRowFragment extends BaseFragment {
                     showVideoData();
                     break;
                 case REFRESH_ERROR:
-                    mCircleDrawable.stop();
-                    loadText.setText("加载失败，网络简析错误！");
-                    loadText.setTextColor(Color.WHITE);
-                    loadText.setVisibility(View.VISIBLE);
+                    if (mCircleDrawable != null && mCircleDrawable.isRunning()) {
+                        mCircleDrawable.stop();
+                    }
+                    if (loadText != null) {
+                        loadText.setText("加载失败，网络简析错误！");
+                        loadText.setTextColor(Color.WHITE);
+                        loadText.setVisibility(View.VISIBLE);
+                    }
                     break;
                 default:
                     break;
@@ -533,17 +541,25 @@ public class RecommandVideoRowFragment extends BaseFragment {
     }
 
     private void showLoad() {
-        Log.v(TAG,"net"+NetUtil.isConnected());
+        Log.v(TAG, "net" + NetUtil.isConnected());
         if (NetUtil.isConnected()) {
-            loadText.setText("");
-            loadText.setVisibility(View.VISIBLE);
-            mCircleDrawable.start();
+            if (loadText != null) {
+                loadText.setText("");
+                loadText.setVisibility(View.VISIBLE);
+            }
+            if (mCircleDrawable != null) {
+                mCircleDrawable.start();
+            }
         } else {
-            Log.v(TAG,"net"+NetUtil.isConnected());
-            mCircleDrawable.stop();
-            loadText.setText("网络连接失败，请检查网络！");
-            loadText.setTextColor(Color.WHITE);
-            loadText.setVisibility(View.VISIBLE);
+            Log.v(TAG, "net" + NetUtil.isConnected());
+            if (mCircleDrawable != null && mCircleDrawable.isRunning()) {
+                mCircleDrawable.stop();
+            }
+            if (loadText != null) {
+                loadText.setText("网络连接失败，请检查网络！");
+                loadText.setTextColor(Color.WHITE);
+                loadText.setVisibility(View.VISIBLE);
+            }
         }
     }
 

@@ -103,7 +103,7 @@ public class SearchMoviceFragment extends BaseFragment {
     Unbinder unbinder;
 
     @BindView(R.id.loading)
-    TextView loadTex;
+    TextView loadText;
     @BindView(R.id.suggest_tv)
     TextView suggestTextView;
     @BindView(R.id.search_tv)
@@ -251,7 +251,7 @@ public class SearchMoviceFragment extends BaseFragment {
         mCircleDrawable = new Circle();
         mCircleDrawable.setBounds(0, 0, 100, 100);
         mCircleDrawable.setColor(Color.WHITE);
-        loadTex.setCompoundDrawables(null, null, mCircleDrawable, null);
+        loadText.setCompoundDrawables(null, null, mCircleDrawable, null);
     }
 
     private void refreshRequest(int type, int position) {
@@ -291,8 +291,12 @@ public class SearchMoviceFragment extends BaseFragment {
                     mPageNum = 1;
                     typeSuggest = 0;
 //                    refreshRequest(typeSuggest, sugPosition);
-                    loadTex.setVisibility(View.VISIBLE);
-                    mCircleDrawable.start();
+                    if (loadText != null) {
+                        loadText.setVisibility(View.VISIBLE);
+                    }
+                    if (mCircleDrawable != null) {
+                        mCircleDrawable.start();
+                    }
                     setTimer(REFRESH_REQUEST,500);
                     // 设置默认.
                     ((Button) child.itemView).setTextColor(getResources().getColor(R.color.title_select_color));
@@ -308,8 +312,12 @@ public class SearchMoviceFragment extends BaseFragment {
                             sugPosition = (int) v.getTag();
                             Log.v(TAG,"historyVgridview:  "+typeSuggest);
                             typeSuggest = 0;
-                            loadTex.setVisibility(View.VISIBLE);
-                            mCircleDrawable.start();
+                            if (loadText != null) {
+                                loadText.setVisibility(View.VISIBLE);
+                            }
+                            if (mCircleDrawable != null) {
+                                mCircleDrawable.start();
+                            }
                             setTimer(REFRESH_REQUEST,1500);
 //                            refreshRequest(typeSuggest, sugPosition);
                             ((Button) child.itemView).setTextColor(getResources().getColor(R.color.color_white));
@@ -369,8 +377,12 @@ public class SearchMoviceFragment extends BaseFragment {
                     mPageNum = 1;
                     typeSuggest =1;
 //                    refreshRequest(typeSuggest, sugPosition);
-                    loadTex.setVisibility(View.VISIBLE);
-                    mCircleDrawable.start();
+                    if (loadText != null) {
+                        loadText.setVisibility(View.VISIBLE);
+                    }
+                    if (mCircleDrawable != null) {
+                        mCircleDrawable.start();
+                    }
                     setTimer(REFRESH_REQUEST,500);
                     // 设置默认.
                     ((Button) child.itemView).setTextColor(getResources().getColor(R.color.title_select_color));
@@ -387,8 +399,12 @@ public class SearchMoviceFragment extends BaseFragment {
                             sugPosition = (int)v.getTag();
                             typeSuggest =1;
 //                            refreshRequest(typeSuggest, sugPosition);
-                            loadTex.setVisibility(View.VISIBLE);
-                            mCircleDrawable.start();
+                            if (loadText != null) {
+                                loadText.setVisibility(View.VISIBLE);
+                            }
+                            if (mCircleDrawable != null) {
+                                mCircleDrawable.start();
+                            }
                             setTimer(REFRESH_REQUEST,1500);
                             ((Button) child.itemView).setTextColor(getResources().getColor(R.color.color_white));
                         } else {
@@ -820,8 +836,12 @@ public class SearchMoviceFragment extends BaseFragment {
                 for (int i = 0; i < list.size(); i++) {
 //                    Log.v(TAG, list.get(i).toString());
                 }
-                loadTex.setVisibility(View.GONE);
-                mCircleDrawable.stop();
+                if (loadText != null && loadText.getVisibility() == View.VISIBLE) {
+                    loadText.setVisibility(View.GONE);
+                }
+                if (mCircleDrawable != null && mCircleDrawable.isRunning()) {
+                    mCircleDrawable.stop();
+                }
                 if(!list.isEmpty()) {
                 word = keyWord;
                 maxNum = bean.getMax_result_number();
@@ -844,8 +864,12 @@ public class SearchMoviceFragment extends BaseFragment {
             @Override
             public void error(String msg) {
                 //TODO 获取失败
-                loadTex.setVisibility(View.GONE);
-                mCircleDrawable.stop();
+                if (loadText != null && loadText.getVisibility() == View.VISIBLE) {
+                    loadText.setVisibility(View.GONE);
+                }
+                if (mCircleDrawable != null && mCircleDrawable.isRunning()) {
+                    mCircleDrawable.stop();
+                }
                 Toast.makeText(mContext, "加载失败，网络简析错误！", Toast.LENGTH_LONG).show();
             }
         });
@@ -924,7 +948,7 @@ public class SearchMoviceFragment extends BaseFragment {
             View view = View.inflate(parent.getContext(), R.layout.item_videos_layout, null);
             // 保持影视比例.
             mItemWidth = 390;
-            mItemHeight = 300;
+            mItemHeight = mItemWidth/4*3;
             ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(mItemWidth, mItemHeight);
             view.setLayoutParams(lp);
             view.setFocusable(true);
