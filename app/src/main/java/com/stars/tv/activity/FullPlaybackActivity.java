@@ -1,12 +1,20 @@
 package com.stars.tv.activity;
 
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Message;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TableLayout;
 import android.widget.TextView;
@@ -23,6 +31,7 @@ import com.stars.tv.adapter.EpisodeListViewAdapter;
 import com.stars.tv.bean.ExtVideoBean;
 import com.stars.tv.bean.IQiYiM3U8Bean;
 import com.stars.tv.bean.IQiYiMovieBean;
+import com.stars.tv.fragment.MediaControllersFragment;
 import com.stars.tv.presenter.IQiYiParseEpisodeListPresenter;
 import com.stars.tv.presenter.IQiYiParseM3U8Presenter;
 import com.stars.tv.server.LeanCloudStorage;
@@ -44,9 +53,6 @@ import static com.stars.tv.utils.Constants.EXT_VIDEO_IMAGE_URL;
 import static com.stars.tv.utils.Constants.EXT_VIDEO_TYPE;
 
 public class FullPlaybackActivity extends BaseActivity {
-//    IjkMediaPlayer ijkMediaPlayer;
-//    private SurfaceView surfaceView;
-//    private SurfaceHolder surfaceHolder;
 
     private IjkVideoView mVideoView;
     //    private AndroidMediaController mMediaController;
@@ -54,14 +60,20 @@ public class FullPlaybackActivity extends BaseActivity {
     private TableLayout mHudView;
     private EpisodeListView mEpisodeListView;
     private View episodeView;
-    private PopupWindow popupWindow;
+    private PopupWindow episodePopupWindow;
     private TextView textLoading;
     private Circle mCircleDrawable;
+
+    private MediaControllersFragment mediaControllersFragment;
 
     private EpisodeListViewAdapter<String> adapter;
     private List<IQiYiMovieBean> mEplisodeList = new ArrayList<>();
     private String tvId, mVideoPath, name, albumId, latestOrder, malbumImagUrl;
     private int currentPosition, mEpisode, mVideoCount, mVideoType;
+
+    private AlertDialog hq_alertDialog; //信息框
+    final int REFRESH_MOVIE_HQ = 100;
+    int currentHQ = 0;
 
     private float densityRatio = 1.0f; // 密度比值系数（密度比值：一英寸中像素点除以160）
     // 自动隐藏Episode的时间
@@ -74,13 +86,28 @@ public class FullPlaybackActivity extends BaseActivity {
             showOrHideEpisode();
         }
     };
+    @SuppressLint("HandlerLeak")
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case REFRESH_MOVIE_HQ:
+                    showHQList();
+                    break;
+                default:
+                    currentHQ = msg.what;
+                    parseIQiYiRealM3U8WithTvId(tvId);
+                    break;
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInsatanceState) {
         super.onCreate(savedInsatanceState);
         setContentView(R.layout.activity_video_fullplayback);
         Intent intent = getIntent();
-        tvId=intent.getStringExtra("tvId");
+        tvId = intent.getStringExtra("tvId");
         name = intent.getStringExtra("name");
         albumId = intent.getStringExtra("albumId");
         currentPosition = intent.getIntExtra("currentPosition", 0);
@@ -97,9 +124,13 @@ public class FullPlaybackActivity extends BaseActivity {
         loading(View.VISIBLE);
         initVideoView();
         parseIQiYiRealM3U8WithTvId(tvId);
-        if (null!=latestOrder) {
+        if (null != latestOrder) {
             parseIQiYiEpisodeList(albumId, Integer.valueOf(latestOrder), 1);
         }
+
+        mediaControllersFragment = MediaControllersFragment.newInstance();
+        mediaControllersFragment.setVideo(mVideoView);
+        mediaControllersFragment.setHandler(mHandler);
     }
 
     public void initVideoView() {
@@ -109,7 +140,8 @@ public class FullPlaybackActivity extends BaseActivity {
 //        mMediaController.setSupportActionBar(actionBar);
         mMediaController.clearFocus();
 //        mMediaController.setVisibility(View.INVISIBLE);
-        mMediaController.hide();
+//        mMediaController.hide();
+        mMediaController.setVisibility(View.GONE);
         // init player
         IjkMediaPlayer.loadLibrariesOnce(null);
         IjkMediaPlayer.native_profileBegin("libijkplayer.so");
@@ -119,7 +151,7 @@ public class FullPlaybackActivity extends BaseActivity {
         mHudView = (TableLayout) findViewById(R.id.mhud_view);
         mVideoView.setHudView(mHudView);
         mVideoView.setOnPreparedListener(iMediaPlayer -> loading(View.INVISIBLE));
-        if (null!=latestOrder) {
+        if (null != latestOrder) {
             mVideoView.setOnCompletionListener(new IMediaPlayer.OnCompletionListener() {
                 @Override
                 public void onCompletion(IMediaPlayer mp) {
@@ -175,7 +207,7 @@ public class FullPlaybackActivity extends BaseActivity {
         if (event.getAction() == KeyEvent.ACTION_DOWN) {
             switch (keyCode) {
                 case KeyEvent.KEYCODE_DPAD_UP:
-                    if (null!=latestOrder) {
+                    if (null != latestOrder) {
                         showOrHideEpisode();
                         if (!mEpisodeListView.isShown()) {
                             mEpisodeListView.setVisibility(View.VISIBLE);
@@ -186,7 +218,7 @@ public class FullPlaybackActivity extends BaseActivity {
                     }
                     break;
                 case KeyEvent.KEYCODE_DPAD_DOWN:
-                    if (null!=latestOrder) {
+                    if (null != latestOrder) {
                         showOrHideEpisode();
                         if (!mEpisodeListView.isShown()) {
                             mEpisodeListView.setVisibility(View.VISIBLE);
@@ -197,21 +229,21 @@ public class FullPlaybackActivity extends BaseActivity {
                     }
                     break;
                 case KeyEvent.KEYCODE_DPAD_RIGHT:
-                    if (!mMediaController.isShowing()) {
-                        mMediaController.show();
-                        return true;
-                    } else {
-                        mVideoView.seekTo(mVideoView.getCurrentPosition() + 5);
-                        return true;
+                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                    Fragment prev = getSupportFragmentManager().findFragmentByTag("controllers");
+                    if (prev != null) {
+                        ft.remove(prev);
                     }
+                    mediaControllersFragment.show(ft, "controllers");
+                    break;
                 case KeyEvent.KEYCODE_DPAD_LEFT:
-                    if (!mMediaController.isShowing()) {
-                        mMediaController.show();
-                        return true;
-                    } else {
-                        mVideoView.seekTo(mVideoView.getCurrentPosition() - 5);
-                        return true;
+                    ft = getSupportFragmentManager().beginTransaction();
+                    prev = getSupportFragmentManager().findFragmentByTag("controllers");
+                    if (prev != null) {
+                        ft.remove(prev);
                     }
+                    mediaControllersFragment.show(ft, "controllers");
+                    break;
                 case KeyEvent.KEYCODE_BACK:
                     returnHistoryUpdate();
                     return true;
@@ -221,18 +253,22 @@ public class FullPlaybackActivity extends BaseActivity {
         return super.onKeyDown(keyCode, event);
     }
 
-    private void returnHistoryUpdate(){
-        if ( mVideoCount > 0 && malbumImagUrl != null  ) {
+
+    private void returnHistoryUpdate() {
+        if (mVideoCount > 0 && malbumImagUrl != null) {
             ExtVideoBean bean = new ExtVideoBean();
             bean.setVideoType(mVideoType);
             bean.setAlbumId(albumId);
-            bean.setVideoId(mEplisodeList.get(mEpisode).getTvId());
-            bean.setVideoName(mEplisodeList.get(mEpisode).getName());
-            bean.setVideoCurrentViewOrder(mEpisode);
+            //Modified for non-Series video
+            if (null != latestOrder) {
+                bean.setVideoId(mEplisodeList.get(mEpisode).getTvId());
+                bean.setVideoName(mEplisodeList.get(mEpisode).getName());
+                bean.setVideoCurrentViewOrder(mEpisode);
+                bean.setVideoLatestOrder(Integer.valueOf(latestOrder));
+            }
             bean.setVideoPlayUrl(mVideoPath);
             bean.setAlbumImageUrl(malbumImagUrl);
             bean.setVideoCount(mVideoCount);
-            bean.setVideoLatestOrder(Integer.valueOf(latestOrder));
             bean.setVideoPlayPosition(mVideoView.getCurrentPosition());
             try {
                 LeanCloudStorage.updateIQiyHistory(bean, new SaveCallback() {
@@ -241,11 +277,10 @@ public class FullPlaybackActivity extends BaseActivity {
                         returnPlayData();
                     }
                 });
-            }catch ( Exception e ){
+            } catch (Exception e) {
                 returnPlayData();
             }
-        }
-        else
+        } else
             returnPlayData();
     }
 
@@ -255,7 +290,7 @@ public class FullPlaybackActivity extends BaseActivity {
         //把返回数据存入Intent
         intent.putExtra("currentPosition", mVideoView.getCurrentPosition());
         intent.putExtra("currentPath", mVideoPath);
-        if (null!=latestOrder) {
+        if (null != latestOrder) {
             intent.putExtra("currentEpisode", mEpisode);
         }
         intent.putExtra("exit", true);
@@ -268,7 +303,7 @@ public class FullPlaybackActivity extends BaseActivity {
 
     public void initEpisodeList() {
         episodeView = (View) getLayoutInflater().inflate(R.layout.episodelist, null);
-        popupWindow = new PopupWindow(episodeView, LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, true);
+        episodePopupWindow = new PopupWindow(episodeView, LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, true);
 
         mEpisodeListView = (EpisodeListView) episodeView.findViewById(R.id.mepisodelistview);
 
@@ -335,15 +370,19 @@ public class FullPlaybackActivity extends BaseActivity {
     }
 
     private void showOrHideEpisode() {
-        if (popupWindow.isShowing()) {
-            popupWindow.dismiss();
+        if (episodePopupWindow.isShowing()) {
+            episodePopupWindow.dismiss();
         } else {
             // 将dp转换为px
             int episodeHeightPixel = (int) (densityRatio * 50);
-            popupWindow.showAsDropDown(mVideoView, 0, -episodeHeightPixel);
+            episodePopupWindow.showAsDropDown(mVideoView, 0, -episodeHeightPixel);
             // 延时执行
             handler.postDelayed(r, HIDDEN_TIME);
         }
+    }
+
+    public IjkVideoView getIjkVideoView() {
+        return mVideoView;
     }
 
     /**
@@ -357,11 +396,74 @@ public class FullPlaybackActivity extends BaseActivity {
             @Override
             public void success(List<IQiYiM3U8Bean> list) {
                 //TODO 获取成功在此得到真实播放地址的List，可能会有HD,SD,1080P
-                mVideoPath = list.get(0).getM3u();
+
+                if (null != list) {
+                    switch (currentHQ) {
+                        case 0:    //默认 取第一个
+                            mVideoPath = list.get(0).getM3u();
+                            break;
+                        case 1:    //省流  96 LD 210p
+                            for (int i = 0; i < list.size(); i++) {
+                                if (list.get(i).getVd() == 96) mVideoPath = list.get(i).getM3u();
+                                else mVideoPath = list.get(0).getM3u();
+                                break;
+                            }
+                        case 2:   //标清    1  SD 360p
+                            for (int i = 0; i < list.size(); i++) {
+                                if (list.get(i).getVd() == 1) mVideoPath = list.get(i).getM3u();
+                                else mVideoPath = list.get(0).getM3u();
+                                break;
+                            }
+                        case 3:   //高清    2 HD 540p, 21 HD 540p
+                            for (int i = 0; i < list.size(); i++) {
+                                if (list.get(i).getVd() == 2) {
+                                    mVideoPath = list.get(i).getM3u();
+                                    break;
+                                } else if (list.get(i).getVd() == 21) {
+                                    mVideoPath = list.get(i).getM3u();
+                                    break;
+                                } else mVideoPath = list.get(0).getM3u();
+                                break;
+                            }
+                        case 4:   //超清    4 TD 720p, 14 TD 720p, 17 TD 720p
+                            for (int i = 0; i < list.size(); i++) {
+                                if (list.get(i).getVd() == 4) {
+                                    mVideoPath = list.get(i).getM3u();
+                                    break;
+                                } else if (list.get(i).getVd() == 14) {
+                                    mVideoPath = list.get(i).getM3u();
+                                    break;
+                                } else if (list.get(i).getVd() == 17) {
+                                    mVideoPath = list.get(i).getM3u();
+                                    break;
+                                } else mVideoPath = list.get(0).getM3u();
+                                break;
+                            }
+                        case 5:   //蓝光    5 BD 1080p，18 BD 1080p
+                            for (int i = 0; i < list.size(); i++) {
+                                if (list.get(i).getVd() == 5) {
+                                    mVideoPath = list.get(i).getM3u();
+                                    break;
+                                } else if (list.get(i).getVd() == 18) {
+                                    mVideoPath = list.get(i).getM3u();
+                                    break;
+                                } else mVideoPath = list.get(0).getM3u();
+                                break;
+                            }
+
+                    }
+                    startPlay();
+                } else {
+                    mVideoPath = "";
+                    Log.v("VideoPreviewActivity", "获取失败parseIQiYiRealM3U8WithTvId");
+                    textLoading.setText("加载失败！");
+                    textLoading.setBackgroundColor(Color.BLACK);
+                    textLoading.setTextColor(Color.WHITE);
+                }
                 for (IQiYiM3U8Bean bean : list) {
                     Log.v("FullPlaybackM3U8", bean.toString());
                 }
-                startPlay();
+
 
             }
 
@@ -404,4 +506,33 @@ public class FullPlaybackActivity extends BaseActivity {
             }
         });
     }
+
+    /**
+     * 10 4k,
+     * 19 4k,
+     * 5 BD 1080p,
+     * 18 BD 1080p,
+     * 21 HD 540p,
+     * 2 HD 540p,
+     * 14 TD 720p,
+     * 4 TD 720p,
+     * 17 TD 720p,
+     * 96 LD 210p,
+     * 1  SD 360p,
+     */
+    public void showHQList() {
+        final String[] items = {"默认", "省流", "标清", "高清", "超清", "蓝光"};
+        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this, AlertDialog.THEME_DEVICE_DEFAULT_DARK);
+        alertBuilder.setTitle("请选择画质");
+        alertBuilder.setItems(items, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                Toast.makeText(FullPlaybackActivity.this, "选择的画质为：" + items[i], Toast.LENGTH_SHORT).show();
+                mHandler.sendEmptyMessage(i);
+            }
+        });
+        alertBuilder.show();
+
+    }
+
 }
