@@ -94,7 +94,7 @@ public class RecommandVideoRowFragment extends BaseFragment {
     private Circle mCircleDrawable;
     private int[] toplistPos = new int[3];
     private int[] listPos = new int[26];
-    private int[] channel = {2,1,6,4,3,8,25,7,24,16,10,5,28,12,17,15,9,13,21,26,22,27,29,30,31,32};
+    private int[] channel = {2, 1, 6, 4, 3, 8, 25, 7, 24, 16, 10, 5, 28, 12, 17, 15, 9, 13, 21, 26, 22, 27, 29, 30, 31, 32};
 
     private int bannerItem = 2;
     private int bannerTotalItem = 6;
@@ -139,10 +139,10 @@ public class RecommandVideoRowFragment extends BaseFragment {
                     parseIQiYiMovieTop();
                     break;
                 case REFRESH_TOP_CONTENT:
-                    category=msg.arg1;
+                    category = msg.arg1;
                     showVideoTopData();
                     if (count < topRow) {
-                    count = count+1;
+                        count = count + 1;
                     }
                     if (count == topRow) {
                         Log.v(TAG, "count" + count);
@@ -221,42 +221,44 @@ public class RecommandVideoRowFragment extends BaseFragment {
         ArrayObjectAdapter listRowAdapter = new ArrayObjectAdapter(videoItemPresenter);
         mVideoTopList.clear();
         if (mVideoTopListArray != null) {
-        mVideoTopList = mVideoTopListArray.get(toplistPos[category]);
+            mVideoTopList = mVideoTopListArray.get(toplistPos[category]);
             if (mVideoTopList.size() >= topItem) {
                 for (int k = 0; k < topItem; k++) {
-                listRowAdapter.add(mVideoTopList.get(k));
+                    listRowAdapter.add(mVideoTopList.get(k));
+                }
+            } else {
+                for (int k = 0; k < mVideoTopList.size(); k++) {
+                    listRowAdapter.add(mVideoTopList.get(k));
+                }
             }
-        }else{
-            for (int k = 0; k < mVideoTopList.size(); k++) {
-                listRowAdapter.add(mVideoTopList.get(k));
-            }
-        }
         }
         HeaderItem header = new HeaderItem(category, SeriesAndRecVideoDataList.TOP_CATEGORY[category]);
         PortraitVideoListRow listRow = new PortraitVideoListRow(header, listRowAdapter);
         mRowsAdapter.add(listRow);
     }
+
     private void showButton() {
         SeriesAndRecButtonItemPresenter mGridPresenter = new SeriesAndRecButtonItemPresenter();
         ArrayObjectAdapter gridRowAdapter = new ArrayObjectAdapter(mGridPresenter);
         mRowsAdapter.add(new RecButtonListRow(gridRowAdapter));
     }
+
     private void showVideoData() {
         if (category % 2 != 0) {
             PortraitVideoItem1Presenter videoItemPresenter = new PortraitVideoItem1Presenter();
             ArrayObjectAdapter listRowAdapter = new ArrayObjectAdapter(videoItemPresenter);
             mVideoList.clear();
             if (mVideoListArray != null) {
-            mVideoList = mVideoListArray.get(listPos[category]);
+                mVideoList = mVideoListArray.get(listPos[category]);
                 if (mVideoList.size() >= videoItem) {
                     for (int k = 0; k < videoItem; k++) {
-                    listRowAdapter.add(mVideoList.get(k));
+                        listRowAdapter.add(mVideoList.get(k));
+                    }
+                } else {
+                    for (int k = 0; k < mVideoList.size(); k++) {
+                        listRowAdapter.add(mVideoList.get(k));
+                    }
                 }
-            } else {
-                for (int k = 0; k < mVideoList.size(); k++) {
-                    listRowAdapter.add(mVideoList.get(k));
-                }
-            }
             }
             HeaderItem header = new HeaderItem(category, SeriesAndRecVideoDataList.REC_CATEGORY[category]);
             PortraitVideoListRow1 listRow = new PortraitVideoListRow1(header, listRowAdapter);
@@ -267,16 +269,16 @@ public class RecommandVideoRowFragment extends BaseFragment {
             ArrayObjectAdapter listRowAdapter = new ArrayObjectAdapter(videoItemPresenter);
             mVideoList.clear();
             if (mVideoListArray != null) {
-            mVideoList = mVideoListArray.get(listPos[category]);
+                mVideoList = mVideoListArray.get(listPos[category]);
                 if (mVideoList.size() >= videoItem1) {
                     for (int k = 0; k < videoItem1; k++) {
-                    listRowAdapter.add(mVideoList.get(k));
+                        listRowAdapter.add(mVideoList.get(k));
+                    }
+                } else {
+                    for (int k = 0; k < mVideoList.size(); k++) {
+                        listRowAdapter.add(mVideoList.get(k));
+                    }
                 }
-            } else {
-                for (int k = 0; k < mVideoList.size(); k++) {
-                    listRowAdapter.add(mVideoList.get(k));
-                }
-            }
             }
             HeaderItem header = new HeaderItem(category, SeriesAndRecVideoDataList.REC_CATEGORY[category]);
             LandscapeVideoListRow listRow = new LandscapeVideoListRow(header, listRowAdapter);
@@ -285,9 +287,9 @@ public class RecommandVideoRowFragment extends BaseFragment {
 
     }
 
-    private void loadMoreVideo(){
+    private void loadMoreVideo() {
 
-                }
+    }
 
     @Nullable
     @Override
@@ -336,13 +338,13 @@ public class RecommandVideoRowFragment extends BaseFragment {
                 Log.v(TAG, "loadMoreVideo");
                 mPageNum += 1;
                 if (mPageNum <= totalPage) {
-                    if(mPageNum!=(channel.length/loadRows)+1) {
+                    if (mPageNum != (channel.length / loadRows) + 1) {
                         for (int i = 0; i < loadRows; i++) {
                             parseIQiYiMovieSimplifiedList((mPageNum - 1) * loadRows + i, channel[(mPageNum - 1) * loadRows + i], "", "", "",
                                     24, 1, 1, "iqiyi", 1, "", 6);
                         }
-                    }else{
-                        for (int i = 0; i < channel.length%loadRows; i++) {
+                    } else {
+                        for (int i = 0; i < channel.length % loadRows; i++) {
                             parseIQiYiMovieSimplifiedList((mPageNum - 1) * loadRows + i, channel[(mPageNum - 1) * loadRows + i], "", "", "",
                                     24, 1, 1, "iqiyi", 1, "", 6);
                         }
@@ -355,7 +357,7 @@ public class RecommandVideoRowFragment extends BaseFragment {
 
             @Override
             public void onLoadEnd() {
-                if (getUserVisibleHint()&&(curRow == totalRow-1)) {
+                if (getUserVisibleHint() && (curRow == totalRow - 1)) {
                     Toast.makeText(mContext, "没有更多视频加载", Toast.LENGTH_LONG).show();
                 }
             }
@@ -372,35 +374,36 @@ public class RecommandVideoRowFragment extends BaseFragment {
     /**
      * 获取爱奇艺片库筛选结果List
      * 参数请参看iqiyidata.json
+     *
      * @param orderList 筛选组合，请参看iqiyidata.json中order-list部分,  "15,24"; 为内地，古装筛选组合
-     * @param pageSize 每页个数
+     * @param pageSize  每页个数
      */
-    private void parseIQiYiMovieSimplifiedList(int category,int channel, String orderList, String payStatus, String myYear,
+    private void parseIQiYiMovieSimplifiedList(int category, int channel, String orderList, String payStatus, String myYear,
                                                int sortType, int pageNum, int dataType, String siteType,
-                                               int sourceType, String comicsStatus, int pageSize){
+                                               int sourceType, String comicsStatus, int pageSize) {
         IQiYiMovieSimplifiedListPresenter ps = new IQiYiMovieSimplifiedListPresenter();
-        ps.requestIQiYiMovieSimplifiedList(channel,orderList,payStatus,myYear,sortType,pageNum,
-                dataType,siteType,sourceType,comicsStatus,pageSize, new CallBack<IQiYiMovieSimplifiedBean>() {
+        ps.requestIQiYiMovieSimplifiedList(channel, orderList, payStatus, myYear, sortType, pageNum,
+                dataType, siteType, sourceType, comicsStatus, pageSize, new CallBack<IQiYiMovieSimplifiedBean>() {
                     @Override
                     public void success(IQiYiMovieSimplifiedBean bean) {
 
-                        Log.v(TAG, "result_num =："+ bean.getResult_num());
+                        Log.v(TAG, "result_num =：" + bean.getResult_num());
                         List<IQiYiMovieBean> list = bean.getList();
-                        for(int i=0;i<list.size();i++) {
+//                        for(int i=0;i<list.size();i++) {
 //                            Log.v(TAG, list.get(i).toString());
-                        }
-                        Log.v(TAG,"category"+category+"channel"+channel);
+//                        }
+                        Log.v(TAG, "category" + category + "channel" + channel);
 
                         mVideoListArray.add(list);
-                        listPos[category] = mVideoListArray.size()-1;
+                        listPos[category] = mVideoListArray.size() - 1;
                         Message msg = new Message();
                         msg.arg1 = category;
                         msg.what = REFRESH_MOVIE_CONTENT;
                         mHandler.sendMessage(msg);
-                        if (mVideoListArray.size() <= videoTotalRow-(videoTotalRow%loadRows)) {
-                        if(mVideoListArray.size()%loadRows==0) {
-                            videoGrid.endMoreRefreshComplete();
-                        }
+                        if (mVideoListArray.size() <= videoTotalRow - (videoTotalRow % loadRows)) {
+                            if (mVideoListArray.size() % loadRows == 0) {
+                                videoGrid.endMoreRefreshComplete();
+                            }
                         } else {
                             if (mVideoListArray.size() % 2 == 0) {
                                 videoGrid.endMoreRefreshComplete();
@@ -414,18 +417,20 @@ public class RecommandVideoRowFragment extends BaseFragment {
                     }
                 });
     }
+
     /**
      * 获取推荐栏位基本信息
-     * @param channel  电视剧：dianshiju    电影：dianying  综艺：zongyi   动漫：dongman     微电影：weidianying     推荐：""
+     *
+     * @param channel 电视剧：dianshiju    电影：dianying  综艺：zongyi   动漫：dongman     微电影：weidianying     推荐：""
      */
     private void parseIQiYiParseBannerInfo(String channel) {
         IQiYiParseBannerInfoPresenter ps = new IQiYiParseBannerInfoPresenter();
         ps.requestIQiYiBannerInfo(channel, new CallBack<List<IQiYiBannerInfoBean>>() {
             @Override
             public void success(List<IQiYiBannerInfoBean> list) {
-                for (IQiYiBannerInfoBean bean : list) {
+//                for (IQiYiBannerInfoBean bean : list) {
 //                    Log.v(TAG, bean.toString());
-                }
+//                }
                 mBannerInfoList.clear();
                 mBannerInfoList = list;
                 Log.v("TAG", "mBannerInfoList" + mBannerInfoList.size());
@@ -443,22 +448,23 @@ public class RecommandVideoRowFragment extends BaseFragment {
 
     /**
      * 获取Top list
-     * @param cid channel id , 热播榜为-1，其余根据list定义， 电视剧为2，电影为1
+     *
+     * @param cid  channel id , 热播榜为-1，其余根据list定义， 电视剧为2，电影为1
      * @param type 播放指数榜：playindex   飙升榜：rise  热度榜：realTime
      * @param size 获取个数
      * @param page 获取页面page number
      */
-    private void parseIQiYiTopList(int category, String cid, String type,int size, int page){
+    private void parseIQiYiTopList(int category, String cid, String type, int size, int page) {
         IQiYiParseTopListPresenter ps = new IQiYiParseTopListPresenter();
-        ps.requestIQiYiTopList( cid,type,size,page, new CallBack<List<IQiYiTopListBean>>() {
+        ps.requestIQiYiTopList(cid, type, size, page, new CallBack<List<IQiYiTopListBean>>() {
             @Override
             public void success(List<IQiYiTopListBean> list) {
-                for(IQiYiTopListBean bean:list) {
+//                for(IQiYiTopListBean bean:list) {
 //                    Log.v(TAG, bean.toString());
-                }
-                Log.v(TAG, "mVideoTopListArray"+mVideoTopListArray.size());
+//                }
+                Log.v(TAG, "mVideoTopListArray" + mVideoTopListArray.size());
                 mVideoTopListArray.add(list);
-                toplistPos[category] = mVideoTopListArray.size()-1;
+                toplistPos[category] = mVideoTopListArray.size() - 1;
                 Message msg = new Message();
                 msg.arg1 = category;
                 msg.what = REFRESH_TOP_CONTENT;
@@ -509,12 +515,12 @@ public class RecommandVideoRowFragment extends BaseFragment {
     public void onResume() {
         super.onResume();
         Log.v(TAG, "onResume");
-        if(getUserVisibleHint()) {
-        showLoad();
-        if(NetUtil.isConnected()){
-            count = 0;
-            loadData();
-        }
+        if (getUserVisibleHint()) {
+            showLoad();
+            if (NetUtil.isConnected()) {
+                count = 0;
+                loadData();
+            }
         }
 
 
@@ -526,7 +532,7 @@ public class RecommandVideoRowFragment extends BaseFragment {
         Log.v(TAG, "isVisibleToUser:" + isVisibleToUser);
         if (isVisibleToUser && isViewCreated) {
             showLoad();
-            if(NetUtil.isConnected()){
+            if (NetUtil.isConnected()) {
                 count = 0;
                 loadData();
             }
@@ -570,13 +576,13 @@ public class RecommandVideoRowFragment extends BaseFragment {
 
     @Override
     public boolean onKeyDown(KeyEvent event) {
-        if(event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
-            if(videoGrid.getChildCount()>0) {
-        videoGrid.setSelectedPosition(0);
-        videoGrid.smoothScrollToPosition(0);
+        if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
+            if (videoGrid.getChildCount() > 0) {
+                videoGrid.setSelectedPosition(0);
+                videoGrid.smoothScrollToPosition(0);
             }
-        return true;
-    }
+            return true;
+        }
         return false;
     }
 

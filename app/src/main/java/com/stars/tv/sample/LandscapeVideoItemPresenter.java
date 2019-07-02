@@ -27,19 +27,20 @@ public class LandscapeVideoItemPresenter extends Presenter {
     private static final int ITEM_NUM_ROW = 4;
     int CARD_WIDTH = 0;
     int CARD_HEIGHT = 0;
-//    private static final int CARD_WIDTH = 250;
+    //    private static final int CARD_WIDTH = 250;
 //    private static final int CARD_HEIGHT = 200;
     ImageView bgIv;
     TextView nameTv;
     View boardView;
     protected Context mContext;
     boolean isValue;
+    String newUrl;
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent) {
         View view = View.inflate(parent.getContext(), R.layout.item_videos_layout, null);
         mContext = parent.getContext();
-        CARD_WIDTH = (AutoSizeUtils.dp2px(Objects.requireNonNull(parent.getContext()),AutoSizeConfig.getInstance().getDesignWidthInDp()) - GRID_VIEW_LEFT_PX - GRID_VIEW_RIGHT_PX - (ITEM_RIGHT_PADDING_PX * ITEM_NUM_ROW)) / ITEM_NUM_ROW;
+        CARD_WIDTH = (AutoSizeUtils.dp2px(Objects.requireNonNull(parent.getContext()), AutoSizeConfig.getInstance().getDesignWidthInDp()) - GRID_VIEW_LEFT_PX - GRID_VIEW_RIGHT_PX - (ITEM_RIGHT_PADDING_PX * ITEM_NUM_ROW)) / ITEM_NUM_ROW;
         CARD_HEIGHT = CARD_WIDTH / 16 * 9;
         ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(CARD_WIDTH, CARD_HEIGHT);
         view.setLayoutParams(lp);
@@ -50,15 +51,17 @@ public class LandscapeVideoItemPresenter extends Presenter {
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, Object item) {
-        IQiYiMovieBean videoBean = (IQiYiMovieBean)item;
+        IQiYiMovieBean videoBean = (IQiYiMovieBean) item;
 //        Log.v(TAG,"videoBean"+videoBean.toString());
         bgIv = viewHolder.view.findViewById(R.id.bg_iv);
         nameTv = viewHolder.view.findViewById(R.id.name_tv);
         boardView = viewHolder.view.findViewById(R.id.board_view);
         nameTv.setText(videoBean.getName());
         String imageUrl = videoBean.getImageUrl();
-        String size = "_480_270.jpg";
-        String newUrl = imageUrl.replace(".jpg",size);
+        if (imageUrl != null) {
+            String size = "_480_270.jpg";
+            newUrl = imageUrl.replace(".jpg", size);
+        }
         Glide.with(Objects.requireNonNull(viewHolder.view.getContext()))
                 .load(newUrl).into(bgIv);
         viewHolder.view.setOnClickListener(new View.OnClickListener() {
@@ -67,7 +70,7 @@ public class LandscapeVideoItemPresenter extends Presenter {
 //                Toast.makeText(mContext,"click the" + nameTv.getText().toString(),Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(mContext, VideoPreviewActivity.class);
                 intent.putExtra("videoBean", videoBean);
-                intent.putExtra("titleName","Recommand");
+                intent.putExtra("titleName", "Recommand");
                 mContext.startActivity(intent);
             }
         });
