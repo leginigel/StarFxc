@@ -8,6 +8,7 @@ public class IQiYiMovieBean extends IQiYiBaseBean implements Serializable {
 
     private String name;
     private String docId;
+    private String channelId;
     private String albumId;
     private String sourceId;
     private String tvId;
@@ -41,6 +42,7 @@ public class IQiYiMovieBean extends IQiYiBaseBean implements Serializable {
         return "IQiYiMovie{" +
                 "name='" + name + '\'' +
                 ", docId='" + docId + '\'' +
+                ", channelId='" + channelId + '\'' +
                 ", albumId='" + albumId + '\'' +
                 ", sourceId='" + sourceId + '\'' +
                 ", tvId='" + tvId + '\'' +
@@ -77,6 +79,14 @@ public class IQiYiMovieBean extends IQiYiBaseBean implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getChannelId() {
+        return channelId;
+    }
+
+    public void setChannelId(String channelId) {
+        this.channelId = channelId;
     }
 
     public String getPlayUrl() {

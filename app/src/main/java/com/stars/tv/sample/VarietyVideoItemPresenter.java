@@ -66,11 +66,8 @@ public class VarietyVideoItemPresenter extends Presenter {
         Log.v(TAG,"latestOrder"+latestOrder+"videoCount"+videoCount);
         if(latestOrder!=null &&videoCount!=null)
         {
-            if (Objects.requireNonNull(videoCount).equals(Objects.requireNonNull(latestOrder))) {
-                Log.v("tt", videoBean.getVideoCount() + videoBean.getLatestOrder());
-                infoTv.setText(videoBean.getLatestOrder() + "期全");
-            } else {
-                infoTv.setText(videoBean.getLatestOrder() + "期");
+            if(videoBean.getFormatPeriod()!=null){
+                infoTv.setText(videoBean.getFormatPeriod() + "期");
             }
         }
         nameTv.setText(videoBean.getName());

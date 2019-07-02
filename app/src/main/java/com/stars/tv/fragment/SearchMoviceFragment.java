@@ -981,6 +981,8 @@ public class SearchMoviceFragment extends BaseFragment {
                     } else {
                         holder.infoTv.setText("更新至" + latestOrder + "集");
                     }
+                } else if(videoBean.getChannelId()!=null && videoBean.getChannelId().equals("6")) {
+                    holder.infoTv.setText(videoBean.getFormatPeriod()+"期");
                 } else {
                     holder.infoTv.setText(videoBean.getScore());
                 }

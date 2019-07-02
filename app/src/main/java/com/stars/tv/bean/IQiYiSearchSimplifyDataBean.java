@@ -615,7 +615,7 @@ public class IQiYiSearchSimplifyDataBean {
         private String subTitle;
         private String vFocus;
         private String albumId;
-        private int year;
+        private String year;
         private String qipu_id;
         private String screen_size;
         private boolean is_vip;
@@ -723,11 +723,11 @@ public class IQiYiSearchSimplifyDataBean {
             this.albumId = albumId;
         }
 
-        public int getYear() {
+        public String getYear() {
             return year;
         }
 
-        public void setYear(int year) {
+        public void setYear(String year) {
             this.year = year;
         }
 

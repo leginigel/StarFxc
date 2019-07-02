@@ -63,7 +63,8 @@ public class IQiYiParseSearchPresenter {
                 }
 
                 String data = root.getString("data");
-                Type listType = new TypeToken<List<IQiYiHotQueryBean>>() {}.getType();
+                Type listType = new TypeToken<List<IQiYiHotQueryBean>>() {
+                }.getType();
                 hotQueryList = new Gson().fromJson(data, listType);
 
                 if (listener != null) {
@@ -87,7 +88,8 @@ public class IQiYiParseSearchPresenter {
                 }
 
                 String data = root.getString("data");
-                Type listType = new TypeToken<List<IQiYiSearchSuggestBean>>() {}.getType();
+                Type listType = new TypeToken<List<IQiYiSearchSuggestBean>>() {
+                }.getType();
                 suggestList = new Gson().fromJson(data, listType);
 
                 if (listener != null) {
@@ -109,8 +111,7 @@ public class IQiYiParseSearchPresenter {
                 String resultNum = doc.select("div.search_content").text();
                 resultBean.setResultNum(resultNum);
                 List<IQiYiSearchResultBean.ResultItem> itemList = new ArrayList<>();
-                for(Element element:lis)
-                {
+                for (Element element : lis) {
                     IQiYiSearchResultBean.ResultItem resultItem = resultBean.new ResultItem();
                     String tvname = element.attr("data-widget-searchlist-tvname");
                     String tvid = element.attr("data-widget-searchlist-tvid");
@@ -136,8 +137,7 @@ public class IQiYiParseSearchPresenter {
 
                     Elements subLis = element.select("li.album_item");
                     List<IQiYiSearchResultBean.SubItem> subItemList = new ArrayList<>();
-                    for(Element item :subLis)
-                    {
+                    for (Element item : subLis) {
                         IQiYiSearchResultBean.SubItem subItem = resultBean.new SubItem();
                         String subTitle = item.select("a.album_link").attr("title");
                         String subPlayUrl = item.select("a.album_link").attr("href");
@@ -202,12 +202,15 @@ public class IQiYiParseSearchPresenter {
                 searchMovieBean.setPage_num(searchBean.getPage_num());
                 searchMovieBean.setPage_size(searchBean.getPage_size());
                 searchMovieBean.setMax_result_number(searchBean.getMax_result_number());
-                for(int i = 0; i<searchBean.getDocinfos().size();i++)
-                {
+                for (int i = 0; i < searchBean.getDocinfos().size(); i++) {
                     IQiYiMovieBean bean = new IQiYiMovieBean();
                     bean.setName(searchBean.getDocinfos().get(i).getAlbumDocInfo().getAlbumTitle());
                     bean.setDocId(searchBean.getDocinfos().get(i).getDoc_id());
                     bean.setAlbumId(searchBean.getDocinfos().get(i).getAlbumDocInfo().getAlbumId());
+                    String channelId = searchBean.getDocinfos().get(i).getAlbumDocInfo().getChannel();
+                    if(channelId != null && channelId.contains(",")) {
+                        bean.setChannelId(channelId.substring(channelId.indexOf(",") + 1));
+                    }
                     bean.setSourceId(searchBean.getDocinfos().get(i).getAlbumDocInfo().getAlbumId());
                     bean.setFocus(searchBean.getDocinfos().get(i).getAlbumDocInfo().getTvFocus());
                     bean.setScore(searchBean.getDocinfos().get(i).getAlbumDocInfo().getScore());
@@ -222,8 +225,7 @@ public class IQiYiParseSearchPresenter {
                     bean.setAlbumImageUrl(searchBean.getDocinfos().get(i).getAlbumDocInfo().getAlbumImg());
                     bean.setPeriod(searchBean.getDocinfos().get(i).getAlbumDocInfo().getReleaseDate());
                     bean.setShortTitle(searchBean.getDocinfos().get(i).getAlbumDocInfo().getAlbumAlias());
-                    if(searchBean.getDocinfos().get(i).getAlbumDocInfo().getVideo_lib_meta()!=null)
-                    {
+                    if (searchBean.getDocinfos().get(i).getAlbumDocInfo().getVideo_lib_meta() != null) {
                         bean.setDescription(searchBean.getDocinfos().get(i).getAlbumDocInfo().getVideo_lib_meta().getDescription());
                         bean.setDuration(searchBean.getDocinfos().get(i).getAlbumDocInfo().getVideo_lib_meta().getDuration());
                         if(searchBean.getDocinfos().get(i).getAlbumDocInfo().getVideo_lib_meta().getCategory()!=null) {
@@ -251,18 +253,20 @@ public class IQiYiParseSearchPresenter {
                     }
 
                     if(searchBean.getDocinfos().get(i).getAlbumDocInfo().getVideoinfos()!=null &&
-                            searchBean.getDocinfos().get(i).getAlbumDocInfo().getVideoinfos().size()>0)
-                    {
+                            searchBean.getDocinfos().get(i).getAlbumDocInfo().getVideoinfos().size() > 0) {
                         bean.setTvId(searchBean.getDocinfos().get(i).getAlbumDocInfo().getVideoinfos().get(0).getTvId());
                         bean.setVid(searchBean.getDocinfos().get(i).getAlbumDocInfo().getVideoinfos().get(0).getVid());
                         bean.setSubtitle(searchBean.getDocinfos().get(i).getAlbumDocInfo().getVideoinfos().get(0).getSubTitle());
                         bean.setPlayUrl(searchBean.getDocinfos().get(i).getAlbumDocInfo().getVideoinfos().get(0).getItemLink());
-                        if(bean.getName()==null|| bean.getName().equals(""))
-                        {
+                        String formatPeriod = searchBean.getDocinfos().get(i).getAlbumDocInfo().getVideoinfos().get(0).getInitialIssueTime();
+                        if (formatPeriod != null && formatPeriod.contains("-")) {
+                            bean.setFormatPeriod(formatPeriod.substring(0, 10));
+                        }
+
+                        if (bean.getName() == null || bean.getName().equals("")) {
                             bean.setName(searchBean.getDocinfos().get(i).getAlbumDocInfo().getVideoinfos().get(0).getItemTitle());
                         }
-                        if(searchBean.getDocinfos().get(i).getAlbumDocInfo().getVideoinfos().get(0).getLatest_video()!=null)
-                        {
+                        if (searchBean.getDocinfos().get(i).getAlbumDocInfo().getVideoinfos().get(0).getLatest_video() != null) {
                             bean.setLatestVideoUrl(searchBean.getDocinfos().get(i).getAlbumDocInfo().getVideoinfos().get(0).getLatest_video().getPage_url());
                             bean.setLatestTvId(searchBean.getDocinfos().get(i).getAlbumDocInfo().getVideoinfos().get(0).getLatest_video().getTvid());
                         }
