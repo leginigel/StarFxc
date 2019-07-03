@@ -110,7 +110,7 @@ public final class SeriesAndRecVideoDataList {
             "儿童剧场",
             "玩游戏打BOSS",
             "历史故事",
-            "竖屏也好看"
+            "机甲"
     };
 
     public static List<IQiYiMovieBean> seriesContent() {

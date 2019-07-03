@@ -85,7 +85,7 @@ public class VarietyVideoRowSampleFragment extends BaseFragment {
     private int totalBanner = 3;
     private Circle mCircleDrawable;
     private int[] listPos = new  int[15];
-    private String[] orderlist = {"151", "151,2224","163,2120","159,2121,292","157,151,152,153","2118,151","1003,151,152","2119,151","156,30275","2224,30274","30279,151","30276,32566","159,2121","30277,30278,151","292,293,151"};
+    private String[] orderlist = {"151", "151,2224","163,2120","2121,292","157,151","2118,151","1003,151","2119,151","156,151","2224,30274","30279,151","30276,151","159,2121","30277,30278","293,151"};
     private int totalRow = 17;
 
     public VarietyVideoRowSampleFragment() {

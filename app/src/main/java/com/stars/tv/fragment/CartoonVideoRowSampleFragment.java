@@ -85,7 +85,7 @@ public class CartoonVideoRowSampleFragment extends BaseFragment {
     private int totalBanner = 3;
     private Circle mCircleDrawable;
     private int[] listPos = new  int[15];
-    private String[] orderlist = {"30220", "38,30220", "37,30220", "30218,30220", "30220,32784", "30230,30220", "30232,30267,30220", "30243,30249,30220", "30268,30220", "30245,30247", "30224", "30252,30270", "32798,30220,30268", "37，30254","37,32785"};
+    private String[] orderlist = {"30220", "38,30220", "37,30220", "30218,30220", "32784", "30230,30220", "30232,30267,30220", "30243,30249,30220", "30268,30220", "30245,30247", "30224", "30252,30270", "32798,30220,30268", "30254","30241,30220"};
     private int totalRow = 17;
 
     public CartoonVideoRowSampleFragment() {
