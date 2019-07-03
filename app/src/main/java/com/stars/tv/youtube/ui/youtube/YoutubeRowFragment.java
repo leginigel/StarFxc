@@ -1,6 +1,7 @@
 package com.stars.tv.youtube.ui.youtube;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -35,6 +36,7 @@ import com.stars.tv.R;
 import com.stars.tv.youtube.YoutubeActivity;
 import com.stars.tv.youtube.data.YouTubeVideo;
 import com.stars.tv.youtube.ui.YouTubeCardPresenter;
+import com.stars.tv.youtube.ui.search.SearchCardPresenter;
 import com.stars.tv.youtube.viewmodel.YoutubeViewModel;
 
 /**
@@ -60,12 +62,23 @@ public class YoutubeRowFragment extends RowsSupportFragment {
         VerticalGridView verticalGridView = rowsFragment.getVerticalGridView();
 
         int selected_vertical = verticalGridView.getSelectedPosition();
-        ViewGroup rowContainer = (ViewGroup) verticalGridView.getChildAt(selected_vertical);  //row container
+        int row = (selected_vertical >= 1) ? 1 : 0;
+        ViewGroup rowContainer = (ViewGroup) verticalGridView.getChildAt(row);  //row container
 
         ListRowView listRowView = (ListRowView) rowContainer.getChildAt(1);
-        int selected_row = listRowView.getGridView().getSelectedPosition();
-
-        ImageCardView imgCard = listRowView.getGridView().getChildAt(selected_row).findViewById(R.id.img_card_view);
+        int selected_horizontal = listRowView.getGridView().getSelectedPosition();
+        int numRow = listRowView.getGridView().getAdapter().getItemCount();
+        int pos;
+        if(selected_horizontal == (numRow - 1)){
+            pos = 3;
+        }
+        else if(selected_horizontal >= 2){
+            pos = 2;
+        }
+        else{
+            pos = selected_horizontal;
+        }
+        ImageCardView imgCard = listRowView.getGridView().getChildAt(pos).findViewById(R.id.img_card_view);
         imgCard.setInfoAreaBackgroundColor(Color.WHITE);
         ((TextView) imgCard.findViewById(R.id.title_text))
                 .setTextColor(context.getResources().getColor(R.color.background));
@@ -74,7 +87,7 @@ public class YoutubeRowFragment extends RowsSupportFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d(TAG, "onCreate");
+//        Log.d(TAG, "onCreate");
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -159,57 +172,48 @@ public class YoutubeRowFragment extends RowsSupportFragment {
                     ((TextView) imgCard.findViewById(R.id.title_text)).setTextColor(Color.WHITE);
                 }
 
-                ArrayObjectAdapter cardsAdapter = getCardsAdapter();
                 ArrayObjectAdapter rowsAdapter = getRowsAdapter();
+                ListRow listRow = (ListRow) rowsAdapter.get(rowsAdapter.indexOf(row));
+                ArrayObjectAdapter cardsAdapter = (ArrayObjectAdapter) listRow.getAdapter();
                 YouTubeCardPresenter cardPresenter = getCardPresenter();
-                if(cardsAdapter.indexOf(o) == 0 && rowsAdapter.indexOf(row) == 0) {
-                    cardViewHolder.view.setOnKeyListener((v, keyCode, event) -> {
-                        if(event.getAction() == KeyEvent.ACTION_DOWN) {
-                            cardPresenter.setDefaultFocus(v, keyCode);
-                            if(keyCode == KeyEvent.KEYCODE_DPAD_LEFT || keyCode == KeyEvent.KEYCODE_DPAD_UP) {
+
+                cardViewHolder.view.setOnKeyListener((v, keyCode, event) -> {
+                    if(event.getAction() == KeyEvent.ACTION_DOWN) {
+                        cardPresenter.setDefaultFocus(v, keyCode);
+                        if(keyCode == KeyEvent.KEYCODE_DPAD_UP) {
+                            if(rowsAdapter.indexOf(row) == 0) {
+                                if(cardPresenter instanceof SearchCardPresenter){
+                                    imgCard.setInfoAreaBackgroundColor(getResources().getColor(R.color.background));
+                                    ((TextView) imgCard.findViewById(R.id.title_text))
+                                            .setTextColor(Color.WHITE);
+                                }
+                                else {
+                                    cardPresenter.setPressBack(v);
+                                    return true;
+                                }
+                            }
+                        }
+                        if(keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
+                            if(cardsAdapter.indexOf(o) == 0) {
                                 imgCard.setInfoAreaBackgroundColor(getResources().getColor(R.color.background));
                                 ((TextView) imgCard.findViewById(R.id.title_text))
                                         .setTextColor(Color.WHITE);
-                            }
-                            if(keyCode == KeyEvent.KEYCODE_BACK) {
-                                cardPresenter.setPressBack(v);
-                                return true;
-                            }
-                        }
-                        return false;
-                    });
-                } else if(cardsAdapter.indexOf(o) == 0) {
-                    cardViewHolder.view.setOnKeyListener((v, keyCode, event) -> {
-                        if(event.getAction() == KeyEvent.ACTION_DOWN) {
-                            cardPresenter.setDefaultFocus(v, keyCode);
-                            if(keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
-                                imgCard.setInfoAreaBackgroundColor(getResources().getColor(R.color.background));
-                                ((TextView) imgCard.findViewById(R.id.title_text))
-                                        .setTextColor(Color.WHITE);
-                            }
-                            if(keyCode == KeyEvent.KEYCODE_BACK) {
-                                cardPresenter.setPressBack(v);
-                                return true;
+                                if(cardPresenter instanceof SearchCardPresenter){
+
+                                }
+                                else {
+                                    getActivity().findViewById(R.id.home_btn).requestFocus();
+                                    return true;
+                                }
                             }
                         }
-                        return false;
-                    });
-                } else if(rowsAdapter.indexOf(row) == 0) {
-                    cardViewHolder.view.setOnKeyListener((v, keyCode, event) -> {
-                        if(event.getAction() == KeyEvent.ACTION_DOWN) {
-                            cardPresenter.setDefaultFocus(v, keyCode);
-                            if(keyCode == KeyEvent.KEYCODE_DPAD_UP) {
-                                imgCard.setInfoAreaBackgroundColor(getResources().getColor(R.color.background));
-                                ((TextView) imgCard.findViewById(R.id.title_text)).setTextColor(Color.WHITE);
-                            }
-                            if(keyCode == KeyEvent.KEYCODE_BACK) {
-                                cardPresenter.setPressBack(v);
-                                return true;
-                            }
+                        if(keyCode == KeyEvent.KEYCODE_BACK) {
+                            cardPresenter.setPressBack(v);
+                            return true;
                         }
-                        return false;
-                    });
-                }
+                    }
+                    return false;
+                });
 
                 // Set the Selected Color
                 imgCard = cardViewHolder.getImageCardView();
@@ -240,10 +244,6 @@ public class YoutubeRowFragment extends RowsSupportFragment {
     // All Needs to Override this Method
     public YoutubeFragment.TabCategory getTabCategory() {
         return null;
-    }
-
-    public ArrayObjectAdapter getCardsAdapter() {
-        return mCardsAdapter;
     }
 
     public ArrayObjectAdapter getRowsAdapter() {

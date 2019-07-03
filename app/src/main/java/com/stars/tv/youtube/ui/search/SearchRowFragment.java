@@ -74,11 +74,6 @@ public class SearchRowFragment extends YoutubeRowFragment {
     }
 
     @Override
-    public ArrayObjectAdapter getCardsAdapter() {
-        return mCardsAdapter;
-    }
-
-    @Override
     public ArrayObjectAdapter getRowsAdapter() {
         return mRowsAdapter;
     }

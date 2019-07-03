@@ -86,23 +86,6 @@ public class YouTubeCardPresenter extends Presenter {
     }
 
     protected void setFocusNavigation(CardViewHolder cardViewHolder){
-        switch (((YoutubeFragment) mFragment).getTabCategory()){
-            case Recommended:
-                cardViewHolder.view.setNextFocusUpId(R.id.recommend_btn);
-                break;
-            case Latest:
-                cardViewHolder.view.setNextFocusUpId(R.id.latest_btn);
-                break;
-            case Music:
-                cardViewHolder.view.setNextFocusUpId(R.id.music_btn);
-                break;
-            case Entertainment:
-                cardViewHolder.view.setNextFocusUpId(R.id.entertainment_btn);
-                break;
-            case Gaming:
-                cardViewHolder.view.setNextFocusUpId(R.id.gaming_btn);
-                break;
-        }
         cardViewHolder.view.setOnKeyListener((v, keyCode, event) -> {
             if(event.getAction() == KeyEvent.ACTION_DOWN){
                 setDefaultFocus(v, keyCode);
@@ -165,7 +148,7 @@ public class YouTubeCardPresenter extends Presenter {
             view.setFocusable(true);
             view.setFocusableInTouchMode(true);
             view.setClickable(true);
-            view.setNextFocusLeftId(R.id.home_btn);
+//            view.setNextFocusLeftId(R.id.home_btn);
 
             mImageCardView = view.findViewById(R.id.img_card_view);
             mTimeStamp = view.findViewById(R.id.img_card_time_stamp);
