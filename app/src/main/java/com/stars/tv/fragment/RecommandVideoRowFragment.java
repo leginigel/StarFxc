@@ -336,6 +336,7 @@ public class RecommandVideoRowFragment extends BaseFragment {
             @Override
             public void onLoadMore() {
                 Log.v(TAG, "loadMoreVideo");
+                Log.v(TAG, "mPageNum"+mPageNum);
                 mPageNum += 1;
                 if (mPageNum <= totalPage) {
                     if (mPageNum != (channel.length / loadRows) + 1) {
@@ -518,6 +519,7 @@ public class RecommandVideoRowFragment extends BaseFragment {
         if (getUserVisibleHint()) {
             showLoad();
             if (NetUtil.isConnected()) {
+                mPageNum = 0;
                 count = 0;
                 loadData();
             }
@@ -533,6 +535,7 @@ public class RecommandVideoRowFragment extends BaseFragment {
         if (isVisibleToUser && isViewCreated) {
             showLoad();
             if (NetUtil.isConnected()) {
+                mPageNum = 0;
                 count = 0;
                 loadData();
             }

@@ -364,6 +364,7 @@ public class CartoonVideoRowSampleFragment extends BaseFragment {
         if (isVisibleToUser) {
             showLoad();
             if(NetUtil.isConnected()){
+                mPageNum = 1;
                 loadData();
             }
 
