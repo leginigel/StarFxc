@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
@@ -143,7 +142,7 @@ public class YoutubeActivity extends FragmentActivity implements CustomAdapt,
         checkYouTubeApi();
     }
 
-    private void setIconFocus(ImageView image, PageCategory category){
+    private void setLeftNavIconFocus(ImageView image, PageCategory category){
         image.setOnFocusChangeListener((v, hasFocus)->{
             Drawable drawable = ((ImageView) v).getDrawable();
             if(hasFocus) {
@@ -165,21 +164,24 @@ public class YoutubeActivity extends FragmentActivity implements CustomAdapt,
     }
 
     private void setIconFocusListener(){
-        setIconFocus(searchIcon, PageCategory.Search);
-        setIconFocus(homeIcon, PageCategory.Home);
-        setIconFocus(subIcon, PageCategory.Subscription);
-        setIconFocus(folderIcon, PageCategory.Library);
-        setIconFocus(settingIcon, PageCategory.Setting);
+        setLeftNavIconFocus(searchIcon, PageCategory.Search);
+        setLeftNavIconFocus(homeIcon, PageCategory.Home);
+        setLeftNavIconFocus(subIcon, PageCategory.Subscription);
+        setLeftNavIconFocus(folderIcon, PageCategory.Library);
+        setLeftNavIconFocus(settingIcon, PageCategory.Setting);
     }
 
-    private void setIconOnKey(ImageView image){
+    private void setLeftNavIconOnKey(ImageView image){
         image.setOnKeyListener((view, keyCode, event)->{
             if(event.getAction() == KeyEvent.ACTION_DOWN) {
                 if(KeyEvent.KEYCODE_DPAD_RIGHT == keyCode) {
                     view.setSelected(true);
                     if(homeIcon.isSelected()){
-                        YoutubeRowFragment frag = (YoutubeRowFragment) youtubeFragment.getFragmentManager().findFragmentById(R.id.container_row);
-                        YoutubeRowFragment.highlightRowFocus(this, frag);
+                        ViewGroup mTopNav = findViewById(R.id.top_nav);
+                        if(mTopNav.getDescendantFocusability() == ViewGroup.FOCUS_BLOCK_DESCENDANTS) {
+                            YoutubeRowFragment frag = (YoutubeRowFragment) youtubeFragment.getFragmentManager().findFragmentById(R.id.container_row);
+                            YoutubeRowFragment.highlightRowFocus(this, frag);
+                        }
                     }
                     if(searchIcon.isSelected()) {
                         RecyclerView suggestions = searchFragment.getView().findViewById(R.id.rv_view);
@@ -218,11 +220,11 @@ public class YoutubeActivity extends FragmentActivity implements CustomAdapt,
     }
 
     private void setIconOnKeyListener(){
-        setIconOnKey(searchIcon);
-        setIconOnKey(homeIcon);
-        setIconOnKey(subIcon);
-        setIconOnKey(folderIcon);
-        setIconOnKey(settingIcon);
+        setLeftNavIconOnKey(searchIcon);
+        setLeftNavIconOnKey(homeIcon);
+        setLeftNavIconOnKey(subIcon);
+        setLeftNavIconOnKey(folderIcon);
+        setLeftNavIconOnKey(settingIcon);
     }
 
     public Fragment getPageFragment(PageCategory category){

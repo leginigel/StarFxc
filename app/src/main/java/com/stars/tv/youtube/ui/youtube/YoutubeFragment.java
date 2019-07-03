@@ -103,7 +103,6 @@ public class YoutubeFragment extends Fragment {
                     if(getTabCategory() == category) {
                         button.setSelected(true);
                     }
-
                     YoutubeRowFragment frag = (YoutubeRowFragment) fm.findFragmentById(R.id.container_row);
                     YoutubeRowFragment.highlightRowFocus(getActivity(), frag);
                 }

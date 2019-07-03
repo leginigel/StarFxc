@@ -131,9 +131,24 @@ public class YouTubeCardPresenter extends Presenter {
                 break;
         }
         ImageCardView imgCard = v.findViewById(R.id.img_card_view);
+        setCardUnfocused(imgCard);
+    }
+
+    public void setCardUnfocused(ImageCardView imgCard){
         imgCard.setInfoAreaBackgroundColor(mContext.getResources().getColor(R.color.background));
         ((TextView) imgCard.findViewById(R.id.title_text)).setTextColor(Color.WHITE);
+        ((TextView) imgCard.findViewById(R.id.content_text))
+                .setTextColor(mContext.getResources().getColor(R.color.card_content_text));
     }
+
+    public void setCardFocused(ImageCardView imgCard){
+        imgCard.setInfoAreaBackgroundColor(Color.WHITE);
+        ((TextView) imgCard.findViewById(R.id.title_text))
+                .setTextColor(mContext.getResources().getColor(R.color.background));
+        ((TextView) imgCard.findViewById(R.id.content_text))
+                .setTextColor(mContext.getResources().getColor(R.color.card_content_text_focused));
+    }
+
 
     public class CardViewHolder extends Presenter.ViewHolder{
 
@@ -154,6 +169,7 @@ public class YouTubeCardPresenter extends Presenter {
             mTimeStamp = view.findViewById(R.id.img_card_time_stamp);
             mTitle = mImageCardView.findViewById(R.id.title_text);
             mContent = mImageCardView.findViewById(R.id.content_text);
+            mContent.setTextColor(mContext.getResources().getColor(R.color.card_content_text));
 
             mImageCardView.setCardType(ImageCardView.CARD_TYPE_INFO_UNDER);
             mImageCardView.setInfoVisibility(BaseCardView.CARD_REGION_VISIBLE_ACTIVATED);

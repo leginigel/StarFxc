@@ -35,6 +35,8 @@
 
     <color name="card_loading">#ff333333</color>
     <color name="card_content">#ffaaaaaa</color>
+    <color name="card_content_text_focused">#ff6a6a6a</color>
+    <color name="card_content_text">#ff969696</color>
 
     <!--button color-->
     <color name="color_blue">#4285f4</color>

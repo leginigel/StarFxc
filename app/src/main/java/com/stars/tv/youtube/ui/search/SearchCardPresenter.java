@@ -56,7 +56,6 @@ public class SearchCardPresenter extends YouTubeCardPresenter {
         mLeftNav.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
         mLeftNav.getChildAt(1).requestFocus();
         ImageCardView imgCard = v.findViewById(R.id.img_card_view);
-        imgCard.setInfoAreaBackgroundColor(mContext.getResources().getColor(R.color.background));
-        ((TextView) imgCard.findViewById(R.id.title_text)).setTextColor(Color.WHITE);
+        setCardUnfocused(imgCard);
     }
 }

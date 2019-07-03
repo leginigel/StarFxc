@@ -84,19 +84,23 @@ public class ControlRowFragment extends YoutubeRowFragment {
                                    RowPresenter.ViewHolder viewHolder1, Row row) {
             YouTubeCardPresenter.CardViewHolder cardViewHolder = (YouTubeCardPresenter.CardViewHolder) viewHolder;
             if(o instanceof YouTubeVideo) {
+                YouTubeCardPresenter cardPresenter = getCardPresenter();
                 // Reset the ImageCardView Info Color
                 if(imgCard != null){
+                    cardPresenter.setCardUnfocused(imgCard);
                     imgCard.setInfoAreaBackgroundColor(Color.TRANSPARENT);
-                    ((TextView) imgCard.findViewById(R.id.title_text)).setTextColor(Color.WHITE);
                 }
 
                 // Set the Selected Color
                 imgCard = cardViewHolder.getImageCardView();
-                imgCard.setInfoAreaBackgroundColor(Color.WHITE);
-                ((TextView) imgCard.findViewById(R.id.title_text))
-                        .setTextColor(getResources().getColor(R.color.background));
+                cardPresenter.setCardFocused(imgCard);
             }
         }
 
+    }
+
+    @Override
+    public YouTubeCardPresenter getCardPresenter() {
+        return mCardPresenter;
     }
 }
