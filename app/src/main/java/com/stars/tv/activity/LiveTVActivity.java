@@ -540,7 +540,7 @@ public class LiveTVActivity extends BaseActivity {
     private void setFav(boolean fav) {
         tvDao.setFav(channelList.get(chPosition).getChannelNumber(), fav);
         refreshChannelList();
-        initChannelListAdapter();
+//        initChannelListAdapter();
     }
 
     private void setHistory(int channelNumber) {

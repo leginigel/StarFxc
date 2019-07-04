@@ -39,8 +39,6 @@
         android:id="@+id/live_tv_channel_list"
         android:layout_width="210dp"
         android:layout_height="match_parent"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="5dp"
         android:background="@drawable/ic_translucent_round_bg"
         android:padding="5dp"
         android:visibility="gone">
