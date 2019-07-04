@@ -52,7 +52,14 @@ public class ControlRowFragment extends YoutubeRowFragment {
 
     @Override
     public void initial() {
-        setExpand(false);
+
+        PlayerControlsFragment playerControlsFragment =
+                (PlayerControlsFragment) getActivity().getSupportFragmentManager().findFragmentByTag("dialog");
+        if(playerControlsFragment.getPlayerStateChangeListener()
+                .getPlayerState() == PlayerControlsFragment.PlayerState.VIDEO_ENDED)
+            setExpand(true);
+        else
+            setExpand(false);
         mCardPresenter = new ControlCardPresenter();
         mListRowPresenter = new ListRowPresenter(FocusHighlight.ZOOM_FACTOR_XSMALL);
         mListRowPresenter.setShadowEnabled(true);

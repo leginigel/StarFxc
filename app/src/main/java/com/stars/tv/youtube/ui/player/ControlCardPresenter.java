@@ -6,6 +6,7 @@ import android.support.v17.leanback.widget.Presenter;
 import android.support.v4.app.FragmentActivity;
 import android.text.Html;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,7 +35,7 @@ public class ControlCardPresenter extends YouTubeCardPresenter {
         CardViewHolder cardViewHolder = (CardViewHolder) viewHolder;
         YouTubeVideo youTubeVideo = (YouTubeVideo) o;
         cardViewHolder.getImageCardView().setMainImageDimensions(410, 230);
-        cardViewHolder.getTitle().setTextSize(16);
+        cardViewHolder.getTitle().setTextSize(14);
         cardViewHolder.getImageCardView().setInfoAreaBackgroundColor(Color.TRANSPARENT);
         cardViewHolder.getImageCardView().setBackgroundColor(Color.TRANSPARENT);
         if(youTubeVideo.getId() != null){
@@ -54,13 +55,22 @@ public class ControlCardPresenter extends YouTubeCardPresenter {
 
     @Override
     protected void setFocusNavigation(CardViewHolder cardViewHolder) {
+        PlayerControlsFragment.PlayerState state
+                = playerControlsFragment.getPlayerStateChangeListener().getPlayerState();
         cardViewHolder.view.setNextFocusUpId(R.id.play_button);
         cardViewHolder.view.setOnKeyListener((v, keyCode, event) -> {
             if(event.getAction() == KeyEvent.ACTION_DOWN){
                 setDefaultFocus(v, keyCode);
                 if(keyCode == KeyEvent.KEYCODE_BACK){
-                    setPressBack(v);
-                    return true;
+                    if(state == PlayerControlsFragment.PlayerState.VIDEO_ENDED){
+                        playerControlsFragment.close();
+                        playerControlsFragment.getActivity().onBackPressed();
+                        return true;
+                    }
+                    else {
+                        setPressBack(v);
+                        return true;
+                    }
                 }
             }
             return false;
@@ -69,11 +79,22 @@ public class ControlCardPresenter extends YouTubeCardPresenter {
 
     @Override
     public void setDefaultFocus(View v, int keyCode) {
-        if(keyCode == KeyEvent.KEYCODE_DPAD_UP)
-            playerControlsFragment.closeRow();
+        // playerControlsFragment close after 10s
+        playerControlsFragment.setCountDown(10);
+        PlayerControlsFragment.PlayerState state
+                = playerControlsFragment.getPlayerStateChangeListener().getPlayerState();
+        if(keyCode == KeyEvent.KEYCODE_DPAD_UP) {
+            if(state == PlayerControlsFragment.PlayerState.VIDEO_ENDED){
+
+            }
+            else {
+                playerControlsFragment.closeRow();
+            }
+        }
     }
 
     @Override
     public void setPressBack(View v) {
+        playerControlsFragment.close();
     }
 }
