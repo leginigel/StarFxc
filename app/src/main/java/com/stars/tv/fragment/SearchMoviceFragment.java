@@ -26,6 +26,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -108,8 +109,8 @@ public class SearchMoviceFragment extends BaseFragment {
     TextView suggestTextView;
     @BindView(R.id.search_tv)
     TextView searchTextView;
-    @BindView(R.id.remove_tv)
-    TextView removeTextView;
+    @BindView(R.id.remove_ib)
+    ImageButton rmBtn;
     @BindView(R.id.history_tv)
     TextView historyTextView;
     @BindView(R.id.history_ll)
@@ -230,6 +231,11 @@ public class SearchMoviceFragment extends BaseFragment {
 //            Log.v(TAG, "lists" + lists.toString());
             initHistoryGridView();
             historyLy.setVisibility(View.VISIBLE);
+            rmBtn.setOnFocusChangeListener((v, hasFocus) ->
+            {
+                rmBtn.setImageDrawable(hasFocus ? getResources().getDrawable(R.drawable.remove_focus) : getResources().getDrawable(R.drawable.remove_normal));
+                ViewUtils.scaleAnimator(v, hasFocus, 1.2f, 150);
+            });
             isVisible = true;
         } else {
             Log.v(TAG, "isVisible" + isVisible);
@@ -528,7 +534,7 @@ public class SearchMoviceFragment extends BaseFragment {
 
 
     /* 上部工具条点击事件 */
-    @OnClick({R.id.clear_btn, R.id.del_btn, R.id.remove_tv})
+    @OnClick({R.id.clear_btn, R.id.del_btn, R.id.remove_ib})
     public void onTopBottomClicked(View view) {
         switch (view.getId()) {
             case R.id.clear_btn:
@@ -542,7 +548,7 @@ public class SearchMoviceFragment extends BaseFragment {
                     Log.v(TAG, "str0" + str.substring(0, str.length() - 1));
                 }
                 break;
-            case R.id.remove_tv:
+            case R.id.remove_ib:
                 lists.clear();
                 historyLy.setVisibility(View.GONE);
                 isVisible = false;
@@ -604,7 +610,7 @@ public class SearchMoviceFragment extends BaseFragment {
 
                 if (((allKeyVgridview.hasFocus() || t9KeyVgridview.hasFocus()) && isRightKey) || delBtn.hasFocus()) {
                     if (typeSuggest == 0) {
-                        removeTextView.setFocusable(false);
+                        rmBtn.setFocusable(false);
                         historyVgridview.requestFocusFromTouch();
                     } else {
                         suggestVgridview.requestFocusFromTouch();
@@ -630,7 +636,7 @@ public class SearchMoviceFragment extends BaseFragment {
                 if (searchVgridview != null && searchVgridview.hasFocus() && (searchVgridview.getSelectedPosition() % ITEM_NUM_ROW == 0)) {
                     Log.v(TAG, "count:" + searchVgridview.getSelectedPosition());
                     if (typeSuggest == 0) {
-                        removeTextView.setFocusable(false);
+                        rmBtn.setFocusable(false);
                         historyVgridview.requestFocusFromTouch();
                     } else {
                         suggestVgridview.requestFocusFromTouch();
@@ -640,7 +646,7 @@ public class SearchMoviceFragment extends BaseFragment {
                 }
                 break;
             case KeyEvent.KEYCODE_DPAD_DOWN:
-                if (removeTextView.hasFocus()) {
+                if (rmBtn.hasFocus()) {
                     historyVgridview.requestFocusFromTouch();
                     return true;
                 }
@@ -654,8 +660,9 @@ public class SearchMoviceFragment extends BaseFragment {
                     return true;
                 }
                 if (historyVgridview.hasFocus() && historyVgridview.getSelectedPosition() == 0) {
-                    removeTextView.setFocusable(true);
-                    removeTextView.requestFocusFromTouch();
+                    isRemaining = true;
+                    rmBtn.setFocusable(true);
+                    rmBtn.requestFocusFromTouch();
                     return true;
                 }
                 if (isVisible && suggestVgridview.hasFocus() && suggestVgridview.getSelectedPosition() == 0) {

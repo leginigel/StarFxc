@@ -15,18 +15,16 @@
             android:layout_height="18dp"
             android:text="搜索历史"
             android:textColor="@color/color_all_white"/>
-        <TextView
-            android:id="@+id/remove_tv"
+
+        <ImageButton
+            android:id="@+id/remove_ib"
             android:layout_width="wrap_content"
-            android:layout_height="15dp"
-            android:text="清除"
-            android:textSize="8sp"
-            android:gravity="center"
-            android:focusableInTouchMode="true"
+            android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:textColor="@color/color_all_white"
-            android:minWidth="30dp"
-            android:background="@drawable/search_statue_bg_selector"/>
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:background="@color/color_transparent"
+            android:src="@drawable/remove_normal" />
     </RelativeLayout>
     <com.stars.tv.view.MyVerticalGridView
         android:id="@+id/history_vgridview"
