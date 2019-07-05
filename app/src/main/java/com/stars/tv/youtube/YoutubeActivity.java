@@ -52,6 +52,7 @@ public class YoutubeActivity extends FragmentActivity implements CustomAdapt,
     private YouTubePlayerSupportFragment youTubePlayerFragment;
     private PlayerControlsFragment playerControlsFragment;
     private PlayerControlsFragment.MyPlaybackEventListener playbackEventListener;
+    private PlayerControlsFragment.MyPlayerStateChangeListener playerStateChangeListener;
 
     private YouTubePlayer youTubePlayer;
 
@@ -97,6 +98,9 @@ public class YoutubeActivity extends FragmentActivity implements CustomAdapt,
         }
 
         // initial playback
+        playerStateChangeListener = playerControlsFragment.getPlayerStateChangeListener();
+        playerStateChangeListener.setPlayerControlsFragment(playerControlsFragment);
+        playerStateChangeListener.setActivity(this);
         playbackEventListener = playerControlsFragment.getPlaybackEventListener();
         youTubePlayerFragment.initialize(YoutubeService.key, this);
 
@@ -107,7 +111,6 @@ public class YoutubeActivity extends FragmentActivity implements CustomAdapt,
                 if(event.getAction() == KeyEvent.ACTION_DOWN) {
                     if(keyCode == KeyEvent.KEYCODE_DPAD_DOWN || keyCode == KeyEvent.KEYCODE_DPAD_UP
                             || keyCode == KeyEvent.KEYCODE_ENTER) {
-//                    Log.d("onKey", "KEYCODE_DPAD_DOWN");
                         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                         Fragment prev = getSupportFragmentManager().findFragmentByTag("dialog");
                         if(prev != null) {
@@ -269,16 +272,12 @@ public class YoutubeActivity extends FragmentActivity implements CustomAdapt,
     public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean wasRestored) {
         youTubePlayer.setPlayerStyle(YouTubePlayer.PlayerStyle.CHROMELESS);
         this.youTubePlayer = youTubePlayer;
-//        youTubePlayer.setPlayerStyle(YouTubePlayer.PlayerStyle.MINIMAL);
 //        youTubePlayer.setFullscreenControlFlags(YouTubePlayer.FULLSCREEN_FLAG_CUSTOM_LAYOUT);
 //        youTubePlayer.setPlaylistEventListener(playlistEventListener);
-//        youTubePlayer.setPlayerStateChangeListener(playbackEventListener);
+        youTubePlayer.setPlayerStateChangeListener(playerStateChangeListener);
         youTubePlayer.setPlaybackEventListener(playbackEventListener);
         if (!wasRestored) {
             Log.d("CheckPoint", "CheckPoint !wasRestored");
-//            youTubePlayer.cueVideo(video.getId());
-//            youTubePlayer.play();
-//            youTubePlayer.loadVideo(video.getId());
             if ( mExtVideoBean != null ) {
                 YouTubeVideo video = new YouTubeVideo(mExtVideoBean.getVideoId(),
                   mExtVideoBean.getVideoName(), mExtVideoBean.getChannel(),
