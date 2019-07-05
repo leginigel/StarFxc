@@ -14,7 +14,8 @@
         android:layout_height="match_parent"
         android:textColor="#FFF8F8F8"
         android:id="@+id/button_all"
-        android:background="@color/color_pink"
+        android:drawableLeft="@drawable/ic_dianshiju_"
+        android:background="@color/color_blue"
         android:layout_marginRight="10dp" />
 
     <Button
@@ -24,7 +25,8 @@
         android:layout_height="match_parent"
         android:textColor="#FFF8F8F8"
         android:id="@+id/button_ancient"
-        android:background="@color/color_blue"
+        android:drawableLeft="@drawable/ic_dianying"
+        android:background="@color/color_pink"
         android:layout_marginRight="10dp" />
 
     <Button
@@ -34,7 +36,8 @@
         android:layout_height="match_parent"
         android:textColor="#FFF8F8F8"
         android:id="@+id/button_house"
-        android:background="@color/color_purple"
+        android:drawableLeft="@drawable/ic_zongyi"
+        android:background="@color/color_orange"
         android:layout_marginRight="10dp" />
     <Button
         android:text="动漫"
@@ -43,5 +46,6 @@
         android:layout_height="match_parent"
         android:textColor="#FFF8F8F8"
         android:id="@+id/button_love"
-        android:background="@color/color_orange" />
+        android:drawableLeft="@drawable/ic_dongman"
+        android:background="@color/color_purple" />
 </LinearLayout>

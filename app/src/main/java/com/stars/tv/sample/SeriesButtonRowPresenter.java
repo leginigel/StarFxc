@@ -26,7 +26,7 @@ public class SeriesButtonRowPresenter extends RowPresenter {
     private static final int GRID_VIEW_RIGHT_PX = 30;
     private static final int ITEM_NUM_ROW = 1;
     int LAYOUT_WIDTH = 0;
-    int LAYOUT_HEIGHT = 300;
+    int LAYOUT_HEIGHT = 260;
 
     public SeriesButtonRowPresenter() {
 
@@ -38,7 +38,7 @@ public class SeriesButtonRowPresenter extends RowPresenter {
     @Override
     protected ViewHolder createRowViewHolder(ViewGroup parent) {
         View root = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_series_button_row_layout, null, false);
-        root.setPadding(30,60,30,30);
+        root.setPadding(30,50,30,30);
         LAYOUT_WIDTH = (AutoSizeUtils.dp2px(Objects.requireNonNull(parent.getContext()), AutoSizeConfig.getInstance().getDesignWidthInDp()) - GRID_VIEW_LEFT_PX ) / ITEM_NUM_ROW;
         ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(LAYOUT_WIDTH, LAYOUT_HEIGHT);
         root.setLayoutParams(lp);

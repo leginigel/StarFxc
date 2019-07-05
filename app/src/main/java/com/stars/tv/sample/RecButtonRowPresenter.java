@@ -26,7 +26,7 @@ public class RecButtonRowPresenter extends RowPresenter {
     private static final int GRID_VIEW_RIGHT_PX = 30;
     private static final int ITEM_NUM_ROW = 1;
     int LAYOUT_WIDTH = 0;
-    int LAYOUT_HEIGHT = 350;
+    int LAYOUT_HEIGHT = 320;
 
     public RecButtonRowPresenter() {
 
