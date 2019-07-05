@@ -2,6 +2,7 @@ package com.stars.tv.activity;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -13,8 +14,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TableLayout;
 import android.widget.TextView;
@@ -36,6 +35,7 @@ import com.stars.tv.presenter.IQiYiParseEpisodeListPresenter;
 import com.stars.tv.presenter.IQiYiParseM3U8Presenter;
 import com.stars.tv.server.LeanCloudStorage;
 import com.stars.tv.utils.CallBack;
+import com.stars.tv.utils.Utils;
 import com.stars.tv.widget.media.AndroidMediaController;
 import com.stars.tv.widget.media.IjkVideoView;
 
@@ -54,8 +54,8 @@ import static com.stars.tv.utils.Constants.EXT_VIDEO_TYPE;
 
 public class FullPlaybackActivity extends BaseActivity {
 
+    private Context mContext;
     private IjkVideoView mVideoView;
-    //    private AndroidMediaController mMediaController;
     private AndroidMediaController mMediaController;
     private TableLayout mHudView;
     private EpisodeListView mEpisodeListView;
@@ -71,7 +71,6 @@ public class FullPlaybackActivity extends BaseActivity {
     private String tvId, mVideoPath, name, albumId, latestOrder, malbumImagUrl;
     private int currentPosition, mEpisode, mVideoCount, mVideoType;
 
-    private AlertDialog hq_alertDialog; //信息框
     final int REFRESH_MOVIE_HQ = 100;
     int currentHQ = 0;
 
@@ -106,6 +105,7 @@ public class FullPlaybackActivity extends BaseActivity {
     protected void onCreate(Bundle savedInsatanceState) {
         super.onCreate(savedInsatanceState);
         setContentView(R.layout.activity_video_fullplayback);
+        mContext=this;
         Intent intent = getIntent();
         tvId = intent.getStringExtra("tvId");
         name = intent.getStringExtra("name");
@@ -136,11 +136,7 @@ public class FullPlaybackActivity extends BaseActivity {
     public void initVideoView() {
         // init UI
         mMediaController = new AndroidMediaController(this, false);
-//        mMediaController = new AndroidMediaController(this, false);
-//        mMediaController.setSupportActionBar(actionBar);
         mMediaController.clearFocus();
-//        mMediaController.setVisibility(View.INVISIBLE);
-//        mMediaController.hide();
         mMediaController.setVisibility(View.GONE);
         // init player
         IjkMediaPlayer.loadLibrariesOnce(null);
@@ -207,16 +203,6 @@ public class FullPlaybackActivity extends BaseActivity {
         if (event.getAction() == KeyEvent.ACTION_DOWN) {
             switch (keyCode) {
                 case KeyEvent.KEYCODE_DPAD_UP:
-                    if (null != latestOrder) {
-                        showOrHideEpisode();
-                        if (!mEpisodeListView.isShown()) {
-                            mEpisodeListView.setVisibility(View.VISIBLE);
-//                        mEpisodeListView.requestFocus();
-                            adapter.setSelectedPositions(Arrays.asList(mEpisode));
-                            return true;
-                        }
-                    }
-                    break;
                 case KeyEvent.KEYCODE_DPAD_DOWN:
                     if (null != latestOrder) {
                         showOrHideEpisode();
@@ -228,6 +214,7 @@ public class FullPlaybackActivity extends BaseActivity {
                         }
                     }
                     break;
+                case KeyEvent.KEYCODE_DPAD_LEFT:
                 case KeyEvent.KEYCODE_DPAD_RIGHT:
                     FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                     Fragment prev = getSupportFragmentManager().findFragmentByTag("controllers");
@@ -236,18 +223,9 @@ public class FullPlaybackActivity extends BaseActivity {
                     }
                     mediaControllersFragment.show(ft, "controllers");
                     break;
-                case KeyEvent.KEYCODE_DPAD_LEFT:
-                    ft = getSupportFragmentManager().beginTransaction();
-                    prev = getSupportFragmentManager().findFragmentByTag("controllers");
-                    if (prev != null) {
-                        ft.remove(prev);
-                    }
-                    mediaControllersFragment.show(ft, "controllers");
-                    break;
                 case KeyEvent.KEYCODE_BACK:
                     returnHistoryUpdate();
                     return true;
-
             }
         }
         return super.onKeyDown(keyCode, event);
@@ -354,19 +332,23 @@ public class FullPlaybackActivity extends BaseActivity {
             }
         };
 
-//        adapter.setSelectedPositions(Arrays.asList(3));
+        adapter.setSelectedPositions(Arrays.asList(mEpisode));
         mEpisodeListView.setAdapter(adapter);
         mEpisodeListView.setChildrenItemClickListener(new ChildrenAdapter.OnItemClickListener() {
             @Override
             public void onEpisodesItemClick(View view, int position) {
                 loading(View.VISIBLE);
-                tvId = mEplisodeList.get(position).getTvId();
-                parseIQiYiRealM3U8WithTvId(tvId);
                 mEpisode = position;
                 adapter.setSelectedPositions(Arrays.asList(mEpisode));
+                currentPosition=0;
+                tvId = mEplisodeList.get(position).getTvId();
+                parseIQiYiRealM3U8WithTvId(tvId);
+                Utils.setSharedValue( mContext, "mEpisodeName", mEplisodeList.get(mEpisode).getName());
             }
         });
-
+        if (null != latestOrder) {
+            Utils.setSharedValue(mContext, "mEpisodeName", mEplisodeList.get(mEpisode).getName());
+        }
     }
 
     private void showOrHideEpisode() {
@@ -376,6 +358,8 @@ public class FullPlaybackActivity extends BaseActivity {
             // 将dp转换为px
             int episodeHeightPixel = (int) (densityRatio * 50);
             episodePopupWindow.showAsDropDown(mVideoView, 0, -episodeHeightPixel);
+            Log.v("mEpisode1",mEpisode+"");
+            adapter.setSelectedPositions(Arrays.asList(mEpisode));
             // 延时执行
             handler.postDelayed(r, HIDDEN_TIME);
         }
@@ -532,7 +516,6 @@ public class FullPlaybackActivity extends BaseActivity {
             }
         });
         alertBuilder.show();
-
     }
 
 }

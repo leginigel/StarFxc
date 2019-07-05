@@ -28,10 +28,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.DeleteCallback;
+import com.avos.avoscloud.SaveCallback;
 import com.stars.tv.R;
 import com.stars.tv.adapter.ChildrenAdapter;
 import com.stars.tv.adapter.EpisodeListView;
 import com.stars.tv.adapter.EpisodeListViewAdapter;
+import com.stars.tv.bean.ExtVideoBean;
 import com.stars.tv.bean.IQiYiBannerInfoBean;
 import com.stars.tv.bean.IQiYiBaseBean;
 import com.stars.tv.bean.IQiYiM3U8Bean;
@@ -44,6 +48,7 @@ import com.stars.tv.presenter.IQiYiParseStarRecommendPresenter;
 import com.stars.tv.presenter.IQiYiParseVideoBaseInfoPresenter;
 import com.stars.tv.presenter.PreVideoItemPresenter;
 import com.stars.tv.sample.PortraitVideoItemPresenter;
+import com.stars.tv.server.LeanCloudStorage;
 import com.stars.tv.utils.CallBack;
 import com.stars.tv.utils.ViewUtils;
 import com.stars.tv.view.SpaceItemDecoration;
@@ -100,7 +105,8 @@ public class VideoPreviewActivity extends BaseActivity {
     final int TURNTOFULLSCREEN = 2;
     final int REFRESH_VideoBaseInfo = 3;
     //    private Integer[] selectedPositions = {0};
-    private int mPosition, mEpisode;
+    private int mPosition = 0;
+    private int mEpisode = 0;
 
     private List<IQiYiMovieBean> mEplisodeList = new ArrayList<>();
     private IQiYiVideoBaseInfoBean mVideoBase = new IQiYiVideoBaseInfoBean();
@@ -117,19 +123,21 @@ public class VideoPreviewActivity extends BaseActivity {
 
     private static final int ITEM_TOP_PADDING_PX = 15;
     private static final int ITEM_RIGHT_PADDING_PX = 25;
+    private String htvId,hmVideoPath;
+    private int hmPosition,hmEpisode;
 
     @SuppressLint("HandlerLeak")
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            Log.v("ttt msg", "" + msg.what);
             switch (msg.what) {
                 case REFRESH_VideoBaseInfo:
                     getVideoInfo();
                 case REFRESH_InfoList:
+//                    checkHistoryInfo(albumId);
                     refreshInfoList();
                     if (null != mVideoBase.getPeople()) {
-                        if (null != mVideoBase.getPeople().getMain_charactor()) {
+                        if (null != mVideoBase.getPeople().getMain_charactor()||null != mVideoBase.getPeople().getHost()||null != mVideoBase.getPeople().getGuest()) {
                             initCharactorGV();
                         }
                     } else {
@@ -205,7 +213,6 @@ public class VideoPreviewActivity extends BaseActivity {
         Log.v("vvvVideoPreview1", mVideoPath);
         // init UI
         mMediaController = new AndroidMediaController(this, false);
-//        mMediaController.clearFocus();
         mMediaController.setVisibility(View.GONE);
         // init player
         IjkMediaPlayer.loadLibrariesOnce(null);
@@ -223,6 +230,12 @@ public class VideoPreviewActivity extends BaseActivity {
                 pre_videoLayout.findViewById(R.id.videoView_board).setVisibility(hasFocus ? View.VISIBLE : View.INVISIBLE);
             }
         });
+        pre_videoLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                turntoFullPlayback();
+            }
+        });
 
     }
 
@@ -232,19 +245,18 @@ public class VideoPreviewActivity extends BaseActivity {
             parseError();
         } else {
             mVideoView.setVideoURI(Uri.parse(mVideoPath));
+            mVideoView.seekTo(mPosition);
             mVideoView.start();
         }
     }
 
     private void refreshInfoList() {
         //tvid
-        if (null != tvId) {
-            Log.v("vvvtvId", tvId);
+        if (!tvId.isEmpty()) {
             parseIQiYiRealM3U8WithTvId(tvId);
 
         } else {
             tvId = ctvid;
-            Log.v("vvvtestctvid", ctvid);
             parseIQiYiRealM3U8WithTvId(ctvid);
         }
 
@@ -261,10 +273,13 @@ public class VideoPreviewActivity extends BaseActivity {
             } else if (null != mVideoBase.getPeople().getHost()) {
                 host = mVideoBase.getPeople().getHost();
                 for (int i = 0; i < host.size(); i++) {
+                    if (!host.get(i).getName().isEmpty()) {
                     hostname += host.get(i).getName() + " ";
+                    } else {
+                        hostname = "";
+                    }
                 }
             }
-
             //main_charactor, main_charactorname / guest
             if (null != mVideoBase.getPeople().getMain_charactor()) {
                 if (mVideoBase.getPeople().getMain_charactor().size() < 5) {
@@ -318,6 +333,7 @@ public class VideoPreviewActivity extends BaseActivity {
         videoCount = mVideoBase.getVideoCount();
         latestOrder = mVideoBase.getLatestOrder();
 
+        checkHistoryInfo(albumId);
         // For Favorite Usage
         mVideoType = mVideoBase.getChannelId();
         mVideoCount = Integer.valueOf(mVideoBase.getVideoCount());
@@ -351,7 +367,34 @@ public class VideoPreviewActivity extends BaseActivity {
         editor.putString(EXT_VIDEO_PLAYURL, mPlayUrl);
         editor.putString(EXT_VIDEO_IMAGE_URL, mAlbumImageUrl);
         // ------------------
-        editor.commit();
+        editor.apply();
+    }
+
+    public void checkHistoryInfo(String albumId) {
+        try {
+            LeanCloudStorage.getIQiyHistoryListener(albumId, new LeanCloudStorage.VideoSeeker() {
+                @Override
+                public void succeed(ExtVideoBean bean) {
+                    if (bean != null) {
+                        htvId = bean.getVideoId();
+                        hmVideoPath = bean.getVideoPlayUrl();
+                        hmPosition = bean.getVideoPlayPosition();
+                        hmEpisode = bean.getVideoCurrentViewOrder();
+
+                        tvId=htvId;
+                        mVideoPath=hmVideoPath;
+                        mPosition=hmPosition;
+                        mEpisode=hmEpisode;
+                        Log.v("HistoryInfo", "tvId" + tvId +"hmVideoPath"+hmVideoPath+ ";mPosition" + mPosition + ";mEpisode" + mEpisode);
+                    } else {
+                    }
+                }
+                @Override
+                public void failed() {
+                }
+            });
+        } catch (Exception e) {
+        }
     }
 
     public void initMediaInfo() {
@@ -419,6 +462,7 @@ public class VideoPreviewActivity extends BaseActivity {
             public void onEpisodesItemClick(View view, int position) {
                 loading(View.VISIBLE);
                 tvId = mEplisodeList.get(position).getTvId();
+                mPosition=0;
                 parseIQiYiRealM3U8WithTvId(tvId);
                 adapter.setSelectedPositions(Arrays.asList(position));
                 mEpisode = position;
@@ -427,7 +471,7 @@ public class VideoPreviewActivity extends BaseActivity {
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                mEpisodeListView.requestFocus();
+//                mEpisodeListView.requestFocus();
             }
         }, 300);
     }
@@ -452,13 +496,34 @@ public class VideoPreviewActivity extends BaseActivity {
         ItemBridgeAdapter chitemBridgeAdapter = new ItemBridgeAdapter(charrayObjectAdapter);
         List<IQiYiMovieBean> chvideoBeanList = new ArrayList<>();
 
-        for (int i = 0; i < main_charactor.size(); i++) {
-            IQiYiMovieBean chvideoBean = new IQiYiMovieBean();
-            chvideoBean.setImageUrl(mVideoBase.getPeople().getMain_charactor().get(i).getImage_url());
-            chvideoBean.setName(mVideoBase.getPeople().getMain_charactor().get(i).getName());
-            chvideoBean.setAlbumId(mVideoBase.getPeople().getMain_charactor().get(i).getId() + "");
-            chvideoBeanList.add(chvideoBean);
+        if(null!=main_charactor) {
+            for (int i = 0; i < main_charactor.size(); i++) {
+                IQiYiMovieBean chvideoBean = new IQiYiMovieBean();
+                chvideoBean.setImageUrl(mVideoBase.getPeople().getMain_charactor().get(i).getImage_url());
+                chvideoBean.setName(mVideoBase.getPeople().getMain_charactor().get(i).getName());
+                chvideoBean.setAlbumId(mVideoBase.getPeople().getMain_charactor().get(i).getId() + "");
+                chvideoBeanList.add(chvideoBean);
+            }
         }
+        else if(null!=host ){
+            for (int i = 0; i < host.size(); i++) {
+                IQiYiMovieBean chvideoBean = new IQiYiMovieBean();
+                chvideoBean.setImageUrl(mVideoBase.getPeople().getHost().get(i).getImage_url());
+                chvideoBean.setName(mVideoBase.getPeople().getHost().get(i).getName());
+                chvideoBean.setAlbumId(mVideoBase.getPeople().getHost().get(i).getId() + "");
+                chvideoBeanList.add(chvideoBean);
+            }
+        }
+        else if(null!=guest ){
+            for (int i = 0; i < guest.size(); i++) {
+                IQiYiMovieBean chvideoBean = new IQiYiMovieBean();
+                chvideoBean.setImageUrl(mVideoBase.getPeople().getGuest().get(i).getImage_url());
+                chvideoBean.setName(mVideoBase.getPeople().getGuest().get(i).getName());
+                chvideoBean.setAlbumId(mVideoBase.getPeople().getGuest().get(i).getId() + "");
+                chvideoBeanList.add(chvideoBean);
+            }
+        }
+
         charrayObjectAdapter.clear();
         charrayObjectAdapter.addAll(0, chvideoBeanList);
         charactor_gv.setAdapter(chitemBridgeAdapter);
@@ -501,8 +566,10 @@ public class VideoPreviewActivity extends BaseActivity {
 //                    mVideoView.pause();
                     scrollView.scrollTo(0, 0);
                     loading(View.VISIBLE);
-                    if (null != mVideoList.get(position).getUrl()) {
+                    if (null != mVideoList.get(position).getUrl() && null == mVideoList.get(position).getPayMarkUrl()) {
                         parseIQiYiVideoBaseInfoByURL(mVideoList.get(position).getUrl());
+                    } else {
+                        parsePay();
                     }
 
                 });
@@ -523,7 +590,6 @@ public class VideoPreviewActivity extends BaseActivity {
      * @param tvId 视频tvId  1745487500
      */
     private void parseIQiYiRealM3U8WithTvId(String tvId) {
-        Log.v("parseM3U8WithTvIdtvid", tvId);
         IQiYiParseM3U8Presenter ps = new IQiYiParseM3U8Presenter();
         ps.requestIQiYiRealPlayUrlWithTvId(tvId, new CallBack<List<IQiYiM3U8Bean>>() {
             @Override
@@ -576,7 +642,13 @@ public class VideoPreviewActivity extends BaseActivity {
                     Log.v("VideoPreviewEpisodeList", bean.toString());
 
                 }
-                mHandler.sendEmptyMessage(REFRESH_InfoList);
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mHandler.sendEmptyMessage(REFRESH_InfoList);
+                    }
+                }, 1600);
+//                mHandler.sendEmptyMessage(REFRESH_InfoList);
 
             }
 
@@ -635,7 +707,7 @@ public class VideoPreviewActivity extends BaseActivity {
             public void error(String msg) {
                 //TODO 获取失败
                 Log.v("VideoPreviewActivity", "获取失败parseIQiYiVideoBaseInfoByURL");
-                parseError();
+                parsePay();
             }
         });
     }
@@ -670,11 +742,16 @@ public class VideoPreviewActivity extends BaseActivity {
                 parseError();
             }
         });
-
     }
 
     private void parseError() {
         textLoading.setText("加载失败！");
+        textLoading.setBackgroundColor(Color.BLACK);
+        textLoading.setTextColor(Color.WHITE);
+    }
+
+    private void parsePay() {
+        textLoading.setText("付费视频，无法播放！");
         textLoading.setBackgroundColor(Color.BLACK);
         textLoading.setTextColor(Color.WHITE);
     }

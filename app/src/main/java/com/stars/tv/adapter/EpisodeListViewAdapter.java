@@ -1,5 +1,7 @@
 package com.stars.tv.adapter;
 
+import android.util.Log;
+
 import java.util.List;
 
 /**

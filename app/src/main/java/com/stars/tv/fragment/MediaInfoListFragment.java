@@ -154,6 +154,7 @@ public class MediaInfoListFragment extends Fragment {
             }
         });
         mFullScreen = (Button) viewGroup.findViewById(R.id.full_btn);
+        mFullScreen.requestFocus();
         mFullScreen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -181,31 +182,53 @@ public class MediaInfoListFragment extends Fragment {
             minfo1 = "集数：";
             minfo1Val = "更新至" + latestOrder + "集/共" + videoCount + "集";
         }
-
-        if (null != (videoinfoshare.getString("directorname", ""))) {
-            Log.v("MMM导演",videoinfoshare.getString("directorname", ""));
+        int mVideoType = videoinfoshare.getInt(EXT_VIDEO_TYPE, 0);
+        switch (mVideoType) {
+            case 1:   //电影
+            case 2:   //电视剧
+                if (!(videoinfoshare.getString("directorname", "").isEmpty())) {
             minfo2 = "导演：";
             minfo2Val = videoinfoshare.getString("directorname", "");
-        } else if (null != (videoinfoshare.getString("hostname", ""))) {
-            minfo2 = "主持人：";
-            minfo2Val = videoinfoshare.getString("hostname", "");
-        }
-        else {
+                } else {
             minfo2="";
             minfo2Val="";
         }
-
-        if (null != (videoinfoshare.getString("main_charactorname", ""))) {
-            Log.v("MMM主演",videoinfoshare.getString("main_charactorname", ""));
+                if (!(videoinfoshare.getString("main_charactorname", "").isEmpty())) {
             minfo3 = "主演：";
             minfo3Val = videoinfoshare.getString("main_charactorname", "");
-        } else if (null != (videoinfoshare.getString("guestname", ""))) {
+                } else {
+                    minfo3 = "";
+                    minfo3Val = "";
+                }
+                break;
+            case 6:   //综艺!(hostname.isEmpty())
+                if (!(videoinfoshare.getString("hostname", "").isEmpty())) {
+                    minfo2 = "主持人：";
+                    minfo2Val = videoinfoshare.getString("hostname", "");
+                } else {
+                    minfo2 = "";
+                    minfo2Val = "";
+                }
+                if (!(videoinfoshare.getString("guestname", "").isEmpty())) {
             minfo3 = "嘉宾：";
             minfo3Val = videoinfoshare.getString("guestname", "");
+                } else {
+                    minfo3 = "";
+                    minfo3Val = "";
         }
-        else {
+                break;
+            case 4:   //动漫
+                minfo2 = "";
+                minfo2Val = "";
             minfo3 = "";
             minfo3Val ="";
+                break;
+            default:
+                minfo2 = "";
+                minfo2Val = "";
+                minfo3 = "";
+                minfo3Val = "";
+                break;
         }
 
         if (null != (videoinfoshare.getString("description", ""))) {

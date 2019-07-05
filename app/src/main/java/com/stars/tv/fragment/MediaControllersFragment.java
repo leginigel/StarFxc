@@ -13,6 +13,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -26,6 +27,7 @@ import android.widget.TextView;
 
 import com.stars.tv.R;
 import com.stars.tv.activity.FullPlaybackActivity;
+import com.stars.tv.utils.Utils;
 import com.stars.tv.widget.media.IjkVideoView;
 
 import java.util.Timer;
@@ -38,6 +40,7 @@ public class MediaControllersFragment extends DialogFragment {
     private ImageButton playButton, favButton, hqButton;
     private TextView timeText, playText, favText, hqText, durationText, titleText;
     private SeekBar seekBar;
+    private Context mContext;
 
     public enum PlaybackState {
         PLAYING, NOT_PLAYING, STOPPED, PAUSED, BUFFERING
@@ -60,6 +63,7 @@ public class MediaControllersFragment extends DialogFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mContext = getContext();
     }
 
     @Override
@@ -155,9 +159,18 @@ public class MediaControllersFragment extends DialogFragment {
         titleText = view.findViewById(R.id.play_title);
         durationText.setText(" / " + formatTime(mVideoView.getDuration()));
         timeText.setText(formatTime(mVideoView.getCurrentPosition()));
-        SharedPreferences videoinfoshare = getContext().getSharedPreferences("data", Context.MODE_PRIVATE);
+        setTitleText();
+    }
+
+    private void setTitleText() {
+        SharedPreferences videoinfoshare = getContext().getSharedPreferences("data", getContext().MODE_PRIVATE);
         String medName = videoinfoshare.getString("name", "");
-        titleText.setText(medName);
+        String mEpisodeName = (String) Utils.getSharedValue(mContext, "mEpisodeName", "");
+        if (mEpisodeName.isEmpty()) {
+            titleText.setText(medName);
+        } else {
+            titleText.setText(mEpisodeName);
+        }
     }
 
     public void setVideo(IjkVideoView video) {
@@ -256,6 +269,12 @@ public class MediaControllersFragment extends DialogFragment {
     public void onDestroyView() {
         super.onDestroyView();
         timer.cancel();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        setTitleText();
     }
 
 }
