@@ -65,6 +65,12 @@ public class VarietyVideoItemPresenter extends Presenter {
         String latestOrder = videoBean.getLatestOrder();
         String videoCount = videoBean.getVideoCount();
         Log.v(TAG,"latestOrder"+latestOrder+"videoCount"+videoCount);
+        if(latestOrder!=null &&videoCount!=null)
+        {
+            if(videoBean.getFormatPeriod()!=null){
+                infoTv.setText(videoBean.getFormatPeriod() + "期");
+            }
+        }
         nameTv.setText(videoBean.getName());
         String imageUrl = videoBean.getImageUrl();
         if (imageUrl != null) {
