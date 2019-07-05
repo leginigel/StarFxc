@@ -279,17 +279,19 @@ public class SeriesVideoRowFragment extends BaseFragment {
 //                        for(int i=0;i<list.size();i++) {
 //                            Log.v(TAG, list.get(i).toString());
 //                        }
-                        Log.v(TAG, "category" + category);
-                        mVideoListArray.add(list);
-                        Log.v(TAG, "mVideoListArray =：" + mVideoListArray.size());
-                        listPos[category] = mVideoListArray.size() - 1;
-                        Log.v(TAG, "listPos[category] =：" + listPos[category]);
-                        Message msg = new Message();
-                        msg.arg1 = category;
-                        msg.what = REFRESH_MOVIE_CONTENT;
-                        mHandler.sendMessage(msg);
-                        if (mVideoListArray.size() % loadRows == 0) {
-                            videoGrid.endMoreRefreshComplete();
+                        if (!list.isEmpty()) {
+                            Log.v(TAG, "category" + category);
+                            mVideoListArray.add(list);
+                            Log.v(TAG, "mVideoListArray =：" + mVideoListArray.size());
+                            listPos[category] = mVideoListArray.size() - 1;
+                            Log.v(TAG, "listPos[category] =：" + listPos[category]);
+                            Message msg = new Message();
+                            msg.arg1 = category;
+                            msg.what = REFRESH_MOVIE_CONTENT;
+                            mHandler.sendMessage(msg);
+                            if (mVideoListArray.size() % loadRows == 0) {
+                                videoGrid.endMoreRefreshComplete();
+                            }
                         }
                     }
 
@@ -313,9 +315,11 @@ public class SeriesVideoRowFragment extends BaseFragment {
 //                for (IQiYiBannerInfoBean bean : list) {
 //                    Log.v(TAG, bean.toString());
 //                }
-                mBannerInfoList.clear();
-                mBannerInfoList = list;
-                mHandler.sendEmptyMessage(REFRESH_BANNER_CONTENT);
+                if (!list.isEmpty()) {
+                    mBannerInfoList.clear();
+                    mBannerInfoList = list;
+                    mHandler.sendEmptyMessage(REFRESH_BANNER_CONTENT);
+                }
             }
 
             @Override

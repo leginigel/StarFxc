@@ -394,20 +394,21 @@ public class RecommandVideoRowFragment extends BaseFragment {
 //                            Log.v(TAG, list.get(i).toString());
 //                        }
                         Log.v(TAG, "category" + category + "channel" + channel);
-
-                        mVideoListArray.add(list);
-                        listPos[category] = mVideoListArray.size() - 1;
-                        Message msg = new Message();
-                        msg.arg1 = category;
-                        msg.what = REFRESH_MOVIE_CONTENT;
-                        mHandler.sendMessage(msg);
-                        if (mVideoListArray.size() <= videoTotalRow - (videoTotalRow % loadRows)) {
-                            if (mVideoListArray.size() % loadRows == 0) {
-                                videoGrid.endMoreRefreshComplete();
-                            }
-                        } else {
-                            if (mVideoListArray.size() % 2 == 0) {
-                                videoGrid.endMoreRefreshComplete();
+                        if (!list.isEmpty()) {
+                            mVideoListArray.add(list);
+                            listPos[category] = mVideoListArray.size() - 1;
+                            Message msg = new Message();
+                            msg.arg1 = category;
+                            msg.what = REFRESH_MOVIE_CONTENT;
+                            mHandler.sendMessage(msg);
+                            if (mVideoListArray.size() <= videoTotalRow - (videoTotalRow % loadRows)) {
+                                if (mVideoListArray.size() % loadRows == 0) {
+                                    videoGrid.endMoreRefreshComplete();
+                                }
+                            } else {
+                                if (mVideoListArray.size() % 2 == 0) {
+                                    videoGrid.endMoreRefreshComplete();
+                                }
                             }
                         }
                     }
@@ -432,11 +433,13 @@ public class RecommandVideoRowFragment extends BaseFragment {
 //                for (IQiYiBannerInfoBean bean : list) {
 //                    Log.v(TAG, bean.toString());
 //                }
-                mBannerInfoList.clear();
-                mBannerInfoList = list;
-                Log.v("TAG", "mBannerInfoList" + mBannerInfoList.size());
-                mHandler.sendEmptyMessage(REFRESH_BANNER_CONTENT);
+                if (!list.isEmpty()) {
+                    mBannerInfoList.clear();
+                    mBannerInfoList = list;
+                    Log.v("TAG", "mBannerInfoList" + mBannerInfoList.size());
+                    mHandler.sendEmptyMessage(REFRESH_BANNER_CONTENT);
 
+                }
             }
 
             @Override
@@ -463,13 +466,15 @@ public class RecommandVideoRowFragment extends BaseFragment {
 //                for(IQiYiTopListBean bean:list) {
 //                    Log.v(TAG, bean.toString());
 //                }
-                Log.v(TAG, "mVideoTopListArray" + mVideoTopListArray.size());
-                mVideoTopListArray.add(list);
-                toplistPos[category] = mVideoTopListArray.size() - 1;
-                Message msg = new Message();
-                msg.arg1 = category;
-                msg.what = REFRESH_TOP_CONTENT;
-                mHandler.sendMessage(msg);
+                if (!list.isEmpty()) {
+                    Log.v(TAG, "mVideoTopListArray" + mVideoTopListArray.size());
+                    mVideoTopListArray.add(list);
+                    toplistPos[category] = mVideoTopListArray.size() - 1;
+                    Message msg = new Message();
+                    msg.arg1 = category;
+                    msg.what = REFRESH_TOP_CONTENT;
+                    mHandler.sendMessage(msg);
+                }
             }
 
             @Override
