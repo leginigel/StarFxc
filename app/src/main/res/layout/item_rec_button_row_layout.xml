@@ -14,6 +14,7 @@
         android:layout_height="match_parent"
         android:textColor="#FFF8F8F8"
         android:id="@+id/button_all"
+        android:paddingRight="5dp"
         android:drawableLeft="@drawable/ic_dianshiju_"
         android:background="@color/color_blue"
         android:layout_marginRight="10dp" />
@@ -25,6 +26,7 @@
         android:layout_height="match_parent"
         android:textColor="#FFF8F8F8"
         android:id="@+id/button_ancient"
+        android:paddingRight="5dp"
         android:drawableLeft="@drawable/ic_dianying"
         android:background="@color/color_pink"
         android:layout_marginRight="10dp" />
@@ -36,6 +38,7 @@
         android:layout_height="match_parent"
         android:textColor="#FFF8F8F8"
         android:id="@+id/button_house"
+        android:paddingRight="5dp"
         android:drawableLeft="@drawable/ic_zongyi"
         android:background="@color/color_orange"
         android:layout_marginRight="10dp" />
@@ -46,6 +49,7 @@
         android:layout_height="match_parent"
         android:textColor="#FFF8F8F8"
         android:id="@+id/button_love"
+        android:paddingRight="5dp"
         android:drawableLeft="@drawable/ic_dongman"
         android:background="@color/color_purple" />
 </LinearLayout>

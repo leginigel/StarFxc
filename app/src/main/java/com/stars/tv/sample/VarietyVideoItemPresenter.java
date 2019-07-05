@@ -35,6 +35,7 @@ public class VarietyVideoItemPresenter extends Presenter {
     View boardView;
     protected Context mContext;
     boolean isValue;
+    String newUrl;
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent) {
@@ -65,8 +66,13 @@ public class VarietyVideoItemPresenter extends Presenter {
         String videoCount = videoBean.getVideoCount();
         Log.v(TAG,"latestOrder"+latestOrder+"videoCount"+videoCount);
         nameTv.setText(videoBean.getName());
+        String imageUrl = videoBean.getImageUrl();
+        if (imageUrl != null) {
+            String size = "_260_360.jpg";
+            newUrl = imageUrl.replace(".jpg", size);
+        }
         Glide.with(Objects.requireNonNull(viewHolder.view.getContext()))
-                .load(videoBean.getImageUrl()).into(bgIv);
+                .load(newUrl).into(bgIv);
         Log.v(TAG, "url"+videoBean.getPayMarkUrl());
         if(videoBean.getPayMarkUrl()!=null) {
             payIv.setImageResource(R.drawable.vip_icon2);
