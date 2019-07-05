@@ -85,7 +85,7 @@ public class ControlCardPresenter extends YouTubeCardPresenter {
                 = playerControlsFragment.getPlayerStateChangeListener().getPlayerState();
         if(keyCode == KeyEvent.KEYCODE_DPAD_UP) {
             if(state == PlayerControlsFragment.PlayerState.VIDEO_ENDED){
-
+                playerControlsFragment.getReplayIcon().requestFocus();
             }
             else {
                 playerControlsFragment.closeRow();

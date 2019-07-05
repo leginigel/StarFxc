@@ -21,16 +21,17 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.DeleteCallback;
 import com.avos.avoscloud.SaveCallback;
+import com.bumptech.glide.Glide;
 import com.google.android.youtube.player.YouTubePlayer;
 
 import java.util.Timer;
@@ -58,12 +59,14 @@ public class PlayerControlsFragment extends DialogFragment {
     private ViewGroup mConstraint, mBackGround;
     private ImageButton playButton, favButton, hqButton, moreButton;
     private TextView timeText, playText, favText, hqText, moreText;
+    private TextView countDownText;
+    private ImageView replayIcon, replayImg;
     private SeekBar seekBar;
     private Timer timer;
     private YouTubeVideo mVideo;
     private YouTubePlayer mPlayer;
     private ControlRowFragment controlRowFragment;
-    private FrameLayout mControlRow;
+    private FrameLayout mControlRow, mReplay;
     private MyPlaybackEventListener playbackEventListener = new MyPlaybackEventListener();
     private MyPlayerStateChangeListener playerStateChangeListener = new MyPlayerStateChangeListener();
     private boolean mIsFavorite;
@@ -86,6 +89,7 @@ public class PlayerControlsFragment extends DialogFragment {
         View view = inflater.inflate(R.layout.fragment_player_controls, container, false);
         controlRowFragment = ControlRowFragment.newInstance(mVideo.getId());
         mControlRow = view.findViewById(R.id.player_control_row);
+        mReplay = view.findViewById(R.id.layout_replay);
         timer = new Timer();
         CountDown = 5;
         mPlayer = ((YoutubeActivity) getActivity()).getYouTubePlayer();
@@ -117,8 +121,13 @@ public class PlayerControlsFragment extends DialogFragment {
         if(playerStateChangeListener.getPlayerState() != PlayerState.VIDEO_ENDED) {
             playButton.requestFocus();
         }
+        // Open after video ended then show the suggestion and replayIcon
         else {
+            // Suggestion row is close in default, open it
             mBackGround.setBackgroundColor(getResources().getColor(R.color.background));
+            countDownText.setVisibility(View.VISIBLE);
+            replayIcon.setVisibility(View.VISIBLE);
+            replayIcon.requestFocus();
             ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) mControlRow.getLayoutParams();
             float factor = getResources().getDisplayMetrics().density;
             layoutParams.height = (int) (300 * factor);
@@ -159,7 +168,9 @@ public class PlayerControlsFragment extends DialogFragment {
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
-                controlRowFragment.getVerticalGridView().requestFocus();
+                if(playerStateChangeListener.getPlayerState() != PlayerState.VIDEO_ENDED) {
+                    controlRowFragment.getVerticalGridView().requestFocus();
+                }
             }
         });
         anim.setInterpolator(new DecelerateInterpolator());
@@ -229,7 +240,8 @@ public class PlayerControlsFragment extends DialogFragment {
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         fragmentTransaction.remove(fragment).commit();
 
-        ((YoutubeActivity) getActivity()).getPlayerBox().requestFocus();
+        if(playerStateChangeListener.getPlayerState() != PlayerState.VIDEO_ENDED)
+            ((YoutubeActivity) getActivity()).getPlayerBox().requestFocus();
     }
 
     @Override
@@ -239,6 +251,7 @@ public class PlayerControlsFragment extends DialogFragment {
     }
 
     private void updateSeekBar() {
+        YoutubeActivity activity = (YoutubeActivity) getActivity();
         TimerTask task = new TimerTask() {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
@@ -253,10 +266,22 @@ public class PlayerControlsFragment extends DialogFragment {
                     if(CountDown < 0) close();
                 }
                 else if(playerStateChangeListener.getPlayerState() == PlayerState.VIDEO_ENDED){
-
+                    // Count down text start on 5 but 4
+                    getActivity().runOnUiThread(() -> {
+                        countDownText.setText("RETURN IN " + (CountDown + 1)  + " ...");
+                    });
+                    CountDown--;
+                    // After video ended will return to prev page
+                    if(CountDown < 0){
+                        close();
+                        getActivity().runOnUiThread(() -> {
+                            activity.onBackPressed();
+                        });
+                    }
                 }
                 else if(mConstraint.getVisibility() == View.INVISIBLE){
                     CountDown--;
+                    // Count down and close control frag
                     if(CountDown < 0) close();
                 }
             }
@@ -414,14 +439,14 @@ public class PlayerControlsFragment extends DialogFragment {
         playButton.setOnClickListener(v -> {
             if(mPlayer.isPlaying()){
                 mPlayer.pause();
-                playButton.setImageDrawable(getResources().getDrawable(R.drawable.lb_ic_pause));
-                playText.setText("Pause");
+                playButton.setImageDrawable(getResources().getDrawable(R.drawable.lb_ic_play));
+                playText.setText("Play");
             }
             else{
                 CountDown = 5;
                 mPlayer.play();
-                playButton.setImageDrawable(getResources().getDrawable(R.drawable.lb_ic_play));
-                playText.setText("Play");
+                playButton.setImageDrawable(getResources().getDrawable(R.drawable.lb_ic_pause));
+                playText.setText("Pause");
             }
         });
         playButton.setOnFocusChangeListener((v, hasFocus) -> {
@@ -440,6 +465,7 @@ public class PlayerControlsFragment extends DialogFragment {
     }
 
     private void setInformationText(View view){
+        // Playback Information
         TextView durationText = view.findViewById(R.id.play_duration);
         timeText = view.findViewById(R.id.play_time);
         TextView titleText = view.findViewById(R.id.play_title);
@@ -453,6 +479,48 @@ public class PlayerControlsFragment extends DialogFragment {
         channelText.setText(mVideo.getChannel() + " ‧ ");
         countText.setText(Utils.CountConverter(mVideo.getNumber_views()) + " views ‧ ");
         publishText.setText(Utils.TimeConverter(mVideo.getTime()) + " ago");
+
+        // PostPlay Information
+        countDownText = view.findViewById(R.id.count_down);
+        replayIcon = view.findViewById(R.id.icon_replay);
+        replayImg = view.findViewById(R.id.img_replay);
+        Glide.with(this)
+                .asBitmap()
+                .centerCrop()
+                .load(mVideo.getId() != null ? "https://i.ytimg.com/vi/" + mVideo.getId() + "/0.jpg" : null)
+                .into(replayImg);
+
+        replayIcon.setOnKeyListener((v, keyCode, event) -> {
+            if(event.getAction() == KeyEvent.ACTION_DOWN){
+                if(keyCode == KeyEvent.KEYCODE_DPAD_DOWN || keyCode == KeyEvent.KEYCODE_DPAD_RIGHT){
+                    countDownText.setVisibility(View.INVISIBLE);
+                    controlRowFragment.getVerticalGridView().requestFocus();
+                    timer.cancel();
+                    return true;
+                }
+                if(keyCode == KeyEvent.KEYCODE_BACK){
+                    close();
+                    getActivity().onBackPressed();
+                    return true;
+                }
+            }
+            return false;
+        });
+        replayIcon.setOnFocusChangeListener((v, hasFocus) -> {
+            if(hasFocus && countDownText.getVisibility() == View.INVISIBLE){
+                Log.d(TAG, "Replay Icon Focus");
+                mReplay.setVisibility(View.VISIBLE);
+            }
+            else {
+                mReplay.setVisibility(View.INVISIBLE);
+            }
+        });
+        replayIcon.setOnClickListener(v -> {
+            Log.d(TAG, "Replay Icon Click");
+            mPlayer.seekToMillis(0);
+            mPlayer.play();
+            close();
+        });
     }
 
     public void setCountDown(int countDown) {
@@ -461,15 +529,14 @@ public class PlayerControlsFragment extends DialogFragment {
 
     public void setVideo(YouTubeVideo video){
         this.mVideo = video;
-//        titleText.setText(Html.fromHtml(video.getTitle()));
-//        timeText.setText(Utils.DurationConverter(video.getDuration()));
-//        channelText.setText(video.getChannel() + " ‧ ");
-//        countText.setText(Utils.CountConverter(video.getNumber_views()) + " views ‧ ");
-//        publishText.setText(Utils.TimeConverter(video.getTime()) + " ago");
     }
 
     public YouTubeVideo getVideo(){
         return this.mVideo;
+    }
+
+    public ImageView getReplayIcon() {
+        return replayIcon;
     }
 
     private String formatTime(int millis) {
@@ -567,7 +634,11 @@ public class PlayerControlsFragment extends DialogFragment {
             // PlayerControls Exist or not
             if(prev != null) {
                 mBackGround.setBackgroundColor(getResources().getColor(R.color.background));
+                countDownText.setVisibility(View.VISIBLE);
+                replayIcon.setVisibility(View.VISIBLE);
                 playerControlsFragment.openRow();
+                replayIcon.requestFocus();
+                setCountDown(5);
             }
             else {
                 playerControlsFragment.show(ft, "dialog");

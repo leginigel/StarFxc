@@ -16,8 +16,8 @@
 
         <android.support.constraint.ConstraintLayout
             android:id="@+id/information"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="897dp"
+            android:layout_height="71dp"
             android:layout_marginStart="30dp"
             android:layout_marginEnd="30dp"
             android:layout_marginBottom="10dp"
@@ -144,7 +144,7 @@
             android:contentDescription="play"
             android:focusable="true"
             android:nextFocusDown="@id/player_control_row"
-            android:src="@drawable/lb_ic_play"
+            android:src="@drawable/lb_ic_pause"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/seekBar" />
@@ -153,7 +153,7 @@
             android:id="@+id/play_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Play"
+            android:text="Pause"
             android:textColor="@color/text_white"
             android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="@+id/play_button"
@@ -238,4 +238,78 @@
         android:focusable="true"
         android:focusableInTouchMode="true"
         app:layout_constraintBottom_toBottomOf="parent" />
+
+    <ImageView
+        android:id="@+id/icon_replay"
+        android:layout_width="27dp"
+        android:layout_height="27dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="40dp"
+        android:visibility="invisible"
+        android:focusable="true"
+        android:clickable="true"
+        android:background="@drawable/btn_player_bg"
+        android:src="@drawable/ic_replay_24dp"
+        app:layout_constraintStart_toStartOf="@+id/view_group"
+        app:layout_constraintTop_toTopOf="@id/view_group" />
+
+    <TextView
+        android:id="@+id/count_down"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:visibility="invisible"
+        android:text="RETURN IN 5 ..."
+        android:textSize="18sp"
+        android:textColor="@color/text_white"
+        app:layout_constraintStart_toStartOf="@+id/icon_replay"
+        app:layout_constraintTop_toBottomOf="@id/icon_replay"
+        />
+
+    <FrameLayout
+        android:id="@+id/layout_replay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/text_white"
+        android:padding="3dp"
+        android:visibility="invisible"
+        app:layout_constraintTop_toTopOf="@id/icon_replay"
+        app:layout_constraintStart_toStartOf="@id/icon_replay">
+
+        <ImageView
+            android:id="@+id/img_replay"
+            android:layout_width="150dp"
+            android:layout_height="84dp"/>
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_gravity="bottom"
+            android:layout_width="150dp"
+            android:layout_height="36dp"
+            android:background="#cc121212">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_replay_24dp"
+                    android:tint="@color/text_white"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="5dp"
+                    android:textSize="12sp"
+                    android:textColor="@color/text_white"
+                    android:text="REPLAY"/>
+
+            </LinearLayout>
+        </android.support.constraint.ConstraintLayout>
+    </FrameLayout>
 </android.support.constraint.ConstraintLayout>
