@@ -62,7 +62,7 @@ public class FilmVideoItemPresenter extends Presenter {
         infoTv.setVisibility(View.VISIBLE);
         payIv.setVisibility(View.VISIBLE);
         nameTv.setAlpha(0.80f);
-        infoTv.setText(videoBean.getDuration());
+        infoTv.setText(videoBean.getScore());
         nameTv.setText(videoBean.getName());
         String imageUrl = videoBean.getImageUrl();
         if (imageUrl != null) {
