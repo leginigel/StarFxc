@@ -78,13 +78,6 @@ public class StreamActivity extends BaseActivity {
     enum StreamCate{
         YT, Twitch, FB, Douyu, Huya, BiliBili, Address
     }
-//    private Runnable r = new Runnable() {
-//        @Override
-//        public void run() {
-//            // 又回到了主线程
-//            showOrHideEpisode();
-//        }
-//    };
 
     @Override
     protected void onCreate(Bundle savedInsatanceState) {
@@ -101,6 +94,7 @@ public class StreamActivity extends BaseActivity {
         for (int i = 0;i < linearLayout.getChildCount();i++){
             int drawable = 0;
             StreamCate cate = null;
+            // Define server image
             switch (i) {
                 case 0:
                     drawable = R.drawable.ic_youtube_red_square;
@@ -218,8 +212,6 @@ public class StreamActivity extends BaseActivity {
             return false;
         });
 
-
-
         startStreamBtn.setOnClickListener(v -> {
             if(address.getText() != null || stream.getText() != null) {
                 switch (mCate) {
@@ -241,10 +233,7 @@ public class StreamActivity extends BaseActivity {
                         streamBilibiliHLS(stream.getText().toString());
                         break;
                     case Address: {
-                        mVideoPath = address.getText().toString() + stream.getText().toString();
-                        loading(View.VISIBLE);
-                        initVideoView();
-                        startPlay();
+                        stream(address.getText().toString() + stream.getText().toString());
                         break;
                     }
                 }
@@ -252,6 +241,7 @@ public class StreamActivity extends BaseActivity {
         });
         startStreamBtn.setOnFocusChangeListener((v, hasFocus) -> {
             if(hasFocus){
+                // change button color if focused
                 switch (mCate) {
                     case YT:
                         startStreamBtn.setTextColor(Color.RED);
@@ -382,10 +372,8 @@ public class StreamActivity extends BaseActivity {
     public void initVideoView() {
         // init UI
         mMediaController = new AndroidMediaController(this, false);
-//        mMediaController = new AndroidMediaController(this, false);
 //        mMediaController.setSupportActionBar(actionBar);
         mMediaController.clearFocus();
-//        mMediaController.setVisibility(View.INVISIBLE);
         mMediaController.hide();
         // init player
         IjkMediaPlayer.loadLibrariesOnce(null);
@@ -419,20 +407,20 @@ public class StreamActivity extends BaseActivity {
         constraintLayout.setVisibility(View.GONE);
         startStreamBtn.setVisibility(View.GONE);
         frameLayout.setVisibility(View.VISIBLE);
-        textLoading = (TextView) findViewById(R.id.mloading);
         mCircleDrawable = new Circle();
         mCircleDrawable.setBounds(0, 0, 100, 100);
         mCircleDrawable.setColor(Color.WHITE);
         textLoading.setCompoundDrawables(null, null, mCircleDrawable, null);
         textLoading.setVisibility(visibility);
+
+        // show the circle when stream loading
+        mCircleDrawable.start();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-//        mCircleDrawable.start();
     }
-
 
     @Override
     public void onBackPressed() {
@@ -442,7 +430,7 @@ public class StreamActivity extends BaseActivity {
             startStreamBtn.setVisibility(View.VISIBLE);
             startStreamBtn.requestFocus();
             frameLayout.setVisibility(View.GONE);
-//            mCircleDrawable.stop();
+            mCircleDrawable.stop();
             mVideoView.stopPlayback();
             mVideoView.release(true);
             mVideoView.stopBackgroundPlay();
@@ -455,5 +443,10 @@ public class StreamActivity extends BaseActivity {
     @Override
     public void onStop() {
         super.onStop();
+        mCircleDrawable.stop();
+        mVideoView.stopPlayback();
+        mVideoView.release(true);
+        mVideoView.stopBackgroundPlay();
+        IjkMediaPlayer.native_profileEnd();
     }
 }
