@@ -31,8 +31,8 @@ import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 public class RetrofitFactory {
 
-    //设缓存有效期为两天
-    private static final long CACHE_STALE_SEC = 60 * 60 * 24 *2;
+    //设缓存有效期为1 min
+    private static final long CACHE_STALE_SEC = 60;
 
     //缓存路径
     private static File cacheFile = new File(MyApplication.getContext().getCacheDir(), "HttpCache");

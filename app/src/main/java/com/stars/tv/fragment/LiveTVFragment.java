@@ -38,6 +38,7 @@ import com.stars.tv.presenter.LiveTvTitlePresenter;
 import com.stars.tv.utils.CallBack;
 import com.stars.tv.utils.NetUtil;
 import com.stars.tv.utils.Utils;
+import com.stars.tv.utils.ViewUtils;
 import com.stars.tv.widget.media.IjkVideoView;
 
 import java.util.ArrayList;
@@ -382,7 +383,7 @@ public class LiveTVFragment extends BaseFragment {
     private void initLoading() {
         if (NetUtil.isConnected()) {
             mCircleDrawable = new Circle();
-            mCircleDrawable.setBounds(0, 0, 100, 100);
+            mCircleDrawable.setBounds(0, 0, ViewUtils.getPercentWidthSize(40), ViewUtils.getPercentHeightSize(40));
             mCircleDrawable.setColor(getResources().getColor(R.color.color_focus));
             playerLoadingView.setCompoundDrawables(null, null, mCircleDrawable, null);
         } else {

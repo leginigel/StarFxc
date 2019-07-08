@@ -204,7 +204,7 @@ public class LiveTVActivity extends BaseActivity {
     private void initLoading() {
         if (NetUtil.isConnected()) {
             mCircleDrawable = new Circle();
-            mCircleDrawable.setBounds(0, 0, 100, 100);
+            mCircleDrawable.setBounds(0, 0, ViewUtils.getPercentWidthSize(40), ViewUtils.getPercentHeightSize(40));
             mCircleDrawable.setColor(getResources().getColor(R.color.color_focus));
             playerLoadingView.setCompoundDrawables(null, null, mCircleDrawable, null);
         } else {
