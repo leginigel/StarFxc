@@ -34,7 +34,6 @@ public class PortraitVideoItem1Presenter extends Presenter {
     View boardView;
     protected Context mContext;
     boolean isValue;
-    String newUrl;
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent) {
@@ -60,10 +59,10 @@ public class PortraitVideoItem1Presenter extends Presenter {
         String imageUrl = videoBean.getImageUrl();
         if (imageUrl != null) {
             String size = "_260_360.jpg";
-            newUrl = imageUrl.replace(".jpg", size);
+            String newUrl = imageUrl.replace(".jpg", size);
+            Glide.with(Objects.requireNonNull(viewHolder.view.getContext()))
+                    .load(newUrl).into(bgIv);
         }
-        Glide.with(Objects.requireNonNull(viewHolder.view.getContext()))
-                .load(newUrl).into(bgIv);
         Log.v(TAG, "url"+videoBean.getPayMarkUrl());
         viewHolder.view.setOnClickListener(new View.OnClickListener() {
             @Override

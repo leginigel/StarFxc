@@ -37,7 +37,8 @@ public class RecBannerItemPresenter extends Presenter {
         View view = View.inflate(parent.getContext(), R.layout.item_rec_banner_layout, null);
         mContext = parent.getContext();
         CARD_WIDTH = (AutoSizeUtils.dp2px(Objects.requireNonNull(parent.getContext()),AutoSizeConfig.getInstance().getDesignWidthInDp()) - GRID_VIEW_LEFT_PX - GRID_VIEW_RIGHT_PX - (ITEM_RIGHT_PADDING_PX * ITEM_NUM_ROW)) / ITEM_NUM_ROW;
-        CARD_HEIGHT = 400;
+//        CARD_HEIGHT = 400;
+        CARD_HEIGHT = CARD_WIDTH/16*9;
         Log.v(TAG,"width"+CARD_WIDTH+"height:"+CARD_HEIGHT);
         ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(CARD_WIDTH, CARD_HEIGHT);
         view.setLayoutParams(lp);

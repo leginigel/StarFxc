@@ -34,7 +34,6 @@ public class LandscapeVideoItemPresenter extends Presenter {
     View boardView;
     protected Context mContext;
     boolean isValue;
-    String newUrl;
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent) {
@@ -60,10 +59,10 @@ public class LandscapeVideoItemPresenter extends Presenter {
         String imageUrl = videoBean.getImageUrl();
         if (imageUrl != null) {
             String size = "_480_270.jpg";
-            newUrl = imageUrl.replace(".jpg", size);
-        }
+            String newUrl = imageUrl.replace(".jpg", size);
         Glide.with(Objects.requireNonNull(viewHolder.view.getContext()))
                 .load(newUrl).into(bgIv);
+        }
         viewHolder.view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

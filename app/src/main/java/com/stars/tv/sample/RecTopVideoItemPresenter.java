@@ -40,8 +40,8 @@ public class RecTopVideoItemPresenter extends Presenter {
         View view = View.inflate(parent.getContext(), R.layout.item_videos_layout, null);
         mContext = parent.getContext();
         CARD_WIDTH = (AutoSizeUtils.dp2px(Objects.requireNonNull(parent.getContext()),AutoSizeConfig.getInstance().getDesignWidthInDp()) - GRID_VIEW_LEFT_PX - GRID_VIEW_RIGHT_PX - (ITEM_RIGHT_PADDING_PX * ITEM_NUM_ROW)) / ITEM_NUM_ROW;
-//        CARD_HEIGHT = CARD_WIDTH / 3 * 4;
-        CARD_HEIGHT = 410;
+        CARD_HEIGHT = CARD_WIDTH / 3 * 4;
+//        CARD_HEIGHT = 410;
         Log.v(TAG,"height"+CARD_HEIGHT);
         ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(CARD_WIDTH, CARD_HEIGHT);
         view.setLayoutParams(lp);
@@ -78,8 +78,13 @@ public class RecTopVideoItemPresenter extends Presenter {
         }
 
         nameTv.setText(videoBean.getAlbum_name());
-        Glide.with(Objects.requireNonNull(viewHolder.view.getContext()))
-                .load(videoBean.getAlbum_pic_url()).into(bgIv);
+        String imageUrl = videoBean.getAlbum_pic_url();
+        if (imageUrl != null) {
+            String size = "_260_360.jpg";
+            String newUrl = imageUrl.replace(".jpg", size);
+            Glide.with(Objects.requireNonNull(viewHolder.view.getContext()))
+                    .load(newUrl).into(bgIv);
+        }
         if(videoBean.getCharge_pay_mark()!=0) {
             payIv.setImageResource(R.drawable.vip_icon2);
         }

@@ -26,7 +26,7 @@ public class RecButtonRowPresenter extends RowPresenter {
     private static final int GRID_VIEW_RIGHT_PX = 30;
     private static final int ITEM_NUM_ROW = 1;
     int LAYOUT_WIDTH = 0;
-    int LAYOUT_HEIGHT = 320;
+    int LAYOUT_HEIGHT = 0;
 
     public RecButtonRowPresenter() {
 
@@ -40,6 +40,7 @@ public class RecButtonRowPresenter extends RowPresenter {
         View root = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_rec_button_row_layout, null, false);
         root.setPadding(30, 30, 30, 30);
         LAYOUT_WIDTH = (AutoSizeUtils.dp2px(Objects.requireNonNull(parent.getContext()), AutoSizeConfig.getInstance().getDesignWidthInDp()) - GRID_VIEW_LEFT_PX) / ITEM_NUM_ROW;
+        LAYOUT_HEIGHT = ViewUtils.getPercentHeightSize(120);
         ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(LAYOUT_WIDTH, LAYOUT_HEIGHT);
         root.setLayoutParams(lp);
         mContext = parent.getContext();

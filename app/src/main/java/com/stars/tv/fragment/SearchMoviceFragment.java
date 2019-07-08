@@ -287,7 +287,7 @@ public class SearchMoviceFragment extends BaseFragment {
         historyVgridview.setPadding(15, 10, 0, 20);
         mHistoryItemAdapter = new HistoryItemAdapter();
         historyVgridview.setAdapter(mHistoryItemAdapter);
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT, (90 + 4) * lists.size() + 50);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT, (ViewUtils.getPercentHeightSize(30) + topSpace) * lists.size() + 50);
         historyVgridview.setLayoutParams(lp);
         historyVgridview.setOnChildViewHolderSelectedListener(new OnChildViewHolderSelectedListener() {
             @Override
@@ -675,8 +675,10 @@ public class SearchMoviceFragment extends BaseFragment {
     }
 
     public void showPopup(View view, int position) {
-        int width = 200;
-        int height = 200;
+//        int width = 200;
+//        int height = 200;
+        int width = ViewUtils.getPercentWidthSize(65);
+        int height = ViewUtils.getPercentHeightSize(65);
         View contentView = View.inflate(mContext, R.layout.include_popup_key_layout, null);
         window = new PopupWindow(contentView, width, height, true);
         window.showAsDropDown(view, -(width - view.getWidth()) / 2, -((height + view.getHeight()) / 2), Gravity.CENTER);
@@ -954,7 +956,8 @@ public class SearchMoviceFragment extends BaseFragment {
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View view = View.inflate(parent.getContext(), R.layout.item_videos_layout, null);
             // 保持影视比例.
-            mItemWidth = 390;
+//            mItemWidth = 390;
+            mItemWidth = ViewUtils.getPercentWidthSize(128);
             mItemHeight = mItemWidth / 4 * 3;
             ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(mItemWidth, mItemHeight);
             view.setLayoutParams(lp);
@@ -1064,7 +1067,8 @@ public class SearchMoviceFragment extends BaseFragment {
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             Button view = new Button(parent.getContext());
             int width = ViewGroup.LayoutParams.MATCH_PARENT;
-            int height = 90;
+//            int height = 90;
+            int height = ViewUtils.getPercentHeightSize(30);
             ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(width, height);
             view.setLayoutParams(lp);
             view.setFocusable(true);
@@ -1122,7 +1126,8 @@ public class SearchMoviceFragment extends BaseFragment {
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             Button view = new Button(parent.getContext());
             int width = ViewGroup.LayoutParams.MATCH_PARENT;
-            int height = 90;
+//            int height = 90;
+            int height = ViewUtils.getPercentHeightSize(30);
             ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(width, height);
             view.setLayoutParams(lp);
             view.setFocusable(true);
@@ -1189,8 +1194,10 @@ public class SearchMoviceFragment extends BaseFragment {
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             Button view = new Button(parent.getContext());
-            int size = 80;
-            ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(size, size);
+//            int size = 80;
+            int width = ViewUtils.getPercentWidthSize(27);
+            int height = ViewUtils.getPercentHeightSize(27);
+            ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(width, height);
             view.setLayoutParams(lp);
             view.setFocusable(true);
             view.setTextSize(10);
@@ -1243,8 +1250,10 @@ public class SearchMoviceFragment extends BaseFragment {
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View view = View.inflate(parent.getContext(), R.layout.item_t9_key_layout, null);
-            int size = 165;
-            ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(size, size);
+//            int size = 165;
+            int width = ViewUtils.getPercentWidthSize(50);
+            int height = ViewUtils.getPercentHeightSize(50);
+            ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(width, height);
             view.setLayoutParams(lp);
             ViewHolder holder = new ViewHolder(view);
             return holder;
@@ -1303,7 +1312,8 @@ public class SearchMoviceFragment extends BaseFragment {
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             Button view = new Button(parent.getContext());
-            ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(230, 100);
+//            ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(230, 100);
+            ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(ViewUtils.getPercentWidthSize(75), ViewUtils.getPercentWidthSize(35));
             view.setLayoutParams(lp);
             view.setFocusable(true);
             view.setTextSize(15);

@@ -48,6 +48,7 @@ import com.stars.tv.sample.SeriesAndRecVideoDataList;
 import com.stars.tv.sample.PortraitVideoListRow;
 import com.stars.tv.utils.CallBack;
 import com.stars.tv.utils.NetUtil;
+import com.stars.tv.utils.ViewUtils;
 import com.stars.tv.view.MyVerticalGridView;
 
 import java.util.ArrayList;
@@ -287,10 +288,6 @@ public class RecommandVideoRowFragment extends BaseFragment {
 
     }
 
-    private void loadMoreVideo() {
-
-    }
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable final ViewGroup container, Bundle savedInstanceState) {
@@ -305,7 +302,8 @@ public class RecommandVideoRowFragment extends BaseFragment {
         // 设置间隔.
         videoGrid.setPadding(30, 30, 30, 30);
         // 设置垂直item的间隔
-        videoGrid.setVerticalSpacing(50);
+        videoGrid.setVerticalSpacing(ViewUtils.getPercentHeightSize(17));
+
         // 设置缓存.
         videoGrid.getRecycledViewPool().setMaxRecycledViews(0, 100);
         mContext = container.getContext();

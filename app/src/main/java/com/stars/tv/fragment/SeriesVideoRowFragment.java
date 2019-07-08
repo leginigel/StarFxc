@@ -41,6 +41,7 @@ import com.stars.tv.sample.PortraitVideoItemPresenter;
 import com.stars.tv.sample.PortraitVideoListRow;
 import com.stars.tv.utils.CallBack;
 import com.stars.tv.utils.NetUtil;
+import com.stars.tv.utils.ViewUtils;
 import com.stars.tv.view.MyVerticalGridView;
 
 import java.util.ArrayList;
@@ -198,8 +199,8 @@ public class SeriesVideoRowFragment extends BaseFragment {
         videoGrid.setClipToPadding(false);
         // 设置间隔.
         videoGrid.setPadding(30, 30, 30, 30);
-        // 设置垂直item的间隔100.
-        videoGrid.setVerticalSpacing(50);
+        // 设置垂直item的间隔50.
+        videoGrid.setVerticalSpacing(ViewUtils.getPercentHeightSize(17));
         // 设置缓存.
         videoGrid.getRecycledViewPool().setMaxRecycledViews(0, 100);
         mContext = container.getContext();
