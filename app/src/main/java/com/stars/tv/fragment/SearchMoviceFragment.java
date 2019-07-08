@@ -320,6 +320,8 @@ public class SearchMoviceFragment extends BaseFragment {
                             sugPosition = (int) v.getTag();
                             Log.v(TAG, "historyVgridview:  " + typeSuggest);
                             typeSuggest = 0;
+                           String curWord = lists.get(position);
+                            if(!word.equals(curWord)) {
                             if (loadText != null) {
                                 loadText.setVisibility(View.VISIBLE);
                             }
@@ -327,6 +329,7 @@ public class SearchMoviceFragment extends BaseFragment {
                                 mCircleDrawable.start();
                             }
                             setTimer(REFRESH_REQUEST, 1500);
+                            }
 //                            refreshRequest(typeSuggest, sugPosition);
                             ((Button) child.itemView).setTextColor(getResources().getColor(R.color.color_white));
                         } else {
@@ -407,6 +410,11 @@ public class SearchMoviceFragment extends BaseFragment {
                             sugPosition = (int) v.getTag();
                             typeSuggest = 1;
 //                            refreshRequest(typeSuggest, sugPosition);
+
+                            String curWord = ((IQiYiSearchBaseBean) mWordList.get(position)).getQueryName();
+                            Log.v(TAG,"curWord"+curWord);
+                            if (!word.equals(curWord)) {
+                                Log.v(TAG,"word"+word);
                             if (loadText != null) {
                                 loadText.setVisibility(View.VISIBLE);
                             }
@@ -414,6 +422,7 @@ public class SearchMoviceFragment extends BaseFragment {
                                 mCircleDrawable.start();
                             }
                             setTimer(REFRESH_REQUEST, 1500);
+                            }
                             ((Button) child.itemView).setTextColor(getResources().getColor(R.color.color_white));
                         } else {
                             if (isRemaining) {
