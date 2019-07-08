@@ -378,7 +378,8 @@ public class SeriesVideoRowFragment extends BaseFragment {
 
     private void initLoading() {
         mCircleDrawable = new Circle();
-        mCircleDrawable.setBounds(0, 0, 100, 100);
+//        mCircleDrawable.setBounds(0, 0, 100, 100);
+        mCircleDrawable.setBounds(0, 0, ViewUtils.getPercentWidthSize(40), ViewUtils.getPercentHeightSize(40));
         mCircleDrawable.setColor(Color.WHITE);
         loadText.setCompoundDrawables(null, null, mCircleDrawable, null);
     }

@@ -41,6 +41,7 @@ import com.stars.tv.sample.PortraitVideoListRow;
 import com.stars.tv.sample.MyPresenterSelector;
 import com.stars.tv.utils.CallBack;
 import com.stars.tv.utils.NetUtil;
+import com.stars.tv.utils.ViewUtils;
 import com.stars.tv.view.MyVerticalGridView;
 
 import java.util.ArrayList;
@@ -111,10 +112,10 @@ public class FilmVideoRowSampleFragment extends BaseFragment {
             switch (msg.what){
                 case REFRESH_BANNER_CONTENT:
                     if (mCircleDrawable != null && mCircleDrawable.isRunning()) {
-                    mCircleDrawable.stop();
+                        mCircleDrawable.stop();
                     }
                     if (loadText != null && loadText.getVisibility() == View.VISIBLE) {
-                    loadText.setVisibility(View.GONE);
+                        loadText.setVisibility(View.GONE);
                     }
                     showBannerData();
                     parseIQiYiMovie();
@@ -125,12 +126,12 @@ public class FilmVideoRowSampleFragment extends BaseFragment {
                     break;
                 case REFRESH_ERROR:
                     if (mCircleDrawable != null && mCircleDrawable.isRunning()) {
-                    mCircleDrawable.stop();
+                        mCircleDrawable.stop();
                     }
                     if (loadText != null) {
-                    loadText.setText("加载失败，网络简析错误！");
-                    loadText.setTextColor(Color.WHITE);
-                    loadText.setVisibility(View.VISIBLE);
+                        loadText.setText("加载失败，网络简析错误！");
+                        loadText.setTextColor(Color.WHITE);
+                        loadText.setVisibility(View.VISIBLE);
                     }
                     break;
                 default:
@@ -176,10 +177,10 @@ public class FilmVideoRowSampleFragment extends BaseFragment {
         ArrayObjectAdapter listRowAdapter0 = new ArrayObjectAdapter(videoItemPresenter0);
         mVideoList.clear();
         if (mVideoListArray != null) {
-        mVideoList = mVideoListArray.get(listPos[category]);
-        for (int k = 0; k < mVideoList.size(); k++) {
-            listRowAdapter0.add(mVideoList.get(k));
-        }
+            mVideoList = mVideoListArray.get(listPos[category]);
+            for (int k = 0; k < mVideoList.size(); k++) {
+                listRowAdapter0.add(mVideoList.get(k));
+            }
         }
         HeaderItem header0 = new HeaderItem(category, SeriesAndRecVideoDataList.FILM_CATEGORY[category]);
         PortraitVideoListRow listRow0 = new PortraitVideoListRow(header0, listRowAdapter0);
@@ -198,8 +199,8 @@ public class FilmVideoRowSampleFragment extends BaseFragment {
         videoGrid.setClipToPadding(false);
         // 设置间隔.
         videoGrid.setPadding(30, 30, 30, 30);
-        // 设置垂直item的间隔100.
-        videoGrid.setVerticalSpacing(50);
+        // 设置垂直item的间隔50.
+        videoGrid.setVerticalSpacing(ViewUtils.getPercentHeightSize(17));
         // 设置缓存.
         videoGrid.getRecycledViewPool().setMaxRecycledViews(0, 100);
         mContext = container.getContext();
@@ -231,10 +232,10 @@ public class FilmVideoRowSampleFragment extends BaseFragment {
             public void onLoadMore() {
                 mPageNum += 1;
                 if (mPageNum <= totalPage) {
-                for(int i=0;i<loadRows; i++) {
+                    for(int i=0;i<loadRows; i++) {
                         parseIQiYiMovieSimplifiedList((mPageNum - 1) * loadRows + i, 1, orderlist[(mPageNum - 1) * loadRows + i], "", "",
-                            24, 1, 1, "iqiyi", 1, "", 12);
-                }
+                                24, 1, 1, "iqiyi", 1, "", 12);
+                    }
 
                 }else{
                     videoGrid.endRefreshingWithNoMoreData();
@@ -279,17 +280,19 @@ public class FilmVideoRowSampleFragment extends BaseFragment {
 //                        for(int i=0;i<list.size();i++) {
 //                            Log.v(TAG, list.get(i).toString());
 //                        }
-                        Log.v(TAG,"category"+category);
-                        mVideoListArray.add(list);
-                        Log.v(TAG, "mVideoListArray =："+ mVideoListArray.size());
-                        listPos[category] = mVideoListArray.size()-1;
-                        Log.v(TAG, "listPos[category] =："+ listPos[category]);
-                        Message msg = new Message();
-                        msg.arg1 = category;
-                        msg.what = REFRESH_MOVIE_CONTENT;
-                        mHandler.sendMessage(msg);
-                        if(mVideoListArray.size()%loadRows==0) {
-                            videoGrid.endMoreRefreshComplete();
+                        if (!list.isEmpty()) {
+                            Log.v(TAG,"category"+category);
+                            mVideoListArray.add(list);
+                            Log.v(TAG, "mVideoListArray =："+ mVideoListArray.size());
+                            listPos[category] = mVideoListArray.size()-1;
+                            Log.v(TAG, "listPos[category] =："+ listPos[category]);
+                            Message msg = new Message();
+                            msg.arg1 = category;
+                            msg.what = REFRESH_MOVIE_CONTENT;
+                            mHandler.sendMessage(msg);
+                            if(mVideoListArray.size()%loadRows==0) {
+                                videoGrid.endMoreRefreshComplete();
+                            }
                         }
                     }
 
@@ -313,9 +316,11 @@ public class FilmVideoRowSampleFragment extends BaseFragment {
 //                for (IQiYiBannerInfoBean bean : list) {
 //                    Log.v(TAG, bean.toString());
 //                }
-                mBannerInfoList.clear();
-                mBannerInfoList = list;
-                mHandler.sendEmptyMessage(REFRESH_BANNER_CONTENT);
+                if (!list.isEmpty()) {
+                    mBannerInfoList.clear();
+                    mBannerInfoList = list;
+                    mHandler.sendEmptyMessage(REFRESH_BANNER_CONTENT);
+                }
             }
 
             @Override
@@ -373,7 +378,8 @@ public class FilmVideoRowSampleFragment extends BaseFragment {
 
     private void initLoading() {
         mCircleDrawable = new Circle();
-        mCircleDrawable.setBounds(0, 0, 100, 100);
+//        mCircleDrawable.setBounds(0, 0, 100, 100);
+        mCircleDrawable.setBounds(0, 0, ViewUtils.getPercentWidthSize(40), ViewUtils.getPercentHeightSize(40));
         mCircleDrawable.setColor(Color.WHITE);
         loadText.setCompoundDrawables(null, null, mCircleDrawable, null);
     }
@@ -381,22 +387,22 @@ public class FilmVideoRowSampleFragment extends BaseFragment {
     private void showLoad(){
         if(NetUtil.isConnected()){
             if (loadText != null) {
-            loadText.setText("");
-            loadText.setVisibility(View.VISIBLE);
+                loadText.setText("");
+                loadText.setVisibility(View.VISIBLE);
             }
             if (mCircleDrawable != null) {
-            mCircleDrawable.start();
+                mCircleDrawable.start();
             }
         }else{
             if (mCircleDrawable != null && mCircleDrawable.isRunning()) {
-            mCircleDrawable.stop();
+                mCircleDrawable.stop();
             }
             if (loadText != null) {
-            loadText.setText("网络连接失败，请检查网络！");
-            loadText.setTextColor(Color.WHITE);
-            loadText.setVisibility(View.VISIBLE);
+                loadText.setText("网络连接失败，请检查网络！");
+                loadText.setTextColor(Color.WHITE);
+                loadText.setVisibility(View.VISIBLE);
+            }
         }
-    }
     }
 
     protected void loadData() {
