@@ -2,8 +2,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:viewportHeight="1024"
     android:viewportWidth="1024"
-    android:height="200dp"
-    android:width="200dp">
+    android:height="12dp"
+    android:width="12dp">
     <path
         android:fillColor="@color/color_red"
         android:pathData="M508.93,207.38c41.33,-97.96 135.74,-166.4 245.56,-166.4 147.93,0 254.46,126.55 267.86,277.36 0,0 7.23,37.44 -8.68,104.84 -21.67,91.79 -72.6,173.34 -141.27,235.58L508.93,983.04 151.59,658.74c-68.67,-62.22 -119.6,-143.79 -141.27,-235.58 -15.91,-67.4 -8.68,-104.84 -8.68,-104.84C15.03,167.51 121.57,40.96 269.5,40.96c109.83,0 198.1,68.46 239.43,166.42z"/>

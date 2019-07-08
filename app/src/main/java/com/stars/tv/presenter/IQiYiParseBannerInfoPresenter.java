@@ -41,7 +41,13 @@ public class IQiYiParseBannerInfoPresenter {
                                 for (int i = 0; i < imgList.size(); i++) {
                                     IQiYiBannerInfoBean bean = new IQiYiBannerInfoBean();
                                     String style = imgList.get(i).attr("style");
-                                    String imageUrl = "http://" + style.substring(style.indexOf("pic"), style.indexOf("jpg") + 3);
+                                    String dataImage = imgList.get(i).attr("data-jpg-img");
+                                    String imageUrl ="";
+                                    if(!dataImage.isEmpty()) {
+                                        imageUrl = "http:"+dataImage;
+                                    }else if(style.contains("jpg")){
+                                        imageUrl = "http://" + style.substring(style.indexOf("pic"), style.indexOf("jpg") + 3);
+                                    }
                                     String name = imgList.get(i).select("a.img-link").attr("data-indexfocus-currenttitleelem");
                                     String playUrl = "http:" + imgList.get(i).select("a.img-link").attr("href");
                                     String description = imgList.get(i).select("a.img-link").attr("data-indexfocus-description");
@@ -50,7 +56,9 @@ public class IQiYiParseBannerInfoPresenter {
                                     bean.setName(name);
                                     bean.setPlayUrl(playUrl);
                                     bean.setDescription(description);
+                                    if(!bean.getImageUrl().equals("")) {
                                     infoList.add(bean);
+                                }
                                 }
                             }
                             break;
