@@ -70,6 +70,7 @@ public class MyVerticalGridView extends VerticalGridView {
     public void onScrollStateChanged(int state) {
         if (state == SCROLL_STATE_IDLE) {
             // 加载更多回调
+            if(getAdapter()!=null) {
             if (getLastVisiblePosition() >= getAdapter().getItemCount() - 1) {
                 if (null != mOnLoadMoreListener) {
                     if (mMoreState == MORE_STATE_END) {
@@ -82,11 +83,8 @@ public class MyVerticalGridView extends VerticalGridView {
                 }
             }
         }
-        super.onScrollStateChanged(state);
     }
-
-    public void resetMoreRefresh() {
-
+        super.onScrollStateChanged(state);
     }
 
     // 加载更多结束调用.
@@ -108,7 +106,15 @@ public class MyVerticalGridView extends VerticalGridView {
     }
 
     @Override
+    public boolean performClick() {
+        return super.performClick();
+    }
+
+    @Override
     public boolean onTouchEvent(MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            performClick();
+        }
         return false; // 禁止滑动翻页
     }
 
