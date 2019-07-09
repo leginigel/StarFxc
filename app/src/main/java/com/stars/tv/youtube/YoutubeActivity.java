@@ -307,7 +307,7 @@ public class YoutubeActivity extends FragmentActivity implements CustomAdapt,
         if (playerBox.getVisibility() == View.VISIBLE){
 //            Log.d(TAG, "onBackPressed");
 //            getSupportFragmentManager().beginTransaction().hide(youtubeFragment);
-//            youTubePlayer.pause();
+            youTubePlayer.pause();
             if(mExtVideoBean != null){
                 ViewGroup home  = youtubeFragment.getView().findViewById(R.id.container_row);
                 home.requestFocus();

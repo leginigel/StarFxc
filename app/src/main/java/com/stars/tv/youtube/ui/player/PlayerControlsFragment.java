@@ -100,10 +100,10 @@ public class PlayerControlsFragment extends DialogFragment {
             this.getChildFragmentManager().beginTransaction()
                     .add(R.id.player_control_row, controlRowFragment).commit();
 
+        // Playback & PostPlay Information
         setInformationText(view);
-
         constructSeekBar(view);
-        updateSeekBar();
+        setTimer();
 
         hqButton = view.findViewById(R.id.quality_button);
         hqText = view.findViewById(R.id.quality_text);
@@ -121,7 +121,7 @@ public class PlayerControlsFragment extends DialogFragment {
         if(playerStateChangeListener.getPlayerState() != PlayerState.VIDEO_ENDED) {
             playButton.requestFocus();
         }
-        // Open after video ended then show the suggestion and replayIcon
+        // PostPlay open after video ended then show the suggestion and replayIcon
         else {
             // Suggestion row is close in default, open it
             mBackGround.setBackgroundColor(getResources().getColor(R.color.background));
@@ -250,7 +250,7 @@ public class PlayerControlsFragment extends DialogFragment {
         timer.cancel();
     }
 
-    private void updateSeekBar() {
+    private void setTimer() {
         YoutubeActivity activity = (YoutubeActivity) getActivity();
         TimerTask task = new TimerTask() {
             @RequiresApi(api = Build.VERSION_CODES.N)
@@ -258,6 +258,7 @@ public class PlayerControlsFragment extends DialogFragment {
             public void run() {
                 int currentPosition = mPlayer.getCurrentTimeMillis();
                 if(mPlayer.isPlaying()) {
+                    // Update SeekBar Progress
                     seekBar.setProgress(currentPosition);
                     getActivity().runOnUiThread(() -> {
                         timeText.setText(formatTime(mPlayer.getCurrentTimeMillis()));
@@ -271,7 +272,7 @@ public class PlayerControlsFragment extends DialogFragment {
                         countDownText.setText("RETURN IN " + (CountDown + 1)  + " ...");
                     });
                     CountDown--;
-                    // After video ended will return to prev page
+                    // After video ended will stop playback & return to prev page
                     if(CountDown < 0){
                         close();
                         getActivity().runOnUiThread(() -> {
@@ -279,6 +280,7 @@ public class PlayerControlsFragment extends DialogFragment {
                         });
                     }
                 }
+                // Not playing & open the suggestion row
                 else if(mConstraint.getVisibility() == View.INVISIBLE){
                     CountDown--;
                     // Count down and close control frag
@@ -464,32 +466,7 @@ public class PlayerControlsFragment extends DialogFragment {
         });
     }
 
-    private void setInformationText(View view){
-        // Playback Information
-        TextView durationText = view.findViewById(R.id.play_duration);
-        timeText = view.findViewById(R.id.play_time);
-        TextView titleText = view.findViewById(R.id.play_title);
-        TextView channelText = view.findViewById(R.id.play_channel);
-        TextView countText = view.findViewById(R.id.play_count);
-        TextView publishText = view.findViewById(R.id.play_publish);
-
-        durationText.setText(String.format(" / %s", Utils.DurationConverter(mVideo.getDuration())));
-        timeText.setText(formatTime(mPlayer.getCurrentTimeMillis()));
-        titleText.setText(Html.fromHtml(mVideo.getTitle()));
-        channelText.setText(mVideo.getChannel() + " ‧ ");
-        countText.setText(Utils.CountConverter(mVideo.getNumber_views()) + " views ‧ ");
-        publishText.setText(Utils.TimeConverter(mVideo.getTime()) + " ago");
-
-        // PostPlay Information
-        countDownText = view.findViewById(R.id.count_down);
-        replayIcon = view.findViewById(R.id.icon_replay);
-        replayImg = view.findViewById(R.id.img_replay);
-        Glide.with(this)
-                .asBitmap()
-                .centerCrop()
-                .load(mVideo.getId() != null ? "https://i.ytimg.com/vi/" + mVideo.getId() + "/0.jpg" : null)
-                .into(replayImg);
-
+    private void setReplayIcon(View view) {
         replayIcon.setOnKeyListener((v, keyCode, event) -> {
             if(event.getAction() == KeyEvent.ACTION_DOWN){
                 if(keyCode == KeyEvent.KEYCODE_DPAD_DOWN || keyCode == KeyEvent.KEYCODE_DPAD_RIGHT){
@@ -499,6 +476,7 @@ public class PlayerControlsFragment extends DialogFragment {
                     return true;
                 }
                 if(keyCode == KeyEvent.KEYCODE_BACK){
+                    // Return to prev page
                     close();
                     getActivity().onBackPressed();
                     return true;
@@ -521,6 +499,34 @@ public class PlayerControlsFragment extends DialogFragment {
             mPlayer.play();
             close();
         });
+    }
+
+    private void setInformationText(View view){
+        // Playback Information
+        TextView durationText = view.findViewById(R.id.play_duration);
+        timeText = view.findViewById(R.id.play_time);
+        TextView titleText = view.findViewById(R.id.play_title);
+        TextView channelText = view.findViewById(R.id.play_channel);
+        TextView countText = view.findViewById(R.id.play_count);
+        TextView publishText = view.findViewById(R.id.play_publish);
+
+        durationText.setText(String.format(" / %s", Utils.DurationConverter(mVideo.getDuration())));
+        timeText.setText(formatTime(mPlayer.getCurrentTimeMillis()));
+        titleText.setText(Html.fromHtml(mVideo.getTitle()));
+        channelText.setText(mVideo.getChannel() + " ‧ ");
+        countText.setText(Utils.CountConverter(mVideo.getNumber_views()) + " views ‧ ");
+        publishText.setText(Utils.TimeConverter(mVideo.getTime()) + " ago");
+
+        // PostPlay Information
+        countDownText = view.findViewById(R.id.count_down);
+        replayIcon = view.findViewById(R.id.icon_replay);
+        setReplayIcon(view);
+        replayImg = view.findViewById(R.id.img_replay);
+        Glide.with(this)
+                .asBitmap()
+                .centerCrop()
+                .load(mVideo.getId() != null ? "https://i.ytimg.com/vi/" + mVideo.getId() + "/0.jpg" : null)
+                .into(replayImg);
     }
 
     public void setCountDown(int countDown) {
