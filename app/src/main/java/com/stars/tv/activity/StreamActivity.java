@@ -88,6 +88,7 @@ public class StreamActivity extends BaseActivity {
         // -----------------
         densityRatio = getResources().getDisplayMetrics().density; // 表示获取真正的密度
 
+        mCircleDrawable = new Circle();
         streamPresenter = new StreamPresenter();
         mCate = StreamCate.YT;
         // Setup Top Nav Focus Scheme
@@ -268,6 +269,8 @@ public class StreamActivity extends BaseActivity {
         });
         startStreamBtn.setNextFocusLeftId(startStreamBtn.getId());
         startStreamBtn.setNextFocusRightId(startStreamBtn.getId());
+
+        initVideoView();
     }
 
     private void streamFBDash(String channel){
@@ -355,7 +358,6 @@ public class StreamActivity extends BaseActivity {
     private void stream(String url){
         mVideoPath = url;
         loading(View.VISIBLE);
-        initVideoView();
         startPlay();
     }
 
@@ -407,7 +409,6 @@ public class StreamActivity extends BaseActivity {
         constraintLayout.setVisibility(View.GONE);
         startStreamBtn.setVisibility(View.GONE);
         frameLayout.setVisibility(View.VISIBLE);
-        mCircleDrawable = new Circle();
         mCircleDrawable.setBounds(0, 0, 100, 100);
         mCircleDrawable.setColor(Color.WHITE);
         textLoading.setCompoundDrawables(null, null, mCircleDrawable, null);
