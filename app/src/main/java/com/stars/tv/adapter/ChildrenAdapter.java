@@ -26,7 +26,7 @@ public class ChildrenAdapter extends RecyclerView.Adapter<ChildrenAdapter.MyView
     OnItemFocusListener mFocusListener;
 
     private List<String> mData;
-    private List<Integer> mSelectedPositions;
+    private int mSelectedPositions;
     private int parentWidth, itemWidth;
     private int mCurrentPosition;
 
@@ -75,10 +75,10 @@ public class ChildrenAdapter extends RecyclerView.Adapter<ChildrenAdapter.MyView
                 }
             });
 
-            if (mSelectedPositions != null && mSelectedPositions.contains(position)) {
+            if (mSelectedPositions == position) {
                 holder.textView.setSelected(true);
                 holder.textView.requestFocus();
-                Log.v("mSelectedPositionsFocus","mSelectedPositions");
+                Log.v("mSelectedPositionsFocus", "mSelectedPositions");
             }
 
         } else {
@@ -88,7 +88,6 @@ public class ChildrenAdapter extends RecyclerView.Adapter<ChildrenAdapter.MyView
             holder.textView.setFocusable(false);
         }
     }
-
 
     @Override
     public int getItemCount() {
@@ -111,11 +110,11 @@ public class ChildrenAdapter extends RecyclerView.Adapter<ChildrenAdapter.MyView
         return mData;
     }
 
-    public List<Integer> getSelectedPositions() {
+    public int getSelectedPositions() {
         return mSelectedPositions;
     }
 
-    public void setSelectedPositions(List<Integer> mPositions) {
+    public void setSelectedPositions(int mPositions) {
         this.mSelectedPositions = mPositions;
     }
 
@@ -165,7 +164,7 @@ public class ChildrenAdapter extends RecyclerView.Adapter<ChildrenAdapter.MyView
 
         @Override
         public void run() {
-            mLongFocusListener.onEpisodesItemLongFocus(v, position,true);
+            mLongFocusListener.onEpisodesItemLongFocus(v, position, true);
         }
     }
 }

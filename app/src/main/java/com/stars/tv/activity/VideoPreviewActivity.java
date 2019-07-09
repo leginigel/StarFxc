@@ -3,7 +3,6 @@ package com.stars.tv.activity;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -28,15 +27,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.avos.avoscloud.AVException;
-import com.avos.avoscloud.DeleteCallback;
-import com.avos.avoscloud.SaveCallback;
 import com.stars.tv.R;
 import com.stars.tv.adapter.ChildrenAdapter;
 import com.stars.tv.adapter.EpisodeListView;
 import com.stars.tv.adapter.EpisodeListViewAdapter;
 import com.stars.tv.bean.ExtVideoBean;
-import com.stars.tv.bean.IQiYiBannerInfoBean;
 import com.stars.tv.bean.IQiYiBaseBean;
 import com.stars.tv.bean.IQiYiM3U8Bean;
 import com.stars.tv.bean.IQiYiMovieBean;
@@ -50,11 +45,13 @@ import com.stars.tv.presenter.PreVideoItemPresenter;
 import com.stars.tv.sample.PortraitVideoItemPresenter;
 import com.stars.tv.server.LeanCloudStorage;
 import com.stars.tv.utils.CallBack;
+import com.stars.tv.utils.NetUtil;
 import com.stars.tv.utils.ViewUtils;
 import com.stars.tv.view.SpaceItemDecoration;
 import com.stars.tv.widget.media.AndroidMediaController;
 import com.stars.tv.widget.media.IjkVideoView;
 
+import tv.danmaku.ijk.media.player.IMediaPlayer;
 import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 
 import com.github.ybq.android.spinkit.style.Circle;
@@ -69,12 +66,11 @@ public class VideoPreviewActivity extends BaseActivity {
 
     private ScrollView scrollView;
     private IjkVideoView mVideoView;
-    private AndroidMediaController mMediaController;
     private TableLayout mHudView;
     private FrameLayout pre_videoLayout;
     private String mVideoPath = "xx";
     private EpisodeListView mEpisodeListView;
-    private TextView textLoading;
+    private TextView textLoading, title;
     private Circle mCircleDrawable;
     private IQiYiBaseBean videoBean;
     private String tvId, ctvid;
@@ -104,7 +100,6 @@ public class VideoPreviewActivity extends BaseActivity {
     final int REFRESH_RecommendList = 1;
     final int TURNTOFULLSCREEN = 2;
     final int REFRESH_VideoBaseInfo = 3;
-    //    private Integer[] selectedPositions = {0};
     private int mPosition = 0;
     private int mEpisode = 0;
 
@@ -123,8 +118,10 @@ public class VideoPreviewActivity extends BaseActivity {
 
     private static final int ITEM_TOP_PADDING_PX = 15;
     private static final int ITEM_RIGHT_PADDING_PX = 25;
-    private String htvId,hmVideoPath;
-    private int hmPosition,hmEpisode;
+    private String htvId, hmVideoPath;
+    private int hmPosition, hmEpisode;
+
+    private Boolean topfocus;
 
     @SuppressLint("HandlerLeak")
     private Handler mHandler = new Handler() {
@@ -134,10 +131,9 @@ public class VideoPreviewActivity extends BaseActivity {
                 case REFRESH_VideoBaseInfo:
                     getVideoInfo();
                 case REFRESH_InfoList:
-//                    checkHistoryInfo(albumId);
                     refreshInfoList();
                     if (null != mVideoBase.getPeople()) {
-                        if (null != mVideoBase.getPeople().getMain_charactor()||null != mVideoBase.getPeople().getHost()||null != mVideoBase.getPeople().getGuest()) {
+                        if (null != mVideoBase.getPeople().getMain_charactor() || null != mVideoBase.getPeople().getHost() || null != mVideoBase.getPeople().getGuest()) {
                             initCharactorGV();
                         }
                     } else {
@@ -163,7 +159,7 @@ public class VideoPreviewActivity extends BaseActivity {
         setContentView(R.layout.activity_video_preview);
         scrollView = (ScrollView) findViewById(R.id.scrollView);
 
-        loading(View.VISIBLE);
+        initLoading();
         initView();
         videoBean = (IQiYiBaseBean) getIntent().getSerializableExtra("videoBean");
         Log.v("videoBean", videoBean.toString());
@@ -174,35 +170,32 @@ public class VideoPreviewActivity extends BaseActivity {
         } else {
             Toast.makeText(this, "No Video Found! Press Back Button To Exit", Toast.LENGTH_LONG).show();
         }
-
         initVideoView();
-
     }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (event.getAction() == KeyEvent.ACTION_DOWN) {
-            if (keyCode == KeyEvent.KEYCODE_BACK) {
-                Intent intent = new Intent();
-                intent.putExtra("exit", true);
-                this.setResult(RESULT_OK, intent);
-                this.finish();
+            switch (keyCode) {
+                case KeyEvent.KEYCODE_BACK:
+                    Intent intent = new Intent();
+                    intent.putExtra("exit", true);
+                    this.setResult(RESULT_OK, intent);
+                    this.finish();
+                    return true;
             }
         }
-
         return super.onKeyDown(keyCode, event);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        mCircleDrawable.start();
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        mCircleDrawable.stop();
         mVideoView.stopPlayback();
         mVideoView.release(true);
         mVideoView.stopBackgroundPlay();
@@ -210,24 +203,47 @@ public class VideoPreviewActivity extends BaseActivity {
     }
 
     public void initVideoView() {
-        Log.v("vvvVideoPreview1", mVideoPath);
-        // init UI
-        mMediaController = new AndroidMediaController(this, false);
-        mMediaController.setVisibility(View.GONE);
         // init player
         IjkMediaPlayer.loadLibrariesOnce(null);
         IjkMediaPlayer.native_profileBegin("libijkplayer.so");
 
         mVideoView = (IjkVideoView) findViewById(R.id.videoView);
-        mVideoView.setMediaController(mMediaController);
+        mVideoView.setMediaController(null);
         mHudView = (TableLayout) findViewById(R.id.hud_view);
         mVideoView.setHudView(mHudView);
-        mVideoView.setOnPreparedListener(iMediaPlayer -> loading(View.INVISIBLE));
+
+        mVideoView.setOnPreparedListener(iMediaPlayer -> hideLoading());
+        mVideoView.setOnInfoListener((iMediaPlayer, info, error) -> {
+            if (info == IMediaPlayer.MEDIA_INFO_BUFFERING_START) {
+                showLoading();
+            } else if (info == IMediaPlayer.MEDIA_INFO_BUFFERING_END) {
+                hideLoading();
+            }
+            return false;
+        });
+        if (null != latestOrder) {
+            mVideoView.setOnCompletionListener(new IMediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(IMediaPlayer mp) {
+                    showLoading();
+                    mEpisode = mEpisode + 1;
+                    parseIQiYiRealM3U8WithTvId(mEplisodeList.get(mEpisode).getTvId());
+                }
+            });
+        }
+        mVideoView.setOnErrorListener((iMediaPlayer, framework_err, impl_err) -> {
+            showLoadingError(framework_err + "," + impl_err);
+            return true;
+        });
 
         pre_videoLayout = (FrameLayout) findViewById(R.id.pre_video);
         pre_videoLayout.setOnFocusChangeListener((view1, hasFocus) -> {
             if (pre_videoLayout != null) {
                 pre_videoLayout.findViewById(R.id.videoView_board).setVisibility(hasFocus ? View.VISIBLE : View.INVISIBLE);
+                if (pre_videoLayout.findViewById(R.id.videoView_board).getVisibility() == View.VISIBLE) {
+                    topfocus = true;
+                } else topfocus = false;
+                Log.v("topfocus", topfocus.toString());
             }
         });
         pre_videoLayout.setOnClickListener(new View.OnClickListener() {
@@ -236,14 +252,16 @@ public class VideoPreviewActivity extends BaseActivity {
                 turntoFullPlayback();
             }
         });
-
     }
 
     private void startPlay() {
-
         if (mVideoPath == "") {
-            parseError();
+            showLoadingError("0");
         } else {
+            if (mVideoBase.getChannelId() == 2) {
+                if (null != mEplisodeList)
+                    title.setText(mEplisodeList.get(mEpisode).getName());
+            } else title.setText(name);
             mVideoView.setVideoURI(Uri.parse(mVideoPath));
             mVideoView.seekTo(mPosition);
             mVideoView.start();
@@ -274,7 +292,7 @@ public class VideoPreviewActivity extends BaseActivity {
                 host = mVideoBase.getPeople().getHost();
                 for (int i = 0; i < host.size(); i++) {
                     if (!host.get(i).getName().isEmpty()) {
-                    hostname += host.get(i).getName() + " ";
+                        hostname += host.get(i).getName() + " ";
                     } else {
                         hostname = "";
                     }
@@ -334,16 +352,15 @@ public class VideoPreviewActivity extends BaseActivity {
         latestOrder = mVideoBase.getLatestOrder();
 
         checkHistoryInfo(albumId);
+        if (Integer.valueOf(videoCount) > 1) {
+            parseIQiYiEpisodeList(albumId, Integer.valueOf(latestOrder), 1);
+        }
         // For Favorite Usage
         mVideoType = mVideoBase.getChannelId();
         mVideoCount = Integer.valueOf(mVideoBase.getVideoCount());
         mPlayUrl = mVideoBase.getPlayUrl();
         mAlbumImageUrl = mVideoBase.getAlbumImageUrl();
         // ------------------
-
-        if (Integer.valueOf(videoCount) > 1) {
-            parseIQiYiEpisodeList(albumId, Integer.valueOf(latestOrder), 1);
-        }
 
     }
 
@@ -381,33 +398,34 @@ public class VideoPreviewActivity extends BaseActivity {
                         hmPosition = bean.getVideoPlayPosition();
                         hmEpisode = bean.getVideoCurrentViewOrder();
 
-                        tvId=htvId;
-                        mVideoPath=hmVideoPath;
-                        mPosition=hmPosition;
-                        mEpisode=hmEpisode;
-                        Log.v("HistoryInfo", "tvId" + tvId +"hmVideoPath"+hmVideoPath+ ";mPosition" + mPosition + ";mEpisode" + mEpisode);
-                    } else {
+                        tvId = htvId;
+                        mVideoPath = hmVideoPath;
+                        mPosition = hmPosition;
+                        mEpisode = hmEpisode;
+                        Log.v("HistoryInfo", "tvId" + tvId + "hmVideoPath" + hmVideoPath + ";mPosition" + mPosition + ";mEpisode" + mEpisode);
                     }
+                    mHandler.sendEmptyMessage(REFRESH_InfoList);
                 }
+
                 @Override
                 public void failed() {
+                    mHandler.sendEmptyMessage(REFRESH_InfoList);
                 }
             });
         } catch (Exception e) {
+            mHandler.sendEmptyMessage(REFRESH_InfoList);
         }
     }
 
     public void initMediaInfo() {
         Fragment newFragment = MediaInfoListFragment.newInstance();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-
         transaction.replace(R.id.mediainfo, newFragment);
         transaction.commit();
         ((MediaInfoListFragment) newFragment).setHandler(mHandler);
     }
 
     public void initEpisodeList() {
-
         ArrayList<String> stringArrayList = new ArrayList<String>();
         for (int i = 0; i < Integer.valueOf(latestOrder); i++) {
             stringArrayList.add(String.valueOf(i + 1));
@@ -431,7 +449,6 @@ public class VideoPreviewActivity extends BaseActivity {
         }
 
         final String[] groups = stringArrayList.toArray(new String[stringArrayList.size()]);
-        Log.v("VideoPreviewgroups", stringArrayList.toString());
 
         final EpisodeListViewAdapter<String> adapter = new EpisodeListViewAdapter<String>() {
             @Override
@@ -455,28 +472,23 @@ public class VideoPreviewActivity extends BaseActivity {
             }
         };
 
-//        adapter.setSelectedPositions(Arrays.asList(selectedPositions));
+        adapter.setSelectedPositions(mEpisode);
         mEpisodeListView.setAdapter(adapter);
         mEpisodeListView.setChildrenItemClickListener(new ChildrenAdapter.OnItemClickListener() {
             @Override
             public void onEpisodesItemClick(View view, int position) {
-                loading(View.VISIBLE);
+                showLoading();
                 tvId = mEplisodeList.get(position).getTvId();
-                mPosition=0;
+                mPosition = 0;
                 parseIQiYiRealM3U8WithTvId(tvId);
-                adapter.setSelectedPositions(Arrays.asList(position));
                 mEpisode = position;
+                initEpisodeList();
             }
         });
-        mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-//                mEpisodeListView.requestFocus();
-            }
-        }, 300);
     }
 
     private void initView() {
+        title = (TextView) findViewById(R.id.title);
         mEpisodeListView = (EpisodeListView) findViewById(R.id.episodelistview);
 
         charactor_gv = (HorizontalGridView) findViewById(R.id.charactor_gv);
@@ -491,12 +503,11 @@ public class VideoPreviewActivity extends BaseActivity {
     }
 
     private void initCharactorGV() {
-
         ArrayObjectAdapter charrayObjectAdapter = new ArrayObjectAdapter(new PreVideoItemPresenter());
         ItemBridgeAdapter chitemBridgeAdapter = new ItemBridgeAdapter(charrayObjectAdapter);
         List<IQiYiMovieBean> chvideoBeanList = new ArrayList<>();
 
-        if(null!=main_charactor) {
+        if (null != main_charactor) {
             for (int i = 0; i < main_charactor.size(); i++) {
                 IQiYiMovieBean chvideoBean = new IQiYiMovieBean();
                 chvideoBean.setImageUrl(mVideoBase.getPeople().getMain_charactor().get(i).getImage_url());
@@ -504,8 +515,7 @@ public class VideoPreviewActivity extends BaseActivity {
                 chvideoBean.setAlbumId(mVideoBase.getPeople().getMain_charactor().get(i).getId() + "");
                 chvideoBeanList.add(chvideoBean);
             }
-        }
-        else if(null!=host ){
+        } else if (null != host) {
             for (int i = 0; i < host.size(); i++) {
                 IQiYiMovieBean chvideoBean = new IQiYiMovieBean();
                 chvideoBean.setImageUrl(mVideoBase.getPeople().getHost().get(i).getImage_url());
@@ -513,8 +523,7 @@ public class VideoPreviewActivity extends BaseActivity {
                 chvideoBean.setAlbumId(mVideoBase.getPeople().getHost().get(i).getId() + "");
                 chvideoBeanList.add(chvideoBean);
             }
-        }
-        else if(null!=guest ){
+        } else if (null != guest) {
             for (int i = 0; i < guest.size(); i++) {
                 IQiYiMovieBean chvideoBean = new IQiYiMovieBean();
                 chvideoBean.setImageUrl(mVideoBase.getPeople().getGuest().get(i).getImage_url());
@@ -565,16 +574,14 @@ public class VideoPreviewActivity extends BaseActivity {
                     // TODO Item点击事件
 //                    mVideoView.pause();
                     scrollView.scrollTo(0, 0);
-                    loading(View.VISIBLE);
-                    if (null != mVideoList.get(position).getUrl() && null == mVideoList.get(position).getPayMarkUrl()) {
+                    showLoading();
+                    if (null != mVideoList.get(position).getUrl()) {
                         parseIQiYiVideoBaseInfoByURL(mVideoList.get(position).getUrl());
                     } else {
-                        parsePay();
+                        showLoadingError("0");
                     }
-
                 });
             }
-
         });
     }
 
@@ -595,19 +602,18 @@ public class VideoPreviewActivity extends BaseActivity {
             @Override
             public void success(List<IQiYiM3U8Bean> list) {
                 //TODO 获取成功在此得到真实播放地址的List，可能会有HD,SD,1080P
-
                 for (IQiYiM3U8Bean bean : list) {
-                    Log.v("vvvVideoPreviewM3U8", bean.toString());
+                    Log.v("VideoPreviewM3U8", bean.toString());
                 }
                 if (list.size() > 0 && (null != list.get(0).getM3u())) {
                     mVideoPath = list.get(0).getM3u();
-                    Log.v("vvvVideoPreview3", mVideoPath);
                     startPlay();
                 } else {
                     mVideoPath = "";
-                    parseError();
+                    mVideoView.stopPlayback();
+                    mVideoView.release(true);
+                    showLoadingError("0");
                 }
-
             }
 
             @Override
@@ -615,7 +621,7 @@ public class VideoPreviewActivity extends BaseActivity {
                 //TODO 获取失败
                 mVideoPath = "";
                 Log.v("VideoPreviewActivity", "获取失败parseIQiYiRealM3U8WithTvId");
-                parseError();
+                showLoadingError("0");
             }
         });
     }
@@ -633,30 +639,20 @@ public class VideoPreviewActivity extends BaseActivity {
             @Override
             public void success(List<IQiYiMovieBean> list) {
                 mEplisodeList.clear();
-                textLoading.setText("");
+                showLoading();
                 mEplisodeList.addAll(list);
                 ctvid = mEplisodeList.get(0).getTvId();
-                Log.v("vvvctvid", ctvid);
                 //TODO 获取电视剧剧集列表
                 for (IQiYiMovieBean bean : list) {
                     Log.v("VideoPreviewEpisodeList", bean.toString());
-
                 }
-                mHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        mHandler.sendEmptyMessage(REFRESH_InfoList);
-                    }
-                }, 1600);
-//                mHandler.sendEmptyMessage(REFRESH_InfoList);
-
             }
 
             @Override
             public void error(String msg) {
                 //TODO 获取失败
                 Log.v("VideoPreviewActivity", "获取失败parseIQiYiEpisodeList");
-                parseError();
+                showLoadingError("0");
             }
         });
     }
@@ -672,7 +668,7 @@ public class VideoPreviewActivity extends BaseActivity {
             @Override
             public void success(IQiYiVideoBaseInfoBean bean) {
                 mVideoBase = bean;
-                textLoading.setText("");
+                showLoading();
                 Log.v("parseIQiYiVideoBaseInfo", bean.toString());
                 mHandler.sendEmptyMessage(REFRESH_VideoBaseInfo);
             }
@@ -681,7 +677,7 @@ public class VideoPreviewActivity extends BaseActivity {
             public void error(String msg) {
                 //TODO 获取失败
                 Log.v("VideoPreviewActivity", "获取失败parseIQiYiVideoBaseInfo");
-                parseError();
+                showLoadingError("0");
             }
         });
     }
@@ -698,7 +694,7 @@ public class VideoPreviewActivity extends BaseActivity {
             @Override
             public void success(IQiYiVideoBaseInfoBean bean) {
                 mVideoBase = bean;
-                textLoading.setText("");
+                showLoading();
                 Log.v("parseIQiYiVideoBaseInfo", bean.toString());
                 mHandler.sendEmptyMessage(REFRESH_VideoBaseInfo);
             }
@@ -707,7 +703,7 @@ public class VideoPreviewActivity extends BaseActivity {
             public void error(String msg) {
                 //TODO 获取失败
                 Log.v("VideoPreviewActivity", "获取失败parseIQiYiVideoBaseInfoByURL");
-                parsePay();
+                showLoadingError("1");
             }
         });
     }
@@ -720,13 +716,14 @@ public class VideoPreviewActivity extends BaseActivity {
      * @param tvId       此处无意义，但是必须要有，可以填入当前视频的tvId   875112600
      * @param withCookie 此处根据需要填入，true/false
      */
-    private void parseIQiYiStarRecommendList(String starId, String size, String tvId, boolean withCookie) {
+    private void parseIQiYiStarRecommendList(String starId, String size, String tvId,
+                                             boolean withCookie) {
         IQiYiParseStarRecommendPresenter ps = new IQiYiParseStarRecommendPresenter();
         ps.requestIQiYiStarRecommendList(starId, size, tvId, withCookie, new CallBack<List<IQiYiMovieBean>>() {
             @Override
             public void success(List<IQiYiMovieBean> list) {
                 mVideoList.clear();
-                textLoading.setText("");
+                showLoading();
                 mVideoList.addAll(list);
                 Log.v("VVVmVideoList", mVideoList.toString());
                 for (IQiYiMovieBean bean : list) {
@@ -739,30 +736,67 @@ public class VideoPreviewActivity extends BaseActivity {
             public void error(String msg) {
                 //TODO 获取失败
                 Log.v("VideoPreviewActivity", "获取失败parseIQiYiStarRecommendList");
-                parseError();
+                showLoadingError("0");
             }
         });
     }
 
-    private void parseError() {
-        textLoading.setText("加载失败！");
-        textLoading.setBackgroundColor(Color.BLACK);
-        textLoading.setTextColor(Color.WHITE);
+    private void initLoading() {
+        if (NetUtil.isConnected()) {
+            mCircleDrawable = new Circle();
+            mCircleDrawable.setBounds(0, 0, 100, 100);
+            mCircleDrawable.setColor(getResources().getColor(R.color.color_focus));
+            textLoading = (TextView) findViewById(R.id.loading);
+            textLoading.setCompoundDrawables(null, null, mCircleDrawable, null);
+        } else {
+            showLoadingError("0");
+        }
     }
 
-    private void parsePay() {
-        textLoading.setText("付费视频，无法播放！");
-        textLoading.setBackgroundColor(Color.BLACK);
-        textLoading.setTextColor(Color.WHITE);
+    private void hideLoading() {
+        if (textLoading != null && textLoading.getVisibility() == View.VISIBLE) {
+            textLoading.setVisibility(View.GONE);
+        }
+        if (mCircleDrawable != null && mCircleDrawable.isRunning()) {
+            mCircleDrawable.stop();
+        }
     }
 
-    private void loading(Integer visibility) {
-        textLoading = (TextView) findViewById(R.id.loading);
-        mCircleDrawable = new Circle();
-        mCircleDrawable.setBounds(0, 0, 100, 100);
-        mCircleDrawable.setColor(Color.WHITE);
-        textLoading.setCompoundDrawables(null, null, mCircleDrawable, null);
-        textLoading.setVisibility(visibility);
+    private void showLoading() {
+        if (NetUtil.isConnected()) {
+            if (textLoading != null) {
+                textLoading.setVisibility(View.VISIBLE);
+                textLoading.setText("");
+            }
+            mCircleDrawable.start();
+        } else {
+            showLoadingError("0");
+        }
+    }
+
+    /**
+     * @param errorCode 0 -> 网络错误  else ->error code
+     */
+    private void showLoadingError(String errorCode) {
+        if (mCircleDrawable != null && mCircleDrawable.isRunning()) {
+            mCircleDrawable.stop();
+        }
+        if (mVideoView != null) {
+            mVideoView.stopPlayback();
+            mVideoView.release(true);
+            mVideoView.stopBackgroundPlay();
+        }
+        if (textLoading != null) {
+            textLoading.setVisibility(View.VISIBLE);
+            textLoading.setTextColor(getResources().getColor(R.color.color_all_white));
+            if (errorCode.equals("0")) {
+                textLoading.setText(getString(R.string.str_network_error));
+            } else if (errorCode.equals("1")) {
+                textLoading.setText(getString(R.string.str_needpay_error));
+            } else {
+                textLoading.setText(getString(R.string.str_code_error, errorCode));
+            }
+        }
     }
 
     public void turntoFullPlayback() {
@@ -795,10 +829,9 @@ public class VideoPreviewActivity extends BaseActivity {
         mPosition = data.getIntExtra("currentPosition", 0);
         mEpisode = data.getIntExtra("currentEpisode", 0);
         mVideoPath = data.getStringExtra("currentPath");
+        initEpisodeList();
         if (null != mVideoPath) {
-            mVideoView.setVideoURI(Uri.parse(mVideoPath));
-            mVideoView.seekTo(mPosition);
-            mVideoView.start();
+            startPlay();
         }
     }
 }

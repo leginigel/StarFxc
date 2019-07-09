@@ -1,103 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/scrollView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     tools:context=".activity.MainActivity">
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:background="@drawable/main_bg">
 
-    <RelativeLayout
-        android:id="@+id/part1"
-        android:orientation="horizontal"
-        android:clipToPadding="false"
-        android:clipChildren="false"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="180dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginBottom="3dp">
+        android:layout_height="wrap_content"
+        android:background="@drawable/main_bg"
+        android:orientation="vertical">
 
-        <FrameLayout
-            android:id="@+id/pre_video"
-            android:layout_width="320dp"
-            android:layout_height="match_parent"
-            android:focusable="true"
-            >
+        <RelativeLayout
+            android:id="@+id/part1"
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="3dp"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:orientation="horizontal">
 
-            <com.stars.tv.widget.media.IjkVideoView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/videoView">
-            </com.stars.tv.widget.media.IjkVideoView>
+            <FrameLayout
+                android:id="@+id/pre_video"
+                android:layout_width="320dp"
+                android:layout_height="match_parent"
+                android:focusable="true">
 
-            <TableLayout
-                android:id="@+id/hud_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom|center"
-                android:visibility="gone"
-                android:padding="8dp"/>
+                <com.stars.tv.widget.media.IjkVideoView
+                    android:id="@+id/videoView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"></com.stars.tv.widget.media.IjkVideoView>
 
-            <View
-                android:id="@+id/videoView_board"
+                <TableLayout
+                    android:id="@+id/hud_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|center"
+                    android:padding="8dp"
+                    android:visibility="gone" />
+
+                <View
+                    android:id="@+id/videoView_board"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/video_sample_board_bg"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/loading"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center" />
+
+            </FrameLayout>
+
+            <FrameLayout
+                android:id="@+id/mediainfo"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/video_sample_board_bg"
-                android:visibility="gone" />
+                android:layout_marginStart="10dp"
+                android:layout_toEndOf="@id/pre_video" />
 
-            <TextView
-                android:id="@+id/title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:gravity="center"/>
+        </RelativeLayout>
 
-            <TextView
-                android:id="@+id/loading"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:gravity="center"/>
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_marginStart="10dp"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:textColor="@color/color_all_white"
+            android:textSize="12sp" />
 
-        </FrameLayout>
-        <FrameLayout
-            android:id="@+id/mediainfo"
+        <com.stars.tv.adapter.EpisodeListView
+            android:id="@+id/episodelistview"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_toEndOf="@id/pre_video"
-            android:layout_marginStart="10dp"/>
+            android:layout_height="90dp"
+            android:layout_gravity="center"
+            android:layout_marginStart="5dp"
+            android:focusable="true"
+            android:padding="3dp" />
 
-    </RelativeLayout>
+        <!-- 演员列表 -->
+        <android.support.v17.leanback.widget.HorizontalGridView
+            android:id="@+id/charactor_gv"
+            android:layout_width="match_parent"
+            android:layout_height="160dp"
+            android:clipChildren="false"
+            android:clipToPadding="false" />
 
-    <com.stars.tv.adapter.EpisodeListView
-        android:id="@+id/episodelistview"
-        android:layout_width="match_parent"
-        android:layout_height="90dp"
-        android:padding="3dp"
-        android:focusable="true"
-        android:layout_gravity="center"/>
+        <!-- 相关推荐 -->
+        <android.support.v17.leanback.widget.HorizontalGridView
+            android:id="@+id/recommend_gv"
+            android:layout_width="match_parent"
+            android:layout_height="160dp"
+            android:clipChildren="false"
+            android:clipToPadding="false" />
 
-    <!-- 演员列表 -->
-    <android.support.v17.leanback.widget.HorizontalGridView
-        android:id="@+id/charactor_gv"
-        android:layout_width="match_parent"
-        android:clipToPadding="false"
-        android:clipChildren="false"
-        android:layout_height="160dp" />
-
-    <!-- 相关推荐 -->
-    <android.support.v17.leanback.widget.HorizontalGridView
-        android:id="@+id/recommend_gv"
-        android:layout_width="match_parent"
-        android:clipToPadding="false"
-        android:clipChildren="false"
-        android:layout_height="160dp" />
-
-</LinearLayout>
+    </LinearLayout>
 </ScrollView>

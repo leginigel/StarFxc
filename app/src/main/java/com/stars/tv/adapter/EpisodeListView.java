@@ -7,6 +7,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -102,7 +103,7 @@ public class EpisodeListView extends RelativeLayout implements View.OnFocusChang
                 if (hasFocus) {
                     for (int i = 0; i < (mParentAdapter.getDatas().size()); i++) {
                         View parent = mParentView.getLayoutManager().findViewByPosition(i);
-                        if(null!=parent) {
+                        if (null != parent) {
                             parent.setSelected(false);
                         }
                     }
@@ -111,7 +112,7 @@ public class EpisodeListView extends RelativeLayout implements View.OnFocusChang
                     mParentAdapter.setCurrentPosition(adapter.getParentPosition(groupPosition));
                     mGroupLayoutManager.scrollToPositionWithOffset(groupPosition, 0);
                     View parent = mParentView.getLayoutManager().findViewByPosition(groupPosition);
-                    if(null!=parent) {
+                    if (null != parent) {
                         parent.setSelected(true);
                     }
                     mEpisodesLayoutManager.scrollToPositionWithOffset(adapter.getChildrenPosition(groupPosition), 0);
@@ -145,12 +146,12 @@ public class EpisodeListView extends RelativeLayout implements View.OnFocusChang
                         View parent;
                         for (int i = 0; i < (mParentAdapter.getDatas().size()); i++) {
                             parent = mParentView.getLayoutManager().findViewByPosition(i);
-                            if(null!=parent) {
+                            if (null != parent) {
                                 parent.setSelected(false);
                             }
                         }
                         parent = mParentView.getLayoutManager().findViewByPosition(groupPosition);
-                        if(null!=parent) {
+                        if (null != parent) {
                             parent.requestFocus();
                         }
                         return true;
@@ -173,7 +174,19 @@ public class EpisodeListView extends RelativeLayout implements View.OnFocusChang
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
         if (v == this && hasFocus) {
-            mChildrenView.requestFocus();
+            View child = mChildrenView.getLayoutManager().findViewByPosition(mChildrenAdapter.getSelectedPositions());
+            if (null != child) {
+                for (int i = 0; i < (mChildrenAdapter.getData().size()); i++) {
+                    View child1 = mChildrenView.getLayoutManager().findViewByPosition(i);
+                    if (null != child1) {
+                        child1.setSelected(false);
+                    }
+                }
+                child.setSelected(true);
+                child.requestFocus();
+            } else {
+                mChildrenView.requestFocus();
+            }
         } else if (v == mChildrenView && hasFocus) {
             View child = mChildrenView.getLayoutManager().findViewByPosition(mChildrenAdapter.getCurrentPosition());
             if (child != null) {
@@ -189,6 +202,14 @@ public class EpisodeListView extends RelativeLayout implements View.OnFocusChang
             if (parent != null) {
                 parent.requestFocus();
             }
+        }
+    }
+
+    public void setFocus(int position) {
+        View child = mChildrenView.getLayoutManager().findViewByPosition(position);
+        if (child != null) {
+            child.requestFocus();
+            Log.v("EEEEposition", position + "");
         }
     }
 }

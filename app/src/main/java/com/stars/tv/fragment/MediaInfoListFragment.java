@@ -178,7 +178,7 @@ public class MediaInfoListFragment extends Fragment {
 
         String latestOrder = videoinfoshare.getString("latestOrder", "");
         String videoCount = videoinfoshare.getString("videoCount", "");
-        if (Integer.valueOf(videoCount)>1) {
+        if (Integer.valueOf(videoCount) > 1) {
             minfo1 = "集数：";
             minfo1Val = "更新至" + latestOrder + "集/共" + videoCount + "集";
         }
@@ -187,15 +187,15 @@ public class MediaInfoListFragment extends Fragment {
             case 1:   //电影
             case 2:   //电视剧
                 if (!(videoinfoshare.getString("directorname", "").isEmpty())) {
-            minfo2 = "导演：";
-            minfo2Val = videoinfoshare.getString("directorname", "");
+                    minfo2 = "导演：";
+                    minfo2Val = videoinfoshare.getString("directorname", "");
                 } else {
-            minfo2="";
-            minfo2Val="";
-        }
+                    minfo2 = "";
+                    minfo2Val = "";
+                }
                 if (!(videoinfoshare.getString("main_charactorname", "").isEmpty())) {
-            minfo3 = "主演：";
-            minfo3Val = videoinfoshare.getString("main_charactorname", "");
+                    minfo3 = "主演：";
+                    minfo3Val = videoinfoshare.getString("main_charactorname", "");
                 } else {
                     minfo3 = "";
                     minfo3Val = "";
@@ -210,18 +210,18 @@ public class MediaInfoListFragment extends Fragment {
                     minfo2Val = "";
                 }
                 if (!(videoinfoshare.getString("guestname", "").isEmpty())) {
-            minfo3 = "嘉宾：";
-            minfo3Val = videoinfoshare.getString("guestname", "");
+                    minfo3 = "嘉宾：";
+                    minfo3Val = videoinfoshare.getString("guestname", "");
                 } else {
                     minfo3 = "";
                     minfo3Val = "";
-        }
+                }
                 break;
             case 4:   //动漫
                 minfo2 = "";
                 minfo2Val = "";
-            minfo3 = "";
-            minfo3Val ="";
+                minfo3 = "";
+                minfo3Val = "";
                 break;
             default:
                 minfo2 = "";

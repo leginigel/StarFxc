@@ -11,25 +11,24 @@
         android:layout_height="match_parent">
 
         <com.stars.tv.widget.media.IjkVideoView
+            android:id="@+id/mvideoView"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/mvideoView">
-        </com.stars.tv.widget.media.IjkVideoView>
+            android:layout_height="wrap_content" />
 
         <TableLayout
             android:id="@+id/mhud_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
-            android:visibility="invisible"
-            android:padding="8dp"/>
+            android:padding="8dp"
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/mloading"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:gravity="center"/>
+            android:gravity="center" />
 
     </FrameLayout>
 

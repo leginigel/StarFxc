@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * Created by Alice on 2019/4/25.
  */
-public abstract class EpisodeListViewAdapter<T>{
+public abstract class EpisodeListViewAdapter<T> {
 
     private ChildrenAdapter mChildrenAdapter;
     private ParentAdapter mParentAdapter;
@@ -25,7 +25,7 @@ public abstract class EpisodeListViewAdapter<T>{
         return mParentAdapter;
     }
 
-    public void setSelectedPositions(List<Integer> positions) {
+    public void setSelectedPositions(int positions) {
         mChildrenAdapter.setSelectedPositions(positions);
     }
 

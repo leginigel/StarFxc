@@ -80,6 +80,7 @@
 
     <string name="str_code_error">加载失败！错误代码:( %1$s )</string>
     <string name="str_network_error">网络连接失败，请检查网络！</string>
+    <string name="str_needpay_error">付费视频，无法播放！</string>
     <string name="str_live_tv_epg_data">正在播出: %1$s </string>
     <string name="str_live_tv_epg_current_tips">正在播出:</string>
     <string name="str_live_tv_epg_next_tips">即将播出:</string>

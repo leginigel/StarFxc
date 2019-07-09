@@ -13,7 +13,6 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -36,15 +35,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class MediaControllersFragment extends DialogFragment {
 
-    private ViewGroup bottom_layout;
     private ImageButton playButton, favButton, hqButton;
     private TextView timeText, playText, favText, hqText, durationText, titleText;
     private SeekBar seekBar;
     private Context mContext;
-
-    public enum PlaybackState {
-        PLAYING, NOT_PLAYING, STOPPED, PAUSED, BUFFERING
-    }
 
     private Timer timer;
     private IjkVideoView mVideoView;
@@ -103,7 +97,6 @@ public class MediaControllersFragment extends DialogFragment {
     }
 
     public void initView(View view) {
-        bottom_layout = view.findViewById(R.id.bottom_layout);
         setText(view);
         seekBar = view.findViewById(R.id.seekBar);
         constructSeekBar();
@@ -147,10 +140,7 @@ public class MediaControllersFragment extends DialogFragment {
         });
         hqButton.setOnClickListener(v -> {
             mHandler.sendEmptyMessage(REFRESH_MOVIE_HQ);
-//            showList();
         });
-
-
     }
 
     private void setText(View view) {

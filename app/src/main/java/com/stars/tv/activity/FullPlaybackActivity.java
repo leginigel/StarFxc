@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Message;
@@ -35,8 +34,8 @@ import com.stars.tv.presenter.IQiYiParseEpisodeListPresenter;
 import com.stars.tv.presenter.IQiYiParseM3U8Presenter;
 import com.stars.tv.server.LeanCloudStorage;
 import com.stars.tv.utils.CallBack;
+import com.stars.tv.utils.NetUtil;
 import com.stars.tv.utils.Utils;
-import com.stars.tv.widget.media.AndroidMediaController;
 import com.stars.tv.widget.media.IjkVideoView;
 
 import android.os.Handler;
@@ -56,7 +55,6 @@ public class FullPlaybackActivity extends BaseActivity {
 
     private Context mContext;
     private IjkVideoView mVideoView;
-    private AndroidMediaController mMediaController;
     private TableLayout mHudView;
     private EpisodeListView mEpisodeListView;
     private View episodeView;
@@ -70,6 +68,7 @@ public class FullPlaybackActivity extends BaseActivity {
     private List<IQiYiMovieBean> mEplisodeList = new ArrayList<>();
     private String tvId, mVideoPath, name, albumId, latestOrder, malbumImagUrl;
     private int currentPosition, mEpisode, mVideoCount, mVideoType;
+    private ChildrenAdapter mChildrenAdapter;
 
     final int REFRESH_MOVIE_HQ = 100;
     int currentHQ = 0;
@@ -105,7 +104,7 @@ public class FullPlaybackActivity extends BaseActivity {
     protected void onCreate(Bundle savedInsatanceState) {
         super.onCreate(savedInsatanceState);
         setContentView(R.layout.activity_video_fullplayback);
-        mContext=this;
+        mContext = this;
         Intent intent = getIntent();
         tvId = intent.getStringExtra("tvId");
         name = intent.getStringExtra("name");
@@ -120,8 +119,7 @@ public class FullPlaybackActivity extends BaseActivity {
         malbumImagUrl = intent.getStringExtra(EXT_VIDEO_IMAGE_URL);
         // -----------------
         densityRatio = getResources().getDisplayMetrics().density; // 表示获取真正的密度
-
-        loading(View.VISIBLE);
+        initLoading();
         initVideoView();
         parseIQiYiRealM3U8WithTvId(tvId);
         if (null != latestOrder) {
@@ -134,61 +132,116 @@ public class FullPlaybackActivity extends BaseActivity {
     }
 
     public void initVideoView() {
-        // init UI
-        mMediaController = new AndroidMediaController(this, false);
-        mMediaController.clearFocus();
-        mMediaController.setVisibility(View.GONE);
         // init player
         IjkMediaPlayer.loadLibrariesOnce(null);
         IjkMediaPlayer.native_profileBegin("libijkplayer.so");
 
         mVideoView = (IjkVideoView) findViewById(R.id.mvideoView);
-        mVideoView.setMediaController(mMediaController);
+        mVideoView.setMediaController(null);
         mHudView = (TableLayout) findViewById(R.id.mhud_view);
         mVideoView.setHudView(mHudView);
-        mVideoView.setOnPreparedListener(iMediaPlayer -> loading(View.INVISIBLE));
+
+        mVideoView.setOnPreparedListener(iMediaPlayer -> hideLoading());
+        mVideoView.setOnInfoListener((iMediaPlayer, info, error) -> {
+            if (info == IMediaPlayer.MEDIA_INFO_BUFFERING_START) {
+                showLoading();
+            } else if (info == IMediaPlayer.MEDIA_INFO_BUFFERING_END) {
+                hideLoading();
+            }
+            return false;
+        });
         if (null != latestOrder) {
             mVideoView.setOnCompletionListener(new IMediaPlayer.OnCompletionListener() {
                 @Override
                 public void onCompletion(IMediaPlayer mp) {
-                    loading(View.VISIBLE);
+                    showLoading();
                     mEpisode = mEpisode + 1;
                     parseIQiYiRealM3U8WithTvId(mEplisodeList.get(mEpisode).getTvId());
-                    adapter.setSelectedPositions(Arrays.asList(mEpisode));
+                    mChildrenAdapter.setSelectedPositions(mEpisode);
                 }
             });
         }
+        mVideoView.setOnErrorListener((iMediaPlayer, framework_err, impl_err) -> {
+            showLoadingError(framework_err + "," + impl_err);
+            return true;
+        });
     }
 
     private void startPlay() {
         if (mVideoPath == "") {
             Toast.makeText(this, "No Video Found! Press Back Button To Exit", Toast.LENGTH_LONG).show();
         } else {
+            Log.v("FullPlaybackmVideoPath", mVideoPath);
             mVideoView.setVideoURI(Uri.parse(mVideoPath));
             mVideoView.seekTo(currentPosition);
             mVideoView.start();
         }
     }
 
-    private void loading(Integer visibility) {
-        textLoading = (TextView) findViewById(R.id.mloading);
-        mCircleDrawable = new Circle();
-        mCircleDrawable.setBounds(0, 0, 100, 100);
-        mCircleDrawable.setColor(Color.WHITE);
-        textLoading.setCompoundDrawables(null, null, mCircleDrawable, null);
-        textLoading.setVisibility(visibility);
+    private void initLoading() {
+        if (NetUtil.isConnected()) {
+            mCircleDrawable = new Circle();
+            mCircleDrawable.setBounds(0, 0, 100, 100);
+            mCircleDrawable.setColor(getResources().getColor(R.color.color_focus));
+            textLoading = (TextView) findViewById(R.id.mloading);
+            textLoading.setCompoundDrawables(null, null, mCircleDrawable, null);
+        } else {
+            showLoadingError("0");
+        }
+    }
+
+    private void hideLoading() {
+        if (textLoading != null && textLoading.getVisibility() == View.VISIBLE) {
+            textLoading.setVisibility(View.GONE);
+        }
+        if (mCircleDrawable != null && mCircleDrawable.isRunning()) {
+            mCircleDrawable.stop();
+        }
+    }
+
+    private void showLoading() {
+        if (NetUtil.isConnected()) {
+            if (textLoading != null) {
+                textLoading.setVisibility(View.VISIBLE);
+                textLoading.setText("");
+            }
+            mCircleDrawable.start();
+        } else {
+            showLoadingError("0");
+        }
+    }
+
+    /**
+     * @param errorCode 0 -> 网络错误  else ->error code
+     */
+    private void showLoadingError(String errorCode) {
+        if (mCircleDrawable != null && mCircleDrawable.isRunning()) {
+            mCircleDrawable.stop();
+        }
+        if (mVideoView != null) {
+            mVideoView.stopPlayback();
+            mVideoView.release(true);
+            mVideoView.stopBackgroundPlay();
+        }
+        if (textLoading != null) {
+            textLoading.setVisibility(View.VISIBLE);
+            textLoading.setTextColor(getResources().getColor(R.color.color_all_white));
+            if (errorCode.equals("0")) {
+                textLoading.setText(getString(R.string.str_network_error));
+            } else {
+                textLoading.setText(getString(R.string.str_code_error, errorCode));
+            }
+        }
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        mCircleDrawable.start();
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        mCircleDrawable.stop();
         mVideoView.stopPlayback();
         mVideoView.release(true);
         mVideoView.stopBackgroundPlay();
@@ -198,8 +251,6 @@ public class FullPlaybackActivity extends BaseActivity {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        Log.v("key", event.toString());
-        Log.v("key", keyCode + "");
         if (event.getAction() == KeyEvent.ACTION_DOWN) {
             switch (keyCode) {
                 case KeyEvent.KEYCODE_DPAD_UP:
@@ -208,12 +259,14 @@ public class FullPlaybackActivity extends BaseActivity {
                         showOrHideEpisode();
                         if (!mEpisodeListView.isShown()) {
                             mEpisodeListView.setVisibility(View.VISIBLE);
-//                        mEpisodeListView.requestFocus();
-                            adapter.setSelectedPositions(Arrays.asList(mEpisode));
+                            mChildrenAdapter.setCurrentPosition(mEpisode);
+                            mChildrenAdapter.setSelectedPositions(mEpisode);
                             return true;
                         }
                     }
                     break;
+                case KeyEvent.KEYCODE_ENTER:
+                case KeyEvent.KEYCODE_DPAD_CENTER:
                 case KeyEvent.KEYCODE_DPAD_LEFT:
                 case KeyEvent.KEYCODE_DPAD_RIGHT:
                     FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -224,13 +277,14 @@ public class FullPlaybackActivity extends BaseActivity {
                     mediaControllersFragment.show(ft, "controllers");
                     break;
                 case KeyEvent.KEYCODE_BACK:
+                    handler.removeCallbacks(r);
+                    episodePopupWindow.dismiss();
                     returnHistoryUpdate();
                     return true;
             }
         }
         return super.onKeyDown(keyCode, event);
     }
-
 
     private void returnHistoryUpdate() {
         if (mVideoCount > 0 && malbumImagUrl != null) {
@@ -281,8 +335,7 @@ public class FullPlaybackActivity extends BaseActivity {
 
     public void initEpisodeList() {
         episodeView = (View) getLayoutInflater().inflate(R.layout.episodelist, null);
-        episodePopupWindow = new PopupWindow(episodeView, LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, true);
-
+        episodePopupWindow = new PopupWindow(episodeView, LayoutParams.MATCH_PARENT, 260, true);
         mEpisodeListView = (EpisodeListView) episodeView.findViewById(R.id.mepisodelistview);
 
         ArrayList<String> stringArrayList = new ArrayList<String>();
@@ -331,19 +384,21 @@ public class FullPlaybackActivity extends BaseActivity {
                 return parentPosition / 10;
             }
         };
-
-        adapter.setSelectedPositions(Arrays.asList(mEpisode));
+        mChildrenAdapter = adapter.getEpisodesAdapter();
+        adapter.setSelectedPositions(mEpisode);
         mEpisodeListView.setAdapter(adapter);
         mEpisodeListView.setChildrenItemClickListener(new ChildrenAdapter.OnItemClickListener() {
             @Override
             public void onEpisodesItemClick(View view, int position) {
-                loading(View.VISIBLE);
+                showLoading();
                 mEpisode = position;
-                adapter.setSelectedPositions(Arrays.asList(mEpisode));
-                currentPosition=0;
+                adapter.setSelectedPositions(mEpisode);
+                currentPosition = 0;
                 tvId = mEplisodeList.get(position).getTvId();
                 parseIQiYiRealM3U8WithTvId(tvId);
-                Utils.setSharedValue( mContext, "mEpisodeName", mEplisodeList.get(mEpisode).getName());
+                Utils.setSharedValue(mContext, "mEpisodeName", mEplisodeList.get(mEpisode).getName());
+                handler.removeCallbacks(r);
+                episodePopupWindow.dismiss();
             }
         });
         if (null != latestOrder) {
@@ -358,8 +413,7 @@ public class FullPlaybackActivity extends BaseActivity {
             // 将dp转换为px
             int episodeHeightPixel = (int) (densityRatio * 50);
             episodePopupWindow.showAsDropDown(mVideoView, 0, -episodeHeightPixel);
-            Log.v("mEpisode1",mEpisode+"");
-            adapter.setSelectedPositions(Arrays.asList(mEpisode));
+            mChildrenAdapter.setSelectedPositions(mEpisode);
             // 延时执行
             handler.postDelayed(r, HIDDEN_TIME);
         }
@@ -380,85 +434,78 @@ public class FullPlaybackActivity extends BaseActivity {
             @Override
             public void success(List<IQiYiM3U8Bean> list) {
                 //TODO 获取成功在此得到真实播放地址的List，可能会有HD,SD,1080P
-
-                if (null != list) {
+                if (null != list && list.size() > 0) {
+                    showLoading();
                     switch (currentHQ) {
                         case 0:    //默认 取第一个
                             mVideoPath = list.get(0).getM3u();
                             break;
                         case 1:    //省流  96 LD 210p
                             for (int i = 0; i < list.size(); i++) {
-                                if (list.get(i).getVd() == 96) mVideoPath = list.get(i).getM3u();
-                                else mVideoPath = list.get(0).getM3u();
-                                break;
+                                if (list.get(i).getVd() == 96) {
+                                    mVideoPath = list.get(i).getM3u();
+                                }
                             }
+                            break;
                         case 2:   //标清    1  SD 360p
                             for (int i = 0; i < list.size(); i++) {
-                                if (list.get(i).getVd() == 1) mVideoPath = list.get(i).getM3u();
-                                else mVideoPath = list.get(0).getM3u();
-                                break;
+                                if (list.get(i).getVd() == 1) {
+                                    mVideoPath = list.get(i).getM3u();
+                                }
                             }
+                            break;
                         case 3:   //高清    2 HD 540p, 21 HD 540p
                             for (int i = 0; i < list.size(); i++) {
                                 if (list.get(i).getVd() == 2) {
                                     mVideoPath = list.get(i).getM3u();
-                                    break;
                                 } else if (list.get(i).getVd() == 21) {
                                     mVideoPath = list.get(i).getM3u();
-                                    break;
-                                } else mVideoPath = list.get(0).getM3u();
-                                break;
+                                }
                             }
+                            break;
                         case 4:   //超清    4 TD 720p, 14 TD 720p, 17 TD 720p
                             for (int i = 0; i < list.size(); i++) {
                                 if (list.get(i).getVd() == 4) {
                                     mVideoPath = list.get(i).getM3u();
-                                    break;
                                 } else if (list.get(i).getVd() == 14) {
                                     mVideoPath = list.get(i).getM3u();
-                                    break;
                                 } else if (list.get(i).getVd() == 17) {
                                     mVideoPath = list.get(i).getM3u();
-                                    break;
-                                } else mVideoPath = list.get(0).getM3u();
-                                break;
+                                }
                             }
+                            break;
                         case 5:   //蓝光    5 BD 1080p，18 BD 1080p
                             for (int i = 0; i < list.size(); i++) {
                                 if (list.get(i).getVd() == 5) {
                                     mVideoPath = list.get(i).getM3u();
-                                    break;
                                 } else if (list.get(i).getVd() == 18) {
                                     mVideoPath = list.get(i).getM3u();
-                                    break;
-                                } else mVideoPath = list.get(0).getM3u();
-                                break;
+                                }
                             }
-
+                            break;
+                    }
+                    if ("".equals(mVideoPath)) {
+                        mVideoPath = list.get(0).getM3u();
                     }
                     startPlay();
                 } else {
                     mVideoPath = "";
-                    Log.v("VideoPreviewActivity", "获取失败parseIQiYiRealM3U8WithTvId");
-                    textLoading.setText("加载失败！");
-                    textLoading.setBackgroundColor(Color.BLACK);
-                    textLoading.setTextColor(Color.WHITE);
+                    mVideoView.stopPlayback();
+                    mVideoView.release(true);
+                    showLoadingError("0");
+
                 }
                 for (IQiYiM3U8Bean bean : list) {
                     Log.v("FullPlaybackM3U8", bean.toString());
                 }
-
-
             }
 
             @Override
             public void error(String msg) {
                 //TODO 获取失败
                 mVideoPath = "";
-                Log.v("VideoPreviewActivity", "获取失败parseIQiYiRealM3U8WithTvId");
-                textLoading.setText("加载失败！");
-                textLoading.setBackgroundColor(Color.BLACK);
-                textLoading.setTextColor(Color.WHITE);
+                Log.v("FullPlayback", "获取失败parseIQiYiRealM3U8WithTvId");
+                showLoadingError("0");
             }
         });
     }
@@ -479,7 +526,7 @@ public class FullPlaybackActivity extends BaseActivity {
                 mEplisodeList.addAll(list);
                 //TODO 获取电视剧剧集列表
                 for (IQiYiMovieBean bean : list) {
-                    Log.v("VideoPreviewEpisodeList", bean.toString());
+                    Log.v("FullPlaybackEpisodeList", bean.toString());
                 }
                 initEpisodeList();
             }

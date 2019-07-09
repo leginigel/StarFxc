@@ -97,6 +97,8 @@ public class MediaListMVPFragment
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case REFRESH_MOVIE_CONTENT:
+                    typename_txt.setVisibility(View.VISIBLE);
+                    typecount_txt.setVisibility(View.VISIBLE);
                     mVideoSampleAdapter.notifyDataSetChanged();
                     if (mVideoList.size() > 900) {
                         videoGrid.endRefreshingWithNoMoreData();
@@ -119,7 +121,8 @@ public class MediaListMVPFragment
     }
 
     private void refreshRequest(int postition) {
-
+        typename_txt.setVisibility(View.INVISIBLE);
+        typecount_txt.setVisibility(View.INVISIBLE);
         if (mTvTitle.contains("Series")) {
             refreshSeries(postition);
         } else if (mTvTitle.contains("Film")) {
@@ -521,7 +524,7 @@ public class MediaListMVPFragment
             if (null != mVideoList) {
                 final IQiYiMovieBean videoBean = mVideoList.get(position);
                 Glide.with(Objects.requireNonNull(getActivity()))
-                        .load(videoBean.getImageUrl()).into(holder.bgIv);
+                        .load(videoBean.getImageUrl().replace(".jpg", "_260_360.jpg")).into(holder.bgIv);
                 holder.nameTv.setAlpha(0.80f);
                 holder.nameTv.setText(videoBean.getName());
                 String latestOrder = videoBean.getLatestOrder();
