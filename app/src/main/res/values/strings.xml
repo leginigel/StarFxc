@@ -172,4 +172,7 @@
     <string name="str_account_info_verify_code">验证码</string>
     <string name="str_account_info_confirm_verify_code">验证</string>
 
+    <string name="stream_description_yt">例如：youtube.com/watch?v=UCUZHFZ9jIKrLroW8LcyJEQQ
+\n
+所有 YouTube 頻道都使用這種標準網址，主要是以頻道的專屬 ID (網址結尾的數字和英文字母) 做為辨識的依據，直播网址即为直播频道的 ID</string>
 </resources>

@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 
 import com.avos.avoscloud.AVException;
@@ -184,6 +185,13 @@ public class YoutubeActivity extends FragmentActivity implements CustomAdapt,
                         if(mTopNav.getDescendantFocusability() == ViewGroup.FOCUS_BLOCK_DESCENDANTS) {
                             YoutubeRowFragment frag = (YoutubeRowFragment) youtubeFragment.getFragmentManager().findFragmentById(R.id.container_row);
                             YoutubeRowFragment.highlightRowFocus(this, frag);
+                        }
+                        else {
+                            for (int i = 1; i < mTopNav.getChildCount(); i++) {
+                                mTopNav.getChildAt(i).setSelected(false);
+                                ((Button) mTopNav.getChildAt(i))
+                                        .setTextColor(getResources().getColor(R.color.btn_text));
+                            }
                         }
                     }
                     if(searchIcon.isSelected()) {
