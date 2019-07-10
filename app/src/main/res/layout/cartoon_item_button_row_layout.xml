@@ -58,7 +58,7 @@
         android:layout_marginRight="10dp" />
 
     <Button
-        android:text="剧场"
+        android:text="国漫"
         android:layout_weight="1"
         android:layout_width="0dp"
         android:layout_height="match_parent"

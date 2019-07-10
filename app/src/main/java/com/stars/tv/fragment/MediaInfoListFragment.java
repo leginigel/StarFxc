@@ -42,6 +42,7 @@ public class MediaInfoListFragment extends Fragment {
     private String medName, medScore, minfo1, minfo1Val, minfo2, minfo2Val, minfo3, minfo3Val, medplot;
     private ExtVideoBean mVideoInfo;
     private boolean isFavorite;
+    private int mVideoType;
 
     final int TURNTOFULLSCREEN = 2;
 
@@ -154,7 +155,7 @@ public class MediaInfoListFragment extends Fragment {
             }
         });
         mFullScreen = (Button) viewGroup.findViewById(R.id.full_btn);
-        mFullScreen.requestFocus();
+
         mFullScreen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -182,7 +183,10 @@ public class MediaInfoListFragment extends Fragment {
             minfo1 = "集数：";
             minfo1Val = "更新至" + latestOrder + "集/共" + videoCount + "集";
         }
-        int mVideoType = videoinfoshare.getInt(EXT_VIDEO_TYPE, 0);
+        mVideoType = videoinfoshare.getInt(EXT_VIDEO_TYPE, 0);
+        if (mVideoType ==1 || mVideoType == 6) {
+            mFullScreen.requestFocus();
+        }
         switch (mVideoType) {
             case 1:   //电影
             case 2:   //电视剧
@@ -231,7 +235,7 @@ public class MediaInfoListFragment extends Fragment {
                 break;
         }
 
-        if (null != (videoinfoshare.getString("description", ""))) {
+        if (!(videoinfoshare.getString("description", "")).equals("")) {
             medplot = videoinfoshare.getString("description", "");
         } else {
             medplot = "无";

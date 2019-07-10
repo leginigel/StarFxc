@@ -204,12 +204,4 @@ public class EpisodeListView extends RelativeLayout implements View.OnFocusChang
             }
         }
     }
-
-    public void setFocus(int position) {
-        View child = mChildrenView.getLayoutManager().findViewByPosition(position);
-        if (child != null) {
-            child.requestFocus();
-            Log.v("EEEEposition", position + "");
-        }
-    }
 }

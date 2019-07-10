@@ -100,6 +100,7 @@ public class VideoPreviewActivity extends BaseActivity {
     final int REFRESH_RecommendList = 1;
     final int TURNTOFULLSCREEN = 2;
     final int REFRESH_VideoBaseInfo = 3;
+    final int REFRESH_HistoryInfo = 4;
     private int mPosition = 0;
     private int mEpisode = 0;
 
@@ -121,8 +122,6 @@ public class VideoPreviewActivity extends BaseActivity {
     private String htvId, hmVideoPath;
     private int hmPosition, hmEpisode;
 
-    private Boolean topfocus;
-
     @SuppressLint("HandlerLeak")
     private Handler mHandler = new Handler() {
         @Override
@@ -130,6 +129,8 @@ public class VideoPreviewActivity extends BaseActivity {
             switch (msg.what) {
                 case REFRESH_VideoBaseInfo:
                     getVideoInfo();
+                case REFRESH_HistoryInfo:
+                    checkHistoryInfo(albumId);
                 case REFRESH_InfoList:
                     refreshInfoList();
                     if (null != mVideoBase.getPeople()) {
@@ -240,10 +241,6 @@ public class VideoPreviewActivity extends BaseActivity {
         pre_videoLayout.setOnFocusChangeListener((view1, hasFocus) -> {
             if (pre_videoLayout != null) {
                 pre_videoLayout.findViewById(R.id.videoView_board).setVisibility(hasFocus ? View.VISIBLE : View.INVISIBLE);
-                if (pre_videoLayout.findViewById(R.id.videoView_board).getVisibility() == View.VISIBLE) {
-                    topfocus = true;
-                } else topfocus = false;
-                Log.v("topfocus", topfocus.toString());
             }
         });
         pre_videoLayout.setOnClickListener(new View.OnClickListener() {
@@ -258,9 +255,13 @@ public class VideoPreviewActivity extends BaseActivity {
         if (mVideoPath == "") {
             showLoadingError("0");
         } else {
-            if (mVideoBase.getChannelId() == 2) {
-                if (null != mEplisodeList)
+            //电视剧 2  动漫 4
+            if (mVideoBase.getChannelId() == 2 || mVideoBase.getChannelId() == 4) {
+                if (mEplisodeList.toString().equals("[]"))
+                    title.setText(name);
+                else {
                     title.setText(mEplisodeList.get(mEpisode).getName());
+                }
             } else title.setText(name);
             mVideoView.setVideoURI(Uri.parse(mVideoPath));
             mVideoView.seekTo(mPosition);
@@ -270,13 +271,10 @@ public class VideoPreviewActivity extends BaseActivity {
 
     private void refreshInfoList() {
         //tvid
-        if (!tvId.isEmpty()) {
-            parseIQiYiRealM3U8WithTvId(tvId);
-
-        } else {
+        if (tvId.equals("")) {
             tvId = ctvid;
-            parseIQiYiRealM3U8WithTvId(ctvid);
         }
+        parseIQiYiRealM3U8WithTvId(tvId);
 
         //clear value
         directorname = hostname = main_charactorname = guestname = "";
@@ -340,7 +338,6 @@ public class VideoPreviewActivity extends BaseActivity {
         } else {
             mEpisodeListView.setVisibility(View.GONE);
         }
-
     }
 
     private void getVideoInfo() {
@@ -351,10 +348,12 @@ public class VideoPreviewActivity extends BaseActivity {
         videoCount = mVideoBase.getVideoCount();
         latestOrder = mVideoBase.getLatestOrder();
 
-        checkHistoryInfo(albumId);
         if (Integer.valueOf(videoCount) > 1) {
             parseIQiYiEpisodeList(albumId, Integer.valueOf(latestOrder), 1);
         }
+
+//        checkHistoryInfo(albumId);
+
         // For Favorite Usage
         mVideoType = mVideoBase.getChannelId();
         mVideoCount = Integer.valueOf(mVideoBase.getVideoCount());
@@ -397,11 +396,12 @@ public class VideoPreviewActivity extends BaseActivity {
                         hmVideoPath = bean.getVideoPlayUrl();
                         hmPosition = bean.getVideoPlayPosition();
                         hmEpisode = bean.getVideoCurrentViewOrder();
-
-                        tvId = htvId;
-                        mVideoPath = hmVideoPath;
-                        mPosition = hmPosition;
-                        mEpisode = hmEpisode;
+                        if (htvId!=null && hmEpisode != 0) {
+                            tvId = htvId;
+                            mVideoPath = hmVideoPath;
+                            mPosition = hmPosition;
+                            mEpisode = hmEpisode;
+                        }
                         Log.v("HistoryInfo", "tvId" + tvId + "hmVideoPath" + hmVideoPath + ";mPosition" + mPosition + ";mEpisode" + mEpisode);
                     }
                     mHandler.sendEmptyMessage(REFRESH_InfoList);
@@ -413,16 +413,18 @@ public class VideoPreviewActivity extends BaseActivity {
                 }
             });
         } catch (Exception e) {
-            mHandler.sendEmptyMessage(REFRESH_InfoList);
+//            mHandler.sendEmptyMessage(REFRESH_InfoList);
         }
     }
 
     public void initMediaInfo() {
-        Fragment newFragment = MediaInfoListFragment.newInstance();
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.mediainfo, newFragment);
-        transaction.commit();
-        ((MediaInfoListFragment) newFragment).setHandler(mHandler);
+        Fragment mediaInfoListFragment = MediaInfoListFragment.newInstance();
+        getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.mediainfo, mediaInfoListFragment)
+                .commit();
+
+        ((MediaInfoListFragment) mediaInfoListFragment).setHandler(mHandler);
     }
 
     public void initEpisodeList() {
@@ -612,7 +614,7 @@ public class VideoPreviewActivity extends BaseActivity {
                     mVideoPath = "";
                     mVideoView.stopPlayback();
                     mVideoView.release(true);
-                    showLoadingError("0");
+                    showLoadingError("1");
                 }
             }
 
@@ -638,14 +640,18 @@ public class VideoPreviewActivity extends BaseActivity {
         ps.requestIQiYiEpisodeList(albumId, size, pageNum, new CallBack<List<IQiYiMovieBean>>() {
             @Override
             public void success(List<IQiYiMovieBean> list) {
-                mEplisodeList.clear();
-                showLoading();
-                mEplisodeList.addAll(list);
-                ctvid = mEplisodeList.get(0).getTvId();
-                //TODO 获取电视剧剧集列表
-                for (IQiYiMovieBean bean : list) {
-                    Log.v("VideoPreviewEpisodeList", bean.toString());
+                if(null!=list) {
+                    mEplisodeList.clear();
+                    showLoading();
+                    mEplisodeList.addAll(list);
+                    ctvid = mEplisodeList.get(0).getTvId();
+                    //TODO 获取电视剧剧集列表
+                    for (IQiYiMovieBean bean : list) {
+                        Log.v("VideoPreviewEpisodeList", bean.toString());
+                    }
                 }
+                else showLoadingError("1");
+                mHandler.sendEmptyMessage(REFRESH_HistoryInfo);
             }
 
             @Override
@@ -725,9 +731,8 @@ public class VideoPreviewActivity extends BaseActivity {
                 mVideoList.clear();
                 showLoading();
                 mVideoList.addAll(list);
-                Log.v("VVVmVideoList", mVideoList.toString());
                 for (IQiYiMovieBean bean : list) {
-                    Log.v("PreVideoRowFragment", bean.toString());
+                    Log.v("VideoPreviewActivity", bean.toString());
                 }
                 mHandler.sendEmptyMessage(REFRESH_RecommendList);
             }
@@ -787,7 +792,7 @@ public class VideoPreviewActivity extends BaseActivity {
             mVideoView.stopBackgroundPlay();
         }
         if (textLoading != null) {
-            textLoading.setVisibility(View.VISIBLE);
+            textLoading.setVisibility(View.INVISIBLE);
             textLoading.setTextColor(getResources().getColor(R.color.color_all_white));
             if (errorCode.equals("0")) {
                 textLoading.setText(getString(R.string.str_network_error));
@@ -796,6 +801,7 @@ public class VideoPreviewActivity extends BaseActivity {
             } else {
                 textLoading.setText(getString(R.string.str_code_error, errorCode));
             }
+            textLoading.setVisibility(View.VISIBLE);
         }
     }
 

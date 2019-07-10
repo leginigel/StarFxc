@@ -289,7 +289,7 @@ public class MediaListMVPFragment
                     break;
                 case 2:    //热血战斗
                     typename_txt.setText("分类 - " + "热血战斗(");
-                    mPresenter.requestIQiYiMovie(4, "30232,30239", "", "", 24, mPageNum, 1, "iqiyi", 1, "", 48);
+                    mPresenter.requestIQiYiMovie(4, "30232", "", "", 24, mPageNum, 1, "iqiyi", 1, "", 48);
                     break;
                 case 3:    //搞笑日常
                     typename_txt.setText("分类 - " + "搞笑日常(");
@@ -344,13 +344,13 @@ public class MediaListMVPFragment
             mPresenter.requestIQiYiMovie(4, "30230", "", "", 24, mPageNum, 1, "iqiyi", 1, "", 48);
         } else if (mTvTitle.contains("战斗")) {
             typename_txt.setText("分类 - " + "战斗(");
-            mPresenter.requestIQiYiMovie(4, "30239", "", "", 24, mPageNum, 1, "iqiyi", 1, "", 48);
+            mPresenter.requestIQiYiMovie(4, "30241", "", "", 24, mPageNum, 1, "iqiyi", 1, "", 48);
         } else if (mTvTitle.contains("热血")) {
             typename_txt.setText("分类 - " + "热血(");
             mPresenter.requestIQiYiMovie(4, "30232", "", "", 24, mPageNum, 1, "iqiyi", 1, "", 48);
-        } else if (mTvTitle.contains("剧场")) {
-            typename_txt.setText("分类 - " + "剧场(");
-            mPresenter.requestIQiYiMovie(4, "67", "", "", 24, mPageNum, 1, "iqiyi", 1, "", 48);
+        } else if (mTvTitle.contains("国漫")) {
+            typename_txt.setText("分类 - " + "国漫(");
+            mPresenter.requestIQiYiMovie(4, "37", "", "", 8, mPageNum, 1, "iqiyi", 1, "", 48);
         }
     }
 
