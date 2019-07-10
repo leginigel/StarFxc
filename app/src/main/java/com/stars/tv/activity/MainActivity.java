@@ -76,7 +76,7 @@ import butterknife.Unbinder;
 
 public class MainActivity extends BaseActivity {
 
-  private static final int TITLE_PADDING_LEFT_PX = 60;
+  private static final int TITLE_PADDING_LEFT_DP = 20;
   private static final int TITLE_TOP_PADDING_PC = 0;
   private static final int TITLE_RIGHT_PADDING_PC = 20;
 
@@ -148,7 +148,7 @@ public class MainActivity extends BaseActivity {
   }
 
   private void initTitle() {
-    hgTitle.setPadding(TITLE_PADDING_LEFT_PX, 0, 0, 0);
+    hgTitle.setPadding(ViewUtils.getPercentHeightSize(TITLE_PADDING_LEFT_DP), 0, 0, 0);
     int top = ViewUtils.getPercentHeightSize(TITLE_TOP_PADDING_PC);
     int right = ViewUtils.getPercentWidthSize(TITLE_RIGHT_PADDING_PC);
     hgTitle.addItemDecoration(new SpaceItemDecoration(right, top));
@@ -182,14 +182,18 @@ public class MainActivity extends BaseActivity {
       public void onChildViewHolderSelected(RecyclerView parent, RecyclerView.ViewHolder child, int position, int subposition) {
         super.onChildViewHolderSelected(parent, child, position, subposition);
         child.itemView.setTag(position);
+        if(position!=-1) {
+            ViewUtils.scaleAnimator(child.itemView, true, 1.2f, 150);
+        }
         child.itemView.setOnFocusChangeListener((view, hasFocus) -> {
           // show search button
             if (hasFocus) {
                 searchBtn.setVisibility(View.VISIBLE);
                 ytBtn.setVisibility(View.VISIBLE);
                 streamBtn.setVisibility(View.VISIBLE);
+            }else {
+                ViewUtils.scaleAnimator(view, false, 1.2f, 150);
             }
-            ViewUtils.scaleAnimator(view, hasFocus, 1.2f, 150);
           TextView tv = view.findViewById(R.id.tv_title);
           View lineView = view.findViewById(R.id.title_under_line);
           lineView.setBackgroundColor(getResources().getColor(hasFocus ? R.color.color_focus : R.color.color_transparent));
