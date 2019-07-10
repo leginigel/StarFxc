@@ -23,13 +23,13 @@ import com.stars.tv.youtube.util.Utils;
 public class ControlCardPresenter extends YouTubeCardPresenter {
 
     private PlayerControlsFragment playerControlsFragment;
-    PlayerControlsFragment.PlayerState state;
     @Override
     public Presenter.ViewHolder onCreateViewHolder(ViewGroup viewGroup) {
         Context context = viewGroup.getContext();
         playerControlsFragment = (PlayerControlsFragment) ((FragmentActivity) context)
                         .getSupportFragmentManager().findFragmentByTag("dialog");
-        state = playerControlsFragment.getPlayerStateChangeListener().getPlayerState();
+        PlayerControlsFragment.PlayerState state =
+                playerControlsFragment.getPlayerStateChangeListener().getPlayerState();
         ListRowView listRowView = (ListRowView) viewGroup.getParent();
         if(state == PlayerControlsFragment.PlayerState.VIDEO_ENDED){
             listRowView.setAlpha(1);
@@ -92,6 +92,8 @@ public class ControlCardPresenter extends YouTubeCardPresenter {
     public void setDefaultFocus(View v, int keyCode) {
         // playerControlsFragment close after 10s
         playerControlsFragment.setCountDown(10);
+        PlayerControlsFragment.PlayerState state =
+                playerControlsFragment.getPlayerStateChangeListener().getPlayerState();
         if(keyCode == KeyEvent.KEYCODE_DPAD_UP) {
             if(state == PlayerControlsFragment.PlayerState.VIDEO_ENDED){
                 playerControlsFragment.getReplayIcon().requestFocus();
