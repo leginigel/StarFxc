@@ -11,16 +11,16 @@ import android.support.v17.leanback.widget.HeaderItem;
 import android.support.v17.leanback.widget.ImageCardView;
 import android.support.v17.leanback.widget.ListRow;
 import android.support.v17.leanback.widget.ListRowPresenter;
+import android.support.v17.leanback.widget.ListRowView;
 import android.support.v17.leanback.widget.OnItemViewSelectedListener;
 import android.support.v17.leanback.widget.Presenter;
 import android.support.v17.leanback.widget.Row;
 import android.support.v17.leanback.widget.RowPresenter;
 import android.view.View;
-import android.widget.TextView;
+import android.view.ViewGroup;
 
 import java.util.List;
 
-import com.stars.tv.R;
 import com.stars.tv.youtube.data.YouTubeVideo;
 import com.stars.tv.youtube.ui.YouTubeCardPresenter;
 import com.stars.tv.youtube.ui.youtube.YoutubeRowFragment;
@@ -47,7 +47,6 @@ public class ControlRowFragment extends YoutubeRowFragment {
         mCardsAdapter.addAll(0, videos);
         mRow = new ListRow(new HeaderItem("Suggestion "), mCardsAdapter);
         mRowsAdapter.add(mRow);
-
     }
 
     @Override
@@ -109,5 +108,11 @@ public class ControlRowFragment extends YoutubeRowFragment {
     @Override
     public YouTubeCardPresenter getCardPresenter() {
         return mCardPresenter;
+    }
+
+    public void setRowAlpha(float alpha) {
+        ViewGroup rowContainer = (ViewGroup) getVerticalGridView().getChildAt(0);
+        ListRowView listRowView = (ListRowView) rowContainer.getChildAt(1);
+        listRowView.setAlpha(alpha);
     }
 }

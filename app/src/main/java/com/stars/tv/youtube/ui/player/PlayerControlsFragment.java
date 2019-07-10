@@ -184,7 +184,7 @@ public class PlayerControlsFragment extends DialogFragment {
                         mConstraint.setVisibility(View.INVISIBLE);
                     }
                 });
-
+controlRowFragment.setRowAlpha(1);
         CountDown = 10;
     }
 
@@ -215,7 +215,7 @@ public class PlayerControlsFragment extends DialogFragment {
                         mConstraint.setVisibility(View.VISIBLE);
                     }
                 });
-
+        controlRowFragment.setRowAlpha(0.5f);
         CountDown = 5;
     }
 
