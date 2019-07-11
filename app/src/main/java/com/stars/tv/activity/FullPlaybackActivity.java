@@ -67,11 +67,13 @@ public class FullPlaybackActivity extends BaseActivity {
     private EpisodeListViewAdapter<String> adapter;
     private List<IQiYiMovieBean> mEplisodeList = new ArrayList<>();
     private String tvId, mVideoPath, name, albumId, latestOrder, malbumImagUrl;
-    private int currentPosition, mEpisode, mVideoCount, mVideoType;
+    private int currentPosition = 0;
+    private int mEpisode, mVideoCount, mVideoType;
     private ChildrenAdapter mChildrenAdapter;
 
     final int REFRESH_MOVIE_HQ = 100;
     int currentHQ = 0;
+    Boolean isLoading = true;
 
     private float densityRatio = 1.0f; // 密度比值系数（密度比值：一英寸中像素点除以160）
     // 自动隐藏Episode的时间
@@ -126,6 +128,7 @@ public class FullPlaybackActivity extends BaseActivity {
             parseIQiYiEpisodeList(albumId, Integer.valueOf(latestOrder), 1);
         }
 
+        Utils.setSharedValue(mContext, "mVideoType", mVideoType);
         mediaControllersFragment = MediaControllersFragment.newInstance();
         mediaControllersFragment.setVideo(mVideoView);
         mediaControllersFragment.setHandler(mHandler);
@@ -197,6 +200,7 @@ public class FullPlaybackActivity extends BaseActivity {
         if (mCircleDrawable != null && mCircleDrawable.isRunning()) {
             mCircleDrawable.stop();
         }
+        isLoading = false;
     }
 
     private void showLoading() {
@@ -278,7 +282,8 @@ public class FullPlaybackActivity extends BaseActivity {
                     break;
                 case KeyEvent.KEYCODE_BACK:
                     handler.removeCallbacks(r);
-                    episodePopupWindow.dismiss();
+                    if (null != latestOrder)
+                        episodePopupWindow.dismiss();
                     returnHistoryUpdate();
                     return true;
             }
@@ -320,7 +325,10 @@ public class FullPlaybackActivity extends BaseActivity {
         //数据是使用Intent返回
         Intent intent = new Intent();
         //把返回数据存入Intent
-        intent.putExtra("currentPosition", mVideoView.getCurrentPosition());
+        if (isLoading)
+            intent.putExtra("currentPosition", currentPosition);
+        else
+            intent.putExtra("currentPosition", mVideoView.getCurrentPosition());
         intent.putExtra("currentPath", mVideoPath);
         if (null != latestOrder) {
             intent.putExtra("currentEpisode", mEpisode);
@@ -492,7 +500,7 @@ public class FullPlaybackActivity extends BaseActivity {
                     mVideoPath = "";
                     mVideoView.stopPlayback();
                     mVideoView.release(true);
-                    showLoadingError("0");
+                    showLoadingError("1");
 
                 }
                 for (IQiYiM3U8Bean bean : list) {

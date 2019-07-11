@@ -341,7 +341,16 @@ public class VideoPreviewActivity extends BaseActivity {
     }
 
     private void getVideoInfo() {
-        name = mVideoBase.getAlbumName();
+        //电影  1
+        if (mVideoBase.getChannelId() == 1) {
+            name = mVideoBase.getName();
+        } else {
+            if (mVideoBase.getAlbumName() != null && (!mVideoBase.getAlbumName().equals("")) && (!mVideoBase.getAlbumName().isEmpty())) {
+                name = mVideoBase.getAlbumName();
+            } else {
+                name = mVideoBase.getName();
+            }
+        }
         score = mVideoBase.getScore();
         tvId = mVideoBase.getTvId();
         albumId = mVideoBase.getAlbumId();
@@ -387,6 +396,8 @@ public class VideoPreviewActivity extends BaseActivity {
     }
 
     public void checkHistoryInfo(String albumId) {
+        Intent intent = new Intent();
+        intent.setClassName("com.stars.tv.activity", "VideoPreviewActivity");
         try {
             LeanCloudStorage.getIQiyHistoryListener(albumId, new LeanCloudStorage.VideoSeeker() {
                 @Override
@@ -396,7 +407,7 @@ public class VideoPreviewActivity extends BaseActivity {
                         hmVideoPath = bean.getVideoPlayUrl();
                         hmPosition = bean.getVideoPlayPosition();
                         hmEpisode = bean.getVideoCurrentViewOrder();
-                        if (htvId!=null && hmEpisode != 0) {
+                        if (htvId != null && hmEpisode != 0) {
                             tvId = htvId;
                             mVideoPath = hmVideoPath;
                             mPosition = hmPosition;
@@ -404,12 +415,14 @@ public class VideoPreviewActivity extends BaseActivity {
                         }
                         Log.v("HistoryInfo", "tvId" + tvId + "hmVideoPath" + hmVideoPath + ";mPosition" + mPosition + ";mEpisode" + mEpisode);
                     }
-                    mHandler.sendEmptyMessage(REFRESH_InfoList);
+                    if (getPackageManager().resolveActivity(intent, 0) != null)
+                        mHandler.sendEmptyMessage(REFRESH_InfoList);
                 }
 
                 @Override
                 public void failed() {
-                    mHandler.sendEmptyMessage(REFRESH_InfoList);
+                    if (getPackageManager().resolveActivity(intent, 0) != null)
+                        mHandler.sendEmptyMessage(REFRESH_InfoList);
                 }
             });
         } catch (Exception e) {
@@ -421,7 +434,7 @@ public class VideoPreviewActivity extends BaseActivity {
         Fragment mediaInfoListFragment = MediaInfoListFragment.newInstance();
         getSupportFragmentManager()
                 .beginTransaction()
-                .add(R.id.mediainfo, mediaInfoListFragment)
+                .replace(R.id.mediainfo, mediaInfoListFragment)
                 .commit();
 
         ((MediaInfoListFragment) mediaInfoListFragment).setHandler(mHandler);
@@ -509,8 +522,8 @@ public class VideoPreviewActivity extends BaseActivity {
         ItemBridgeAdapter chitemBridgeAdapter = new ItemBridgeAdapter(charrayObjectAdapter);
         List<IQiYiMovieBean> chvideoBeanList = new ArrayList<>();
 
-        if (null != main_charactor) {
-            for (int i = 0; i < main_charactor.size(); i++) {
+        if (null != mVideoBase.getPeople().getMain_charactor() && mVideoBase.getPeople().getMain_charactor().size() > 0) {
+            for (int i = 0; i < mVideoBase.getPeople().getMain_charactor().size(); i++) {
                 IQiYiMovieBean chvideoBean = new IQiYiMovieBean();
                 chvideoBean.setImageUrl(mVideoBase.getPeople().getMain_charactor().get(i).getImage_url());
                 chvideoBean.setName(mVideoBase.getPeople().getMain_charactor().get(i).getName());
@@ -640,7 +653,7 @@ public class VideoPreviewActivity extends BaseActivity {
         ps.requestIQiYiEpisodeList(albumId, size, pageNum, new CallBack<List<IQiYiMovieBean>>() {
             @Override
             public void success(List<IQiYiMovieBean> list) {
-                if(null!=list) {
+                if (null != list) {
                     mEplisodeList.clear();
                     showLoading();
                     mEplisodeList.addAll(list);
@@ -649,8 +662,7 @@ public class VideoPreviewActivity extends BaseActivity {
                     for (IQiYiMovieBean bean : list) {
                         Log.v("VideoPreviewEpisodeList", bean.toString());
                     }
-                }
-                else showLoadingError("1");
+                } else showLoadingError("1");
                 mHandler.sendEmptyMessage(REFRESH_HistoryInfo);
             }
 

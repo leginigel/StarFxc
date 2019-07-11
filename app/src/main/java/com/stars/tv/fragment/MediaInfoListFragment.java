@@ -184,7 +184,7 @@ public class MediaInfoListFragment extends Fragment {
             minfo1Val = "更新至" + latestOrder + "集/共" + videoCount + "集";
         }
         mVideoType = videoinfoshare.getInt(EXT_VIDEO_TYPE, 0);
-        if (mVideoType ==1 || mVideoType == 6) {
+        if (mVideoType ==1 || mVideoType == 6 || Integer.valueOf(videoCount) < 2) {
             mFullScreen.requestFocus();
         }
         switch (mVideoType) {

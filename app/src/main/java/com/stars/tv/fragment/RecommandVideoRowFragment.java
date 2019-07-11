@@ -148,7 +148,9 @@ public class RecommandVideoRowFragment extends BaseFragment {
                     if (count == topRow) {
                         Log.v(TAG, "count" + count);
                         showButton();
-                        videoGrid.endMoreRefreshComplete();
+                        if (videoGrid != null) {
+                            videoGrid.endMoreRefreshComplete();
+                        }
 //                        loadMoreVideo();
                     }
                     break;

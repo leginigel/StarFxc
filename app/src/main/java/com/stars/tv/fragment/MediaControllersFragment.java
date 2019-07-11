@@ -13,6 +13,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -156,11 +157,12 @@ public class MediaControllersFragment extends DialogFragment {
         SharedPreferences videoinfoshare = getContext().getSharedPreferences("data", getContext().MODE_PRIVATE);
         String medName = videoinfoshare.getString("name", "");
         String mEpisodeName = (String) Utils.getSharedValue(mContext, "mEpisodeName", "");
-        if (mEpisodeName.isEmpty()) {
-            titleText.setText(medName);
-        } else {
+        String videoCount = videoinfoshare.getString("videoCount", "");
+        int mVideoType = (int) Utils.getSharedValue(mContext, "mVideoType", 0);
+        if (Integer.valueOf(videoCount) > 1)
             titleText.setText(mEpisodeName);
-        }
+        else
+            titleText.setText(medName);
     }
 
     public void setVideo(IjkVideoView video) {
