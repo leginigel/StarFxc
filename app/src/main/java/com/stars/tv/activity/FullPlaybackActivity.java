@@ -495,6 +495,7 @@ public class FullPlaybackActivity extends BaseActivity {
                     if ("".equals(mVideoPath)) {
                         mVideoPath = list.get(0).getM3u();
                     }
+                    currentPosition = mVideoView.getCurrentPosition();
                     startPlay();
                 } else {
                     mVideoPath = "";

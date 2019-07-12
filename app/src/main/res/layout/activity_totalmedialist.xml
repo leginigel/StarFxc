@@ -29,7 +29,7 @@
             android:text="@string/str_search"
             android:textColor="@color/color_all_white"
             android:textSize="8sp"
-            tools:ignore="SmallSp" />
+            tools:ignore="SmallSp"/>
 
         <FrameLayout
             android:layout_width="wrap_content"
@@ -43,7 +43,8 @@
                 android:layout_alignParentStart="true"
                 android:clipChildren="false"
                 android:clipToPadding="false"
-                android:focusable="true" />
+                android:focusable="true"
+                android:focusedByDefault="true"/>
         </FrameLayout>
 
 

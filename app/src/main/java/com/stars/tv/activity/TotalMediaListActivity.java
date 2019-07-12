@@ -92,7 +92,6 @@ public class TotalMediaListActivity extends BaseActivity {
                 return false;
             }
         });
-
         type_vp.setOnChildViewHolderSelectedListener(new OnChildViewHolderSelectedListener() {
             @Override
             public void onChildViewHolderSelected(RecyclerView parent, RecyclerView.ViewHolder child, int position, int subposition) {
@@ -109,8 +108,8 @@ public class TotalMediaListActivity extends BaseActivity {
                         } else {
                             if (isRemaining) {
                                 isRemaining = false;
-                                title.setTextColor(getResources().getColor(R.color.color_focus));
-                                view.setBackgroundColor(getResources().getColor(R.color.color_transparent));
+                                title.setTextColor(getResources().getColor(R.color.color_all_white));
+                                view.setBackgroundColor(getResources().getColor(R.color.color_checked));
                             } else {
                                 title.setTextColor(getResources().getColor(R.color.color_all_white));
                                 view.setBackgroundColor(getResources().getColor(R.color.color_transparent));
@@ -160,6 +159,14 @@ public class TotalMediaListActivity extends BaseActivity {
 
         transaction.replace(R.id.mediacontent_vp, newFragment);
         transaction.commit();
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (buttonName.contains("全部") && type_vp.hasFocus() && event.getKeyCode() == KeyEvent.KEYCODE_DPAD_RIGHT) {
+            isRemaining = true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
 }

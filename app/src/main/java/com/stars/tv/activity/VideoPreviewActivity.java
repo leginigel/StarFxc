@@ -359,6 +359,8 @@ public class VideoPreviewActivity extends BaseActivity {
 
         if (Integer.valueOf(videoCount) > 1) {
             parseIQiYiEpisodeList(albumId, Integer.valueOf(latestOrder), 1);
+        } else {
+            mHandler.sendEmptyMessage(REFRESH_HistoryInfo);
         }
 
 //        checkHistoryInfo(albumId);
@@ -407,22 +409,27 @@ public class VideoPreviewActivity extends BaseActivity {
                         hmVideoPath = bean.getVideoPlayUrl();
                         hmPosition = bean.getVideoPlayPosition();
                         hmEpisode = bean.getVideoCurrentViewOrder();
-                        if (htvId != null && hmEpisode != 0) {
+                        if (htvId != null && !htvId.isEmpty() && !htvId.equals("")) {
                             tvId = htvId;
                             mVideoPath = hmVideoPath;
                             mPosition = hmPosition;
                             mEpisode = hmEpisode;
                         }
                         Log.v("HistoryInfo", "tvId" + tvId + "hmVideoPath" + hmVideoPath + ";mPosition" + mPosition + ";mEpisode" + mEpisode);
+                    } else {
+                        mEpisode = 0;
+                        mPosition = 0;
                     }
-                    if (getPackageManager().resolveActivity(intent, 0) != null)
+                    if (getPackageManager().resolveActivity(intent, 0) != null) {
                         mHandler.sendEmptyMessage(REFRESH_InfoList);
+                    }
                 }
 
                 @Override
                 public void failed() {
-                    if (getPackageManager().resolveActivity(intent, 0) != null)
+                    if (getPackageManager().resolveActivity(intent, 0) != null) {
                         mHandler.sendEmptyMessage(REFRESH_InfoList);
+                    }
                 }
             });
         } catch (Exception e) {

@@ -107,6 +107,7 @@ public class MediaListMVPFragment
                 default:
                     postition = msg.what;
                     mVideoList.clear();
+                    videoGrid.setSelectedPosition(0);
                     refreshRequest(postition);
                     break;
             }
@@ -532,14 +533,16 @@ public class MediaListMVPFragment
                 if (latestOrder != null && videoCount != null) {
                     if (Objects.requireNonNull(videoCount).equals(Objects.requireNonNull(latestOrder))) {
                         holder.infoTv.setText(videoBean.getLatestOrder() + "集全");
+                        holder.infoTv.setVisibility(View.VISIBLE);
                     } else {
                         holder.infoTv.setText("更新至" + videoBean.getLatestOrder() + "集");
+                        holder.infoTv.setVisibility(View.VISIBLE);
                     }
                 }
                 if (videoBean.getPayMarkUrl() != null) {
                     holder.payIv.setImageResource(R.drawable.vip_icon2);
+                    holder.payIv.setVisibility(View.VISIBLE);
                 }
-
 
                 holder.itemView.setOnFocusChangeListener((view, hasFocus) -> {
 //                    holder.boardView.setVisibility(hasFocus ? View.VISIBLE : View.INVISIBLE);
