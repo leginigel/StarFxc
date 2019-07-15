@@ -43,6 +43,7 @@ public class MediaControllersFragment extends DialogFragment {
 
     private Timer timer;
     private IjkVideoView mVideoView;
+    public String playbackState = "Play";
 
     public static MediaControllersFragment newInstance() {
         return new MediaControllersFragment();
@@ -108,10 +109,12 @@ public class MediaControllersFragment extends DialogFragment {
         playButton.setOnClickListener(v -> {
             if (mVideoView.isPlaying()) {
                 mVideoView.pause();
+                playbackState = "Pause";
                 playButton.setImageDrawable(getResources().getDrawable(R.drawable.lb_ic_pause));
                 playText.setText("Pause");
             } else {
                 mVideoView.start();
+                playbackState = "Play";
                 playButton.setImageDrawable(getResources().getDrawable(R.drawable.lb_ic_play));
                 playText.setText("Play");
             }
@@ -163,6 +166,16 @@ public class MediaControllersFragment extends DialogFragment {
             titleText.setText(mEpisodeName);
         else
             titleText.setText(medName);
+    }
+
+    private void setPlayButton() {
+        if (playbackState.equals("Play")) {
+            playButton.setImageDrawable(getResources().getDrawable(R.drawable.lb_ic_play));
+            playText.setText("Play");
+        } else {
+            playButton.setImageDrawable(getResources().getDrawable(R.drawable.lb_ic_pause));
+            playText.setText("Pause");
+        }
     }
 
     public void setVideo(IjkVideoView video) {
@@ -267,6 +280,7 @@ public class MediaControllersFragment extends DialogFragment {
     public void onResume() {
         super.onResume();
         setTitleText();
+        setPlayButton();
     }
 
 }

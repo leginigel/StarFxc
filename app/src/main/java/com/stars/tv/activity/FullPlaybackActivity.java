@@ -96,6 +96,7 @@ public class FullPlaybackActivity extends BaseActivity {
                     break;
                 default:
                     currentHQ = msg.what;
+                    currentPosition = mVideoView.getCurrentPosition();
                     parseIQiYiRealM3U8WithTvId(tvId);
                     break;
             }
@@ -159,6 +160,7 @@ public class FullPlaybackActivity extends BaseActivity {
                 public void onCompletion(IMediaPlayer mp) {
                     showLoading();
                     mEpisode = mEpisode + 1;
+                    currentPosition = 0;
                     parseIQiYiRealM3U8WithTvId(mEplisodeList.get(mEpisode).getTvId());
                     mChildrenAdapter.setSelectedPositions(mEpisode);
                 }
@@ -495,7 +497,6 @@ public class FullPlaybackActivity extends BaseActivity {
                     if ("".equals(mVideoPath)) {
                         mVideoPath = list.get(0).getM3u();
                     }
-                    currentPosition = mVideoView.getCurrentPosition();
                     startPlay();
                 } else {
                     mVideoPath = "";

@@ -610,6 +610,7 @@ public class VideoPreviewActivity extends BaseActivity {
     private void refreshRecommendGV() {
         rearrayObjectAdapter.clear();
         rearrayObjectAdapter.addAll(0, mVideoList);
+        recommend_gv.setSelectedPosition(0);
         reItemBridgeAdapter.notifyDataSetChanged();
     }
 
