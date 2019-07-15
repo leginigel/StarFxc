@@ -68,6 +68,8 @@ public class SearchFragment extends Fragment {
         mNumber = NumberKeyboard.newInstance();
         mSpinner = SpinnerFragment.newInstance();
         rowFragment = SearchRowFragment.newInstance();
+        mFocus = FocusLocation.Suggestion;
+        mType = Keyboard.Alphabet;
     }
 
     @Override
@@ -80,12 +82,10 @@ public class SearchFragment extends Fragment {
         if(savedInstanceState == null) {
             fm = getFragmentManager();
             fm.beginTransaction().replace(R.id.keyboard, mAlphabet).commit();
-            mType = Keyboard.Alphabet;
 
             fm.beginTransaction().replace(R.id.search_row, rowFragment).commit();
             mRow.setVisibility(View.GONE);
         }
-        mFocus = FocusLocation.Suggestion;
 
         mSuggestListAdapter = new SuggestListAdapter(this);
         recyclerView.setLayoutManager(
@@ -95,11 +95,8 @@ public class SearchFragment extends Fragment {
         recyclerView.setAdapter(mSuggestListAdapter);
 
         setOnClickListener();
-
         setOnKeyListener();
-
         setOnFocusListener();
-
         return view;
     }
 
@@ -270,10 +267,12 @@ public class SearchFragment extends Fragment {
         if(mType == Keyboard.Alphabet){
             fm.beginTransaction().replace(R.id.keyboard, mNumber).commit();
             mType = Keyboard.Number;
+            ((TextView) shiftIcon.getChildAt(0)).setText("ABC");
         }
         else{
             fm.beginTransaction().replace(R.id.keyboard, mAlphabet).commit();
             mType = Keyboard.Alphabet;
+            ((TextView) shiftIcon.getChildAt(0)).setText("&123");
         }
     }
 
@@ -283,7 +282,9 @@ public class SearchFragment extends Fragment {
             mRow.setVisibility(View.VISIBLE);
             mViewModel.searchRx(query);
             mViewModel.setIsLoading(true);
-            mSuggestListAdapter.resize(5);
+            if(mSuggestListAdapter.getSize() > 5) {
+                mSuggestListAdapter.resize(5);
+            }
         }
     }
 

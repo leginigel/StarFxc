@@ -43,6 +43,7 @@ import com.stars.tv.bean.ExtVideoBean;
 import com.stars.tv.server.LeanCloudStorage;
 import com.stars.tv.youtube.YoutubeActivity;
 import com.stars.tv.youtube.data.YouTubeVideo;
+import com.stars.tv.youtube.ui.youtube.YoutubeRowFragment;
 import com.stars.tv.youtube.util.Utils;
 
 /**
@@ -55,7 +56,7 @@ public class PlayerControlsFragment extends DialogFragment {
     }
 
     private final static String TAG = PlayerControlsFragment.class.getSimpleName();
-    private int CountDown;
+    private int mCountDown;
     private ViewGroup mConstraint, mBackGround;
     private ImageButton playButton, favButton, hqButton, moreButton;
     private TextView timeText, playText, favText, hqText, moreText;
@@ -70,32 +71,37 @@ public class PlayerControlsFragment extends DialogFragment {
     private MyPlaybackEventListener playbackEventListener = new MyPlaybackEventListener();
     private MyPlayerStateChangeListener playerStateChangeListener = new MyPlayerStateChangeListener();
     private boolean mIsFavorite;
+    private SuggestionRowState mSRS;
     public enum PlaybackState{
         PLAYING, NOT_PLAYING, STOPPED, PAUSED, BUFFERING
     }
     public enum PlayerState{
         ERROR, VIDEO_ENDED, VIDEO_STARTED, AD_STARTED, LOADED, LOADING, UNINITIALIZED
     }
+    public enum SuggestionRowState{
+        Open, Close
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme_Translucent_NoTitleBar);
+        controlRowFragment = ControlRowFragment.newInstance(mVideo.getId());
+        mPlayer = ((YoutubeActivity) getActivity()).getYouTubePlayer();
+        timer = new Timer();
+        mCountDown = 5;
+        mSRS = SuggestionRowState.Close;
+        mIsFavorite = false;
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_player_controls, container, false);
-        controlRowFragment = ControlRowFragment.newInstance(mVideo.getId());
         mControlRow = view.findViewById(R.id.player_control_row);
         mReplay = view.findViewById(R.id.layout_replay);
-        timer = new Timer();
-        CountDown = 5;
-        mPlayer = ((YoutubeActivity) getActivity()).getYouTubePlayer();
         mConstraint = view.findViewById(R.id.view_group);
         mBackGround = view.findViewById(R.id.player_control);
-        mIsFavorite = false;
         if(savedInstanceState == null)
             this.getChildFragmentManager().beginTransaction()
                     .add(R.id.player_control_row, controlRowFragment).commit();
@@ -109,7 +115,7 @@ public class PlayerControlsFragment extends DialogFragment {
         hqText = view.findViewById(R.id.quality_text);
         hqButton.setOnFocusChangeListener((v, hasFocus) -> {
             if(hasFocus) {
-                CountDown = 5;
+                mCountDown = 5;
                 hqText.setVisibility(View.VISIBLE);
             }
             else hqText.setVisibility(View.INVISIBLE);
@@ -150,6 +156,7 @@ public class PlayerControlsFragment extends DialogFragment {
     }
 
     public void openRow(){
+        mSRS = SuggestionRowState.Open;
         ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) mControlRow.getLayoutParams();
         float factor = getResources().getDisplayMetrics().density;
 
@@ -184,11 +191,12 @@ public class PlayerControlsFragment extends DialogFragment {
                         mConstraint.setVisibility(View.INVISIBLE);
                     }
                 });
-controlRowFragment.setRowAlpha(1);
-        CountDown = 10;
+        controlRowFragment.setRowAlpha(1);
+        mCountDown = 10;
     }
 
     public void closeRow(){
+        mSRS = SuggestionRowState.Close;
         ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) mControlRow.getLayoutParams();
         float factor = getResources().getDisplayMetrics().density;
 
@@ -216,7 +224,7 @@ controlRowFragment.setRowAlpha(1);
                     }
                 });
         controlRowFragment.setRowAlpha(0.5f);
-        CountDown = 5;
+        mCountDown = 5;
     }
 
     @Override
@@ -263,17 +271,17 @@ controlRowFragment.setRowAlpha(1);
                     getActivity().runOnUiThread(() -> {
                         timeText.setText(formatTime(mPlayer.getCurrentTimeMillis()));
                     });
-                    CountDown--;
-                    if(CountDown < 0) close();
+                    mCountDown--;
+                    if(mCountDown < 0) close();
                 }
                 else if(playerStateChangeListener.getPlayerState() == PlayerState.VIDEO_ENDED){
                     // Count down text start on 5 but 4
                     getActivity().runOnUiThread(() -> {
-                        countDownText.setText("RETURN IN " + (CountDown + 1)  + " ...");
+                        countDownText.setText("RETURN IN " + (mCountDown + 1)  + " ...");
                     });
-                    CountDown--;
+                    mCountDown--;
                     // After video ended will stop playback & return to prev page
-                    if(CountDown < 0){
+                    if(mCountDown < 0){
                         close();
                         getActivity().runOnUiThread(() -> {
                             activity.onBackPressed();
@@ -282,9 +290,9 @@ controlRowFragment.setRowAlpha(1);
                 }
                 // Not playing & open the suggestion row
                 else if(mConstraint.getVisibility() == View.INVISIBLE){
-                    CountDown--;
+                    mCountDown--;
                     // Count down and close control frag
-                    if(CountDown < 0) close();
+                    if(mCountDown < 0) close();
                 }
             }
         };
@@ -323,7 +331,7 @@ controlRowFragment.setRowAlpha(1);
         AtomicBoolean isChanged = new AtomicBoolean(false);
         seekBar.setOnKeyListener((v, keyCode, event) -> {
             if(event.getAction() == KeyEvent.ACTION_DOWN) {
-                CountDown = 5;
+                mCountDown = 5;
                 if(keyCode == KeyEvent.KEYCODE_DPAD_UP) {
                     if(isChanged.get()){
                         mPlayer.play();
@@ -371,7 +379,7 @@ controlRowFragment.setRowAlpha(1);
         }catch(Exception e){ }
         favButton.setOnFocusChangeListener((v, hasFocus) -> {
             if(hasFocus) {
-                CountDown = 5;
+                mCountDown = 5;
                 favText.setVisibility(View.VISIBLE);
             }
             else favText.setVisibility(View.INVISIBLE);
@@ -410,6 +418,12 @@ controlRowFragment.setRowAlpha(1);
             //favButton.getDrawable()
             //      .setColorFilter(Color.parseColor("#FF1E88E5"), PorterDuff.Mode.SRC_IN);
         });
+        favButton.setOnKeyListener((v, keyCode, event) -> {
+            if(event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_DPAD_DOWN){
+                openRow();
+            }
+            return false;
+        });
     }
 
     private void setMoreButton(View view){
@@ -418,7 +432,7 @@ controlRowFragment.setRowAlpha(1);
         moreButton.setImageDrawable(getActivity().getDrawable(R.drawable.ic_more_vert_24dp));
         moreButton.setOnFocusChangeListener((v, hasFocus) -> {
             if(hasFocus) {
-                CountDown = 5;
+                mCountDown = 5;
                 moreText.setVisibility(View.VISIBLE);
             }
             else moreText.setVisibility(View.INVISIBLE);
@@ -433,6 +447,12 @@ controlRowFragment.setRowAlpha(1);
                 moreButton.setImageDrawable(getActivity().getDrawable(R.drawable.ic_more_vert_24dp));
             }
         });
+        moreButton.setOnKeyListener((v, keyCode, event) -> {
+            if(event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_DPAD_DOWN){
+                openRow();
+            }
+            return false;
+        });
     }
 
     private void setPlayButton(View view){
@@ -445,7 +465,7 @@ controlRowFragment.setRowAlpha(1);
                 playText.setText("Play");
             }
             else{
-                CountDown = 5;
+                mCountDown = 5;
                 mPlayer.play();
                 playButton.setImageDrawable(getResources().getDrawable(R.drawable.lb_ic_pause));
                 playText.setText("Pause");
@@ -453,7 +473,7 @@ controlRowFragment.setRowAlpha(1);
         });
         playButton.setOnFocusChangeListener((v, hasFocus) -> {
             if(hasFocus){
-                CountDown = 5;
+                mCountDown = 5;
                 playText.setVisibility(View.VISIBLE);
             }
             else playText.setVisibility(View.INVISIBLE);
@@ -473,6 +493,7 @@ controlRowFragment.setRowAlpha(1);
                     countDownText.setVisibility(View.INVISIBLE);
                     controlRowFragment.getVerticalGridView().requestFocus();
                     timer.cancel();
+                    YoutubeRowFragment.highlightRowFocus(getActivity(), controlRowFragment);
                     return true;
                 }
                 if(keyCode == KeyEvent.KEYCODE_BACK){
@@ -530,7 +551,7 @@ controlRowFragment.setRowAlpha(1);
     }
 
     public void setCountDown(int countDown) {
-        CountDown = countDown;
+        mCountDown = countDown;
     }
 
     public void setVideo(YouTubeVideo video){
@@ -539,6 +560,14 @@ controlRowFragment.setRowAlpha(1);
 
     public YouTubeVideo getVideo(){
         return this.mVideo;
+    }
+
+    public SuggestionRowState getSRS() {
+        return mSRS;
+    }
+
+    public ImageButton getPlayButton() {
+        return playButton;
     }
 
     public ImageView getReplayIcon() {

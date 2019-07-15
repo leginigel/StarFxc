@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit;
 public class Utils {
 
     public static String DurationConverter(String duration) {
-        String hour = "", minute = "", second = "";
+        String hour = "", minute = "", second = "00";
         int hasH, hasM, hasS;
         hasH = duration.indexOf('H');
 
@@ -37,6 +37,8 @@ public class Utils {
         if(hasM != -1){
             if(hasH != -1){
                 minute = duration.substring(hasH + 1, hasM) + ":";
+                if(minute.length() <= 2)
+                    minute = "0" + minute;
             }
             else{
                 minute = duration.substring(2, hasM) + ":";

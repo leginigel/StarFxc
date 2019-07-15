@@ -2,13 +2,11 @@ package com.stars.tv.youtube.ui.player;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.support.v17.leanback.widget.HorizontalGridView;
 import android.support.v17.leanback.widget.ListRowView;
 import android.support.v17.leanback.widget.Presenter;
 import android.support.v4.app.FragmentActivity;
 import android.text.Html;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,7 +29,8 @@ public class ControlCardPresenter extends YouTubeCardPresenter {
         PlayerControlsFragment.PlayerState state =
                 playerControlsFragment.getPlayerStateChangeListener().getPlayerState();
         ListRowView listRowView = (ListRowView) viewGroup.getParent();
-        if(state == PlayerControlsFragment.PlayerState.VIDEO_ENDED){
+        if(state == PlayerControlsFragment.PlayerState.VIDEO_ENDED
+        || playerControlsFragment.getSRS() == PlayerControlsFragment.SuggestionRowState.Open){
             listRowView.setAlpha(1);
         }
         else {
@@ -68,7 +67,6 @@ public class ControlCardPresenter extends YouTubeCardPresenter {
     protected void setFocusNavigation(CardViewHolder cardViewHolder) {
         PlayerControlsFragment.PlayerState state
                 = playerControlsFragment.getPlayerStateChangeListener().getPlayerState();
-        cardViewHolder.view.setNextFocusUpId(R.id.play_button);
         cardViewHolder.view.setOnKeyListener((v, keyCode, event) -> {
             if(event.getAction() == KeyEvent.ACTION_DOWN){
                 setDefaultFocus(v, keyCode);
@@ -97,8 +95,14 @@ public class ControlCardPresenter extends YouTubeCardPresenter {
         if(keyCode == KeyEvent.KEYCODE_DPAD_UP) {
             if(state == PlayerControlsFragment.PlayerState.VIDEO_ENDED){
                 playerControlsFragment.getReplayIcon().requestFocus();
+                setCardUnfocused(v.findViewById(R.id.img_card_view));
             }
             else {
+                if(playerControlsFragment.getPlayButton().getVisibility() == View.VISIBLE) {
+                    v.setNextFocusUpId(R.id.play_button);
+                } else {
+                    v.setNextFocusUpId(R.id.more_button);
+                }
                 playerControlsFragment.closeRow();
             }
         }

@@ -69,13 +69,16 @@ public class SuggestListAdapter extends RecyclerView.Adapter<SuggestListAdapter.
         }
         else{
             viewHolder.imageView.setVisibility(View.GONE);
+            // the search result may less than 10
             viewHolder.textView.setText(items.get(i));
         }
         viewHolder.cardView.setOnClickListener(v ->{
             mSearchFragment.getRow().setVisibility(View.VISIBLE);
             vm.searchRx(viewHolder.textView.getText().toString());
             vm.setIsLoading(true);
-            resize(5);
+            if(getSize() > 5) {
+                resize(5);
+            }
             vm.setQueryString(viewHolder.textView.getText().toString(), true);
         });
 
@@ -88,7 +91,7 @@ public class SuggestListAdapter extends RecyclerView.Adapter<SuggestListAdapter.
                 if(keyCode == KeyEvent.KEYCODE_DPAD_DOWN) {
                     mLeftNav.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
                     View searchRow = mSearchFragment.getView().findViewById(R.id.search_row);
-                    if(searchRow.getVisibility() == View.VISIBLE && i == 4) {
+                    if(searchRow.getVisibility() == View.VISIBLE && i == getSize() - 1) {
                         Fragment frag = mSearchFragment.getFragmentManager().findFragmentById(R.id.search_row);
                         if(frag instanceof SearchRowFragment)
                             YoutubeRowFragment.highlightRowFocus(mContext, (SearchRowFragment) frag);
@@ -146,6 +149,9 @@ public class SuggestListAdapter extends RecyclerView.Adapter<SuggestListAdapter.
         if(list != null) {
             this.items = new ArrayList<>();
             this.items.addAll(list);
+            if(list.size() < 10){
+                resize(list.size());
+            }
             notifyDataSetChanged();
         }
     }
@@ -157,5 +163,9 @@ public class SuggestListAdapter extends RecyclerView.Adapter<SuggestListAdapter.
     public void resize(int size){
         this.size = size;
         notifyDataSetChanged();
+    }
+
+    public int getSize(){
+        return this.size;
     }
 }
