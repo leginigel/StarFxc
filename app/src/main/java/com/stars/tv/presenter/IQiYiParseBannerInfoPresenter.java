@@ -69,11 +69,17 @@ public class IQiYiParseBannerInfoPresenter {
                                     IQiYiBannerInfoBean bean = new IQiYiBannerInfoBean();
                                     String style = imgList.get(i).attr("style");
                                     String sty = imgList.get(i).attr(":style");
-                                    String imageUrl;
-                                    if (!style.contains("pic")) {
-                                        imageUrl = "http://" + sty.substring(sty.indexOf("pic"), sty.indexOf("jpg") + 3);
+                                    String dataImage = imgList.get(i).attr("data-jpg-img");
+                                    String imageUrl ="";
+                                    if(!dataImage.isEmpty()) {
+                                        imageUrl = "http:"+dataImage;
                                     } else {
+                                        if (style.contains("pic")) {
                                         imageUrl = "http://" + style.substring(style.indexOf("pic"), style.indexOf("jpg") + 3);
+
+                                        } else if(sty.contains("pic")){
+                                            imageUrl = "http://" + sty.substring(sty.indexOf("pic"), sty.indexOf("jpg") + 3);
+                                        }
                                     }
 
                                     String name = nameList.get(i).select("div.caption").text();
@@ -96,7 +102,13 @@ public class IQiYiParseBannerInfoPresenter {
                             for (int i = 0; i < imgList.size(); i++) {
                                 IQiYiBannerInfoBean bean = new IQiYiBannerInfoBean();
                                 String style = imgList.get(i).attr("style");
-                                String imageUrl = "http://" + style.substring(style.indexOf("pic"), style.indexOf("jpg") + 3);
+                                String dataImage = imgList.get(i).attr("data-jpg-img");
+                                String imageUrl ="";
+                                if(!dataImage.isEmpty()) {
+                                    imageUrl = "http:"+dataImage;
+                                }else{
+                                    imageUrl = "http://" + style.substring(style.indexOf("pic"), style.indexOf("jpg") + 3);
+                                }
 
                                 String name = nameList.get(i).select("div.caption").text();
                                 String playUrl = "http:" + nameList.get(i).attr("href");
@@ -115,7 +127,15 @@ public class IQiYiParseBannerInfoPresenter {
                                 for (int i = 0; i < imgList.size(); i++) {
                                     IQiYiBannerInfoBean bean = new IQiYiBannerInfoBean();
                                     String style = imgList.get(i).attr("style");
-                                    String imageUrl = "http://" + style.substring(style.indexOf("pic"), style.indexOf("jpg") + 3);
+                                    String dataImage = imgList.get(i).attr("data-jpg-img");
+                                    String imageUrl ="";
+                                    if(!dataImage.isEmpty()) {
+                                        imageUrl = "http:"+dataImage;
+                                    }else{
+                                        if (style.contains("pic")) {
+                                            imageUrl = "http://" + style.substring(style.indexOf("pic"), style.indexOf("jpg") + 3);
+                                        }
+                                    }
                                     String name = imgList.get(i).select("a.img-link").attr("title");
                                     String playUrl = "http:" + imgList.get(i).select("a.img-link").attr("href");
 
