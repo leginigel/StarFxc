@@ -266,7 +266,6 @@ public class LiveTVActivity extends BaseActivity {
     }
 
     private void showChannelList() {
-        isChListShow = true;
         if (isInfoBannerShow) {
             hideInfoBanner();
         }
@@ -274,6 +273,7 @@ public class LiveTVActivity extends BaseActivity {
         chListLayout.setVisibility(View.VISIBLE);
         chListLayout.startAnimation(AnimationUtils.loadAnimation(this, R.anim.in_from_left));
         initChannelListAdapter();
+        isChListShow = true;
         setTimer(HIDE_CHANNEL_LIST, TIMEOUT_TIMER);
     }
 
@@ -284,6 +284,7 @@ public class LiveTVActivity extends BaseActivity {
                 chListLayout.startAnimation(AnimationUtils.loadAnimation(this, R.anim.out_to_left));
                 chListLayout.setVisibility(View.GONE);
             }
+            curItem = null;
             isChListShow = false;
         }
     }
@@ -471,9 +472,8 @@ public class LiveTVActivity extends BaseActivity {
     @Override
     public boolean onKeyLongPress(int keyCode, KeyEvent event) {
         Log.v(TAG, "onKeyLongPress " + event);
-        if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_CENTER) {
-            boolean isFav = channelList.get(chPosition).getIsFav();
-            isFav = !isFav;
+        if (curItem != null && isChListShow && event.getKeyCode() == KeyEvent.KEYCODE_DPAD_CENTER) {
+            boolean isFav = !channelList.get(chPosition).getIsFav();
             curItem.findViewById(R.id.item_live_tv_channel_favourite).setVisibility(isFav ? View.VISIBLE : View.GONE);
             setFav(isFav);
             return true;
@@ -510,20 +510,24 @@ public class LiveTVActivity extends BaseActivity {
                 }
                 break;
             case KeyEvent.KEYCODE_DPAD_LEFT: // 向左
+                if(isChListShow) {
                 listPosition--;
                 if (listPosition < 0)
                     listPosition = 4;
                 setChannelList(listPosition);
                 chPosition = 0;
                 initChannelListAdapter();
+                }
                 break;
             case KeyEvent.KEYCODE_DPAD_RIGHT: // 向右
+                if(isChListShow) {
                 listPosition++;
                 if (listPosition > 4)
                     listPosition = 0;
                 setChannelList(listPosition);
                 chPosition = 0;
                 initChannelListAdapter();
+                }
                 break;
         }
     }
