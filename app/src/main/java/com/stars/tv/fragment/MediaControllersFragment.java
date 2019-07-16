@@ -111,12 +111,12 @@ public class MediaControllersFragment extends DialogFragment {
                 mVideoView.pause();
                 playbackState = "Pause";
                 playButton.setImageDrawable(getResources().getDrawable(R.drawable.lb_ic_pause));
-                playText.setText("Pause");
+                playText.setText("暂停");
             } else {
                 mVideoView.start();
                 playbackState = "Play";
                 playButton.setImageDrawable(getResources().getDrawable(R.drawable.lb_ic_play));
-                playText.setText("Play");
+                playText.setText("播放");
             }
         });
         playButton.setOnFocusChangeListener((v, hasFocus) -> {
@@ -171,10 +171,10 @@ public class MediaControllersFragment extends DialogFragment {
     private void setPlayButton() {
         if (playbackState.equals("Play")) {
             playButton.setImageDrawable(getResources().getDrawable(R.drawable.lb_ic_play));
-            playText.setText("Play");
+            playText.setText("播放");
         } else {
             playButton.setImageDrawable(getResources().getDrawable(R.drawable.lb_ic_pause));
-            playText.setText("Pause");
+            playText.setText("暂停");
         }
     }
 
