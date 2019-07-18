@@ -56,6 +56,8 @@ public class StreamActivity extends BaseActivity {
     Button startStreamBtn;
     @BindView(R.id.mloading)
     TextView textLoading;
+    @BindView(R.id.descrip)
+    TextView textDescrip;
     private StreamPresenter streamPresenter;
     private IjkVideoView mVideoView;
     //    private AndroidMediaController mMediaController;
@@ -149,6 +151,27 @@ public class StreamActivity extends BaseActivity {
                         case 4:
                         case 5:
                             streamText.setText("直播房间号码");
+                            break;
+                    }
+                    switch (finalI){
+                        case 0:
+                            textDescrip.setText(getResources().getText(R.string.stream_description_yt));
+                            break;
+                        case 1:
+                            textDescrip.setText(getResources().getText(R.string.stream_description_twitch));
+                            break;
+                        case 2:
+                        case 3:
+                            textDescrip.setText("服务不支援");
+                            break;
+                        case 6:
+                            textDescrip.setText(getResources().getText(R.string.stream_description_server));
+                            break;
+                        case 4:
+                            textDescrip.setText(getResources().getText(R.string.stream_description_huya));
+                            break;
+                        case 5:
+                            textDescrip.setText(getResources().getText(R.string.stream_description_bili));
                             break;
                     }
                     stream.setVisibility((finalI == 2 || finalI == 3) ? View.GONE : View.VISIBLE);

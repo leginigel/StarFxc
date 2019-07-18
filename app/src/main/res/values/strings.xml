@@ -175,4 +175,21 @@
     <string name="stream_description_yt">例如：youtube.com/watch?v=UCUZHFZ9jIKrLroW8LcyJEQQ
 \n
 所有 YouTube 頻道都使用這種標準網址，主要是以頻道的專屬 ID (網址結尾的數字和英文字母) 做為辨識的依據，直播网址即为直播频道的 ID</string>
+    <string name="stream_description_twitch">
+        例如：https://www.twitch.tv/butterflyouo
+        \n
+        直播频道的 ID 即為實況主播名稱</string>
+    <string name="stream_description_huya">
+        在主播直播间页面内增加多处房间号显示\n
+        例如：521521
+    </string>
+    <string name="stream_description_bili">
+        1、打开哔哩哔哩直播官网，点开你想看的直播房间\n
+        2、点击如图示分享\n
+        例如：http://live.bilibili.com/135246\t数字就是该主播房间的ID
+    </string>
+    <string name="stream_description_server">
+        實況平台的路徑，前面加上RTMP，後面接上串流金鑰\n
+        例如：rtmp://127.0.0.1:1935/live + /串流金鑰
+    </string>
 </resources>

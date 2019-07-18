@@ -82,6 +82,7 @@
     </LinearLayout>
 
     <TextView
+        android:id="@+id/descrip"
         android:layout_width="400dp"
         android:layout_height="wrap_content"
         android:text="@string/stream_description_yt"
